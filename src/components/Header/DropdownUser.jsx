@@ -46,8 +46,6 @@ const DropdownUser = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
-  console.log(user);
-
   return (
     <>
       {isLoggingOut && (

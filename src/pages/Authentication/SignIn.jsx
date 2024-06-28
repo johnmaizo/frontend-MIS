@@ -211,13 +211,17 @@ const SignIn = () => {
 
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                      <label className="mb-2.5 block font-medium text-black">
+                      <label htmlFor="email" className="mb-2.5 block font-medium text-black">
                         Email
                       </label>
                       <div className="relative">
                         <input
+                        
                           type="email"
+                          name="email"
+                          id="email"
                           placeholder="Enter your email"
+                          autoComplete="on"
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -244,12 +248,14 @@ const SignIn = () => {
                     </div>
 
                     <div className="mb-6">
-                      <label className="mb-2.5 block font-medium text-black">
+                      <label htmlFor="password" className="mb-2.5 block font-medium text-black">
                         Password
                       </label>
                       <div className="relative">
                         <input
                           type={showPassword ? 'text' : 'password'}
+                          name="password"
+                          id="password"
                           placeholder="Enter your password"
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none"
                           value={password}

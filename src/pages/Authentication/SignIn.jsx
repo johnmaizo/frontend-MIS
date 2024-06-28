@@ -3,6 +3,8 @@ import BenedictoLogo from "../../assets/small.png";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../components/context/AuthContext";
 
+import toast, { Toaster } from 'react-hot-toast';
+
 import Lock from "./icons/Lock";
 import Eye from "./icons/Eye";
 
@@ -26,6 +28,12 @@ const SignIn = () => {
   };
 
   const handleSubmit = async (e) => {
+    toast.promise(login(email, password), {
+      loading: "Signing in...",
+      success: "Signed in successfully!",
+      error: "Failed to sign in!",
+    });
+    
     e.preventDefault();
     setError(""); // Clear previous error message
     setIsLoading(true);
@@ -33,8 +41,6 @@ const SignIn = () => {
       await login(email, password);
       setSuccess(true);
       setIsLoading(false);
-      // setTimeout(() => navigate("/dashboard"), 2000);
-      // console.log(success)
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);

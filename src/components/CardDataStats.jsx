@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+/* eslint-disable react/prop-types */
 
 // interface CardDataStatsProps {
 //   title: string;

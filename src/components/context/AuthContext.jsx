@@ -3,6 +3,8 @@ import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+import toast from 'react-hot-toast';
+
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -71,7 +73,7 @@ const AuthProvider = ({ children }) => {
         if (isSessionExpired) {
             setSessionExpired(false);
         }
-        // window.location.reload();
+        toast.success('Logged out successfully!');
     };
 
     const refreshToken = async () => {

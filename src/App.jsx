@@ -11,6 +11,7 @@ import SessionExpired from "./pages/Authentication/SessionExpired";
 import Loader from "./components/styles/Loader";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import StudentDashboard from "./pages/Student/StudentDashboard";
+import { Toaster } from "react-hot-toast";
 
 // import FormElements from "./pages/Sundoganan/Form/FormElements"
 // import FormLayout from "./pages/Sundoganan/Form/FormLayout";
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
       {sessionExpired && <SessionExpired />}
+      <Toaster />
       <Suspense fallback={<Loader />}>
         {user === null && (
           <Routes>
@@ -33,7 +35,7 @@ function App() {
               path="/"
               element={
                 <>
-                  <PageTitle title="Home Page oten" />
+                  <PageTitle title="Home Page oten - MIS" />
                   <HomePage />
                 </>
               }
@@ -43,7 +45,7 @@ function App() {
               path="/auth/signin"
               element={
                 <>
-                  <PageTitle title="Signin | BC - Management Information System" />
+                  <PageTitle title="Signin | MIS - Benedicto College" />
                   <SignIn />
                 </>
               }
@@ -52,7 +54,7 @@ function App() {
               path="/auth/signup"
               element={
                 <>
-                  <PageTitle title="Signup | BC - Management Information System" />
+                  <PageTitle title="Signup | MIS - Benedicto College" />
                   <SignUp />
                 </>
               }

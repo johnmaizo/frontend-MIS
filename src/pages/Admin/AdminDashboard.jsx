@@ -6,9 +6,9 @@ import Chart from "../Sundoganan/Chart";
 import Alerts from "../Sundoganan/UiElements/Alerts";
 import Buttons from "../Sundoganan/UiElements/Buttons";
 import ProtectedRoute from "../../components/routes/ProtectedRoute";
-import ECommerce from "../Sundoganan/Dashboard/ECommerce";
 import Calendar from "../Sundoganan/Calendar";
 import Profile from "../Sundoganan/Profile";
+import AdminHome from "./subPages/AdminHome";
 
 const AdminDashboard = () => {
   return (
@@ -19,7 +19,7 @@ const AdminDashboard = () => {
           element={
             <>
               <PageTitle title="Dashboard | MIS - Benedicto College" />
-              <ECommerce />
+              <AdminHome />
             </>
           }
         />

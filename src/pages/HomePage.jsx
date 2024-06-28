@@ -4,6 +4,7 @@ import {AuthContext} from "../components/context/AuthContext";
 
 const  HomePage = () => {
   const {user} = useContext(AuthContext);
+
   return (
     <main className=" h-screen grid place-content-center bg-purple-400 text-4xl font-semibold text-center">
       {user ? (
@@ -12,7 +13,7 @@ const  HomePage = () => {
             You&apos;re already logged in. Redirecting...
           </h3>
         </div>
-      ) : !user && (
+      ) : (
         <div>
           <h1 className=" text-black">Welcome to Benedicto College!</h1>
           <Link to={"/auth/signin"} className=" text-blue-600 hover:underline">

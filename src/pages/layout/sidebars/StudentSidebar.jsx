@@ -105,11 +105,11 @@ const StudentSidebar = () => {
         </h3>
 
         <ul className="mb-6 flex flex-col gap-1.5">
-            <li>Lorem, ipsum dolor.</li>
-            <li>Vel, facere aliquid.</li>
-            <li>Totam, ducimus quisquam?</li>
-            <li>Possimus, natus alias.</li>
-            <li>Saepe, incidunt blanditiis.</li>
+            <li className="text-bodydark1">Lorem, ipsum dolor.</li>
+            <li className="text-bodydark1">Vel, facere aliquid.</li>
+            <li className="text-bodydark1">Totam, ducimus quisquam?</li>
+            <li className="text-bodydark1">Possimus, natus alias.</li>
+            <li className="text-bodydark1">Saepe, incidunt blanditiis.</li>
         </ul>
       </div>
     </>

@@ -71,9 +71,12 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         if (isSessionExpired) {
+            toast.error('Session expired, please login again!');
             setSessionExpired(false);
         }
-        toast.success('Logged out successfully!');
+        else {
+            toast.success('Logged out successfully!');
+        }
     };
 
     const refreshToken = async () => {

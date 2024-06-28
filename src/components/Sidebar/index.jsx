@@ -2,11 +2,10 @@
 
 import {useContext, useEffect, useRef, useState} from "react";
 import {NavLink} from "react-router-dom";
-import Logo from "../../images/logo/logo.svg";
 import AdminSidebar from "../../pages/layout/sidebars/AdminSidebar";
 import {AuthContext} from "../context/AuthContext";
 
-import BenedictoLogo from "../../assets/small.png";
+import BenedictoLogo from "../../assets/small-logo-transparent.png";
 import StudentSidebar from "../../pages/layout/sidebars/StudentSidebar";
 
 const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
@@ -19,7 +18,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
-
+  
   // close on click outside
   useEffect(() => {
     const clickHandler = (event) => {
@@ -60,14 +59,17 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 !text-black ${
+      // className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 !text-black ${
+      //   sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      // }`}>
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white dark:bg-boxdark duration-300 ease-linear lg:static lg:translate-x-0 !text-black ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 shadow-2">
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}
-          <img src={BenedictoLogo} alt="Logo" />
+          <img src={BenedictoLogo} alt="Logo" width={127}/>
         </NavLink>
 
         <button

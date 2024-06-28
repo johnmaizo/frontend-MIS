@@ -120,7 +120,7 @@ const DropdownUser = () => {
               {user.firstName} {user.lastName}
               <span className="block text-xs">Role: {user.role}</span>
             </span>
-            <li>
+            {/* <li>
               <Link
                 to="/profile"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
@@ -142,7 +142,7 @@ const DropdownUser = () => {
                 </svg>
                 My Profile
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="#"

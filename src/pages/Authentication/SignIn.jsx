@@ -46,10 +46,8 @@ const SignIn = () => {
   };
 
   useEffect(() => {
-    if (user && user.role === "Admin") {
-      return navigate("/dashboard");
-    } else if (user && user.role === "User") {
-      return navigate("/dashboard");
+    if (user) {
+      return navigate("/");
     }
   }, [user, navigate]);
 
@@ -63,7 +61,7 @@ const SignIn = () => {
         </div>
       ) : (
         !user && (
-          <div className="w-full rounded-sm  bg-white shadow-default">
+          <div className="w-full rounded-sm  bg-white">
             <div className="flex flex-wrap items-center xl:w-[80em] xl:mx-auto">
               <div className="hidden w-full xl:block xl:w-1/2">
                 <div className="px-26 py-17.5 text-center">

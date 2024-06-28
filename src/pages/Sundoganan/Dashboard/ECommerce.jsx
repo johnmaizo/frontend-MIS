@@ -4,7 +4,7 @@ import ChartThree from '../../../components/Charts/ChartThree';
 import ChartTwo from '../../../components/Charts/ChartTwo';
 import ChatCard from '../../../components/Chat/ChatCard';
 import TableOne from '../../../components/Tables/TableOne';
-import DefaultLayout from '../../../components/layout/DefaultLayout';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 const ECommerce = () => {
   return (

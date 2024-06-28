@@ -2,8 +2,7 @@
 import { useNavigate } from "react-router-dom";
 
 import NotFoundImage from "../assets/404.svg";
-import DefaultLayout from "../components/layout/DefaultLayout";
-
+import DefaultLayout from "./layout/DefaultLayout";
 
 const PageNotFound = () => {
   const navigate = useNavigate();

@@ -1,15 +1,19 @@
-import DefaultLayout from "../../layout/DefaultLayout"
+import UserTables from "../../../components/api/UserTables";
+import DefaultLayout from "../../layout/DefaultLayout";
 
 const StudentHome = () => {
   return (
     <DefaultLayout>
-        <div>
-            <h1 className="text-3xl font-bold">STUDENT HOME</h1>
-            <p>WELCOME HOME BITCHES</p>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Error quisquam optio illo quibusdam illum ullam aut deleniti enim maiores eveniet expedita, rem aspernatur non, omnis, assumenda a debitis libero in!</p>
+      <main>
+        <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <h3 className="text-xl font-bold">GWAPO KO</h3>
         </div>
+        <div className="mt-6">
+          <UserTables />
+        </div>
+      </main>
     </DefaultLayout>
-  )
-}
+  );
+};
 
-export default StudentHome
+export default StudentHome;

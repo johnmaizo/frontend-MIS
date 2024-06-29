@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import CardDataStats from "../../../components/CardDataStats";
 import ChartOne from "../../../components/Charts/ChartOne";
 import ChartThree from "../../../components/Charts/ChartThree";
@@ -6,31 +5,9 @@ import ChartTwo from "../../../components/Charts/ChartTwo";
 import ChatCard from "../../../components/Chat/ChatCard";
 import TableOne from "../../../components/Tables/TableOne";
 import DefaultLayout from "../../layout/DefaultLayout";
-
-import { fetchAllUsers } from "../../../axios/services/admin/adminService";
+import UserTables from "../../../components/api/UserTables";
 
 const AdminHome = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchData = useMemo(
-    () => async () => {
-      try {
-        const allUsers = await fetchAllUsers();
-        setUsers(allUsers);
-      } catch (err) {
-        setError("Failed to fetch users: ", err);
-      }
-      setLoading(false);
-    },
-    [],
-  );
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -120,76 +97,8 @@ const AdminHome = () => {
         </CardDataStats>
       </div>
 
-      <div className="mt-7 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h3 className="text-xl font-bold">GWAPO KO</h3>
-
-        {loading ? (
-          <div>Loading...</div>
-        ) : users.length > 0 ? (
-          <>
-            <p>Here are the madafaking users: </p>
-            <div className="border-gray-200 dark:border-gray-700 mt-3 overflow-x-auto rounded-lg border">
-              <table className="divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 min-w-full divide-y-2 bg-white text-sm">
-                <thead className="ltr:text-left rtl:text-right">
-                  <tr>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      ID
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Title
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Name
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Role
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Email
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Date Created
-                    </th>
-                    <th className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                      Verified
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-gray-200 dark:divide-gray-700 divide-y text-center">
-                  {users.map((user, index) => (
-                    <tr key={index}>
-                      <td className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                        {user.id}
-                      </td>
-                      <td className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                        {user.title}
-                      </td>
-                      <td className="text-gray-900 whitespace-nowrap px-4 py-2 font-medium dark:text-white">
-                        {user.firstName} {user.lastName}
-                      </td>
-                      <td className="text-gray-700 dark:text-gray-200 whitespace-nowrap px-4 py-2">
-                        {user.role}
-                      </td>
-                      <td className="text-gray-700 dark:text-gray-200 whitespace-nowrap px-4 py-2">
-                        {user.email}
-                      </td>
-                      <td className="text-gray-700 dark:text-gray-200 whitespace-nowrap px-4 py-2">
-                        {new Date(user.created).toDateString()} -{" "}
-                        {new Date(user.created).toLocaleTimeString()}
-                      </td>
-                      <td className="text-gray-700 dark:text-gray-200 whitespace-nowrap px-4 py-2">
-                        {user.isVerified ? "Yes" : "No"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        ) : (
-          <div>No users found</div>
-        )}
+      <div className="mt-8">
+        <UserTables />
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">

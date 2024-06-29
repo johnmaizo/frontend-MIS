@@ -15,7 +15,7 @@ const UserTables = () => {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
-          setError("Failed to fetch users: ", err);
+          setError("Failed to fetch users");
         }
       }
       setLoading(false);

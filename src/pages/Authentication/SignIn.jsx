@@ -294,7 +294,7 @@ const SignIn = () => {
 
                       <button
                         type="submit"
-                        className={`inline-flex w-full items-center justify-center rounded-lg border border-primary p-3 text-xl text-white transition hover:bg-opacity-90 ${isLoading ? "bg-[#505456] hover:bg-opacity-100" : "bg-primary"} gap-2`}
+                        className={`inline-flex w-full items-center justify-center rounded-lg border border-primary p-3 text-xl text-white transition hover:bg-opacity-90 ${isLoading ? "bg-[#505456] hover:!bg-opacity-100" : "bg-primary"} gap-2`}
                         disabled={isLoading}>
                         {isLoading ? "Please wait..." : "Login"}
                         {isLoading && (

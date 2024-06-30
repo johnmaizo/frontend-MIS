@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:4000'; // Set your backend API base URL
+axios.defaults.baseURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 axios.defaults.withCredentials = true; // Include cookies in requests
 
 axios.interceptors.request.use(config => {
@@ -10,3 +10,5 @@ axios.interceptors.request.use(config => {
     }
     return config;
 });
+
+export default axios;

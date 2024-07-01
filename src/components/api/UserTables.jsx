@@ -34,96 +34,104 @@ const UserTables = () => {
           All Users from Database
         </h4>
         <div className="rounded-sm border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
-          {loading ? (
-            <p className="py-5 text-center text-2xl font-semibold">
-              Loading...
-            </p>
-          ) : error ? (
-            <p className="py-5 text-center text-2xl font-semibold text-red-500">
-              Error: {error}
-            </p>
-          ) : users.length > 0 ? (
-            <div className="max-w-full overflow-x-auto">
-              <table className="w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                    <th className="px-4 py-4 pl-7 font-medium text-black dark:text-white">
-                      ID
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Title
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Name
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Role
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Email
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Date Created
-                    </th>
-                    <th className="px-4 py-4 font-medium text-black dark:text-white">
-                      Verified?
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user, index) => (
-                    <tr
-                      key={index}
-                      className="divide-y-2 divide-stroke dark:divide-strokedark"
-                    >
-                      <td className="px-8 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">{user.id}</p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {user.title}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {user.firstName} {user.lastName}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {user.role}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {user.email}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {new Date(user.created).toDateString()} -{" "}
-                          {new Date(user.created).toLocaleTimeString()}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p
-                          className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
-                            user.isVerified
-                              ? "bg-success text-success"
-                              : "bg-danger text-danger"
-                          }`}
-                        >
-                          {user.isVerified ? "Yes" : "No"}
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div>No users found</div>
-          )}
+          <div className="max-w-full overflow-x-auto">
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="px-4 py-4 pl-7 font-medium text-black dark:text-white">
+                    ID
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Title
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Name
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Role
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Email
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Date Created
+                  </th>
+                  <th className="px-4 py-4 font-medium text-black dark:text-white">
+                    Verified?
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody
+                className={`relative divide-y divide-stroke dark:divide-strokedark ${error || loading ? "h-[5.5em]" : ""}`}
+              >
+                {loading ? (
+                  <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
+                    <span className="h-5 w-5 animate-spin rounded-full border-4 border-solid border-[#3b82f6] border-t-transparent"></span>
+                    Loading...
+                  </p>
+                ) : error ? (
+                  <p className="absolute left-[50%] top-[0.4em] translate-x-[-50%] py-5 text-2xl font-[500] text-red-500">
+                    Error: {error}
+                  </p>
+                ) : users.length > 0 ? (
+                  <>
+                    {users.map((user, index) => (
+                      <tr
+                        key={index}
+                        className="divide-stroke dark:divide-strokedark"
+                      >
+                        <td className="px-8 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {user.id}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {user.title}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {user.firstName} {user.lastName}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {user.role}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {user.email}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p className="text-black dark:text-white">
+                            {new Date(user.created).toDateString()} -{" "}
+                            {new Date(user.created).toLocaleTimeString()}
+                          </p>
+                        </td>
+                        <td className="px-4 py-2 dark:border-strokedark">
+                          <p
+                            className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
+                              user.isVerified
+                                ? "bg-success text-success"
+                                : "bg-danger text-danger"
+                            }`}
+                          >
+                            {user.isVerified ? "Yes" : "No"}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <div>No users found</div>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>

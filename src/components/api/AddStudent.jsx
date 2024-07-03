@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const AddStudent = () => {
   const {
@@ -12,9 +13,12 @@ const AddStudent = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [gender, setGender] = useState("");
 
+  const [gender, setGender] = useState("");
+  const [civilStat, setCivilStat] = useState("");
   const [isAcrStudent, setIsAcrStudent] = useState(false);
+
+  const [isOptionSelected, setIsOptionSelected] = useState(false);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -27,10 +31,19 @@ const AddStudent = () => {
 
     setError("");
     try {
-      const response = await axios.post(
-        "/students/add-student",
-        transformedData,
+      const response = await toast.promise(
+        axios.post("/students/add-student", transformedData),
+        {
+          loading: "Adding Student...",
+          success: "Student Added successfully!",
+          error: "Failed to add student.",
+        },
+        {
+          position: "bottom-right",
+          duration: 5000,
+        },
       );
+
       if (response.data) {
         setSuccess(true);
       }
@@ -50,6 +63,10 @@ const AddStudent = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
+        setCivilStat("");
+        setGender("");
+        setIsAcrStudent(false);
+        setIsOptionSelected(false);
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -61,7 +78,11 @@ const AddStudent = () => {
   const validateBirthDate = (value) => {
     const birthYear = new Date(value).getFullYear();
     const currentYear = new Date().getFullYear();
-    return birthYear >= 1900 && birthYear < currentYear;
+    return (
+      birthYear >= 1900 &&
+      birthYear < currentYear &&
+      birthYear <= currentYear - 10
+    ); // which is 13 years old
   };
 
   useEffect(() => {
@@ -77,14 +98,12 @@ const AddStudent = () => {
     }
   }, [errors]);
 
-  const [isOptionSelected, setIsOptionSelected] = useState(false);
-
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
           <h3 className="text-2xl font-medium text-black dark:text-white">
-            Add Student
+            Add Student Information
           </h3>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -106,10 +125,8 @@ const AddStudent = () => {
                   disabled={success}
                 />
 
-                {errors.firstName && (
-                  <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                    *{errors.firstName.message}
-                  </span>
+                {errors.firstName?.type === "required" && (
+                  <ErrorMessage>*{errors.firstName.message}</ErrorMessage>
                 )}
               </div>
 
@@ -138,34 +155,13 @@ const AddStudent = () => {
                   })}
                   disabled={success}
                 />
-                {errors.lastName && (
-                  <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                    *{errors.lastName.message}
-                  </span>
+                {errors.lastName?.type === "required" && (
+                  <ErrorMessage>*{errors.lastName.message}</ErrorMessage>
                 )}
               </div>
             </div>
 
             <div className="mb-4.5 flex flex-col justify-between gap-6 xl:flex-row">
-              {/* <div className="mb-4.5 w-full">
-                <label className="mb-2.5 block text-black dark:text-white">
-                  Gender
-                </label>
-                <input
-                  type="text"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  {...register("gender", {
-                    required: { value: true, message: "Gender is required" },
-                  })}
-                  disabled={success}
-                />
-                {errors.gender && (
-                  <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                    *{errors.gender.message}
-                  </span>
-                )}
-              </div> */}
-
               <div className="w-full">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Gender
@@ -176,8 +172,12 @@ const AddStudent = () => {
                   })}
                   onChange={(e) => setGender(e.target.value)}
                   value={gender}
-                  className={`hover:cursor-pointer relative z-20 w-full !p-[0.85em] rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-                    isOptionSelected ? "text-black dark:text-white" : ""
+                  className={`relative z-20 w-full rounded border border-stroke bg-transparent !p-[0.85em] px-5 py-3 outline-none transition hover:cursor-pointer focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+                    isOptionSelected
+                      ? "text-black dark:text-white"
+                      : success
+                        ? "hover:cursor-auto"
+                        : ""
                   }`}
                   disabled={success}
                 >
@@ -205,10 +205,8 @@ const AddStudent = () => {
                     Other
                   </option>
                 </select>
-                {errors.gender && (
-                  <span className="mt-2 inline-block font-semibold text-red-600">
-                    {errors.gender.message}
-                  </span>
+                {errors.gender?.type === "required" && (
+                  <ErrorMessage>*{errors.gender.message}</ErrorMessage>
                 )}
               </div>
 
@@ -216,21 +214,71 @@ const AddStudent = () => {
                 <label className="mb-2.5 block text-black dark:text-white">
                   Civil Status
                 </label>
-                <input
-                  type="text"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                <select
                   {...register("civilStatus", {
                     required: {
                       value: true,
                       message: "Civil status is required",
                     },
                   })}
+                  onChange={(e) => setCivilStat(e.target.value)}
+                  value={civilStat}
+                  className={`relative z-20 w-full rounded border border-stroke bg-transparent !p-[0.85em] px-5 py-3 outline-none transition hover:cursor-pointer focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+                    isOptionSelected
+                      ? "text-black dark:text-white"
+                      : success
+                        ? "hover:cursor-auto"
+                        : ""
+                  }`}
                   disabled={success}
-                />
-                {errors.civilStatus && (
-                  <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                    *{errors.civilStatus.message}
-                  </span>
+                >
+                  <option
+                    value=""
+                    disabled
+                    className="text-body dark:text-bodydark"
+                    selected
+                  >
+                    Select
+                  </option>
+                  <option
+                    value="Single"
+                    className="text-body dark:text-bodydark"
+                  >
+                    Single
+                  </option>
+                  <option
+                    value="In relationship"
+                    className="text-body dark:text-bodydark"
+                  >
+                    In relationship
+                  </option>
+                  <option
+                    value="Married"
+                    className="text-body dark:text-bodydark"
+                  >
+                    Married
+                  </option>
+                  <option
+                    value="Separated"
+                    className="text-body dark:text-bodydark"
+                  >
+                    Separated
+                  </option>
+                  <option
+                    value="Divorced"
+                    className="text-body dark:text-bodydark"
+                  >
+                    Divorced
+                  </option>
+                  <option
+                    value="Widowed"
+                    className="text-body dark:text-bodydark"
+                  >
+                    Widowed
+                  </option>
+                </select>
+                {errors.civilStatus?.type === "required" && (
+                  <ErrorMessage>*{errors.civilStatus.message}</ErrorMessage>
                 )}
               </div>
 
@@ -249,7 +297,7 @@ const AddStudent = () => {
                     validate: {
                       validYear: (value) =>
                         validateBirthDate(value) ||
-                        "Invalid birth date. Please enter a valid year between 1900 and the current year.",
+                        `Invalid birth date. Please enter a valid year between 1900 and ${new Date().getFullYear() - 10}.`,
                     },
                   })}
                   disabled={success}
@@ -274,10 +322,8 @@ const AddStudent = () => {
                 })}
                 disabled={success}
               />
-              {errors.birthPlace && (
-                <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                  *{errors.birthPlace.message}
-                </span>
+              {errors.birthPlace?.type === "required" && (
+                <ErrorMessage>*{errors.birthPlace.message}</ErrorMessage>
               )}
             </div>
 
@@ -293,10 +339,8 @@ const AddStudent = () => {
                 })}
                 disabled={success}
               />
-              {errors.religion && (
-                <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                  *{errors.religion.message}
-                </span>
+              {errors.religion?.type === "required" && (
+                <ErrorMessage>*{errors.religion.message}</ErrorMessage>
               )}
             </div>
 
@@ -312,10 +356,8 @@ const AddStudent = () => {
                 })}
                 disabled={success}
               />
-              {errors.citizenship && (
-                <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                  *{errors.citizenship.message}
-                </span>
+              {errors.citizenship?.type === "required" && (
+                <ErrorMessage>*{errors.citizenship.message}</ErrorMessage>
               )}
             </div>
 
@@ -331,10 +373,8 @@ const AddStudent = () => {
                 })}
                 disabled={success}
               />
-              {errors.country && (
-                <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                  *{errors.country.message}
-                </span>
+              {errors.country?.type === "required" && (
+                <ErrorMessage>*{errors.country.message}</ErrorMessage>
               )}
             </div>
 
@@ -349,8 +389,12 @@ const AddStudent = () => {
                     reset({ ACR: "" });
                     setIsOptionSelected(true);
                   }}
-                  className={` hover:cursor-pointer relative z-20 rounded border border-stroke bg-transparent px-2 py-2 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
-                    isOptionSelected ? "text-black dark:text-white" : ""
+                  className={`relative z-20 rounded border border-stroke bg-transparent px-2 py-2 outline-none transition hover:cursor-pointer focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+                    isOptionSelected
+                      ? "text-black dark:text-white"
+                      : success
+                        ? "hover:cursor-auto"
+                        : ""
                   }`}
                   value={isAcrStudent ? "Yes" : "No"}
                   disabled={success}
@@ -376,10 +420,8 @@ const AddStudent = () => {
                     })}
                     disabled={success}
                   />
-                  {errors.ACR && (
-                    <span className="mt-2 inline-block text-sm font-medium text-red-600">
-                      *{errors.ACR.message}
-                    </span>
+                  {errors.ACR?.type === "required" && (
+                    <ErrorMessage>*{errors.ACR.message}</ErrorMessage>
                   )}
                 </div>
               )}
@@ -387,25 +429,30 @@ const AddStudent = () => {
 
             <button
               type="submit"
-              className={`flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                loading || success
-                  ? "cursor-not-allowed bg-[#505456] !bg-opacity-100"
-                  : ""
+              className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                loading || success ? "bg-[#505456] hover:!bg-opacity-100" : ""
               }`}
               disabled={loading || success}
             >
-              {loading ? "Loading..." : "Add Student"}
+              {loading && (
+                <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
+              )}
+              {loading ? "Adding Student..." : success ? "Student Added!" : "Add Student"}
             </button>
           </div>
         </form>
-        {error && <div className="text-center text-red-600">{error}</div>}
-        {success && (
-          <div className="text-center text-green-600">
-            Student added successfully!
-          </div>
-        )}
+        {error && <div className="text-center text-red-600 mb-5">{error}</div>}
       </div>
     </>
+  );
+};
+
+// eslint-disable-next-line react/prop-types
+const ErrorMessage = ({ children }) => {
+  return (
+    <span className="mt-2 inline-block text-sm font-medium text-red-600">
+      {children}
+    </span>
   );
 };
 

@@ -11,6 +11,9 @@ import AdminHome from "./subPages/AdminHome";
 import FormElements from "../Sundoganan/Form/FormElements";
 import FormLayout from "../Sundoganan/Form/FormLayout";
 
+import AddStudentPage from "./subPages/AddStudentPage";
+import StudentTablePage from "./subPages/StudentTablePage";
+
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -23,6 +26,39 @@ const AdminRoutes = () => {
           </>
         }
       />
+
+      <Route
+        path="/students/add-student"
+        element={
+          <>
+            <PageTitle title="Add Student | MIS - Benedicto College" />
+            <AddStudentPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/students/view-student"
+        element={
+          <>
+            <PageTitle title="Add Student | MIS - Benedicto College" />
+            <StudentTablePage />
+          </>
+        }
+      />
+
+
+
+
+
+
+
+
+
+
+
+      {/* ! Mga way labot */}
+
       <Route
         path="/admin/calendar"
         element={
@@ -32,6 +68,7 @@ const AdminRoutes = () => {
           </>
         }
       />
+
       <Route
         path="/admin/profile"
         element={
@@ -51,6 +88,7 @@ const AdminRoutes = () => {
           </>
         }
       />
+
       <Route
         path="/settings"
         element={
@@ -60,6 +98,7 @@ const AdminRoutes = () => {
           </>
         }
       />
+
       <Route
         path="/chart"
         element={
@@ -89,7 +128,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/forms/form-elements"
         element={
@@ -99,7 +138,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/forms/form-layout"
         element={

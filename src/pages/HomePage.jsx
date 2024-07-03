@@ -1,21 +1,20 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/context/AuthContext";
 import Loader from "../components/styles/Loader";
 
 const HomePage = () => {
+  const currentpath = useLocation().pathname;
   const { user, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const [redirecting, setRedirecting] = useState(false);
 
   useEffect(() => {
     if (user) {
+      navigate(currentpath);
       setRedirecting(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000); // Adjust the delay as needed
     }
-  }, [user, navigate]);
+  }, [user, navigate, currentpath]);
 
   if (loading) {
     return <Loader />;

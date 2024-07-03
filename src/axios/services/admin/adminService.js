@@ -2,13 +2,6 @@ import axios from "axios";
 
 // Fetch all users (Admin only)
 export const fetchAllUsers = async () => {
-  // try {
-  //   const response = await axios.get("/accounts");
-  //   return response.data;
-  // } catch (error) {
-  //    console.error("Error fetching all users:", error);
-  //   throw error;
-  // }
   const response = await axios.get("/accounts");
   return response.data;
 };

@@ -1,5 +1,5 @@
-import { Suspense, useContext, useEffect } from "react";
-import { Route, Routes, useLocation, Navigate } from "react-router-dom";
+import { Suspense, useContext } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import PageTitle from "./components/PageTitle";
 import SignIn from "./pages/Authentication/SignIn";
@@ -17,17 +17,13 @@ import { Toaster } from "react-hot-toast";
 // import FormLayout from "./pages/Sundoganan/Form/FormLayout";
 
 function App() {
-  // const {pathname} = useLocation();
-
   const { sessionExpired, user } = useContext(AuthContext);
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, [pathname]);
 
   return (
     <>
       {sessionExpired && <SessionExpired />}
       <Toaster />
+
       <Suspense fallback={<Loader />}>
         {user === null && <DefaultRoute />}
 

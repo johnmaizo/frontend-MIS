@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { fetchAllUsers } from "../../axios/services/admin/adminService";
+import axios from "axios";
 
 const UserTables = () => {
   const [users, setUsers] = useState([]);
@@ -9,8 +9,8 @@ const UserTables = () => {
   const fetchData = useMemo(
     () => async () => {
       try {
-        const allUsers = await fetchAllUsers();
-        setUsers(allUsers);
+        const response = await axios.get("/accounts");
+        setUsers(response.data);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
@@ -65,15 +65,23 @@ const UserTables = () => {
               <tbody
                 className={`relative divide-y divide-stroke dark:divide-strokedark ${error || loading ? "h-[5.5em]" : ""}`}
               >
-                {loading ? (
-                  <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
-                    <span className="h-5 w-5 animate-spin rounded-full border-4 border-solid border-[#3b82f6] border-t-transparent"></span>
-                    Loading...
-                  </p>
-                ) : error ? (
-                  <p className="absolute left-[50%] top-[0.4em] translate-x-[-50%] py-5 text-2xl font-[500] text-red-500">
-                    Error: {error}
-                  </p>
+                {loading || error ? (
+                  <tr className="h-[5.5em]">
+                    <td>
+                      {loading ? (
+                        <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
+                          <span className="h-5 w-5 animate-spin rounded-full border-4 border-solid border-[#3b82f6] border-t-transparent"></span>
+                          Loading...
+                        </p>
+                      ) : (
+                        error && (
+                          <p className="absolute left-[50%] top-[0.4em] translate-x-[-50%] py-5 text-2xl font-[500] text-red-500">
+                            Error: {error}
+                          </p>
+                        )
+                      )}
+                    </td>
+                  </tr>
                 ) : users.length > 0 ? (
                   <>
                     {users.map((user, index) => (
@@ -127,7 +135,13 @@ const UserTables = () => {
                     ))}
                   </>
                 ) : (
-                  <div>No users found</div>
+                  <tr className="h-[5.5em]">
+                    <td>
+                      <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
+                        No users found
+                      </p>
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

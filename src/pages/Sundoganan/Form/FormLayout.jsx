@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SelectGroupOne from '../../../components/Forms/SelectGroup/SelectGroupOne';
-import DefaultLayout from '../../../components/layout/DefaultLayout';
+// import DefaultLayout from '../../../components/layout/DefaultLayout';
+import DefaultLayout from '../../layout/DefaultLayout';
 const FormLayout = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Form Layout" />
 
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
-        <div className="flex flex-col gap-9">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
                 Contact Form
@@ -83,6 +81,11 @@ const FormLayout = () => {
               </div>
             </form>
           </div>
+
+      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
+        <div className="flex flex-col gap-9">
+          {/* <!-- Contact Form --> */}
+          
         </div>
 
         <div className="flex flex-col gap-9">

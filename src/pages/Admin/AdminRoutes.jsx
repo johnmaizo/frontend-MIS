@@ -8,8 +8,10 @@ import Buttons from "../Sundoganan/UiElements/Buttons";
 import Calendar from "../Sundoganan/Calendar";
 import Profile from "../Sundoganan/Profile";
 import AdminHome from "./subPages/AdminHome";
+import FormElements from "../Sundoganan/Form/FormElements";
+import FormLayout from "../Sundoganan/Form/FormLayout";
 
-const AdminDashboard = () => {
+const AdminRoutes = () => {
   return (
     <Routes>
       <Route
@@ -87,10 +89,30 @@ const AdminDashboard = () => {
           </>
         }
       />
+      
+      <Route
+        path="/forms/form-elements"
+        element={
+          <>
+            <PageTitle title="Form Elements | MIS - Benedicto College" />
+            <FormElements />
+          </>
+        }
+      />
+      
+      <Route
+        path="/forms/form-layout"
+        element={
+          <>
+            <PageTitle title="Form Layout | MIS - Benedicto College" />
+            <FormLayout />
+          </>
+        }
+      />
 
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };
 
-export default AdminDashboard;
+export default AdminRoutes;

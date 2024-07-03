@@ -4,14 +4,14 @@ import StudentHome from "./subPages/StudentHome";
 import Profile from "../Sundoganan/Profile";
 import Calendar from "../Sundoganan/Calendar";
 
-const StudentDashboard = () => {
+const StudentRoutes = () => {
   return (
     <Routes>
       <Route
         path="/"
         element={
           <>
-            <PageTitle title="Student Dashboard | GIATAY " />
+            <PageTitle title="Student Dashboard | MIS - Benedicto College " />
             <StudentHome />
           </>
         }
@@ -21,7 +21,7 @@ const StudentDashboard = () => {
         path="/student/profile"
         element={
           <>
-            <PageTitle title="Profile | GIATAY " />
+            <PageTitle title="Profile | MIS - Benedicto College " />
             <Profile />
           </>
         }
@@ -31,7 +31,7 @@ const StudentDashboard = () => {
         path="/student/calendar"
         element={
           <>
-            <PageTitle title="Calendar | GIATAY " />
+            <PageTitle title="Calendar | MIS - Benedicto College " />
             <Calendar />
           </>
         }
@@ -42,4 +42,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default StudentDashboard;
+export default StudentRoutes;

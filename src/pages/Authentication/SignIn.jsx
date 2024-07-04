@@ -10,6 +10,8 @@ import { EyeIconSignIn, LockIcon } from "../../components/Icons";
 const SignIn = () => {
   // const motto = 'Your education is our mission.';
   const motto = "Your tuition, is our mission.";
+  // const loginText = "Sign In to SIS - Benedicto College";
+  const loginText = "YAWA NGA MIS - LOG IN NAMO DIRI MGA GIATAY";
 
   const { user, login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
@@ -199,8 +201,7 @@ const SignIn = () => {
                 <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
                   {/* <span className="mb-1.5 block font-medium">Start for free</span> */}
                   <h2 className="text-2xl font-bold text-black sm:text-title-xl2">
-                    {/* Sign In to SIS - Benedicto College */}
-                    YAWA NGA MIS - LOG IN NAMO DIRI MGA GIATAY
+                    {loginText}
                   </h2>
                   <p className="my-5">
                     Welcome back! Please enter your details

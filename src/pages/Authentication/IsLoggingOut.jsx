@@ -17,13 +17,13 @@ const IsLoggingOut = () => {
         <div className="flex gap-4">
           <button
             onClick={handleLogout}
-            className="mt-4 w-full rounded-md bg-blue-600 p-2 text-white hover:underline hover:underline-offset-4"
+            className="mt-4 w-full rounded-md bg-blue-600 p-2 text-white hover:underline hover:underline-offset-4 focus:underline focus:underline-offset-4"
           >
             Log Out
           </button>
           <button
             onClick={() => setIsLoggingOut(false)}
-            className="mt-4 w-full rounded-md bg-red-600 p-2 text-white hover:underline hover:underline-offset-4"
+            className="mt-4 w-full rounded-md bg-red-600 p-2 text-white hover:underline hover:underline-offset-4 focus:underline focus:underline-offset-4"
           >
             Cancel
           </button>

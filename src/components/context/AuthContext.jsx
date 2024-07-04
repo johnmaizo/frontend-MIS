@@ -84,6 +84,7 @@ const AuthProvider = ({ children }) => {
         if (isSessionExpired) {
             toast.error('Session expired, please login again!');
             setSessionExpired(false);
+            setIsLoggingOut(false)
         }
         else {
             toast.success('Logged out successfully!');

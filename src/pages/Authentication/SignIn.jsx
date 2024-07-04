@@ -3,15 +3,13 @@ import BenedictoLogo from "../../assets/small.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../components/context/AuthContext";
 
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import { EyeIconSignIn, LockIcon } from "../../components/Icons";
 
 const SignIn = () => {
   // const motto = 'Your education is our mission.';
   const motto = "Your tuition, is our mission.";
-
-  const navigate = useNavigate();
 
   const { user, login } = useContext(AuthContext);
   const [email, setEmail] = useState("");

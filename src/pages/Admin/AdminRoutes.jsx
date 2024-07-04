@@ -1,5 +1,5 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../components/Essentials/PageTitle";
 import Tables from "../Sundoganan/Tables";
 import Settings from "../Sundoganan/Settings";
 import Chart from "../Sundoganan/Chart";

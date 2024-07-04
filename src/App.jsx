@@ -1,7 +1,7 @@
 import { Suspense, useContext } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 
-import PageTitle from "./components/PageTitle";
+import PageTitle from "./components/Essentials/PageTitle";
 import SignIn from "./pages/Authentication/SignIn";
 import SignUp from "./pages/Authentication/SignUp";
 import HomePage from "./pages/HomePage";

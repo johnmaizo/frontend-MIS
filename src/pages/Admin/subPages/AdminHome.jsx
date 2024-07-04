@@ -1,4 +1,4 @@
-import CardDataStats from "../../../components/CardDataStats";
+import CardDataStats from "../../../components/Essentials/CardDataStats";
 import ChartOne from "../../../components/Sundoganan/Charts/ChartOne";
 import ChartThree from "../../../components/Sundoganan/Charts/ChartThree";
 import ChartTwo from "../../../components/Sundoganan/Charts/ChartTwo";

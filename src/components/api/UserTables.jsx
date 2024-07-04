@@ -48,10 +48,10 @@ const UserTables = () => {
                     Name
                   </th>
                   <th className="px-4 py-4 font-medium text-black dark:text-white">
-                    Role
+                    Email
                   </th>
                   <th className="px-4 py-4 font-medium text-black dark:text-white">
-                    Email
+                    Role
                   </th>
                   <th className="px-4 py-4 font-medium text-black dark:text-white">
                     Date Created
@@ -106,12 +106,12 @@ const UserTables = () => {
                         </td>
                         <td className="px-4 py-2 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {user.role}
+                            {user.email}
                           </p>
                         </td>
                         <td className="px-4 py-2 dark:border-strokedark">
                           <p className="text-black dark:text-white">
-                            {user.email}
+                            {user.role}
                           </p>
                         </td>
                         <td className="px-4 py-2 dark:border-strokedark">
@@ -122,10 +122,10 @@ const UserTables = () => {
                         </td>
                         <td className="px-4 py-2 dark:border-strokedark">
                           <p
-                            className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
+                            className={`inline-flex rounded text-white px-3 py-1 text-sm font-medium ${
                               user.isVerified
-                                ? "bg-success text-success"
-                                : "bg-danger text-danger"
+                                ? "bg-success"
+                                : "bg-danger"
                             }`}
                           >
                             {user.isVerified ? "Yes" : "No"}

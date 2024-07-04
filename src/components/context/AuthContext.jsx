@@ -4,12 +4,23 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 import toast from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const handleLogout = () => {
+        setIsLoggingOut(false)
+        logout();
+        <Navigate to="/auth/signin" />
+    };
+
+    
     const [sessionExpired, setSessionExpired] = useState(false);
 
     useEffect(() => {
@@ -97,7 +108,7 @@ const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout, refreshToken, isAuthenticated, sessionExpired }}>
+        <AuthContext.Provider value={{ user, loading, login, logout, refreshToken, isAuthenticated, sessionExpired, isLoggingOut, setIsLoggingOut, handleLogout }}>
             {children}
         </AuthContext.Provider>
     );

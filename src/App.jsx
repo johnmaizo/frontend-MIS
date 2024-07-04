@@ -12,16 +12,15 @@ import Loader from "./components/styles/Loader";
 import AdminRoutes from "./pages/Admin/AdminRoutes";
 import StudentRoutes from "./pages/Student/StudentRoutes";
 import { Toaster } from "react-hot-toast";
-
-// import FormElements from "./pages/Sundoganan/Form/FormElements"
-// import FormLayout from "./pages/Sundoganan/Form/FormLayout";
+import IsLoggingOut from "./pages/Authentication/IsLoggingOut";
 
 function App() {
-  const { sessionExpired, user } = useContext(AuthContext);
+  const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
 
   return (
     <>
       {sessionExpired && <SessionExpired />}
+      {isLoggingOut && <IsLoggingOut/>}
       <Toaster />
 
       <Suspense fallback={<Loader />}>

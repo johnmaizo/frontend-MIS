@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import ProfileUser from "../../assets/images/profile-user.jpg";
 import { AuthContext } from "../context/AuthContext";
@@ -10,15 +10,7 @@ const DropdownUser = () => {
   const trigger = useRef(null);
   const dropdown = useRef(null);
 
-  const { logout, user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
+  const { user, setIsLoggingOut } = useContext(AuthContext);
 
   // close on click outside
   useEffect(() => {
@@ -48,27 +40,6 @@ const DropdownUser = () => {
 
   return (
     <>
-      {isLoggingOut && (
-        <div className="!fixed left-0 top-0 z-[100000000] grid h-screen w-screen place-content-center bg-black/50 backdrop-blur-sm">
-          <div className="mx-5 bg-white p-5">
-            <h2 className="text-2xl font-semibold">
-              Are you sure you want to log out?
-            </h2>
-            <p>You will be logged out of your account.</p>
-            <div className="flex justify-center gap-10 pt-10 font-semibold text-black">
-              <button onClick={handleLogout} className="bg-red-400 p-3">
-                Log Out
-              </button>
-              <button
-                onClick={() => setIsLoggingOut(false)}
-                className="bg-blue-400 p-3"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       <div className="relative">
         <Link
           ref={trigger}

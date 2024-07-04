@@ -41,7 +41,7 @@ const AdminRoutes = () => {
         path="/students/view-student"
         element={
           <>
-            <PageTitle title="Add Student | MIS - Benedicto College" />
+            <PageTitle title="View Student | MIS - Benedicto College" />
             <StudentTablePage />
           </>
         }

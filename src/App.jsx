@@ -40,7 +40,7 @@ const DefaultRoute = () => {
         path="/"
         element={
           <>
-            <PageTitle title="Home Page oten - MIS" />
+            <PageTitle title="Benedicto College" />
             <HomePage />
           </>
         }

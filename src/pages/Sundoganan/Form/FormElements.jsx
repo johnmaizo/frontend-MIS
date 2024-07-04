@@ -1,19 +1,19 @@
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb";
-import CheckboxFive from "../../../components/Checkboxes/CheckboxFive";
-import CheckboxFour from "../../../components/Checkboxes/CheckboxFour";
-import CheckboxOne from "../../../components/Checkboxes/CheckboxOne";
-import CheckboxThree from "../../../components/Checkboxes/CheckboxThree";
-import CheckboxTwo from "../../../components/Checkboxes/CheckboxTwo";
+import Breadcrumb from "../../../components/Sundoganan/Breadcrumbs/Breadcrumb";
+import CheckboxFive from "../../../components/Sundoganan/Checkboxes/CheckboxFive";
+import CheckboxFour from "../../../components/Sundoganan/Checkboxes/CheckboxFour";
+import CheckboxOne from "../../../components/Sundoganan/Checkboxes/CheckboxOne";
+import CheckboxThree from "../../../components/Sundoganan/Checkboxes/CheckboxThree";
+import CheckboxTwo from "../../../components/Sundoganan/Checkboxes/CheckboxTwo";
 import SwitcherFour from "../../../components/Switchers/SwitcherFour";
 import SwitcherOne from "../../../components/Switchers/SwitcherOne";
 import SwitcherThree from "../../../components/Switchers/SwitcherThree";
 import SwitcherTwo from "../../../components/Switchers/SwitcherTwo";
 // import DefaultLayout from "../../../components/layout/DefaultLayout";
 import DefaultLayout from "../../layout/DefaultLayout";
-import DatePickerOne from "../../../components/Forms/DatePicker/DatePickerOne";
-import DatePickerTwo from "../../../components/Forms/DatePicker/DatePickerTwo";
-import SelectGroupTwo from "../../../components/Forms/SelectGroup/SelectGroupTwo";
-import MultiSelect from "../../../components/Forms/MultiSelect";
+import DatePickerOne from "../../../components/Sundoganan/Forms/DatePicker/DatePickerOne";
+import DatePickerTwo from "../../../components/Sundoganan/Forms/DatePicker/DatePickerTwo";
+import SelectGroupTwo from "../../../components/Sundoganan/Forms/SelectGroup/SelectGroupTwo";
+import MultiSelect from "../../../components/Sundoganan/Forms/MultiSelect";
 
 const FormElements = () => {
   return (

@@ -1,7 +1,7 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
-import ChartTwo from '../../components/Charts/ChartTwo';
+import Breadcrumb from '../../components/Sundoganan/Breadcrumbs/Breadcrumb';
+import ChartOne from '../../components/Sundoganan/Charts/ChartOne';
+import ChartThree from '../../components/Sundoganan/Charts/ChartThree';
+import ChartTwo from '../../components/Sundoganan/Charts/ChartTwo';
 import DefaultLayout from '../layout/DefaultLayout'
 const Chart = () => {
   return (

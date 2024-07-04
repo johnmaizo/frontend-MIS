@@ -1,4 +1,4 @@
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Sundoganan/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 const Alerts = () => {
   return (

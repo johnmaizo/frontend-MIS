@@ -1,4 +1,4 @@
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../components/Sundoganan/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../layout/DefaultLayout'
 import CoverOne from '../../images/cover/cover-01.png';
 import userSix from '../../images/user/user-06.png';

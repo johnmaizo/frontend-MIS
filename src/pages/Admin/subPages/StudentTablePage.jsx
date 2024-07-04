@@ -1,4 +1,4 @@
-import Breadcrumb from "../../../components/Breadcrumbs/Breadcrumb"
+import Breadcrumb from "../../../components/Sundoganan/Breadcrumbs/Breadcrumb"
 import StudentTables from "../../../components/api/StudentTables"
 import DefaultLayout from "../../layout/DefaultLayout"
 

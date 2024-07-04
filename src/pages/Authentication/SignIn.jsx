@@ -300,10 +300,10 @@ const SignIn = () => {
                         className={`inline-flex w-full items-center justify-center rounded-lg border border-primary p-3 text-xl text-white transition hover:bg-opacity-90 ${isLoading ? "bg-[#505456] hover:!bg-opacity-100" : "bg-primary"} gap-2`}
                         disabled={isLoading}
                       >
-                        {isLoading ? "Please wait..." : "Login"}
                         {isLoading && (
                           <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                         )}
+                        {isLoading ? "Please wait..." : "Login"}
                       </button>
                     </div>
 

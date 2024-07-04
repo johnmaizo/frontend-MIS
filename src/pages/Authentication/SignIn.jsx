@@ -1,11 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BenedictoLogo from "../../assets/small.png";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../components/context/AuthContext";
 
 import toast from "react-hot-toast";
 
-import { EyeIconSignIn, LockIcon } from "../../components/Icons";
+import { EyeCancel, EyeIconSignIn } from "../../components/Icons";
 
 const SignIn = () => {
   // const motto = 'Your education is our mission.';
@@ -273,18 +273,13 @@ const SignIn = () => {
                             onClick={toggleShowPassword}
                             className="p-2"
                           >
-                            {showPassword ? <EyeIconSignIn /> : <LockIcon />}
+                            {showPassword ? <EyeIconSignIn /> : <EyeCancel />}
                           </button>
                         </span>
                       </div>
                     </div>
 
                     <div className="mb-5">
-                      {/* <input
-                    type="submit"
-                    value="Sign In"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                  /> */}
                       {success && (
                         <p className="pb-4 font-semibold text-green-700">
                           Login successful! Redirecting...
@@ -308,7 +303,7 @@ const SignIn = () => {
                       </button>
                     </div>
 
-                    <div className="mt-6 text-center">
+                    {/* <div className="mt-6 text-center">
                       <p>
                         Don’t have any account?{" "}
                         <Link
@@ -318,7 +313,7 @@ const SignIn = () => {
                           Sign Up
                         </Link>
                       </p>
-                    </div>
+                    </div> */}
                   </form>
                 </div>
               </div>

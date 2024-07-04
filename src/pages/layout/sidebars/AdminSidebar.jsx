@@ -124,11 +124,11 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                         <NavLink
                           to="/students/add-student"
                           className={({ isActive }) =>
-                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium duration-300 ease-in-out hover:underline hover:underline-offset-4 dark:text-bodydark1 ${
+                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                               (pathname === "/students/add-student" ||
                                 pathname.includes("add-student")) &&
-                              "!inline-block !underline !underline-offset-4"
-                            }` + (isActive && "dark:!text-white")
+                              "!underline "
+                            }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
                           Add Student
@@ -138,11 +138,11 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                         <NavLink
                           to="/students/view-student"
                           className={({ isActive }) =>
-                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium duration-300 ease-in-out hover:underline hover:underline-offset-4 dark:text-bodydark1 ${
+                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                               (pathname === "/students/view-student" ||
                                 pathname.includes("view-student")) &&
-                              "!inline-block !underline !underline-offset-4"
-                            }` + (isActive && "dark:!text-white")
+                              "!underline "
+                            }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
                           View Student

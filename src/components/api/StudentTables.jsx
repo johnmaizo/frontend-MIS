@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { DeleteIcon, DownloadIcon, EyeIcon } from "../Icons";
-
+import { DeleteIcon, DownloadIcon, EyeIcon, ReactivateIcon } from "../Icons";
 
 const StudentTables = () => {
   const [students, setStudents] = useState([]);
@@ -94,8 +93,11 @@ const StudentTables = () => {
                         </p>
                       </td>
                       <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {student.firstName} {student.lastName}
+                        <p className="w-40 truncate text-black dark:text-white">
+                          {student.firstName}{" "}
+                          {student.middleName?.charAt(0).toUpperCase()}
+                          {student.middleName !== null && "."}{" "}
+                          {student.lastName}
                         </p>
                       </td>
                       <td className="px-4 py-2 dark:border-strokedark">
@@ -132,9 +134,15 @@ const StudentTables = () => {
                           >
                             <EyeIcon />
                           </button>
-                          <button className="hover:text-primary">
-                            <DeleteIcon />
-                          </button>
+                          {student.isActive ? (
+                            <button className="hover:text-primary">
+                              <DeleteIcon />
+                            </button>
+                          ) : (
+                            <button className="hover:text-primary">
+                              <ReactivateIcon />
+                            </button>
+                          )}
                           <button className="hover:text-primary">
                             <DownloadIcon />
                           </button>

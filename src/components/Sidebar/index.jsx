@@ -59,9 +59,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       ref={sidebar}
-      // className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 !text-black ${
-      //   sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      // }`}>
       className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
@@ -81,7 +78,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           className="block lg:hidden"
         >
           <svg
-            className="fill-current"
+            className="fill-current dark:text-white "
             width="20"
             height="18"
             viewBox="0 0 20 18"

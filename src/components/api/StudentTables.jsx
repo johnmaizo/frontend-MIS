@@ -1,9 +1,34 @@
+/* eslint-disable react/prop-types */
+import {
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+} from "@tanstack/react-table";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { DeleteIcon, DownloadIcon, EyeIcon, ReactivateIcon } from "../Icons";
+
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import SmallLoader from "../styles/SmallLoader";
+import { DeleteIcon, EyeIcon, ReactivateIcon } from "../Icons";
 
 const StudentTables = () => {
   const [students, setStudents] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -26,142 +51,235 @@ const StudentTables = () => {
     fetchData();
   }, []);
 
+  const columns = [
+    {
+      accessorKey: "student_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1"
+          >
+            Student ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+      id: "fullName",
+      header: "Name",
+    },
+    {
+      accessorKey: "gender",
+      header: "Gender",
+    },
+    {
+      accessorKey: "civilStatus",
+      header: "Civil Status",
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return cell.getValue().toString().split("T")[0];
+      },
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-danger"
+            }`}
+          >
+            {cell.getValue() ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
+
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.student_id} ${row.isActive}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (  
+          <div className=" flex items-center space-x-1.5">
+            <button className="hover:text-primary p-1" aria-label="View Student">
+              <EyeIcon />
+            </button>
+            {row.getValue("isActive") ? (
+              <button className="hover:text-primary p-1" aria-label="Delete Student">
+                <DeleteIcon />
+              </button>
+            ) : (
+              <button className="hover:text-primary p-1" aria-label="Reactivate Student">
+                <ReactivateIcon />
+              </button>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <>
-      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h3>Lorem, ipsum.</h3>
+      <DataTable
+        columns={columns}
+        data={students}
+        loading={loading}
+        error={error}
+      />
+    </>
+  );
+};
+
+const DataTable = ({ data, columns, loading, error }) => {
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
+  });
+
+  return (
+    <>
+      <div className="flex items-center gap-5 py-4">
+        <Input
+          placeholder="Search by ID ..."
+          value={table.getColumn("student_id")?.getFilterValue() ?? ""}
+          onChange={(event) =>
+            table.getColumn("student_id")?.setFilterValue(event.target.value)
+          }
+          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+        />
+
+        <Input
+          placeholder="Search by Name ..."
+          value={table.getColumn("fullName")?.getFilterValue() ?? ""}
+          onChange={(event) =>
+            table.getColumn("fullName")?.setFilterValue(event.target.value)
+          }
+          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+        />
       </div>
-      <div className="rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+
+      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="max-w-full overflow-x-auto">
-          <table className="w-full table-auto border border-stroke dark:border-strokedark">
-            <thead>
-              <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                <th className="px-4 py-4 pl-7 font-medium text-black dark:text-white">
-                  Student ID
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Name
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Gender
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Civil Status
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Date Created
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Status
-                </th>
-                <th className="px-4 py-4 font-medium text-black dark:text-white">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody
-              className={`relative divide-y divide-stroke dark:divide-strokedark ${error || loading ? "h-[5.5em]" : ""}`}
+          <Table className="border border-stroke dark:border-strokedark">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="border-none bg-gray-2 dark:bg-meta-4"
+                >
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className="h-[0.5em] !border-none px-4 py-4 text-[1rem] font-medium text-black dark:text-white"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody
+              className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading ? "relative h-[7.5em]" : ""}`}
             >
-              {loading || error ? (
-                <tr className="h-[5.5em]">
-                  <td>
-                    {loading ? (
-                      <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
-                        <span className="h-5 w-5 animate-spin rounded-full border-4 border-solid border-[#3b82f6] border-t-transparent"></span>
-                        Loading...
-                      </p>
-                    ) : (
-                      error && (
-                        <p className="absolute left-[50%] top-[0.4em] translate-x-[-50%] py-5 text-2xl font-[500] text-red-500">
-                          Error: {error}
-                        </p>
-                      )
-                    )}
-                  </td>
-                </tr>
-              ) : students.length > 0 ? (
-                <>
-                  {students.map((student, index) => (
-                    <tr
-                      key={index}
-                      className="divide-stroke dark:divide-strokedark"
-                    >
-                      <td className="px-8 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {student.student_id}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="w-40 truncate text-black dark:text-white">
-                          {student.firstName}{" "}
-                          {student.middleName?.charAt(0).toUpperCase()}
-                          {student.middleName !== null && "."}{" "}
-                          {student.lastName}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {student.gender}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {student.civilStatus}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p className="text-black dark:text-white">
-                          {new Date(student.createdAt).toLocaleDateString()} -{" "}
-                          {new Date(student.createdAt).toLocaleTimeString()}
-                        </p>
-                      </td>
-                      <td className="px-4 py-2 dark:border-strokedark">
-                        <p
-                          className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-                            student.isActive ? "bg-success" : "bg-danger"
-                          }`}
-                        >
-                          {student.isActive ? "Active" : "Inactive"}
-                        </p>
-                      </td>
-
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <div className="flex items-center space-x-3.5">
-                          <button
-                            className="hover:text-primary"
-                            aria-label="View Student"
-                          >
-                            <EyeIcon />
-                          </button>
-                          {student.isActive ? (
-                            <button className="hover:text-primary">
-                              <DeleteIcon />
-                            </button>
-                          ) : (
-                            <button className="hover:text-primary">
-                              <ReactivateIcon />
-                            </button>
-                          )}
-                          <button className="hover:text-primary">
-                            <DownloadIcon />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </>
+              {loading ? (
+                <TableRow className="border-none">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black dark:text-white"
+                  >
+                    <SmallLoader /> Loading...
+                  </TableCell>
+                </TableRow>
+              ) : error ? (
+                <TableRow className="border-none">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-red-500"
+                  >
+                    Error: {error}
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row, i) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className={`${i === 0 ? "border-none" : ""}`}
+                  >
+                    {row.getVisibleCells().map((cell, i) => (
+                      <TableCell
+                        key={cell.id}
+                        className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] text-black dark:border-strokedark dark:text-white`}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               ) : (
-                <tr className="h-[5.5em]">
-                  <td>
-                    <p className="absolute left-[50%] top-[0.4em] inline-flex translate-x-[-50%] items-center gap-2 py-5 text-2xl font-[500]">
-                      No students found
-                    </p>
-                  </td>
-                </tr>
+                <TableRow className="border-none">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
         </div>
       </div>
     </>

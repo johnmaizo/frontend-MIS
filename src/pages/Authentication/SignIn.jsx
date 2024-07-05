@@ -8,10 +8,10 @@ import toast from "react-hot-toast";
 import { EyeCancel, EyeIconSignIn } from "../../components/Icons";
 
 const SignIn = () => {
-  // const motto = 'Your education is our mission.';
-  const motto = "Your tuition, is our mission.";
-  // const loginText = "Sign In to SIS - Benedicto College";
-  const loginText = "YAWA NGA MIS - LOG IN NAMO DIRI MGA GIATAY";
+  const motto = 'Your education is our mission.';
+  // const motto = "Your tuition, is our mission.";
+  const loginText = "Sign in to SIS - Benedicto College";
+  // const loginText = "YAWA NGA MIS - LOG IN NAMO DIRI MGA GIATAY";
 
   const { user, login } = useContext(AuthContext);
   const [email, setEmail] = useState("");

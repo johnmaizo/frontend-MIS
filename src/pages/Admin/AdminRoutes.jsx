@@ -38,10 +38,10 @@ const AdminRoutes = () => {
       />
       
       <Route
-        path="/students/view-student"
+        path="/students/student-list"
         element={
           <>
-            <PageTitle title="View Student | MIS - Benedicto College" />
+            <PageTitle title="Student List | MIS - Benedicto College" />
             <StudentTablePage />
           </>
         }

@@ -136,16 +136,16 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                       </li>
                       <li>
                         <NavLink
-                          to="/students/view-student"
+                          to="/students/student-list"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname === "/students/view-student" ||
-                                pathname.includes("view-student")) &&
+                              (pathname === "/students/student-list" ||
+                                pathname.includes("student-list")) &&
                               "!underline "
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          View Student
+                          Student List
                         </NavLink>
                       </li>
                     </ul>

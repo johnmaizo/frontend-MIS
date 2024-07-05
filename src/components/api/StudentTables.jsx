@@ -16,15 +16,27 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { DataTablePagination } from "../reuseable/DataTablePagination"
+
+import { ArrowUpDown, MoreHorizontal, ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+
 import SmallLoader from "../styles/SmallLoader";
 import { DeleteIcon, EyeIcon, ReactivateIcon } from "../Icons";
+import { Link } from "react-router-dom";
 
 const StudentTables = () => {
   const [students, setStudents] = useState([]);
@@ -59,7 +71,7 @@ const StudentTables = () => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1"
+            className="p-1 hover:underline-offset-4 hover:underline"
           >
             Student ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -110,17 +122,40 @@ const StudentTables = () => {
       cell: ({ row }) => {
         return (  
           <div className=" flex items-center space-x-1.5">
-            <button className="hover:text-primary p-1" aria-label="View Student">
-              <EyeIcon />
-            </button>
+            <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger aria-label="View Student">
+                    <Link to={`/student/${row.getValue("student_id")}`} className="hover:text-primary p-2 inline-block">
+                      <EyeIcon />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View Student</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             {row.getValue("isActive") ? (
-              <button className="hover:text-primary p-1" aria-label="Delete Student">
-                <DeleteIcon />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="hover:text-primary p-2" aria-label="Delete Student">
+                    <DeleteIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Delete Student</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ) : (
-              <button className="hover:text-primary p-1" aria-label="Reactivate Student">
-                <ReactivateIcon />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="hover:text-primary p-2" aria-label="Reactivate Student">
+                    <ReactivateIcon />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Reactivate Student</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         );
@@ -157,6 +192,11 @@ const DataTable = ({ data, columns, loading, error }) => {
     state: {
       sorting,
       columnFilters,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
     },
   });
 
@@ -210,10 +250,10 @@ const DataTable = ({ data, columns, loading, error }) => {
               ))}
             </TableHeader>
             <TableBody
-              className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading ? "relative h-[7.5em]" : ""}`}
+              className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
             >
               {loading ? (
-                <TableRow className="border-none">
+                <TableRow className="border-none hover:!bg-transparent">
                   <TableCell
                     colSpan={columns.length}
                     className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black dark:text-white"
@@ -222,7 +262,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                   </TableCell>
                 </TableRow>
               ) : error ? (
-                <TableRow className="border-none">
+                <TableRow className="border-none hover:!bg-transparent">
                   <TableCell
                     colSpan={columns.length}
                     className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-red-500"
@@ -251,10 +291,10 @@ const DataTable = ({ data, columns, loading, error }) => {
                   </TableRow>
                 ))
               ) : (
-                <TableRow className="border-none">
+                <TableRow className="border-none hover:!bg-transparent">
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 text-center text-2xl font-[500] "
                   >
                     No results.
                   </TableCell>
@@ -263,24 +303,34 @@ const DataTable = ({ data, columns, loading, error }) => {
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
+        {/* <div className="flex items-center justify-end space-x-2 py-4">
           <Button
-            variant="outline"
+            variant="primary"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className = " bg-primary text-white hover:opacity-85"
           >
+            <ArrowLeftIcon className=" mr-1 h-4 w-4" />
             Previous
           </Button>
           <Button
-            variant="outline"
+            variant="primary"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className = " bg-primary text-white hover:opacity-85"
           >
             Next
+            <ArrowRightIcon className=" ml-1 h-4 w-4" />
           </Button>
+        </div> */}
+
+        <div className=" w-full flex py-4 items-center justify-end">
+          <DataTablePagination table={table} />
         </div>
+
+        
       </div>
     </>
   );

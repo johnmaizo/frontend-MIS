@@ -7,7 +7,7 @@ const IsLoggingOut = () => {
   return (
     <div className="fixed z-[10005] grid h-screen w-screen place-content-center bg-black/50 backdrop-blur-sm">
       <div
-        className="mb-4 rounded-lg border border-stroke bg-white p-4 text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:text-white"
+        className="mb-4 rounded-lg border border-stroke bg-white p-6 text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:text-white"
         tabIndex={-1}
       >
         <h2 className="text-2xl font-semibold">

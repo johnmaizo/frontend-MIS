@@ -3,6 +3,15 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+
 const AddStudent = () => {
   const {
     register,
@@ -22,10 +31,11 @@ const AddStudent = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    // Transform form data to replace empty strings or strings with only spaces with null
     const transformedData = Object.fromEntries(
-      Object.entries({ ...data, gender }).map(([key, value]) => [
+      Object.entries(data).map(([key, value]) => [
         key,
-        value === "" ? null : value,
+        value.trim() === "" ? null : value.trim(),
       ]),
     );
 
@@ -310,38 +320,68 @@ const AddStudent = () => {
               </div>
             </div>
 
-            <div className="mb-4.5 w-full">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Birth Place
-              </label>
-              <input
-                type="text"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                {...register("birthPlace", {
-                  required: { value: true, message: "Birth place is required" },
-                })}
-                disabled={success}
-              />
-              {errors.birthPlace?.type === "required" && (
-                <ErrorMessage>*{errors.birthPlace.message}</ErrorMessage>
-              )}
-            </div>
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  {...register("email", {
+                    required: {
+                      value: true,
+                      message: "Email is required",
+                    },
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Please enter a valid email",
+                    },
+                  })}
+                  disabled={success}
+                />
 
-            <div className="mb-4.5">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Religion
-              </label>
-              <input
-                type="text"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                {...register("religion", {
-                  required: { value: true, message: "Religion is required" },
-                })}
-                disabled={success}
-              />
-              {errors.religion?.type === "required" && (
-                <ErrorMessage>*{errors.religion.message}</ErrorMessage>
-              )}
+                {errors.email?.type === "required" && (
+                  <ErrorMessage>*{errors.email.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Birth Place
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  {...register("birthPlace", {
+                    required: {
+                      value: true,
+                      message: "Birth place is required",
+                    },
+                  })}
+                  disabled={success}
+                />
+                {errors.birthPlace?.type === "required" && (
+                  <ErrorMessage>*{errors.birthPlace.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="w-full xl:w-1/2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Religion
+                </label>
+                <input
+                  type="text"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  {...register("religion", {
+                    required: { value: true, message: "Religion is required" },
+                  })}
+                  disabled={success}
+                />
+                {errors.religion?.type === "required" && (
+                  <ErrorMessage>*{errors.religion.message}</ErrorMessage>
+                )}
+              </div>
             </div>
 
             <div className="mb-4.5">
@@ -437,11 +477,28 @@ const AddStudent = () => {
               {loading && (
                 <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
               )}
-              {loading ? "Adding Student..." : success ? "Student Added!" : "Add Student"}
+              {loading
+                ? "Adding Student..."
+                : success
+                  ? "Student Added!"
+                  : "Add Student"}
             </button>
           </div>
         </form>
-        {error && <div className="text-center text-red-600 mb-5">{error}</div>}
+        {error && <div className="mb-5 text-center text-red-600">{error}</div>}
+
+        <Dialog>
+          <DialogTrigger>Open</DialogTrigger>
+          <DialogContent className="rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+            <DialogHeader>
+              <DialogTitle>Are you absolutely sure?</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. This will permanently delete your
+                account and remove your data from our servers.
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );

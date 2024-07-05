@@ -13,7 +13,7 @@ const SessionExpired = () => {
 
   return (
     <div className="fixed z-[10010] grid h-screen w-screen place-content-center bg-black/50 backdrop-blur-sm">
-      <div className="mb-4 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark dark:text-white text-black">
+      <div className="mb-4 rounded-lg border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark dark:text-white text-black">
         <h2 className="text-2xl font-semibold">Session Expired</h2>
         <p>Your session has expired. Please log in again.</p>
         <button

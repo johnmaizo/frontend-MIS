@@ -13,6 +13,7 @@ import FormLayout from "../Sundoganan/Form/FormLayout";
 
 import AddStudentPage from "./subPages/AddStudentPage";
 import StudentTablePage from "./subPages/StudentTablePage";
+import ViewStudentPage from "./subPages/ViewStudentPage";
 
 const AdminRoutes = () => {
   return (
@@ -43,6 +44,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Student List | MIS - Benedicto College" />
             <StudentTablePage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/students/student-list/:id"
+        element={
+          <>
+            <PageTitle title="Student List | MIS - Benedicto College" />
+            <ViewStudentPage />
           </>
         }
       />

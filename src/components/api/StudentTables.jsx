@@ -29,10 +29,18 @@ import axios from "axios";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
-import { DataTablePagination } from "../reuseable/DataTablePagination"
+import { DataTablePagination } from "../reuseable/DataTablePagination";
 
-import { ArrowUpDown, MoreHorizontal, ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import SmallLoader from "../styles/SmallLoader";
 import { DeleteIcon, EyeIcon, ReactivateIcon } from "../Icons";
@@ -71,7 +79,7 @@ const StudentTables = () => {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline-offset-4 hover:underline"
+            className="p-1 hover:underline hover:underline-offset-4"
           >
             Student ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -80,7 +88,13 @@ const StudentTables = () => {
       },
     },
     {
-      accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+      accessorFn: (row) => {
+        const middleInitial =
+          row.middleName && row.middleName.trim() !== ""
+            ? `${row.middleName.charAt(0)}.`
+            : "";
+        return `${row.firstName} ${middleInitial} ${row.lastName}`;
+      },
       id: "fullName",
       header: "Name",
     },
@@ -89,14 +103,25 @@ const StudentTables = () => {
       header: "Gender",
     },
     {
-      accessorKey: "civilStatus",
-      header: "Civil Status",
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Email
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
     },
     {
       accessorKey: "createdAt",
       header: "Date Created",
       cell: ({ cell }) => {
-        return cell.getValue().toString().split("T")[0];
+        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
       },
     },
     {
@@ -120,42 +145,64 @@ const StudentTables = () => {
       accessorFn: (row) => `${row.student_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
-        return (  
-          <div className=" flex items-center space-x-1.5">
+        return (
+          <div className="flex items-center gap-1">
             <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger aria-label="View Student">
-                    <Link to={`/student/${row.getValue("student_id")}`} className="hover:text-primary p-2 inline-block">
-                      <EyeIcon />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View Student</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger aria-label="View Student">
+                  <Link
+                    to={`/students/student-list/${row.getValue("student_id")}`}
+                    className="inline-block p-2 hover:text-primary"
+                  >
+                    <EyeIcon />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>View Student</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {row.getValue("isActive") ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="hover:text-primary p-2" aria-label="Delete Student">
-                    <DeleteIcon />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Delete Student</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <Dialog>
+                <DialogTrigger className="p-2 hover:text-primary">
+                  <DeleteIcon />
+                </DialogTrigger>
+                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                  <DialogHeader>
+                    <DialogTitle>Delete</DialogTitle>
+                    <DialogDescription className="mt-2">
+                      Are you sure you want to delete this student?
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             ) : (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="hover:text-primary p-2" aria-label="Reactivate Student">
-                    <ReactivateIcon />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Reactivate Student</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              // <TooltipProvider>
+              //   <Tooltip>
+              //     <TooltipTrigger
+              //       className="p-2 hover:text-primary"
+              //       aria-label="Reactivate Student"
+              //     >
+              //       <ReactivateIcon />
+              //     </TooltipTrigger>
+              //     <TooltipContent>
+              //       <p>Reactivate Student</p>
+              //     </TooltipContent>
+              //   </Tooltip>
+              // </TooltipProvider>
+              <Dialog>
+                <DialogTrigger className="p-2 hover:text-primary">
+                  <ReactivateIcon />
+                </DialogTrigger>
+                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                  <DialogHeader>
+                    <DialogTitle>Reactivate</DialogTitle>
+                    <DialogDescription className="mt-2">
+                      Are you sure you want to reactivate this student?
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             )}
           </div>
         );
@@ -209,7 +256,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           onChange={(event) =>
             table.getColumn("student_id")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] max-w-[10em] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
 
         <Input
@@ -217,6 +264,15 @@ const DataTable = ({ data, columns, loading, error }) => {
           value={table.getColumn("fullName")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("fullName")?.setFilterValue(event.target.value)
+          }
+          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+        />
+
+        <Input
+          placeholder="Search by Email ..."
+          value={table.getColumn("email")?.getFilterValue() ?? ""}
+          onChange={(event) =>
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
@@ -294,7 +350,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 <TableRow className="border-none hover:!bg-transparent">
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center text-2xl font-[500] "
+                    className="h-24 text-center text-2xl font-[500]"
                   >
                     No results.
                   </TableCell>
@@ -326,11 +382,9 @@ const DataTable = ({ data, columns, loading, error }) => {
           </Button>
         </div> */}
 
-        <div className=" w-full flex py-4 items-center justify-end">
+        <div className="flex w-full items-center justify-end py-4">
           <DataTablePagination table={table} />
         </div>
-
-        
       </div>
     </>
   );

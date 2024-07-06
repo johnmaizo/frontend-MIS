@@ -162,6 +162,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
       </div>
 
       {/* Admin Sidebar Sample Others */}
+
       {/* <AdminSidebarSampleOthers
         pathname={pathname}
         sidebarExpanded={sidebarExpanded}

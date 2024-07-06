@@ -5,8 +5,18 @@ import { NavLink } from "react-router-dom";
 import AdminSidebar from "../../pages/layout/sidebars/AdminSidebar";
 import { AuthContext } from "../context/AuthContext";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 import BenedictoLogo from "../../assets/small-logo-transparent.png";
 import StudentSidebar from "../../pages/layout/sidebars/StudentSidebar";
+import { Button } from "../ui/button";
+import { CalendarDays } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { user } = useContext(AuthContext);
@@ -78,7 +88,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           className="block lg:hidden"
         >
           <svg
-            className="fill-current dark:text-white "
+            className="fill-current dark:text-white"
             width="20"
             height="18"
             viewBox="0 0 20 18"
@@ -109,6 +119,35 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>
+
+      {/* <HoverCard>
+        <HoverCardTrigger className="py-3 text-center hover:cursor-pointer hover:underline">
+          
+        </HoverCardTrigger>
+        <HoverCardContent className="py-3">
+          The React Framework – created and maintained by @vercel.
+        </HoverCardContent>
+      </HoverCard> */}
+
+      <HoverCard>
+        <HoverCardTrigger asChild className="py-3">
+          <Button variant="link"> © {new Date().getFullYear()} Hiro</Button>
+        </HoverCardTrigger>
+        <HoverCardContent>
+        <div className="space-y-1">
+              <h4 className="text-sm font-semibold">@nextjs</h4>
+              <p className="text-sm">
+                The React Framework – created and maintained by @vercel.
+              </p>
+              <div className="flex items-center pt-2">
+                <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+                <span className="text-muted-foreground text-xs">
+                  Joined December 2021
+                </span>
+              </div>
+            </div>
+        </HoverCardContent>
+      </HoverCard>
     </aside>
   );
 };

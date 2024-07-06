@@ -95,6 +95,22 @@ const AddStudent = () => {
     ); // which is 13 years old
   };
 
+  const validateContactNumber = (value) => {
+    if (value.startsWith("+63")) {
+      return (
+        value.length === 13 ||
+        'Contact number must be 13 digits long when starting with "+63"'
+      );
+    } else if (value.startsWith("09")) {
+      return (
+        value.length === 11 ||
+        'Contact number must be 11 digits long when starting with "09"'
+      );
+    } else {
+      return 'Contact number must start with "+63" or "09"';
+    }
+  };
+
   useEffect(() => {
     if (errors && Object.keys(errors).length > 0) {
       const firstErrorField = Object.keys(errors)[0];
@@ -348,21 +364,23 @@ const AddStudent = () => {
 
               <div className="w-full xl:w-1/2">
                 <label className="mb-2.5 block text-black dark:text-white">
-                  Birth Place
+                  Contact Number
                 </label>
                 <input
                   type="text"
+                  placeholder="'+63' or '09'"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  {...register("birthPlace", {
+                  {...register("contactNumber", {
                     required: {
                       value: true,
-                      message: "Birth place is required",
+                      message: "Contact number is required",
                     },
+                    validate: validateContactNumber,
                   })}
                   disabled={success}
                 />
-                {errors.birthPlace?.type === "required" && (
-                  <ErrorMessage>*{errors.birthPlace.message}</ErrorMessage>
+                {errors.contactNumber && (
+                  <ErrorMessage>*{errors.contactNumber.message}</ErrorMessage>
                 )}
               </div>
 
@@ -382,6 +400,26 @@ const AddStudent = () => {
                   <ErrorMessage>*{errors.religion.message}</ErrorMessage>
                 )}
               </div>
+            </div>
+
+            <div className="mb-4.5">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Birth Place
+              </label>
+              <input
+                type="text"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                {...register("birthPlace", {
+                  required: {
+                    value: true,
+                    message: "Birth place is required",
+                  },
+                })}
+                disabled={success}
+              />
+              {errors.birthPlace?.type === "required" && (
+                <ErrorMessage>*{errors.birthPlace.message}</ErrorMessage>
+              )}
             </div>
 
             <div className="mb-4.5">

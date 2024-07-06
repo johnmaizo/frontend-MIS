@@ -1,15 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-// interface Option {
-//   value: string;
-//   text: string;
-//   selected: boolean;
-//   element?: HTMLElement;
-// }
-
-// interface DropdownProps {
-//   id: string;
-// }
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useRef } from 'react';
 
 const MultiSelect = ({ id }) => {
   const [options, setOptions] = useState([]);

@@ -1,13 +1,18 @@
-import Breadcrumb from "../../../components/Sundoganan/Breadcrumbs/Breadcrumb";
 import AddStudent from "../../../components/api/AddStudent";
+import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout";
 
 const AddStudentPage = () => {
+  const NavItems = [
+    { to: "/", label: "Dashboard" },
+    // { to: "/students/add-student", label: "Add Student" },
+    { label: "Add Student" },
+  ];
+
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Add Student Page" />
+      <BreadcrumbResponsive pageName={"Add Student"} items={NavItems} ITEMS_TO_DISPLAY={2} />
 
-      {/* <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"></div> */}
       <AddStudent />
     </DefaultLayout>
   );

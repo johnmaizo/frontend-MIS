@@ -1,12 +1,19 @@
-import Breadcrumb from "../../../components/Sundoganan/Breadcrumbs/Breadcrumb"
 // import StudentTablesOLD from "../../../components/api/StudentTablesOLD"
 import StudentTables from "../../../components/api/StudentTables"
+import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout"
 
 const StudentTablePage = () => {
+
+  const NavItems = [
+    { to: "/", label: "Dashboard" },
+    // { to: "/students/add-student", label: "Add Student" },
+    { label: "View Student" },
+  ];
+
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="View Student" />
+      <BreadcrumbResponsive pageName={"View Student"} items={NavItems} ITEMS_TO_DISPLAY={2} />
 
       <StudentTables />
     </DefaultLayout>

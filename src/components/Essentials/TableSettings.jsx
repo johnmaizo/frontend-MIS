@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
 export const Table = ({ rows, deleteRow, editRow }) => {
   return (

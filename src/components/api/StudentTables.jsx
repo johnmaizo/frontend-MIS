@@ -31,8 +31,10 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -45,6 +47,8 @@ import { ArrowUpDown } from "lucide-react";
 import SmallLoader from "../styles/SmallLoader";
 import { DeleteIcon, EyeIcon, ReactivateIcon } from "../Icons";
 import { Link } from "react-router-dom";
+import StatusFilter from "../reuseable/StatusFilter";
+import ButtonAction from "../reuseable/ButtonAction";
 
 const StudentTables = () => {
   const [students, setStudents] = useState([]);
@@ -169,11 +173,23 @@ const StudentTables = () => {
                 </DialogTrigger>
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
-                    <DialogTitle>Delete</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold">Delete</DialogTitle>
                     <DialogDescription className="mt-2">
-                      Are you sure you want to delete this student?
+                      <p className="mb-5">
+                        Are you sure you want to delete this student?
+                      </p>
+
                     </DialogDescription>
                   </DialogHeader>
+                  <DialogFooter>
+                    <div className="flex mx-[2em] justify-center gap-[6em] w-full">
+
+                      <ButtonAction action="delete" studentId={row.getValue("student_id")} />
+                      <DialogClose asChild>
+                        <Button variant="ghost" className="w-full underline-offset-4 hover:underline">Cancel</Button>
+                      </DialogClose>
+                    </div>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
             ) : (
@@ -196,11 +212,20 @@ const StudentTables = () => {
                 </DialogTrigger>
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
-                    <DialogTitle>Reactivate</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold">Reactivate</DialogTitle>
                     <DialogDescription className="mt-2">
-                      Are you sure you want to reactivate this student?
+                      <p className="mb-5">Are you sure you want to reactivate this student?</p>
                     </DialogDescription>
                   </DialogHeader>
+                  <DialogFooter>
+                    <div className="flex mx-[2em] justify-center gap-[6em] w-full">
+
+                      <ButtonAction action="reactivate" studentId={row.getValue("student_id")} />
+                      <DialogClose asChild>
+                        <Button variant="ghost" className="w-full underline-offset-4 hover:underline">Cancel</Button>
+                      </DialogClose>
+                    </div>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
             )}
@@ -276,6 +301,8 @@ const DataTable = ({ data, columns, loading, error }) => {
           }
           className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
+
+        <StatusFilter table={table} />
       </div>
 
       <div className="mb-4 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">

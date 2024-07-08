@@ -8,6 +8,8 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+
 import {
   Table,
   TableBody,
@@ -48,7 +50,8 @@ import SmallLoader from "../styles/SmallLoader";
 import { DeleteIcon, EyeIcon, ReactivateIcon } from "../Icons";
 import { Link } from "react-router-dom";
 import StatusFilter from "../reuseable/StatusFilter";
-import ButtonAction from "../reuseable/ButtonAction";
+
+import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 
 const StudentTables = () => {
   const [students, setStudents] = useState([]);
@@ -56,23 +59,23 @@ const StudentTables = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/students");
-
-        setStudents(response.data);
-      } catch (err) {
-        if (err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError("Failed to fetch students");
-        }
+  const fetchStudents = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/students");
+      setStudents(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch students");
       }
-      setLoading(false);
-    };
+    }
+    setLoading(false);
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchStudents();
   }, []);
 
   const columns = [
@@ -173,56 +176,64 @@ const StudentTables = () => {
                 </DialogTrigger>
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">Delete</DialogTitle>
-                    <DialogDescription className="mt-2">
+                    <DialogTitle className="text-2xl font-bold">
+                      Delete
+                    </DialogTitle>
+                    <DialogDescription asChild className="mt-2">
                       <p className="mb-5">
                         Are you sure you want to delete this student?
                       </p>
-
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <div className="flex mx-[2em] justify-center gap-[6em] w-full">
-
-                      <ButtonAction action="delete" studentId={row.getValue("student_id")} />
+                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                      <ButtonActionStudent
+                        action="delete"
+                        studentId={row.getValue("student_id")}
+                        onSuccess={fetchStudents}
+                      />
                       <DialogClose asChild>
-                        <Button variant="ghost" className="w-full underline-offset-4 hover:underline">Cancel</Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full underline-offset-4 hover:underline"
+                        >
+                          Cancel
+                        </Button>
                       </DialogClose>
                     </div>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             ) : (
-              // <TooltipProvider>
-              //   <Tooltip>
-              //     <TooltipTrigger
-              //       className="p-2 hover:text-primary"
-              //       aria-label="Reactivate Student"
-              //     >
-              //       <ReactivateIcon />
-              //     </TooltipTrigger>
-              //     <TooltipContent>
-              //       <p>Reactivate Student</p>
-              //     </TooltipContent>
-              //   </Tooltip>
-              // </TooltipProvider>
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
                   <ReactivateIcon />
                 </DialogTrigger>
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">Reactivate</DialogTitle>
-                    <DialogDescription className="mt-2">
-                      <p className="mb-5">Are you sure you want to reactivate this student?</p>
+                    <DialogTitle className="text-2xl font-bold">
+                      Reactivate
+                    </DialogTitle>
+                    <DialogDescription asChild className="mt-2">
+                      <p className="mb-5">
+                        Are you sure you want to reactivate this student?
+                      </p>
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
-                    <div className="flex mx-[2em] justify-center gap-[6em] w-full">
-
-                      <ButtonAction action="reactivate" studentId={row.getValue("student_id")} />
+                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                      <ButtonActionStudent
+                        action="reactivate"
+                        studentId={row.getValue("student_id")}
+                        onSuccess={fetchStudents}
+                      />
                       <DialogClose asChild>
-                        <Button variant="ghost" className="w-full underline-offset-4 hover:underline">Cancel</Button>
+                        <Button
+                          variant="ghost"
+                          className="w-full underline-offset-4 hover:underline"
+                        >
+                          Cancel
+                        </Button>
                       </DialogClose>
                     </div>
                   </DialogFooter>

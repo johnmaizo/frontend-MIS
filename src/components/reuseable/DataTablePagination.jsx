@@ -49,6 +49,7 @@ export function DataTablePagination({ table }) {
                 <SelectValue placeholder="Rows per Page" />
               </SelectTrigger>
               <SelectContent className=" dark:bg-[#1A222C] ">
+                <SelectItem value="5">5</SelectItem>
                 <SelectItem value="10">10</SelectItem>
                 <SelectItem value="20">20</SelectItem>
                 <SelectItem value="30">30</SelectItem>

@@ -6,6 +6,8 @@ import ChatCard from "../../../components/Sundoganan/Chat/ChatCard";
 import TableOne from "../../../components/Tables/TableOne";
 import DefaultLayout from "../../layout/DefaultLayout";
 import UserTables from "../../../components/api/UserTables";
+
+
 import CardDataStudent from "../../../components/Essentials/CardDataStudent";
 
 const AdminHome = () => {
@@ -14,7 +16,7 @@ const AdminHome = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStudent />
 
-        <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
+        {/* <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -74,14 +76,14 @@ const AdminHome = () => {
               fill=""
             />
           </svg>
-        </CardDataStats>
+        </CardDataStats> */}
       </div>
 
       <div className="mt-8">
-        <UserTables />
+        {/* <UserTables /> */}
       </div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+      {/* <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
         <ChartThree />
@@ -89,7 +91,7 @@ const AdminHome = () => {
           <TableOne />
         </div>
         <ChatCard />
-      </div>
+      </div> */}
     </DefaultLayout>
   );
 };

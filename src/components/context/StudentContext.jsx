@@ -18,7 +18,7 @@ export const StudentProvider = ({ children }) => {
     try {
       const response = await axios.get("/students");
       setStudents(response.data);
-      console.log(response);
+      // console.log(response);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);

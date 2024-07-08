@@ -157,21 +157,22 @@ const StudentTables = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <TooltipProvider>
+            {/* <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger aria-label="View Student">
-                  <Link
-                    to={`/students/student-list/${row.getValue("student_id")}`}
-                    className="inline-block p-2 hover:text-primary"
-                  >
-                    <EyeIcon />
-                  </Link>
+                  
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>View Student</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
+            <Link
+              to={`/students/student-list/${row.getValue("student_id")}`}
+              className="inline-block p-2 hover:text-primary"
+            >
+              <EyeIcon />
+            </Link>
             {row.getValue("isActive") ? (
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
@@ -180,11 +181,11 @@ const StudentTables = () => {
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
-                      Delete
+                      Deactivate
                     </DialogTitle>
                     <DialogDescription asChild className="mt-2">
                       <p className="mb-5">
-                        Are you sure you want to delete this student?
+                        Are you sure you want to deactivate this student?
                       </p>
                     </DialogDescription>
                   </DialogHeader>
@@ -400,31 +401,9 @@ const DataTable = ({ data, columns, loading, error }) => {
             </TableBody>
           </Table>
         </div>
-        {/* <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className = " bg-primary text-white hover:opacity-85"
-          >
-            <ArrowLeftIcon className=" mr-1 h-4 w-4" />
-            Previous
-          </Button>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className = " bg-primary text-white hover:opacity-85"
-          >
-            Next
-            <ArrowRightIcon className=" ml-1 h-4 w-4" />
-          </Button>
-        </div> */}
 
         <div className="flex w-full items-center justify-end py-4">
-          <DataTablePagination table={table} />
+          <DataTablePagination table={table} totalStudents={data.length} />
         </div>
       </div>
     </>

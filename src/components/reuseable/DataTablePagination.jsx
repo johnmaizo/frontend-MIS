@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "../ui/selectRowFilter";
 
-export function DataTablePagination({ table }) {
+export function DataTablePagination({ table, totalStudents }) {
   const [pageSize, setPageSize] = useState(10); // State to manage the page size
 
   const handleRowsPerPageChange = (newPageSize) => {
@@ -33,6 +33,12 @@ export function DataTablePagination({ table }) {
       </div> */}
 
       <div className="text-muted-foreground flex items-center space-x-6 lg:space-x-8">
+        {totalStudents && (
+          <div>
+            <p>Total Students: {totalStudents}</p>
+          </div>
+        )}
+
         <div className="flex items-center space-x-2">
           <p className="text-sm font-[500]">Rows per page</p>
           {/* <p>{`${table.getState().pagination.pageSize}`}</p> */}
@@ -48,7 +54,7 @@ export function DataTablePagination({ table }) {
               <SelectTrigger className="w-[60px] font-[500] dark:bg-[#1A222C]">
                 <SelectValue placeholder="Rows per Page" />
               </SelectTrigger>
-              <SelectContent className=" dark:bg-[#1A222C] ">
+              <SelectContent className="dark:bg-[#1A222C]">
                 <SelectItem value="5">5</SelectItem>
                 <SelectItem value="10">10</SelectItem>
                 <SelectItem value="20">20</SelectItem>
@@ -61,9 +67,9 @@ export function DataTablePagination({ table }) {
           {}
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          <p className=" font-[500]">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
+          <p className="font-[500]">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
           </p>
         </div>
         <div className="flex items-center space-x-2">

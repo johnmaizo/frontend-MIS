@@ -14,60 +14,66 @@ import FormLayout from "../Sundoganan/Form/FormLayout";
 import AddStudentPage from "./subPages/AddStudentPage";
 import StudentTablePage from "./subPages/StudentTablePage";
 import ViewStudentPage from "./subPages/ViewStudentPage";
+import { StudentProvider } from "../../components/context/StudentContext";
 
 const AdminRoutes = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <>
-            <PageTitle title="Dashboard | MIS - Benedicto College" />
-            <AdminHome />
-          </>
-        }
-      />
+    <StudentProvider>
 
-      <Route
-        path="/students/add-student"
-        element={
-          <>
-            <PageTitle title="Add Student | MIS - Benedicto College" />
-            <AddStudentPage />
-          </>
-        }
-      />
-      
-      <Route
-        path="/students/student-list"
-        element={
-          <>
-            <PageTitle title="Student List | MIS - Benedicto College" />
-            <StudentTablePage />
-          </>
-        }
-      />
-      
-      <Route
-        path="/students/student-list/:id"
-        element={
-          <>
-            <PageTitle title="Student List | MIS - Benedicto College" />
-            <ViewStudentPage />
-          </>
-        }
-      />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <PageTitle title="Dashboard | MIS - Benedicto College" />
+              <AdminHome />
+            </>
+          }
+        />
 
+        <Route
+          path="/students/add-student"
+          element={
+            <>
+              <PageTitle title="Add Student | MIS - Benedicto College" />
+              <AddStudentPage />
+            </>
+          }
+        />
 
+        <Route
+          path="/students/student-list"
+          element={
+            <>
+              <PageTitle title="Student List | MIS - Benedicto College" />
+              <StudentTablePage />
+            </>
+          }
+        />
 
+        <Route
+          path="/students/student-list/:id"
+          element={
+            <>
+              <PageTitle title="Student List | MIS - Benedicto College" />
+              <ViewStudentPage />
+            </>
+          }
+        />
 
+        <Route path="*" element={<Navigate to="/" />} />
 
+        {/* ! Mga way labot */}
+        {/* <OtherRoutes /> */}
+      </Routes>
 
+    </StudentProvider>
+  );
+};
 
-
-
-
-
+const OtherRoutes = () => {
+  return (
+    <>
       {/* ! Mga way labot */}
 
       <Route
@@ -159,9 +165,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    </>
   );
 };
 

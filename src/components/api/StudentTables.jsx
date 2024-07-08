@@ -52,31 +52,34 @@ import { Link } from "react-router-dom";
 import StatusFilter from "../reuseable/StatusFilter";
 
 import ButtonActionStudent from "../reuseable/ButtonActionStudent";
+import { useStudents } from "../context/StudentContext";
 
 const StudentTables = () => {
-  const [students, setStudents] = useState([]);
+  // const [students, setStudents] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
-  const fetchStudents = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/students");
-      setStudents(response.data);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Failed to fetch students");
-      }
-    }
-    setLoading(false);
-  };
+  const { students, fetchStudents, loading, error } = useStudents();
 
-  useEffect(() => {
-    fetchStudents();
-  }, []);
+  // const fetchStudents = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get("/students");
+  //     setStudents(response.data);
+  //   } catch (err) {
+  //     if (err.response && err.response.data && err.response.data.message) {
+  //       setError(err.response.data.message);
+  //     } else {
+  //       setError("Failed to fetch students");
+  //     }
+  //   }
+  //   setLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   fetchStudents();
+  // }, []);
 
   const columns = [
     {

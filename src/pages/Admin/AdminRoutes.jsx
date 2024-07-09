@@ -7,13 +7,14 @@ import Alerts from "../Sundoganan/UiElements/Alerts";
 import Buttons from "../Sundoganan/UiElements/Buttons";
 import Calendar from "../Sundoganan/Calendar";
 import Profile from "../Sundoganan/Profile";
-import AdminHome from "./subPages/AdminHome";
 import FormElements from "../Sundoganan/Form/FormElements";
 import FormLayout from "../Sundoganan/Form/FormLayout";
 
-import AddStudentPage from "./subPages/AddStudentPage";
-import StudentTablePage from "./subPages/StudentTablePage";
-import ViewStudentPage from "./subPages/ViewStudentPage";
+import AdminHome from "./SubPages/AdminHome";
+import AddStudentPage from "./SubPages/AddStudentPage";
+import StudentTablePage from "./SubPages/StudentTablePage";
+import ViewStudentPage from "./SubPages/ViewStudentPage";
+
 import { StudentProvider } from "../../components/context/StudentContext";
 
 const AdminRoutes = () => {
@@ -64,6 +65,7 @@ const AdminRoutes = () => {
         <Route path="*" element={<Navigate to="/" />} />
 
         {/* ! Mga way labot */}
+        
         {/* <OtherRoutes /> */}
       </Routes>
 
@@ -71,6 +73,7 @@ const AdminRoutes = () => {
   );
 };
 
+// eslint-disable-next-line no-unused-vars
 const OtherRoutes = () => {
   return (
     <>

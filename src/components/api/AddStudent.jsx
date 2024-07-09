@@ -11,8 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { useStudents } from "../context/StudentContext";
 
 const AddStudent = () => {
+  const { fetchStudents } = useStudents()
+   
   const {
     register,
     handleSubmit,
@@ -56,6 +59,8 @@ const AddStudent = () => {
 
       if (response.data) {
         setSuccess(true);
+
+        fetchStudents(); // Fetch students after successful submission
       }
       setLoading(false);
     } catch (err) {

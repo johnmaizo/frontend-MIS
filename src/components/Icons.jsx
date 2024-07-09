@@ -223,6 +223,7 @@ export const LevelDownIcon = () => {
 };
 // ! CardDataStudent.jsx END
 
+// ! Admin Side Nav START
 export const TeacherIcon = () => {
   return (
     <svg
@@ -236,6 +237,151 @@ export const TeacherIcon = () => {
         fill=""
         d="M208 352c-2.39 0-4.78.35-7.06 1.09C187.98 357.3 174.35 360 160 360c-14.35 0-27.98-2.7-40.95-6.91c-2.28-.74-4.66-1.09-7.05-1.09C49.94 352-.33 402.48 0 464.62C.14 490.88 21.73 512 48 512h224c26.27 0 47.86-21.12 48-47.38c.33-62.14-49.94-112.62-112-112.62m-48-32c53.02 0 96-42.98 96-96s-42.98-96-96-96s-96 42.98-96 96s42.98 96 96 96M592 0H208c-26.47 0-48 22.25-48 49.59V96c23.42 0 45.1 6.78 64 17.8V64h352v288h-64v-64H384v64h-76.24c19.1 16.69 33.12 38.73 39.69 64H592c26.47 0 48-22.25 48-49.59V49.59C640 22.25 618.47 0 592 0"
       />
+    </svg>
+  );
+};
+// ! Adminsin Side Nav END
+
+export const ProfileLoadingIcon = () => {
+  return (
+    <svg
+      className="fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      width="4.5em"
+      height="4.5em"
+      viewBox="0 0 24 24"
+    >
+      <title>Loading Student Profile..</title>
+      <circle cx="12" cy="2" r="0" fill="">
+        <animate
+          attributeName="r"
+          begin="0"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(45 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.125s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(90 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.25s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(135 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.375s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(180 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.5s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(225 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.625s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(270 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.75s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
+      <circle
+        cx="12"
+        cy="2"
+        r="0"
+        fill=""
+        transform="rotate(315 12 12)"
+      >
+        <animate
+          attributeName="r"
+          begin="0.875s"
+          calcMode="spline"
+          dur="1s"
+          keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+          repeatCount="indefinite"
+          values="0;2;0;0"
+        />
+      </circle>
     </svg>
   );
 };

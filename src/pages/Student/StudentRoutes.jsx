@@ -1,6 +1,6 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import PageTitle from "../../components/Essentials/PageTitle";
-import StudentHome from "./subPages/StudentHome";
+import StudentHome from "./SubPages/StudentHome";
 import Profile from "../Sundoganan/Profile";
 import Calendar from "../Sundoganan/Calendar";
 

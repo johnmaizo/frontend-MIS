@@ -29,11 +29,11 @@ const CardDataStudent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentResponse = await axios.get("/students");
+        const currentResponse = await axios.get("/students/active");
         const total = currentResponse.data.length;
         setTotalStudent(total);
 
-        const previousResponse = await axios.get("/students/previous");
+        const previousResponse = await axios.get("/students/previous-active");
         const previousTotal = previousResponse.data.total;
         setPreviousTotalStudent(previousTotal);
 

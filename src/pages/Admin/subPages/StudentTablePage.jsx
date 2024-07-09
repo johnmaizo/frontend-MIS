@@ -8,12 +8,12 @@ const StudentTablePage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/students/add-student", label: "Add Student" },
-    { label: "View Student" },
+    { label: "Student List" },
   ];
 
   return (
     <DefaultLayout>
-      <BreadcrumbResponsive pageName={"View Student"} items={NavItems} ITEMS_TO_DISPLAY={2} />
+      <BreadcrumbResponsive pageName={"Student List"} items={NavItems} ITEMS_TO_DISPLAY={2} />
 
       <StudentTables />
     </DefaultLayout>

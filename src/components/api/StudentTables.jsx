@@ -8,8 +8,6 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-
 import {
   Table,
   TableBody,
@@ -19,15 +17,7 @@ import {
   TableRow,
 } from "../ui/table";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -55,31 +45,7 @@ import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 import { useStudents } from "../context/StudentContext";
 
 const StudentTables = () => {
-  // const [students, setStudents] = useState([]);
-
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-
   const { students, fetchStudents, loading, error } = useStudents();
-
-  // const fetchStudents = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.get("/students");
-  //     setStudents(response.data);
-  //   } catch (err) {
-  //     if (err.response && err.response.data && err.response.data.message) {
-  //       setError(err.response.data.message);
-  //     } else {
-  //       setError("Failed to fetch students");
-  //     }
-  //   }
-  //   setLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   fetchStudents();
-  // }, []);
 
   const columns = [
     {
@@ -289,14 +255,14 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="flex items-center gap-5 py-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-5 py-4">
         <Input
           placeholder="Search by ID ..."
           value={table.getColumn("student_id")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("student_id")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] max-w-[10em] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full md:max-w-[10em] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
 
         <Input
@@ -305,7 +271,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           onChange={(event) =>
             table.getColumn("fullName")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full md:max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
 
         <Input
@@ -314,10 +280,12 @@ const DataTable = ({ data, columns, loading, error }) => {
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full md:max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
         />
 
-        <StatusFilter table={table} />
+        <div className=" lg:ml-auto flex w-[11.5em] items-center">
+          <StatusFilter table={table} />
+        </div>
       </div>
 
       <div className="mb-4 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -402,7 +370,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           </Table>
         </div>
 
-        <div className="flex w-full items-center justify-end py-4">
+        <div className="flex w-full justify-start md:items-center md:justify-end py-4">
           <DataTablePagination table={table} totalStudents={data.length} />
         </div>
       </div>

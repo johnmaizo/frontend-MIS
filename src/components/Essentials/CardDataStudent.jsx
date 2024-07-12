@@ -1,6 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { LevelDownIcon, LevelUpIcon, PersonIcon } from "../Icons";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 /* eslint-disable react/prop-types */
 const CardDataStudent = () => {
@@ -19,8 +24,10 @@ const CardDataStudent = () => {
   };
 
   const getRateDetails = (current, previous) => {
-    if (previous === 0) return { color: "text-green-500", icon: <LevelUpIcon /> };
-    if (previous === null || current === null) return { color: "text-gray-500", icon: null };
+    if (previous === 0)
+      return { color: "text-green-500", icon: <LevelUpIcon /> };
+    if (previous === null || current === null)
+      return { color: "text-gray-500", icon: null };
     return current >= previous
       ? { color: "text-green-500", icon: <LevelUpIcon /> }
       : { color: "text-red-500", icon: <LevelDownIcon /> };
@@ -30,13 +37,13 @@ const CardDataStudent = () => {
     const fetchData = async () => {
       try {
         const currentResponse = await axios.get("/students/active");
-        const total = currentResponse.data.length;
+        const total = currentResponse.data;
         setTotalStudent(total);
 
         const previousResponse = await axios.get("/students/previous-active");
         const previousTotal = previousResponse.data.total;
         setPreviousTotalStudent(previousTotal);
-
+        
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
@@ -75,12 +82,30 @@ const CardDataStudent = () => {
           <span className="text-sm font-medium">{title}</span>
         </div>
 
-        <span
-          className={`flex items-center gap-1 text-sm font-medium ${rateDetails.color}`}
-        >
-          {rate}
-          {rateDetails.icon}
-        </span>
+        {loading ? (
+          <span
+            className={`flex items-center gap-1 text-sm font-medium ${rateDetails.color}`}
+          >
+            {rate}
+            {rateDetails.icon}
+          </span>
+        ) : (
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <span
+                className={`flex items-center gap-1 text-sm font-medium hover:cursor-pointer hover:underline hover:underline-offset-2 ${rateDetails.color}`}
+              >
+                {rate}
+                {rateDetails.icon}
+              </span>
+            </HoverCardTrigger>
+            <HoverCardContent asChild>
+              <p className="text-sm font-medium text-black dark:text-white">
+                {`The rate represents the change from ${previousTotalStudent} students previously to ${totalStudent} students currently.`}
+              </p>
+            </HoverCardContent>
+          </HoverCard>
+        )}
       </div>
     </div>
   );

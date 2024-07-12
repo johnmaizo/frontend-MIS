@@ -15,12 +15,15 @@ import AddStudentPage from "./SubPages/AddStudentPage";
 import StudentTablePage from "./SubPages/StudentTablePage";
 import ViewStudentPage from "./SubPages/ViewStudentPage";
 
+import TeacherTablePage from "./SubPages/TeacherTablePage";
+import AddTeacherPage from "./SubPages/AddTeacherPage";
+
 import { StudentProvider } from "../../components/context/StudentContext";
+import DepartmentPage from "./SubPages/DepartmentPage";
 
 const AdminRoutes = () => {
   return (
     <StudentProvider>
-
       <Routes>
         <Route
           path="/"
@@ -56,8 +59,38 @@ const AdminRoutes = () => {
           path="/students/student-list/:id"
           element={
             <>
-              <PageTitle title="Student List | MIS - Benedicto College" />
+              <PageTitle title="Student Information | MIS - Benedicto College" />
               <ViewStudentPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/teachers/add-teacher"
+          element={
+            <>
+              <PageTitle title="Add Teacher | MIS - Benedicto College" />
+              <AddTeacherPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/teachers/teacher-list"
+          element={
+            <>
+              <PageTitle title="Teacher List | MIS - Benedicto College" />
+              <TeacherTablePage />
+            </>
+          }
+        />
+        
+        <Route
+          path="/departments"
+          element={
+            <>
+              <PageTitle title="Departments | MIS - Benedicto College" />
+              <DepartmentPage />
             </>
           }
         />
@@ -65,10 +98,9 @@ const AdminRoutes = () => {
         <Route path="*" element={<Navigate to="/" />} />
 
         {/* ! Mga way labot */}
-        
+
         {/* <OtherRoutes /> */}
       </Routes>
-
     </StudentProvider>
   );
 };

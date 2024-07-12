@@ -24,7 +24,7 @@ function App() {
       <Toaster />
 
       <Suspense fallback={<Loader />}>
-        {user === null && <DefaultRoute />}
+        {user === null && <DefaultRoutes />}
 
         {user?.role === "Admin" && <AdminRoutes />}
         {user?.role === "User" && <StudentRoutes />}
@@ -33,7 +33,7 @@ function App() {
   );
 }
 
-const DefaultRoute = () => {
+const DefaultRoutes = () => {
   return (
     <Routes>
       <Route

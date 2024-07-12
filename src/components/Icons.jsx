@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 {
   /* StudentTablePage.jsx START */
 }
@@ -240,8 +241,27 @@ export const TeacherIcon = () => {
     </svg>
   );
 };
+
+export const DepartmentIcon = ({ forCard, width, height }) => {
+  return (
+    <svg
+      className={`fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
+      xmlns="http://www.w3.org/2000/svg"
+      width={`${width && width ? width : "20"}`}
+      height={`${height && height ? height : "20"}`}
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill=""
+        d="M21 10h-2V4h1V2H4v2h1v6H3a1 1 0 0 0-1 1v9h20v-9a1 1 0 0 0-1-1m-7 8v-4h-4v4H7V4h10v14z"
+      />
+      <path fill="" d="M9 6h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2z" />
+    </svg>
+  );
+};
 // ! Adminsin Side Nav END
 
+// ! ViewStudentPage.jsx START
 export const ProfileLoadingIcon = () => {
   return (
     <svg
@@ -263,13 +283,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(45 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(45 12 12)">
         <animate
           attributeName="r"
           begin="0.125s"
@@ -280,13 +294,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(90 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(90 12 12)">
         <animate
           attributeName="r"
           begin="0.25s"
@@ -297,13 +305,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(135 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(135 12 12)">
         <animate
           attributeName="r"
           begin="0.375s"
@@ -314,13 +316,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(180 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(180 12 12)">
         <animate
           attributeName="r"
           begin="0.5s"
@@ -331,13 +327,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(225 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(225 12 12)">
         <animate
           attributeName="r"
           begin="0.625s"
@@ -348,13 +338,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(270 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(270 12 12)">
         <animate
           attributeName="r"
           begin="0.75s"
@@ -365,13 +349,7 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
-      <circle
-        cx="12"
-        cy="2"
-        r="0"
-        fill=""
-        transform="rotate(315 12 12)"
-      >
+      <circle cx="12" cy="2" r="0" fill="" transform="rotate(315 12 12)">
         <animate
           attributeName="r"
           begin="0.875s"
@@ -382,6 +360,23 @@ export const ProfileLoadingIcon = () => {
           values="0;2;0;0"
         />
       </circle>
+    </svg>
+  );
+};
+// ! ViewStudentPage.jsx END
+
+// ! DepartmentPage.jsx START
+export const AddDepartmentIcon = () => {
+  return (
+    <svg
+      className="fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      width="1.5em"
+      height="1.5em"
+      viewBox="0 0 24 24"
+    >
+      <title>Add Department</title>
+      <path fill="" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
     </svg>
   );
 };

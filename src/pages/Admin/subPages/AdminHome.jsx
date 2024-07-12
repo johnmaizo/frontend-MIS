@@ -9,12 +9,14 @@ import UserTables from "../../../components/api/UserTables";
 
 
 import CardDataStudent from "../../../components/Essentials/CardDataStudent";
+import CardDataDepartment from "../../../components/Essentials/CardDataDepartment";
 
 const AdminHome = () => {
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStudent />
+        <CardDataDepartment />
 
         {/* <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg

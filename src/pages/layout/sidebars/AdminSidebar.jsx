@@ -3,7 +3,7 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import SidebarLinkGroup from "../../../components/Sidebar/SidebarLinkGroup";
-import { TeacherIcon } from "../../../components/Icons";
+import { DepartmentIcon, TeacherIcon } from "../../../components/Icons";
 
 const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
   const location = useLocation();
@@ -158,6 +158,20 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
           </SidebarLinkGroup>
           {/* <!-- Menu Item Student --> */}
 
+          <li>
+            <NavLink
+              to="/departments"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/departments" ||
+                  pathname.includes("departments")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <DepartmentIcon />
+              Departments
+            </NavLink>
+          </li>
+
           {/* <!-- Menu Item Teacher --> */}
           <SidebarLinkGroup
             activeCondition={
@@ -256,11 +270,11 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
         sidebarExpanded={sidebarExpanded}
         setSidebarExpanded={setSidebarExpanded}
       /> */}
-      
     </>
   );
 };
 
+// eslint-disable-next-line no-unused-vars
 const AdminSidebarSample = ({ pathname }) => {
   return (
     <>
@@ -511,6 +525,7 @@ const AdminSidebarSample = ({ pathname }) => {
   );
 };
 
+// eslint-disable-next-line no-unused-vars
 const AdminSidebarSampleOthers = ({
   pathname,
   sidebarExpanded,

@@ -33,9 +33,34 @@ export const StudentProvider = ({ children }) => {
     fetchStudents();
   },[])
 
+  // ! Students END
+
+  const [departments, setDepartments] = useState([]);
+
+  const fetchDepartments = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/departments");
+      setDepartments(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch departments");
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchDepartments();
+  },[])
+
+
+
   return (
     <StudentContext.Provider
-      value={{ students, setStudents, fetchStudents, loading, error }}
+      value={{ students, setStudents, fetchStudents, loading, error, departments, fetchDepartments }}
     >
       {children}
     </StudentContext.Provider>

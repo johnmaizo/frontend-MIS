@@ -18,8 +18,12 @@ import {
   SelectValue,
 } from "../ui/selectRowFilter";
 
-export function DataTablePagination({ table, totalStudents }) {
-  const [pageSize, setPageSize] = useState(10); // State to manage the page size
+export function DataTablePagination({
+  table,
+  totalStudents,
+  totalDepartments,
+}) {
+  const [pageSize, setPageSize] = useState(5); // State to manage the page size
 
   const handleRowsPerPageChange = (newPageSize) => {
     setPageSize(newPageSize);
@@ -32,11 +36,18 @@ export function DataTablePagination({ table, totalStudents }) {
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div> */}
 
-      <div className=" text-muted-foreground flex flex-col gap-5 md:flex-row md:gap-0 items-start md:items-center md:space-x-6 lg:space-x-8">
-      {totalStudents !== undefined && (
+      <div className="text-muted-foreground flex flex-col items-start gap-5 md:flex-row md:items-center md:gap-0 md:space-x-6 lg:space-x-8">
+        {totalStudents && totalStudents !== undefined ? (
           <div>
             <p>Total Students: {totalStudents}</p>
           </div>
+        ) : (
+          totalDepartments &&
+          totalDepartments !== undefined && (
+            <div>
+              <p>Total Departments: {totalDepartments}</p>
+            </div>
+          )
         )}
 
         <div className="flex items-center space-x-2 md:space-x-0">
@@ -66,8 +77,8 @@ export function DataTablePagination({ table, totalStudents }) {
           </div>
           {}
         </div>
-        <div className=" flex flex-col-reverse gap-3 md:flex-row">
-          <div className="flex w-[100px] items-center md:justify-center text-sm font-medium">
+        <div className="flex flex-col-reverse gap-3 md:flex-row">
+          <div className="flex w-[100px] items-center text-sm font-medium md:justify-center">
             <p className="font-[500]">
               Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
@@ -76,7 +87,7 @@ export function DataTablePagination({ table, totalStudents }) {
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
-              className=" h-8 w-8 !bg-primary p-0 !text-white hover:opacity-85 flex"
+              className="flex h-8 w-8 !bg-primary p-0 !text-white hover:opacity-85"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
@@ -103,7 +114,7 @@ export function DataTablePagination({ table, totalStudents }) {
             </Button>
             <Button
               variant="outline"
-              className=" h-8 w-8 !bg-primary p-0 !text-white hover:opacity-85 flex"
+              className="flex h-8 w-8 !bg-primary p-0 !text-white hover:opacity-85"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >

@@ -10,8 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-  DialogClose,
 } from "../ui/dialog";
 
 import { AddDepartmentIcon } from "../Icons";
@@ -108,7 +106,7 @@ const AddDepartment = () => {
           <DialogTrigger className="rounded bg-blue-600 p-1 text-white hover:bg-blue-700">
             <AddDepartmentIcon />
           </DialogTrigger>
-          <DialogContent className="max-w-[70em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Department
@@ -118,7 +116,7 @@ const AddDepartment = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[10em]">
+                      <div className="w-full xl:w-[12em]">
                         <label className="mb-2.5 block text-black dark:text-white">
                           Department Code
                         </label>

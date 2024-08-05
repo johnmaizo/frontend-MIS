@@ -51,6 +51,7 @@ import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 import { useStudents } from "../context/StudentContext";
 import SelectRows from "../reuseable/SelectRows";
 import AddDepartment from "./AddDepartment";
+import EditDepartment from "./EditDepartment";
 
 const DepartmentTables = () => {
   const { departments, fetchDepartments, loading, error } = useStudents();
@@ -127,22 +128,13 @@ const DepartmentTables = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            {/* <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger aria-label="View Student">
-                    
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View Student</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider> */}
-            <Link
+            {/* <Link
               to={`/students/student-list/${row.getValue("student_id")}`}
               className="inline-block p-2 hover:text-primary"
             >
               <EyeIcon />
-            </Link>
+            </Link> */}
+            <EditDepartment />
             {row.getValue("isActive") ? (
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">

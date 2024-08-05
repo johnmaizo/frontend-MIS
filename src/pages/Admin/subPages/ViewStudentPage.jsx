@@ -22,7 +22,6 @@ const ViewStudentPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/students/${id}`);
-        console.log(response.data);
         setStudent(response.data);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
@@ -57,7 +56,7 @@ const ViewStudentPage = () => {
         <h3>Student Details</h3>
       </div>
 
-      {!loading && !student.isActive && (
+      {!loading && student && !student.isActive && (
         <div className="mb-4 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
           <p className="text-2xl font-semibold text-red-600">
             NOTE: This Student is Inactive.

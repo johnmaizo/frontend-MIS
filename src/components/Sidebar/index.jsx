@@ -11,7 +11,7 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 import BenedictoLogo from "../../assets/small-logo-transparent.png";
 import StudentSidebar from "../../pages/layout/sidebars/StudentSidebar";

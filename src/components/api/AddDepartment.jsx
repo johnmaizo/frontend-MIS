@@ -59,7 +59,7 @@ const AddDepartment = () => {
         setSuccess(true);
 
         fetchDepartments();
-        setOpen(false);
+        setOpen(false); // Close the dialog
       }
       setLoading(false);
     } catch (err) {
@@ -100,19 +100,26 @@ const AddDepartment = () => {
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <p className="max-w-[8em]">Add Department </p>
       <div>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger className="rounded bg-blue-600 p-1 text-white hover:bg-blue-700">
+        <Dialog
+          open={open}
+          onOpenChange={(isOpen) => {
+            setOpen(isOpen);
+            if (!isOpen) {
+              reset(); // Reset form fields when the dialog is closed
+            }
+          }}
+        >
+          <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
             <AddDepartmentIcon />
+            <p className="max-w-[8em]">Add Department </p>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Department
               </DialogTitle>
-              {/* <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl"> */}
-              <DialogDescription className=" overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -128,10 +135,15 @@ const AddDepartment = () => {
                               value: true,
                               message: "Department Code is required",
                             },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "Department Code cannot be empty or just spaces",
+                            },
                           })}
                           disabled={success}
                         />
-                        {errors.departmentCode?.type === "required" && (
+                        {errors.departmentCode && (
                           <ErrorMessage>
                             *{errors.departmentCode.message}
                           </ErrorMessage>
@@ -150,20 +162,21 @@ const AddDepartment = () => {
                               value: true,
                               message: "Department Name is required",
                             },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "Department Name cannot be empty or just spaces",
+                            },
                           })}
                           disabled={success}
                         />
-                        {errors.departmentName?.type === "required" && (
+                        {errors.departmentName && (
                           <ErrorMessage>
                             *{errors.departmentName.message}
                           </ErrorMessage>
                         )}
                       </div>
                     </div>
-
-                    {/* <div className="mb-4.5">
-                      
-                    </div> */}
 
                     <button
                       type="submit"

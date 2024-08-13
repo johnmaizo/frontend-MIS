@@ -40,16 +40,13 @@ import SmallLoader from "../styles/SmallLoader";
 
 import {
   DeleteIcon,
-  EyeIcon,
   ReactivateIcon,
 } from "../Icons";
 
-import { Link } from "react-router-dom";
 import StatusFilter from "../reuseable/StatusFilter";
 
 import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 import { useStudents } from "../context/StudentContext";
-import SelectRows from "../reuseable/SelectRows";
 import AddDepartment from "./AddDepartment";
 import EditDepartment from "./EditDepartment";
 
@@ -135,6 +132,7 @@ const DepartmentTables = () => {
               <EyeIcon />
             </Link> */}
             <EditDepartment />
+            
             {row.getValue("isActive") ? (
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">

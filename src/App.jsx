@@ -55,6 +55,7 @@ const DefaultRoutes = () => {
           </>
         }
       />
+      
       <Route
         path="/auth/signup"
         element={

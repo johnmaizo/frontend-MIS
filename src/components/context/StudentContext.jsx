@@ -34,7 +34,8 @@ export const StudentProvider = ({ children }) => {
   },[])
 
   // ! Students END
-
+  
+  // ! Departments START
   const [departments, setDepartments] = useState([]);
 
   const fetchDepartments = async () => {

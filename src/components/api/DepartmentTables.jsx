@@ -49,11 +49,27 @@ import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 import { useStudents } from "../context/StudentContext";
 import AddDepartment from "./AddDepartment";
 import EditDepartment from "./EditDepartment";
+import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
 
 const DepartmentTables = () => {
   const { departments, fetchDepartments, loading, error } = useStudents();
 
   const columns = [
+    {
+      accessorKey: "department_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
     {
       accessorKey: "departmentCode",
       header: ({ column }) => {
@@ -120,18 +136,12 @@ const DepartmentTables = () => {
 
     {
       header: "Actions",
-      accessorFn: (row) => `${row.student_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.department_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            {/* <Link
-              to={`/students/student-list/${row.getValue("student_id")}`}
-              className="inline-block p-2 hover:text-primary"
-            >
-              <EyeIcon />
-            </Link> */}
-            <EditDepartment />
+            <EditDepartment departmentId={row.getValue("department_id")} />
             
             {row.getValue("isActive") ? (
               <Dialog>
@@ -151,9 +161,9 @@ const DepartmentTables = () => {
                   </DialogHeader>
                   <DialogFooter>
                     <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                      <ButtonActionStudent
+                      <ButtonActionDepartment
                         action="delete"
-                        studentId={row.getValue("student_id")}
+                        departmentId={row.getValue("department_id")}
                         onSuccess={fetchDepartments}
                       />
                       <DialogClose asChild>
@@ -186,9 +196,9 @@ const DepartmentTables = () => {
                   </DialogHeader>
                   <DialogFooter>
                     <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                      <ButtonActionStudent
+                      <ButtonActionDepartment
                         action="reactivate"
-                        studentId={row.getValue("student_id")}
+                        departmentId={row.getValue("department_id")}
                         onSuccess={fetchDepartments}
                       />
                       <DialogClose asChild>
@@ -261,10 +271,10 @@ const DataTable = ({ data, columns, loading, error }) => {
             <div className="ml-auto mt-5 flex items-center justify-end gap-1">
               <p>Search: </p>
               <Input
-                value={table.getColumn("student_id")?.getFilterValue() ?? ""}
+                value={table.getColumn("department_id")?.getFilterValue() ?? ""}
                 onChange={(event) =>
                   table
-                    .getColumn("student_id")
+                    .getColumn("department_id")
                     ?.setFilterValue(event.target.value)
                 }
                 className="h-[2.2em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[10em]"

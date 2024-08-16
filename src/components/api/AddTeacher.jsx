@@ -134,7 +134,7 @@ const AddTeacher = () => {
       <div className="rounded-sm border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
           <h3 className="text-2xl font-medium text-black dark:text-white">
-            Add Student Information
+            Add Teacher Information
           </h3>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>

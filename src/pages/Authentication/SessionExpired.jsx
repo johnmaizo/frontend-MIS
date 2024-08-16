@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../components/context/AuthContext";
 
@@ -10,6 +10,21 @@ const SessionExpired = () => {
     logout(true);
     navigate("/auth/signin");
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter") {
+        handleLogout();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
 
   return (
     <div className="fixed z-[10010] grid h-screen w-screen place-content-center bg-black/50 backdrop-blur-sm">

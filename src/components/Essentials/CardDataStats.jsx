@@ -1,13 +1,6 @@
 /* eslint-disable react/prop-types */
 
-// interface CardDataStatsProps {
-//   title: string;
-//   total: string;
-//   rate: string;
-//   levelUp?: boolean;
-//   levelDown?: boolean;
-//   children: ReactNode;
-// }
+
 
 const CardDataStats = ({
   title,

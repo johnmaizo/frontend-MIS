@@ -38,14 +38,10 @@ import { ArrowUpDown } from "lucide-react";
 
 import SmallLoader from "../styles/SmallLoader";
 
-import {
-  DeleteIcon,
-  ReactivateIcon,
-} from "../Icons";
+import { DeleteIcon, ReactivateIcon } from "../Icons";
 
 import StatusFilter from "../reuseable/StatusFilter";
 
-import ButtonActionStudent from "../reuseable/ButtonActionStudent";
 import { useStudents } from "../context/StudentContext";
 import AddDepartment from "./AddDepartment";
 import EditDepartment from "./EditDepartment";
@@ -142,7 +138,7 @@ const DepartmentTables = () => {
         return (
           <div className="flex items-center gap-1">
             <EditDepartment departmentId={row.getValue("department_id")} />
-            
+
             {row.getValue("isActive") ? (
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
@@ -179,40 +175,42 @@ const DepartmentTables = () => {
                 </DialogContent>
               </Dialog>
             ) : (
-              <Dialog>
-                <DialogTrigger className="p-2 hover:text-primary">
-                  <ReactivateIcon />
-                </DialogTrigger>
-                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">
-                      Reactivate
-                    </DialogTitle>
-                    <DialogDescription asChild className="mt-2">
-                      <p className="mb-5">
-                        Are you sure you want to reactivate this department?
-                      </p>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                      <ButtonActionDepartment
-                        action="reactivate"
-                        departmentId={row.getValue("department_id")}
-                        onSuccess={fetchDepartments}
-                      />
-                      <DialogClose asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full underline-offset-4 hover:underline"
-                        >
-                          Cancel
-                        </Button>
-                      </DialogClose>
-                    </div>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <>
+                <Dialog>
+                  <DialogTrigger className="p-2 hover:text-primary">
+                    <ReactivateIcon />
+                  </DialogTrigger>
+                  <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl font-bold">
+                        Reactivate
+                      </DialogTitle>
+                      <DialogDescription asChild className="mt-2">
+                        <p className="mb-5">
+                          Are you sure you want to reactivate this department?
+                        </p>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                        <ButtonActionDepartment
+                          action="reactivate"
+                          departmentId={row.getValue("department_id")}
+                          onSuccess={fetchDepartments}
+                        />
+                        <DialogClose asChild>
+                          <Button
+                            variant="ghost"
+                            className="w-full underline-offset-4 hover:underline"
+                          >
+                            Cancel
+                          </Button>
+                        </DialogClose>
+                      </div>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </>
             )}
           </div>
         );
@@ -261,26 +259,36 @@ const DataTable = ({ data, columns, loading, error }) => {
     <>
       <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="mb-3 mt-2 flex w-full items-start justify-between">
-          <div className="w-full">
-            <StatusFilter table={table} />
+          <div className="flex gap-5">
+            <Input
+              placeholder="Search by name..."
+              value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+              onChange={(event) =>
+                table
+                  .getColumn("departmentName")
+                  ?.setFilterValue(event.target.value)
+              }
+              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
+            />
+
+            <Input
+              placeholder="Search by code..."
+              value={table.getColumn("departmentCode")?.getFilterValue() ?? ""}
+              onChange={(event) =>
+                table
+                  .getColumn("departmentCode")
+                  ?.setFilterValue(event.target.value)
+              }
+              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
+            />
           </div>
 
           <div className=" ">
             <AddDepartment />
-            
-            <div className="ml-auto mt-5 flex items-center justify-end gap-1">
-              <p>Search: </p>
-              <Input
-                value={table.getColumn("department_id")?.getFilterValue() ?? ""}
-                onChange={(event) =>
-                  table
-                    .getColumn("department_id")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="h-[2.2em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[10em]"
-              />
-            </div>
           </div>
+        </div>
+        <div className="mb-5 max-w-[15em]">
+          <StatusFilter table={table} option={"department"} />
         </div>
 
         <div className="max-w-full overflow-x-auto">

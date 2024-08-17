@@ -110,7 +110,7 @@ const AddDepartment = () => {
             }
           }}
         >
-          <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
+          <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
             <AddDepartmentIcon />
             <p className="max-w-[8em]">Add Department </p>
           </DialogTrigger>
@@ -124,10 +124,14 @@ const AddDepartment = () => {
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-[12em]">
-                        <label className="mb-2.5 block text-black dark:text-white">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="dept_code"
+                        >
                           Department Code
                         </label>
                         <input
+                          id="dept_code"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           {...register("departmentCode", {
@@ -151,10 +155,14 @@ const AddDepartment = () => {
                       </div>
 
                       <div className="w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="dept_name"
+                        >
                           Department Name
                         </label>
                         <input
+                          id="dept_name"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           {...register("departmentName", {
@@ -176,6 +184,36 @@ const AddDepartment = () => {
                           </ErrorMessage>
                         )}
                       </div>
+                    </div>
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="dept_dean"
+                      >
+                        Department Dean
+                      </label>
+                      <input
+                        id="dept_dean"
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("departmentDean", {
+                          required: {
+                            value: true,
+                            message: "Department Dean is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Department Dean cannot be empty or just spaces",
+                          },
+                        })}
+                        disabled={success}
+                      />
+                      {errors.departmentDean && (
+                        <ErrorMessage>
+                          *{errors.departmentDean.message}
+                        </ErrorMessage>
+                      )}
                     </div>
 
                     <button

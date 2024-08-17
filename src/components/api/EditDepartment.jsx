@@ -15,6 +15,7 @@ import {
 } from "../ui/dialog";
 
 import { useStudents } from "../context/StudentContext";
+import { Switch } from "../ui/switch";
 
 const EditDepartment = ({ departmentId }) => {
   const { fetchDepartments } = useStudents();
@@ -46,7 +47,7 @@ const EditDepartment = ({ departmentId }) => {
           setLoading(false);
         })
         .catch((err) => {
-          setError("Failed to fetch department data");
+          setError("Failed to fetch department data: ", err);
           setLoading(false);
         });
     }
@@ -59,7 +60,7 @@ const EditDepartment = ({ departmentId }) => {
       Object.entries(data).map(([key, value]) => [
         key,
         value.trim() === "" ? null : value.trim(),
-      ])
+      ]),
     );
 
     setError("");
@@ -74,7 +75,7 @@ const EditDepartment = ({ departmentId }) => {
         {
           position: "bottom-right",
           duration: 5000,
-        }
+        },
       );
 
       if (response.data) {
@@ -110,7 +111,7 @@ const EditDepartment = ({ departmentId }) => {
     if (errors && Object.keys(errors).length > 0) {
       const firstErrorField = Object.keys(errors)[0];
       const errorElement = document.querySelector(
-        `[name="${firstErrorField}"]`
+        `[name="${firstErrorField}"]`,
       );
       if (errorElement) {
         errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -131,9 +132,10 @@ const EditDepartment = ({ departmentId }) => {
             }
           }}
         >
-          <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700">
+          <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
             <EditDepartmentIcon />
           </DialogTrigger>
+
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
@@ -142,12 +144,26 @@ const EditDepartment = ({ departmentId }) => {
               <DialogDescription className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
+                    <div className="w-full xl:w-[12em]">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Status
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <Switch checked={true} />
+                    </div>
+
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-[12em]">
-                        <label className="mb-2.5 block text-black dark:text-white">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="dept_code"
+                        >
                           Department Code
                         </label>
                         <input
+                          id="dept_code"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           {...register("departmentCode", {
@@ -161,7 +177,7 @@ const EditDepartment = ({ departmentId }) => {
                                 "Department Code cannot be empty or just spaces",
                             },
                           })}
-                          disabled={success}
+                          disabled={success || loading}
                         />
                         {errors.departmentCode && (
                           <ErrorMessage>
@@ -171,10 +187,14 @@ const EditDepartment = ({ departmentId }) => {
                       </div>
 
                       <div className="w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="dept_name"
+                        >
                           Department Name
                         </label>
                         <input
+                          id="dept_name"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           {...register("departmentName", {
@@ -188,7 +208,7 @@ const EditDepartment = ({ departmentId }) => {
                                 "Department Name cannot be empty or just spaces",
                             },
                           })}
-                          disabled={success}
+                          disabled={success || loading}
                         />
                         {errors.departmentName && (
                           <ErrorMessage>
@@ -196,6 +216,41 @@ const EditDepartment = ({ departmentId }) => {
                           </ErrorMessage>
                         )}
                       </div>
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="dept_dean"
+                      >
+                        Department Dean
+                      </label>
+                      <input
+                        id="dept_dean"
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("departmentDean", {
+                          required: {
+                            value: true,
+                            message: "Department Dean is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Department Dean cannot be empty or just spaces",
+                          },
+                        })}
+                        disabled={success}
+                      />
+                      {errors.departmentDean && (
+                        <ErrorMessage>
+                          *{errors.departmentDean.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      
                     </div>
 
                     <button
@@ -213,8 +268,8 @@ const EditDepartment = ({ departmentId }) => {
                       {loading
                         ? "Updating Department..."
                         : success
-                        ? "Department Updated!"
-                        : "Update Department"}
+                          ? "Department Updated!"
+                          : "Update Department"}
                     </button>
                   </div>
                 </form>

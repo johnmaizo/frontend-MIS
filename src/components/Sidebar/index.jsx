@@ -120,18 +120,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         {/* <!-- Sidebar Menu --> */}
       </div>
 
-      {/* <HoverCard>
-        <HoverCardTrigger className="py-3 text-center hover:cursor-pointer hover:underline">
-          
-        </HoverCardTrigger>
-        <HoverCardContent className="py-3">
-          The React Framework – created and maintained by @vercel.
-        </HoverCardContent>
-      </HoverCard> */}
-
       <HoverCard>
         <HoverCardTrigger asChild className="py-3">
-          <Button variant="link"> © {new Date().getFullYear()} Hiro</Button>
+          <Button variant="link"> © {new Date().getFullYear()} - MIS - Hiro</Button>
         </HoverCardTrigger>
         <HoverCardContent>
         <div className="space-y-1">

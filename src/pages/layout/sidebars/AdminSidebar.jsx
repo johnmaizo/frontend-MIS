@@ -72,7 +72,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
             </NavLink>
           </li>
 
-          <h3 className="my-4 ml-4 text-sm font-semibold text-bodydark2">
+          <h3 className="my-4 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             DEPARTMENT SECTION
           </h3>
 
@@ -177,7 +177,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
           </SidebarLinkGroup>
           {/* <!-- Menu Item Teacher --> */}
 
-          <h3 className="my-4 ml-4 text-sm font-semibold text-bodydark2">
+          <h3 className="my-4 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             STUDENT SECTION
           </h3>
 
@@ -284,7 +284,6 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
           </SidebarLinkGroup>
           {/* <!-- Menu Item Student --> */}
 
-          
           {/* <AdminSidebarSample pathname={pathname} /> */}
         </ul>
       </div>

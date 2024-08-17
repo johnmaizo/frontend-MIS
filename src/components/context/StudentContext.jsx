@@ -31,10 +31,10 @@ export const StudentProvider = ({ children }) => {
 
   useEffect(() => {
     fetchStudents();
-  },[])
+  }, []);
 
   // ! Students END
-  
+
   // ! Departments START
   const [departments, setDepartments] = useState([]);
 
@@ -55,13 +55,50 @@ export const StudentProvider = ({ children }) => {
 
   useEffect(() => {
     fetchDepartments();
-  },[])
+  }, []);
+  // ! Departments END
 
+  // ! Campus START
+  const [campus, setCampus] = useState([]);
 
+  const fetchCampus = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/campus");
+      setCampus(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch Campus");
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCampus();
+  }, []);
 
   return (
     <StudentContext.Provider
-      value={{ students, setStudents, fetchStudents, loading, error, departments, fetchDepartments }}
+      value={{
+        loading,
+        error,
+
+        // ! Students
+        students,
+        setStudents,
+        fetchStudents,
+
+        // ! Department
+        departments,
+        fetchDepartments,
+
+        // ! Campus
+        campus,
+        fetchCampus,
+      }}
     >
       {children}
     </StudentContext.Provider>

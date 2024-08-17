@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import SidebarLinkGroup from "../../../components/Sidebar/SidebarLinkGroup";
 import {
+  CalendarIcon,
   CampusIcon,
   DepartmentIcon,
   TeacherIcon,
@@ -59,6 +60,23 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
             </NavLink>
           </li>
 
+          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+            CAMPUS SECTION
+          </h3>
+
+          <li>
+            <NavLink
+              to="/semester"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/semester" || pathname.includes("semester")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <CalendarIcon />
+              Semester
+            </NavLink>
+          </li>
+
           <li>
             <NavLink
               to="/campus"
@@ -72,7 +90,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
             </NavLink>
           </li>
 
-          <h3 className="my-4 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             DEPARTMENT SECTION
           </h3>
 
@@ -177,9 +195,23 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
           </SidebarLinkGroup>
           {/* <!-- Menu Item Teacher --> */}
 
-          <h3 className="my-4 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             STUDENT SECTION
           </h3>
+
+          <li>
+            <NavLink
+              to="/subjects"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/subjects" ||
+                  pathname.includes("subjects")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <DepartmentIcon />
+              Subjects
+            </NavLink>
+          </li>
 
           {/* <!-- Menu Item Student --> */}
           <SidebarLinkGroup

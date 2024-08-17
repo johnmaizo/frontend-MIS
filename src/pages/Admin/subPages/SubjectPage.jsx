@@ -52,27 +52,27 @@ import AddCampus from "../../../components/api/AddCampus";
 import EditDepartment from "../../../components/api/EditDepartment";
 import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
 
-const CampusPage = () => {
+const SubjectPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
-    // { to: "/campus/add-campus", label: "Add Campus" },
-    { label: "Campus" },
+    // { to: "/subjects/add-subject", label: "Add Subject" },
+    { label: "Subject" },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Campus"}
+        pageName={"Subject"}
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
 
-      <CampusTables />
+      <SubjectTables />
     </DefaultLayout>
   );
 };
 
-const CampusTables = () => {
+const SubjectTables = () => {
   const { campus, fetchCampus, loading, error } = useStudents();
 
   const columns = [
@@ -391,4 +391,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default CampusPage;
+export default SubjectPage;

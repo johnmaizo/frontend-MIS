@@ -21,6 +21,7 @@ import AddTeacherPage from "./SubPages/AddTeacherPage";
 import { StudentProvider } from "../../components/context/StudentContext";
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
+import SubjectPage from "./SubPages/SubjectPage";
 
 const AdminRoutes = () => {
   return (
@@ -102,6 +103,16 @@ const AdminRoutes = () => {
             <>
               <PageTitle title="Campuses | MIS - Benedicto College" />
               <CampusPage />
+            </>
+          }
+        />
+        
+        <Route
+          path="/subjects"
+          element={
+            <>
+              <PageTitle title="Subjects | MIS - Benedicto College" />
+              <SubjectPage />
             </>
           }
         />

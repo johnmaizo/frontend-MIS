@@ -156,83 +156,44 @@ const CampusTables = () => {
           <div className="flex items-center gap-1">
             <EditCampus campusId={row.getValue("campus_id")} />
 
-            {row.getValue("isActive") ? (
-              <Dialog>
-                <DialogTrigger className="p-2 hover:text-primary">
-                  <DeleteIcon forActions={"Delete Campus"} />
-                </DialogTrigger>
-                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">
-                      Delete
-                    </DialogTitle>
-                    <DialogDescription asChild className="mt-2">
-                      <p className="mb-5">
-                        Are you sure you want to delete this campus?
-                      </p>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                      <ButtonActionCampus
-                        action="delete"
-                        campusId={row.getValue("campus_id")}
-                        onSuccess={() => {
-                          fetchCampus();
-                          fetchCampusDeleted();
-                        }}
-                      />
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Campus"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this campus?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonActionCampus
+                      action="delete"
+                      campusId={row.getValue("campus_id")}
+                      onSuccess={() => {
+                        fetchCampus();
+                        fetchCampusDeleted();
+                      }}
+                    />
 
-                      <DialogClose asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full underline-offset-4 hover:underline"
-                        >
-                          Cancel
-                        </Button>
-                      </DialogClose>
-                    </div>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <>
-                <Dialog>
-                  <DialogTrigger className="p-2 hover:text-primary">
-                    <ReactivateIcon />
-                  </DialogTrigger>
-                  <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold">
-                        Reactivate
-                      </DialogTitle>
-                      <DialogDescription asChild className="mt-2">
-                        <p className="mb-5">
-                          Are you sure you want to reactivate this department?
-                        </p>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionDepartment
-                          action="reactivate"
-                          departmentId={row.getValue("campus_id")}
-                          onSuccess={fetchCampus}
-                        />
-                        <DialogClose asChild>
-                          <Button
-                            variant="ghost"
-                            className="w-full underline-offset-4 hover:underline"
-                          >
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </div>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </>
-            )}
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },
@@ -278,40 +239,40 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="mb-3 mt-2 flex w-full items-start justify-between">
-          <div className="flex gap-5">
-            <Input
-              placeholder="Search by name..."
-              value={table.getColumn("campusName")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("campusName")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em]"
-            />
+      <div className="mb-3 mt-2 flex w-full items-start justify-between">
+        <div className="flex gap-5">
+          <Input
+            placeholder="Search by campus name..."
+            value={table.getColumn("campusName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table.getColumn("campusName")?.setFilterValue(event.target.value)
+            }
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em]"
+          />
 
-            <Input
-              placeholder="Search by address..."
-              value={table.getColumn("campusAddress")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("campusAddress")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em]"
-            />
-          </div>
-
-          <div className=" ">
-            <AddCampus />
-          </div>
+          <Input
+            placeholder="Search by address..."
+            value={table.getColumn("campusAddress")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("campusAddress")
+                ?.setFilterValue(event.target.value)
+            }
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em]"
+          />
         </div>
-        <div className="mb-5 flex justify-between">
-          <div className="max-w-[15em]">
-            <StatusFilter table={table} option={"department"} />
+
+        <div className=" ">
+          <AddCampus />
+        </div>
+      </div>
+
+      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="mb-5 flex w-full justify-between items-center gap-3">
+          <div className="w-[11em]">
+            <StatusFilter table={table} option={"campus"} />
           </div>
+
           <DeletedCampus />
         </div>
 

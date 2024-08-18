@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "../ui/select";
 
-const StatusFilter = ({ table }) => {
+const StatusFilter = ({ table, option }) => {
   const [status, setStatus] = useState("all");
 
   const handleStatusChange = (value) => {
@@ -18,15 +18,25 @@ const StatusFilter = ({ table }) => {
 
   return (
     <>
-      <div className=" flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <div>
-          <p>Total: {table.getFilteredRowModel().rows.length}</p>
+          {option && (option === "campus" || option === "department") ? (
+            <p>Status Filter: </p>
+          ) : (
+            <p
+              className={`${option && (option === "campus" || option === "department") ? "text-sm" : ""}`}
+            >
+              Total: {table.getFilteredRowModel().rows.length}
+            </p>
+          )}
         </div>
         <Select
           onValueChange={(value) => handleStatusChange(value)}
           value={status}
         >
-          <SelectTrigger className="h-[3em] max-w-[115px] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary">
+          <SelectTrigger
+            className={`h-[3em] max-w-[115px] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary ${option && (option === "campus" || option === "department") ? "max-w-[70px] !p-1 text-sm" : ""}`}
+          >
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="dark:bg-[#1A222C]">

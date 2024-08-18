@@ -12,12 +12,23 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
 import { AddDepartmentIcon } from "../Icons";
 import { useStudents } from "../context/StudentContext";
 
 const AddDepartment = () => {
-  const { fetchDepartments } = useStudents();
+  const { fetchDepartments, campus, fetchCampus } = useStudents();
   const [open, setOpen] = useState(false);
+  const [selectedCampus, setSelectedCampus] = useState(); // State to hold the selected campus
 
   const {
     register,
@@ -30,15 +41,17 @@ const AddDepartment = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetchCampus();
+  }, []);
+
   const onSubmit = async (data) => {
     setLoading(true);
     // Transform form data to replace empty strings or strings with only spaces with null
-    const transformedData = Object.fromEntries(
-      Object.entries(data).map(([key, value]) => [
-        key,
-        value.trim() === "" ? null : value.trim(),
-      ]),
-    );
+    const transformedData = {
+      ...data,
+      campus_id: selectedCampus, // Add the selected campus to the form data
+    };
 
     setError("");
     try {
@@ -57,7 +70,6 @@ const AddDepartment = () => {
 
       if (response.data) {
         setSuccess(true);
-
         fetchDepartments();
         setOpen(false); // Close the dialog
       }
@@ -77,6 +89,7 @@ const AddDepartment = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
+        setSelectedCampus(""); // Reset selected campus
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -107,12 +120,13 @@ const AddDepartment = () => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
+              setSelectedCampus(""); // Reset selected campus
             }
           }}
         >
           <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
             <AddDepartmentIcon />
-            <p className="max-w-[8em]">Add Department </p>
+            <span className="max-w-[8em]">Add Department </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
@@ -185,6 +199,7 @@ const AddDepartment = () => {
                         )}
                       </div>
                     </div>
+
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
@@ -216,30 +231,78 @@ const AddDepartment = () => {
                       )}
                     </div>
 
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="dept_campus"
+                      >
+                        Campus
+                      </label>
+
+                      {/* <Select>
+                        <SelectTrigger className="h-[2.5em] w-full text-xl">
+                          <SelectValue placeholder="Select Campus" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Campus</SelectLabel>
+
+                            {campus.map((campus) => (
+                              <SelectItem key={campus.campus_id} value={campus.campus_id}>
+                                {campus.campusName}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select> */}
+
+                      <Select
+                        value={selectedCampus}
+                        onValueChange={(value) => {
+                          setSelectedCampus(value);
+                          console.log("Value: ",value)
+                          console.log("Selected Campus: ", selectedCampus)
+                        }}
+                      >
+                        <SelectTrigger className="h-[2.5em] w-full text-xl">
+                          <SelectValue placeholder="Select campus" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Campus</SelectLabel>
+                            {/* <SelectItem value="1">Mandaue Campus</SelectItem>
+                            <SelectItem value="2">test</SelectItem>
+                            <SelectItem value="3">test2</SelectItem> */}
+                            {campus.map((campus) => (
+                              <SelectItem
+                                key={campus.campus_id}
+                                value={campus.campus_id}
+                              >
+                                {campus.campusName} - {campus.campus_id}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      {errors.campus_id && (
+                        <ErrorMessage>*{errors.campus_id.message}</ErrorMessage>
+                      )}
+                    </div>
+
                     <button
                       type="submit"
-                      className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                        loading || success
-                          ? "bg-[#505456] hover:!bg-opacity-100"
-                          : ""
-                      }`}
+                      className="mt-5 inline-flex w-full cursor-pointer items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                       disabled={loading || success}
                     >
-                      {loading && (
-                        <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
+                      {loading ? (
+                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                      ) : (
+                        "Add Department"
                       )}
-                      {loading
-                        ? "Adding Department..."
-                        : success
-                          ? "Department Added!"
-                          : "Add Department"}
                     </button>
                   </div>
                 </form>
-
-                {error && (
-                  <div className="mb-5 text-center text-red-600">{error}</div>
-                )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

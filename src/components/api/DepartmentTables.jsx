@@ -108,8 +108,8 @@ const DepartmentTables = () => {
     //   header: "Name",
     // },
     {
-      accessorKey: "createdAt",
-      header: "Date Created",
+      accessorKey: "departmentDean",
+      header: "Dean",
       cell: ({ cell }) => {
         return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
       },
@@ -257,38 +257,41 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="mb-3 mt-2 flex w-full items-start justify-between">
-          <div className="flex gap-5">
-            <Input
-              placeholder="Search by name..."
-              value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("departmentName")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
-            />
+      <div className="mb-3 mt-2 flex w-full items-start justify-between">
+        <div className="flex gap-5">
+          <Input
+            placeholder="Search by department name..."
+            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("departmentName")
+                ?.setFilterValue(event.target.value)
+            }
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em]"
+          />
 
-            <Input
-              placeholder="Search by code..."
-              value={table.getColumn("departmentCode")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("departmentCode")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
-            />
-          </div>
-
-          <div className=" ">
-            <AddDepartment />
-          </div>
+          <Input
+            placeholder="Search by code..."
+            value={table.getColumn("departmentCode")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("departmentCode")
+                ?.setFilterValue(event.target.value)
+            }
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
+          />
         </div>
-        <div className="mb-5 max-w-[15em]">
-          <StatusFilter table={table} option={"department"} />
+
+        <div className=" ">
+          <AddDepartment />
+        </div>
+      </div>
+
+      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="mb-5 flex w-full items-center justify-between gap-3">
+          <div className="w-[11em]">
+            <StatusFilter table={table} option={"department"} />
+          </div>
         </div>
 
         <div className="max-w-full overflow-x-auto">

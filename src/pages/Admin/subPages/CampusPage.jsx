@@ -41,7 +41,7 @@ import { ArrowUpDown } from "lucide-react";
 
 import SmallLoader from "../../../components/styles/SmallLoader";
 
-import { DeleteIcon, ReactivateIcon } from "../../../components/Icons";
+import { DeleteIcon } from "../../../components/Icons";
 
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 
@@ -51,7 +51,6 @@ import AddCampus from "../../../components/api/AddCampus";
 
 import EditCampus from "../../../components/api/EditCampus";
 
-import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
 import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
 import DeletedCampus from "../../../components/api/DeletedCampus";
 

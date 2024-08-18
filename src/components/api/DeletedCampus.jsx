@@ -1,6 +1,3 @@
-import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
-import DefaultLayout from "../../layout/DefaultLayout";
-
 /* eslint-disable react/prop-types */
 import {
   flexRender,
@@ -18,12 +15,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../components/ui/table";
+} from "../ui/table";
 
 import { useState } from "react";
 
-import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
+import { Button } from "../ui/button";
+
 import {
   Dialog,
   DialogClose,
@@ -33,115 +30,81 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
-
-import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
+} from "../ui/dialog";
 
 import { ArrowUpDown } from "lucide-react";
 
-import SmallLoader from "../../../components/styles/SmallLoader";
+import SmallLoader from "../styles/SmallLoader";
 
-import { DeleteIcon, ReactivateIcon } from "../../../components/Icons";
+import { ArchiveIcon, DeleteIcon, ReactivateIcon, UndoIcon } from "../Icons";
 
-import StatusFilter from "../../../components/reuseable/StatusFilter";
+import { useStudents } from "../context/StudentContext";
 
-import { useStudents } from "../../../components/context/StudentContext";
+import EditCampus from "./EditCampus";
 
-import AddCampus from "../../../components/api/AddCampus";
+import ButtonActionCampus from "../reuseable/ButtonActionCampus";
 
-import EditCampus from "../../../components/api/EditCampus";
-
-import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
-import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
-import DeletedCampus from "../../../components/api/DeletedCampus";
-
-const CampusPage = () => {
-  const NavItems = [
-    { to: "/", label: "Dashboard" },
-    // { to: "/campus/add-campus", label: "Add Campus" },
-    { label: "Campus" },
-  ];
+const DeletedCampus = () => {
+  const [open, setOpen] = useState(false);
 
   return (
-    <DefaultLayout>
-      <BreadcrumbResponsive
-        pageName={"Campus"}
-        items={NavItems}
-        ITEMS_TO_DISPLAY={2}
-      />
-
-      <CampusTables />
-    </DefaultLayout>
+    <>
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+        }}
+      >
+        <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
+          <ArchiveIcon />
+          <span className="max-w-[8em]">Deleted Campus </span>
+        </DialogTrigger>
+        <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-medium text-black dark:text-white">
+              Deleted Campus
+            </DialogTitle>
+            <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <CampusTables />
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
 const CampusTables = () => {
-  const { campus, fetchCampus, fetchCampusDeleted, loading, error } =
+  const { campusDeleted, fetchCampusDeleted, fetchCampus, loading, error } =
     useStudents();
 
   const columns = [
     {
       accessorKey: "campus_id",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            ID
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: "ID",
       cell: ({ cell }) => {
         return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
     {
       accessorKey: "campusName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
+      header: "Campus Name",
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
       },
     },
 
     {
-      accessorKey: "campusAddress",
-      header: "Campus Address",
-      cell: ({ cell }) => {
-        return cell.getValue();
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Date Created",
-      cell: ({ cell }) => {
-        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-      },
-    },
-    {
-      accessorKey: "isActive",
+      accessorKey: "isDeleted",
       header: "Status",
       cell: ({ cell }) => {
         return (
           <span
             className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-              cell.getValue() ? "bg-success" : "bg-danger"
+              cell.getValue() === false ? "bg-success" : "bg-danger"
             }`}
           >
-            {cell.getValue() ? "Active" : "Inactive"}
+            {cell.getValue() === false ? "Active" : "Deleted"}
           </span>
         );
       },
@@ -154,8 +117,6 @@ const CampusTables = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCampus campusId={row.getValue("campus_id")} />
-
             {row.getValue("isActive") ? (
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
@@ -178,8 +139,8 @@ const CampusTables = () => {
                         action="delete"
                         campusId={row.getValue("campus_id")}
                         onSuccess={() => {
-                          fetchCampus();
                           fetchCampusDeleted();
+                          fetchCampus();
                         }}
                       />
 
@@ -199,7 +160,7 @@ const CampusTables = () => {
               <>
                 <Dialog>
                   <DialogTrigger className="p-2 hover:text-primary">
-                    <ReactivateIcon />
+                    <UndoIcon />
                   </DialogTrigger>
                   <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                     <DialogHeader>
@@ -208,16 +169,19 @@ const CampusTables = () => {
                       </DialogTitle>
                       <DialogDescription asChild className="mt-2">
                         <p className="mb-5">
-                          Are you sure you want to reactivate this department?
+                          Are you sure you want to reactivate this campus?
                         </p>
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionDepartment
+                        <ButtonActionCampus
                           action="reactivate"
-                          departmentId={row.getValue("campus_id")}
-                          onSuccess={fetchCampus}
+                          campusId={row.getValue("campus_id")}
+                          onSuccess={() => {
+                            fetchCampusDeleted();
+                            fetchCampus();
+                          }}
                         />
                         <DialogClose asChild>
                           <Button
@@ -243,7 +207,7 @@ const CampusTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={campus}
+        data={campusDeleted}
         loading={loading}
         error={error}
       />
@@ -279,42 +243,6 @@ const DataTable = ({ data, columns, loading, error }) => {
   return (
     <>
       <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="mb-3 mt-2 flex w-full items-start justify-between">
-          <div className="flex gap-5">
-            <Input
-              placeholder="Search by name..."
-              value={table.getColumn("campusName")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("campusName")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em]"
-            />
-
-            <Input
-              placeholder="Search by address..."
-              value={table.getColumn("campusAddress")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("campusAddress")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em]"
-            />
-          </div>
-
-          <div className=" ">
-            <AddCampus />
-          </div>
-        </div>
-        <div className="mb-5 flex justify-between">
-          <div className="max-w-[15em]">
-            <StatusFilter table={table} option={"department"} />
-          </div>
-          <DeletedCampus />
-        </div>
-
         <div className="max-w-full overflow-x-auto">
           <Table className="border border-stroke dark:border-strokedark">
             <TableHeader>
@@ -395,13 +323,9 @@ const DataTable = ({ data, columns, loading, error }) => {
             </TableBody>
           </Table>
         </div>
-
-        <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination table={table} totalDepartments={data.length} />
-        </div>
       </div>
     </>
   );
 };
 
-export default CampusPage;
+export default DeletedCampus;

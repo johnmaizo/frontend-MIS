@@ -127,7 +127,10 @@ const AddCampus = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="campus_name"
                       >
-                        Campus Name
+                        Campus Name{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="campus_name"
@@ -152,13 +155,16 @@ const AddCampus = () => {
                         </ErrorMessage>
                       )}
                     </div>
-                    
+
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="campus_address"
                       >
-                        Campus Address
+                        Campus Address{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="campus_address"
@@ -197,10 +203,10 @@ const AddCampus = () => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Adding Department..."
+                        ? "Adding Campus..."
                         : success
-                          ? "Department Added!"
-                          : "Add Department"}
+                          ? "Campus Added!"
+                          : "Add Campus"}
                     </button>
                   </div>
                 </form>

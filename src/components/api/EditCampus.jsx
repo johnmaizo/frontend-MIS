@@ -17,8 +17,8 @@ import {
 import { useStudents } from "../context/StudentContext";
 import { Switch } from "../ui/switch";
 
-const EditDepartment = ({ departmentId }) => {
-  const { fetchDepartments } = useStudents();
+const EditCampus = ({ campusId }) => {
+  const { fetchCampus } = useStudents();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
@@ -35,26 +35,25 @@ const EditDepartment = ({ departmentId }) => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (departmentId && open) {
-      // Fetch the department data when the modal is opened
+    if (campusId && open) {
+      // Fetch the campus data when the modal is opened
       setLoading(true);
       axios
-        .get(`/departments/${departmentId}`)
+        .get(`/campus/${campusId}`)
         .then((response) => {
-          const department = response.data;
-          // Pre-fill the form with department data
-          setValue("departmentCode", department.departmentCode);
-          setValue("departmentName", department.departmentName);
-          setValue("departmentDean", department.departmentDean);
-          setIsActive(department.isActive); // Set the initial status
+          const campus = response.data;
+          // Pre-fill the form with campus data
+          setValue("campusName", campus.campusName);
+          setValue("campusAddress", campus.campusAddress);
+          setIsActive(campus.isActive); // Set the initial status
           setLoading(false);
         })
         .catch((err) => {
-          setError(`Failed to fetch department data: (${err})`);
+          setError(`Failed to fetch campus data: (${err})`);
           setLoading(false);
         });
     }
-  }, [departmentId, open, setValue]);
+  }, [campusId, open, setValue]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -72,11 +71,11 @@ const EditDepartment = ({ departmentId }) => {
     setError("");
     try {
       const response = await toast.promise(
-        axios.put(`/departments/${departmentId}`, transformedData),
+        axios.put(`/campus/${campusId}`, transformedData),
         {
-          loading: "Updating Department...",
-          success: "Department updated successfully!",
-          error: "Failed to update Department.",
+          loading: "Updating Campus...",
+          success: "Campus updated successfully!",
+          error: "Failed to update Campus.",
         },
         {
           position: "bottom-right",
@@ -86,7 +85,7 @@ const EditDepartment = ({ departmentId }) => {
 
       if (response.data) {
         setSuccess(true);
-        fetchDepartments();
+        fetchCampus();
         setOpen(false); // Close the dialog
       }
       setLoading(false);
@@ -139,21 +138,21 @@ const EditDepartment = ({ departmentId }) => {
           }}
         >
           <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
-            <EditDepartmentIcon />
+            <EditDepartmentIcon forActions={"Edit Campus"} />
           </DialogTrigger>
 
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Edit Department
+                Edit Campus
               </DialogTitle>
               <DialogDescription className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
-                    <div className="w-full xl:w-[12em]">
+                    <div className="mb-5 w-full xl:w-[12em]">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="department_active"
+                        htmlFor="campus_active"
                       >
                         Status{" "}
                         <span className="inline-block font-bold text-red-700">
@@ -161,109 +160,80 @@ const EditDepartment = ({ departmentId }) => {
                         </span>
                       </label>
                       <Switch
-                        id="department_active"
+                        id="campus_active"
                         checked={isActive}
                         onCheckedChange={setIsActive} // Update the status when the switch is toggled
                         disabled={success || loading}
                       />
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[12em]">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="dept_code"
-                        >
-                          Department Code
-                        </label>
-                        <input
-                          id="dept_code"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("departmentCode", {
-                            required: {
-                              value: true,
-                              message: "Department Code is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Department Code cannot be empty or just spaces",
-                            },
-                          })}
-                          disabled={success || loading}
-                        />
-                        {errors.departmentCode && (
-                          <ErrorMessage>
-                            *{errors.departmentCode.message}
-                          </ErrorMessage>
-                        )}
-                      </div>
-
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="dept_name"
-                        >
-                          Department Name
-                        </label>
-                        <input
-                          id="dept_name"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("departmentName", {
-                            required: {
-                              value: true,
-                              message: "Department Name is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Department Name cannot be empty or just spaces",
-                            },
-                          })}
-                          disabled={success || loading}
-                        />
-                        {errors.departmentName && (
-                          <ErrorMessage>
-                            *{errors.departmentName.message}
-                          </ErrorMessage>
-                        )}
-                      </div>
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="campus_name"
+                      >
+                        Campus Name{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <input
+                        id="campus_name"
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("campusName", {
+                          required: {
+                            value: true,
+                            message: "Campus Name is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Campus Name cannot be empty or just spaces",
+                          },
+                        })}
+                        disabled={success || loading}
+                      />
+                      {errors.campusName && (
+                        <ErrorMessage>
+                          *{errors.campusName.message}
+                        </ErrorMessage>
+                      )}
                     </div>
 
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="dept_dean"
+                        htmlFor="dept_name"
                       >
-                        Department Dean
+                        Campus Address{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
-                        id="dept_dean"
+                        id="dept_name"
                         type="text"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("departmentDean", {
+                        {...register("campusAddress", {
                           required: {
                             value: true,
-                            message: "Department Dean is required",
+                            message: "Campus Address is required",
                           },
                           validate: {
                             notEmpty: (value) =>
                               value.trim() !== "" ||
-                              "Department Dean cannot be empty or just spaces",
+                              "Campus Address cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success}
+                        disabled={success || loading}
                       />
-                      {errors.departmentDean && (
+                      {errors.campusAddress && (
                         <ErrorMessage>
-                          *{errors.departmentDean.message}
+                          *{errors.campusAddress.message}
                         </ErrorMessage>
                       )}
                     </div>
-
-                    <div className="mb-4.5 w-full"></div>
 
                     <button
                       type="submit"
@@ -278,10 +248,10 @@ const EditDepartment = ({ departmentId }) => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Updating Department..."
+                        ? "Updating Campus..."
                         : success
-                          ? "Department Updated!"
-                          : "Update Department"}
+                          ? "Campus Updated!"
+                          : "Update Campus"}
                     </button>
                   </div>
                 </form>
@@ -307,4 +277,4 @@ const ErrorMessage = ({ children }) => {
   );
 };
 
-export default EditDepartment;
+export default EditCampus;

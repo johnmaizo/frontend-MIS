@@ -7,6 +7,7 @@ import {
   CalendarIcon,
   CampusIcon,
   DepartmentIcon,
+  SubjectIcon,
   TeacherIcon,
 } from "../../../components/Icons";
 
@@ -208,7 +209,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                 "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
               }`}
             >
-              <DepartmentIcon />
+              <SubjectIcon />
               Subjects
             </NavLink>
           </li>

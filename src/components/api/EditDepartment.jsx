@@ -17,11 +17,23 @@ import {
 import { useStudents } from "../context/StudentContext";
 import { Switch } from "../ui/switch";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
 const EditDepartment = ({ departmentId }) => {
-  const { fetchDepartments } = useStudents();
+  const { fetchDepartments, campusActive, fetchCampusActive } = useStudents();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
+
+  const [selectedCampus, setSelectedCampus] = useState(""); // State for selected campus
 
   const {
     register,
@@ -29,6 +41,7 @@ const EditDepartment = ({ departmentId }) => {
     reset,
     formState: { errors },
     setValue,
+    clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
   const [error, setError] = useState("");
@@ -47,18 +60,26 @@ const EditDepartment = ({ departmentId }) => {
           setValue("departmentName", department.departmentName);
           setValue("departmentDean", department.departmentDean);
           setIsActive(department.isActive); // Set the initial status
+          setSelectedCampus(department.campus_id.toString()); // Set the initial campus
           setLoading(false);
         })
         .catch((err) => {
           setError(`Failed to fetch department data: (${err})`);
           setLoading(false);
         });
+
+        // fetchCampusActive();
     }
   }, [departmentId, open, setValue]);
 
   const onSubmit = async (data) => {
+    if (!selectedCampus) {
+      setError("campus_id", "You must select a campus.");
+      return;
+    }
+
     setLoading(true);
-    // Add isActive to the form data
+    // Add isActive and selectedCampus to the form data
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
@@ -67,6 +88,7 @@ const EditDepartment = ({ departmentId }) => {
         ]),
       ),
       isActive: isActive ? true : false, // Set isActive based on the switch value
+      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
 
     setError("");
@@ -135,6 +157,8 @@ const EditDepartment = ({ departmentId }) => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
+              setSelectedCampus(""); // Reset selected campus
+              clearErrors("campus_id"); // Clear campus selection error when dialog closes
             }
           }}
         >
@@ -254,7 +278,7 @@ const EditDepartment = ({ departmentId }) => {
                               "Department Dean cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success}
+                        disabled={success || loading}
                       />
                       {errors.departmentDean && (
                         <ErrorMessage>
@@ -263,7 +287,52 @@ const EditDepartment = ({ departmentId }) => {
                       )}
                     </div>
 
-                    <div className="mb-4.5 w-full"></div>
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="campus"
+                      >
+                        Select Campus{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCampus(value);
+                          clearErrors("campus_id");
+                        }}
+                        value={selectedCampus}
+                        disabled={success || loading}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a campus" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Campuses</SelectLabel>
+                            {campusActive.map((campus) => (
+                              <SelectItem
+                                key={campus.campus_id}
+                                value={campus.campus_id.toString()}
+                              >
+                                {/* {campus.campusCode} - {campus.campusName} */}
+                                {campus.campusName}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      {errors.campus_id && (
+                        <ErrorMessage>{errors.campus_id.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    {error && (
+                      <span className="mt-2 pb-6 inline-block font-medium text-red-600">
+                        Error: {error} 
+                      </span>
+                    )}
 
                     <button
                       type="submit"
@@ -285,10 +354,6 @@ const EditDepartment = ({ departmentId }) => {
                     </button>
                   </div>
                 </form>
-
-                {error && (
-                  <div className="mb-5 text-center text-red-600">{error}</div>
-                )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

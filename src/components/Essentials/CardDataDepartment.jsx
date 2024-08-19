@@ -17,7 +17,7 @@ const CardDataDepartment = () => {
     const fetchData = async () => {
       try {
         const currentResponse = await axios.get("/departments/active");
-        const total = currentResponse.data;
+        const total = currentResponse.data.length;
         setTotalStudent(total);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {

@@ -147,7 +147,7 @@ const AddCampus = () => {
                               "Campus Name cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success}
+                        disabled={loading || success}
                       />
                       {errors.campusName && (
                         <ErrorMessage>
@@ -181,7 +181,7 @@ const AddCampus = () => {
                               "Campus Address cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success}
+                        disabled={loading || success}
                       />
                       {errors.campusAddress && (
                         <ErrorMessage>
@@ -190,6 +190,12 @@ const AddCampus = () => {
                       )}
                     </div>
 
+                    {error && (
+                      <div className="mb-5 text-center text-red-600">
+                        {error}
+                      </div>
+                    )}
+
                     <button
                       type="submit"
                       className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
@@ -197,7 +203,7 @@ const AddCampus = () => {
                           ? "bg-[#505456] hover:!bg-opacity-100"
                           : ""
                       }`}
-                      disabled={loading || success}
+                      disabled={loading || success || error}
                     >
                       {loading && (
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
@@ -210,10 +216,6 @@ const AddCampus = () => {
                     </button>
                   </div>
                 </form>
-
-                {error && (
-                  <div className="mb-5 text-center text-red-600">{error}</div>
-                )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

@@ -112,6 +112,10 @@ const DepartmentTables = () => {
       header: "Dean"
     },
     {
+      accessorKey: "campusName",
+      header: "Campus"
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ cell }) => {

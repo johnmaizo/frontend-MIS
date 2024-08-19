@@ -35,28 +35,34 @@ const AddDepartment = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    setError,
+    clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
-  const [error, setError] = useState("");
+  const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCampusActive();
-    console.log(campusActive);
   }, []);
 
   const onSubmit = async (data) => {
+    if (!selectedCampus) {
+      setError("campus_id", {
+        type: "manual",
+        message: "You must select a campus.",
+      });
+      return;
+    }
+
     setLoading(true);
-    // Transform form data to replace empty strings or strings with only spaces with null
     const transformedData = {
       ...data,
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
 
-    console.log(transformedData);
-
-    setError("");
+    setGeneralError("");
     try {
       const response = await toast.promise(
         axios.post("/departments/add-department", transformedData),
@@ -79,9 +85,9 @@ const AddDepartment = () => {
       setLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+        setGeneralError(err.response.data.message);
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        setGeneralError("An unexpected error occurred. Please try again.");
       }
       setLoading(false);
     }
@@ -96,7 +102,7 @@ const AddDepartment = () => {
       }, 5000);
     } else if (error) {
       setTimeout(() => {
-        setError("");
+        setGeneralError("");
       }, 6000);
     }
   }, [success, error, reset]);
@@ -124,6 +130,7 @@ const AddDepartment = () => {
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
               setSelectedCampus(""); // Reset selected campus
+              clearErrors("campus_id"); // Clear campus selection error when dialog closes
             }
           }}
         >
@@ -162,7 +169,7 @@ const AddDepartment = () => {
                                 "Department Code cannot be empty or just spaces",
                             },
                           })}
-                          disabled={success}
+                          disabled={loading || success}
                         />
                         {errors.departmentCode && (
                           <ErrorMessage>
@@ -193,7 +200,7 @@ const AddDepartment = () => {
                                 "Department Name cannot be empty or just spaces",
                             },
                           })}
-                          disabled={success}
+                          disabled={loading || success}
                         />
                         {errors.departmentName && (
                           <ErrorMessage>
@@ -225,7 +232,7 @@ const AddDepartment = () => {
                               "Department Dean cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success}
+                        disabled={loading || success}
                       />
                       {errors.departmentDean && (
                         <ErrorMessage>
@@ -246,9 +253,9 @@ const AddDepartment = () => {
                         value={selectedCampus}
                         onValueChange={(value) => {
                           setSelectedCampus(value);
-                          console.log("Value: ", value);
-                          console.log("Selected Campus: ", selectedCampus);
+                          clearErrors("campus_id"); // Clear error when campus is selected
                         }}
+                        disabled={loading || success}
                       >
                         <SelectTrigger className="h-[2.5em] w-full text-xl">
                           <SelectValue placeholder="Select campus" />
@@ -279,9 +286,15 @@ const AddDepartment = () => {
                       )}
                     </div>
 
+                    {error && (
+                      <span className="mt-2 py-3 inline-block font-medium text-red-600">
+                        Error: {error} 
+                      </span>
+                    )}
+
                     <button
                       type="submit"
-                      className="mt-5 inline-flex w-full cursor-pointer items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
+                      className="mt-5 inline-flex w-full items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                       disabled={loading || success}
                     >
                       {loading ? (

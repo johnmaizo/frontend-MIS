@@ -107,9 +107,9 @@ const CampusTables = () => {
     },
 
     {
-      header: "Actions",
+      header: "Action",
       accessorFn: (row) => `${row.campus_id} ${row.isDeleted}`,
-      id: "actions",
+      id: "action",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">

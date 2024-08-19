@@ -38,7 +38,7 @@ import { ArrowUpDown } from "lucide-react";
 
 import SmallLoader from "../styles/SmallLoader";
 
-import { DeleteIcon, ReactivateIcon } from "../Icons";
+import { DeleteIcon } from "../Icons";
 
 import StatusFilter from "../reuseable/StatusFilter";
 
@@ -46,9 +46,10 @@ import { useStudents } from "../context/StudentContext";
 import AddDepartment from "./AddDepartment";
 import EditDepartment from "./EditDepartment";
 import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
+import DeletedDepartment from "./DeletedDepartment";
 
 const DepartmentTables = () => {
-  const { departments, fetchDepartments, loading, error } = useStudents();
+  const { departments, fetchDepartments, fetchDepartmentsDeleted, loading, error } = useStudents();
 
   const columns = [
     {
@@ -109,11 +110,11 @@ const DepartmentTables = () => {
     // },
     {
       accessorKey: "departmentDean",
-      header: "Dean"
+      header: "Dean",
     },
     {
       accessorKey: "campusName",
-      header: "Campus"
+      header: "Campus",
     },
     {
       accessorKey: "isActive",
@@ -140,79 +141,43 @@ const DepartmentTables = () => {
           <div className="flex items-center gap-1">
             <EditDepartment departmentId={row.getValue("department_id")} />
 
-            {row.getValue("isActive") ? (
-              <Dialog>
-                <DialogTrigger className="p-2 hover:text-primary">
-                  <DeleteIcon />
-                </DialogTrigger>
-                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold">
-                      Deactivate
-                    </DialogTitle>
-                    <DialogDescription asChild className="mt-2">
-                      <p className="mb-5">
-                        Are you sure you want to deactivate this department?
-                      </p>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                      <ButtonActionDepartment
-                        action="delete"
-                        departmentId={row.getValue("department_id")}
-                        onSuccess={fetchDepartments}
-                      />
-                      <DialogClose asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full underline-offset-4 hover:underline"
-                        >
-                          Cancel
-                        </Button>
-                      </DialogClose>
-                    </div>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            ) : (
-              <>
-                <Dialog>
-                  <DialogTrigger className="p-2 hover:text-primary">
-                    <ReactivateIcon />
-                  </DialogTrigger>
-                  <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl font-bold">
-                        Reactivate
-                      </DialogTitle>
-                      <DialogDescription asChild className="mt-2">
-                        <p className="mb-5">
-                          Are you sure you want to reactivate this department?
-                        </p>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionDepartment
-                          action="reactivate"
-                          departmentId={row.getValue("department_id")}
-                          onSuccess={fetchDepartments}
-                        />
-                        <DialogClose asChild>
-                          <Button
-                            variant="ghost"
-                            className="w-full underline-offset-4 hover:underline"
-                          >
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </div>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </>
-            )}
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete Department
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this department?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonActionDepartment
+                      action="delete"
+                      departmentId={row.getValue("department_id")}
+                      onSuccess={() => {
+                        fetchDepartments();
+                        fetchDepartmentsDeleted();
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         );
       },
@@ -293,6 +258,8 @@ const DataTable = ({ data, columns, loading, error }) => {
           <div className="w-[11em]">
             <StatusFilter table={table} option={"department"} />
           </div>
+
+          <DeletedDepartment />
         </div>
 
         <div className="max-w-full overflow-x-auto">

@@ -10,28 +10,40 @@ const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
 
   const handleAction = async () => {
     setLoading(true);
-    
+
     try {
-      const isActive = action === "reactivate";
+      const isDeleted = action === "reactivate" ? false : true;
       await toast.promise(
-        axios.put(`/departments/${departmentId}`, { isActive }),
+        axios.put(`/departments/${departmentId}`, { isDeleted }),
         {
-          loading: isActive ? "Reactivating department..." : "Deactivating department...",
-          success: isActive ? "Department reactivated successfully!" : "Department deactivated successfully!",
-          error: isActive ? "Failed to reactivate department." : "Failed to deactivate department.",
+          loading: isDeleted
+            ? "Reactivating department..."
+            : "Deleting department...",
+          success: isDeleted
+            ? "Department reactivated successfully!"
+            : "Department deleted successfully!",
+          error: isDeleted
+            ? "Failed to reactivate department."
+            : "Failed to delete department.",
         },
         {
           position: "bottom-right",
           duration: 4500,
-        }
+        },
       );
       setLoading(false);
       onSuccess();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        toast.error(`Error: ${err.response.data.message}`, { position: "bottom-right", duration: 4500 });
+        toast.error(`Error: ${err.response.data.message}`, {
+          position: "bottom-right",
+          duration: 4500,
+        });
       } else {
-        toast.error("Failed to update department status", { position: "bottom-right", duration: 4500 });
+        toast.error("Failed to update department status", {
+          position: "bottom-right",
+          duration: 4500,
+        });
       }
       setLoading(false);
     }
@@ -39,12 +51,12 @@ const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
 
   return (
     <Button
-      className={`w-full ${action === "delete" ? "!bg-red-600 hover:!bg-red-700 focus:!bg-red-700" : action === "reactivate" ? "!bg-green-600 hover:!bg-green-700 focus:!bg-green-700" : ""} !rounded-md p-2 !text-sm !text-white underline-offset-4 hover:underline  inline-flex gap-2`}
+      className={`w-full ${action === "delete" ? "!bg-red-600 hover:!bg-red-700 focus:!bg-red-700" : action === "reactivate" ? "!bg-green-600 hover:!bg-green-700 focus:!bg-green-700" : ""} inline-flex gap-2 !rounded-md p-2 !text-sm !text-white underline-offset-4 hover:underline`}
       onClick={handleAction}
       disabled={loading}
     >
       {loading && <SmallLoader />}
-      {loading ? "Loading..." : action === "delete" ? "Deactivate" : "Reactivate"}
+      {loading ? "Loading..." : action === "delete" ? "Delete" : "Reactivate"}
     </Button>
   );
 };

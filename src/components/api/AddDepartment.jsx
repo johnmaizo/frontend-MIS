@@ -26,7 +26,7 @@ import { AddDepartmentIcon } from "../Icons";
 import { useStudents } from "../context/StudentContext";
 
 const AddDepartment = () => {
-  const { fetchDepartments, campusActive, fetchCampusActive } = useStudents();
+  const { fetchDepartments, campusActive, fetchCampusActive, loading } = useStudents();
   const [open, setOpen] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
@@ -41,7 +41,7 @@ const AddDepartment = () => {
 
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
     fetchCampusActive();
@@ -56,7 +56,7 @@ const AddDepartment = () => {
       return;
     }
 
-    setLoading(true);
+    setLocalLoading(true);
     const transformedData = {
       ...data,
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
@@ -82,14 +82,14 @@ const AddDepartment = () => {
         fetchDepartments();
         setOpen(false); // Close the dialog
       }
-      setLoading(false);
+      setLocalLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setGeneralError(err.response.data.message);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -169,7 +169,7 @@ const AddDepartment = () => {
                                 "Department Code cannot be empty or just spaces",
                             },
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.departmentCode && (
                           <ErrorMessage>
@@ -200,7 +200,7 @@ const AddDepartment = () => {
                                 "Department Name cannot be empty or just spaces",
                             },
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.departmentName && (
                           <ErrorMessage>
@@ -232,7 +232,7 @@ const AddDepartment = () => {
                               "Department Dean cannot be empty or just spaces",
                           },
                         })}
-                        disabled={loading || success}
+                        disabled={localLoading || success}
                       />
                       {errors.departmentDean && (
                         <ErrorMessage>
@@ -255,10 +255,10 @@ const AddDepartment = () => {
                           setSelectedCampus(value);
                           clearErrors("campus_id"); // Clear error when campus is selected
                         }}
-                        disabled={loading || success}
+                        disabled={localLoading || success || loading}
                       >
-                        <SelectTrigger className="h-[2.5em] w-full text-xl">
-                          <SelectValue placeholder="Select campus" />
+                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                          <SelectValue placeholder={loading ? "Loading..." : "Select campus"} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
@@ -287,17 +287,17 @@ const AddDepartment = () => {
                     </div>
 
                     {error && (
-                      <span className="mt-2 py-3 inline-block font-medium text-red-600">
-                        Error: {error} 
+                      <span className="mt-2 inline-block py-3 font-medium text-red-600">
+                        Error: {error}
                       </span>
                     )}
 
                     <button
                       type="submit"
                       className="mt-5 inline-flex w-full items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
-                      disabled={loading || success}
+                      disabled={localLoading || success}
                     >
-                      {loading ? (
+                      {localLoading ? (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       ) : (
                         "Add Department"

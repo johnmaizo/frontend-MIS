@@ -38,9 +38,9 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useStudents } from "../context/StudentContext";
 
-import ButtonActionCampus from "../reuseable/ButtonActionCampus";
+import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
 
-const DeletedCampus = () => {
+const DeletedDepartment = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -53,12 +53,12 @@ const DeletedCampus = () => {
       >
         <DialogTrigger className="flex items-center gap-1 rounded bg-blue-600 p-2 text-xs font-medium text-white hover:bg-blue-700">
           <ArchiveIcon />
-          <span className="max-w-[8em]">Deleted Campus </span>
+          <span className="max-w-[10em]">Deleted Department </span>
         </DialogTrigger>
         <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
           <DialogHeader>
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
-              Deleted Campus
+              Deleted Departments
             </DialogTitle>
             <DialogDescription className="overflow-y-auto overscroll-none text-xl">
               <CampusTables />
@@ -71,16 +71,18 @@ const DeletedCampus = () => {
 };
 
 const CampusTables = () => {
-  const { fetchCampus, campusDeleted, fetchCampusDeleted, loading, error } =
-    useStudents();
+  const {
+    fetchDepartments,
+    deparmentsDeleted,
+    fetchDepartmentsDeleted,
+    loading,
+    error,
+  } = useStudents();
 
   const columns = [
     {
       accessorKey: "campus_id",
       header: "ID",
-      cell: ({ cell }) => {
-        return <span className="font-semibold">{cell.getValue()}</span>;
-      },
     },
     {
       accessorKey: "campusName",
@@ -132,12 +134,12 @@ const CampusTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionCampus
+                        <ButtonActionDepartment
                           action="reactivate"
-                          campusId={row.getValue("campus_id")}
+                          departmentId={row.getValue("campus_id")}
                           onSuccess={() => {
-                            fetchCampusDeleted();
-                            fetchCampus();
+                            fetchDepartmentsDeleted();
+                            fetchDepartments();
                           }}
                         />
                         <DialogClose asChild>
@@ -164,7 +166,7 @@ const CampusTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={campusDeleted}
+        data={deparmentsDeleted}
         loading={loading}
         error={error}
       />
@@ -283,4 +285,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default DeletedCampus;
+export default DeletedDepartment;

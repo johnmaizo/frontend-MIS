@@ -54,11 +54,7 @@ const ButtonActionCampus = ({ action, campusId, onSuccess }) => {
       disabled={loading}
     >
       {loading && <SmallLoader />}
-      {loading
-        ? "Loading..."
-        : action === "delete"
-          ? "Delete"
-          : "Reactivate"}
+      {loading ? "Loading..." : action === "delete" ? "Delete" : "Reactivate"}
     </Button>
   );
 };

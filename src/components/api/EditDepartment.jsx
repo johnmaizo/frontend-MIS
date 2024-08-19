@@ -28,7 +28,7 @@ import {
 } from "../ui/select";
 
 const EditDepartment = ({ departmentId }) => {
-  const { fetchDepartments, campusActive, fetchCampusActive } = useStudents();
+  const { fetchDepartments, campusActive } = useStudents();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
@@ -67,8 +67,6 @@ const EditDepartment = ({ departmentId }) => {
           setError(`Failed to fetch department data: (${err})`);
           setLoading(false);
         });
-
-        // fetchCampusActive();
     }
   }, [departmentId, open, setValue]);
 
@@ -174,7 +172,7 @@ const EditDepartment = ({ departmentId }) => {
               <DialogDescription className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
-                    <div className="w-full xl:w-[12em]">
+                    <div className="w-full pb-3 xl:w-[12em]">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="department_active"
@@ -305,7 +303,7 @@ const EditDepartment = ({ departmentId }) => {
                         value={selectedCampus}
                         disabled={success || loading}
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
                           <SelectValue placeholder="Select a campus" />
                         </SelectTrigger>
                         <SelectContent>
@@ -329,8 +327,8 @@ const EditDepartment = ({ departmentId }) => {
                     </div>
 
                     {error && (
-                      <span className="mt-2 pb-6 inline-block font-medium text-red-600">
-                        Error: {error} 
+                      <span className="mt-2 inline-block pb-6 font-medium text-red-600">
+                        Error: {error}
                       </span>
                     )}
 

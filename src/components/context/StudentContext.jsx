@@ -37,6 +37,7 @@ export const StudentProvider = ({ children }) => {
 
   // ! Departments START
   const [departments, setDepartments] = useState([]);
+  const [deparmentsDeleted, setDepartmentsDeleted] = useState([]);
 
   const fetchDepartments = async () => {
     setLoading(true);
@@ -53,8 +54,27 @@ export const StudentProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const fetchDepartmentsDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/departments/deleted");
+      setDepartmentsDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch department deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    fetchDepartmentsDeleted();
   }, []);
   // ! Departments END
 
@@ -135,6 +155,8 @@ export const StudentProvider = ({ children }) => {
         // ! Department
         departments,
         fetchDepartments,
+        deparmentsDeleted,
+        fetchDepartmentsDeleted,
 
         // ! Campus
         campus,

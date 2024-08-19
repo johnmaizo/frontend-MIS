@@ -109,10 +109,7 @@ const DepartmentTables = () => {
     // },
     {
       accessorKey: "departmentDean",
-      header: "Dean",
-      cell: ({ cell }) => {
-        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-      },
+      header: "Dean"
     },
     {
       accessorKey: "isActive",

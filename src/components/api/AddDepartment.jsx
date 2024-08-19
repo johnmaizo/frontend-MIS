@@ -26,9 +26,9 @@ import { AddDepartmentIcon } from "../Icons";
 import { useStudents } from "../context/StudentContext";
 
 const AddDepartment = () => {
-  const { fetchDepartments, campus, fetchCampus } = useStudents();
+  const { fetchDepartments, campusActive, fetchCampusActive } = useStudents();
   const [open, setOpen] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState(); // State to hold the selected campus
+  const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
   const {
     register,
@@ -42,7 +42,8 @@ const AddDepartment = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchCampus();
+    fetchCampusActive();
+    console.log(campusActive);
   }, []);
 
   const onSubmit = async (data) => {
@@ -50,8 +51,10 @@ const AddDepartment = () => {
     // Transform form data to replace empty strings or strings with only spaces with null
     const transformedData = {
       ...data,
-      campus_id: selectedCampus, // Add the selected campus to the form data
+      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
+
+    console.log(transformedData);
 
     setError("");
     try {
@@ -239,29 +242,12 @@ const AddDepartment = () => {
                         Campus
                       </label>
 
-                      {/* <Select>
-                        <SelectTrigger className="h-[2.5em] w-full text-xl">
-                          <SelectValue placeholder="Select Campus" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Campus</SelectLabel>
-
-                            {campus.map((campus) => (
-                              <SelectItem key={campus.campus_id} value={campus.campus_id}>
-                                {campus.campusName}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select> */}
-
                       <Select
                         value={selectedCampus}
                         onValueChange={(value) => {
                           setSelectedCampus(value);
-                          console.log("Value: ",value)
-                          console.log("Selected Campus: ", selectedCampus)
+                          console.log("Value: ", value);
+                          console.log("Selected Campus: ", selectedCampus);
                         }}
                       >
                         <SelectTrigger className="h-[2.5em] w-full text-xl">
@@ -270,17 +256,20 @@ const AddDepartment = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Campus</SelectLabel>
-                            {/* <SelectItem value="1">Mandaue Campus</SelectItem>
-                            <SelectItem value="2">test</SelectItem>
-                            <SelectItem value="3">test2</SelectItem> */}
-                            {campus.map((campus) => (
-                              <SelectItem
-                                key={campus.campus_id}
-                                value={campus.campus_id}
-                              >
-                                {campus.campusName} - {campus.campus_id}
+                            {campusActive && campusActive.length ? (
+                              campusActive.map((campus) => (
+                                <SelectItem
+                                  key={campus.campus_id}
+                                  value={campus.campus_id.toString()}
+                                >
+                                  {campus.campusName}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem disabled>
+                                (Empty, Please add new Course)
                               </SelectItem>
-                            ))}
+                            )}
                           </SelectGroup>
                         </SelectContent>
                       </Select>

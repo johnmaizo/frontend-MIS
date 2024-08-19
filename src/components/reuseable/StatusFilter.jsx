@@ -31,10 +31,7 @@ const StatusFilter = ({ table, option }) => {
           )}
         </div>
         <Select
-          onValueChange={(value) => {
-            handleStatusChange(value);
-            console.log("Status Filter: ", status)
-          }}
+          onValueChange={(value) => handleStatusChange(value)}
           value={status}
         >
           <SelectTrigger

@@ -61,6 +61,7 @@ export const StudentProvider = ({ children }) => {
   // ! Campus START
   const [campus, setCampus] = useState([]);
   const [campusDeleted, setCampusDeleted] = useState([]);
+  const [campusActive, setCampusActive] = useState([]);
 
   const fetchCampus = async () => {
     setLoading(true);
@@ -92,12 +93,31 @@ export const StudentProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const fetchCampusActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/campus/active");
+      setCampusActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Campus active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchCampus();
   }, []);
 
   useEffect(() => {
     fetchCampusDeleted();
+  }, []);
+
+  useEffect(() => {
+    fetchCampusActive();
   }, []);
   // ! Campus END
 
@@ -121,6 +141,8 @@ export const StudentProvider = ({ children }) => {
         fetchCampus,
         campusDeleted,
         fetchCampusDeleted,
+        campusActive,
+        fetchCampusActive,
       }}
     >
       {children}

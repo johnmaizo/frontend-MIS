@@ -223,8 +223,8 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-3 mt-2 flex w-full items-start justify-between">
-        <div className="flex gap-5">
+      <div className="mb-3 mt-2 md:flex w-full items-start justify-between">
+        <div className="md:flex gap-5">
           <Input
             placeholder="Search by department name..."
             value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
@@ -233,7 +233,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("departmentName")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em]"
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em] mb-5 md:mb-0"
           />
 
           <Input
@@ -244,7 +244,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("departmentCode")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em]"
+            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em] mb-5 md:mb-0"
           />
         </div>
 
@@ -253,7 +253,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
       </div>
 
-      <div className="mb-4 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="mb-5 flex w-full items-center justify-between gap-3">
           <div className="w-[11em]">
             <StatusFilter table={table} option={"department"} />

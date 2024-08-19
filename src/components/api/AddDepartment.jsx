@@ -121,7 +121,7 @@ const AddDepartment = () => {
   }, [errors]);
 
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="md:flex w-full items-center justify-end gap-2">
       <div>
         <Dialog
           open={open}
@@ -134,7 +134,7 @@ const AddDepartment = () => {
             }
           }}
         >
-          <DialogTrigger className="flex gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
+          <DialogTrigger className="flex gap-1 justify-center w-full md:w-auto md:justify-normal rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Add Department </span>
           </DialogTrigger>

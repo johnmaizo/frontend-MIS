@@ -141,6 +141,49 @@ export const SchoolProvider = ({ children }) => {
   }, []);
   // ! Campus END
 
+  // ! Semester START
+  const [semesters, setSemesters] = useState([]);
+  const [semestersDeleted, setSemestersDeleted] = useState([]);
+
+  const fetchSemesters = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/semesters");
+      setSemesters(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch semesters");
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchSemestersDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/semesters/deleted");
+      setSemestersDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch department deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchSemesters();
+  }, []);
+
+  useEffect(() => {
+    fetchSemestersDeleted();
+  }, []);
+  // ! Semester END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -165,6 +208,12 @@ export const SchoolProvider = ({ children }) => {
         fetchCampusDeleted,
         campusActive,
         fetchCampusActive,
+
+        // ! Semester
+        semesters,
+        fetchSemesters,
+        semestersDeleted,
+        fetchSemestersDeleted,
       }}
     >
       {children}

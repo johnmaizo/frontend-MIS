@@ -16,7 +16,7 @@ const ButtonActionCampus = ({ action, campusId, onSuccess }) => {
       await toast.promise(
         axios.put(`/campus/${campusId}`, { isDeleted }),
         {
-          loading: isDeleted ? "Reactivating campus..." : "Deleting Campus...",
+          loading: isDeleted ? "Deleting Campus..." : "Reactivating campus...",
           success: isDeleted
             ? "Campus deleted successfully!"
             : "Campus reactivated successfully!",

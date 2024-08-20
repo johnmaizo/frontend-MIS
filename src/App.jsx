@@ -20,8 +20,10 @@ function App() {
   return (
     <>
       {sessionExpired && <SessionExpired />}
-      {isLoggingOut && <IsLoggingOut/>}
-      <Toaster />
+      {isLoggingOut && <IsLoggingOut />}
+      <Toaster
+      containerStyle={{zIndex: 999999}}
+      />
 
       <Suspense fallback={<Loader />}>
         {user === null && <DefaultRoutes />}
@@ -55,7 +57,7 @@ const DefaultRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/auth/signup"
         element={

@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import SmallLoader from "../styles/SmallLoader";
 
-const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
+const ButtonActionSemester = ({ action, semesterId, onSuccess }) => {
   const [loading, setLoading] = useState(false);
 
   const handleAction = async () => {
@@ -14,23 +14,20 @@ const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
     try {
       const isDeleted = action === "reactivate" ? false : true;
       await toast.promise(
-        axios.put(`/departments/${departmentId}`, { isDeleted }),
+        axios.put(`/semesters/${semesterId}`, { isDeleted }),
         {
-          loading: isDeleted
-            ? "Deleting department..."
-            : "Reactivating department...",
+          loading: isDeleted ? "Deleting semester..." : "Reactivating semester...",
           success: isDeleted
-            ? "Department deleted successfully!"
-            : "Department reactivated successfully!",
+            ? "Semester deleted successfully!"
+            : "Semester reactivated successfully!",
           error: isDeleted
-            ? "Failed to delete department."
-            : "Failed to reactivate department.",
+            ? "Failed to delete semester."
+            : "Failed to reactivate semester.",
         },
         {
           position: "bottom-right",
           duration: 4500,
         },
-
       );
       setLoading(false);
       onSuccess();
@@ -41,7 +38,7 @@ const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
           duration: 4500,
         });
       } else {
-        toast.error("Failed to update department status", {
+        toast.error("Failed to delete semester status", {
           position: "bottom-right",
           duration: 4500,
         });
@@ -62,4 +59,4 @@ const ButtonActionDepartment = ({ action, departmentId, onSuccess }) => {
   );
 };
 
-export default ButtonActionDepartment;
+export default ButtonActionSemester;

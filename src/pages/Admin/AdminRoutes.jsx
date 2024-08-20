@@ -22,6 +22,7 @@ import { SchoolProvider } from "../../components/context/SchoolContext";
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
 import SubjectPage from "./SubPages/SubjectPage";
+import SemesterPage from "./SubPages/SemesterPage";
 
 const AdminRoutes = () => {
   return (
@@ -93,6 +94,16 @@ const AdminRoutes = () => {
             <>
               <PageTitle title="Departments | MIS - Benedicto College" />
               <DepartmentPage />
+            </>
+          }
+        />
+        
+        <Route
+          path="/semester"
+          element={
+            <>
+              <PageTitle title="Semester | MIS - Benedicto College" />
+              <SemesterPage />
             </>
           }
         />

@@ -38,7 +38,6 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionCampus from "../reuseable/ButtonActionCampus";
 import ButtonActionSemester from "../reuseable/ButtonActionSemester";
 
 const DeletedSemesters = () => {

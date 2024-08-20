@@ -146,7 +146,7 @@ const DepartmentTables = () => {
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon />
+                <DeleteIcon forActions={"Delete Department"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>

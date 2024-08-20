@@ -23,7 +23,7 @@ import {
 import { useState } from "react";
 
 import { Button } from "../../../components/ui/button";
-import { Input } from "../../../components/ui/input";
+
 import {
   Dialog,
   DialogClose,
@@ -332,7 +332,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            totalName={"Campus"}
+            totalName={"Semesters"}
             table={table}
             totalDepartments={data.length}
           />

@@ -199,7 +199,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="max-w-full overflow-x-auto">
+      <div className="xsm:max-w-full xsm:!w-auto !w-[13.5em] overflow-x-auto">
         <Table className="border border-stroke dark:border-strokedark">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -81,15 +81,23 @@ const CampusTables = () => {
 
   const columns = [
     {
-      accessorKey: "campus_id",
+      accessorKey: "department_id",
       header: "ID",
+    },
+    {
+      accessorKey: "departmentCode",
+      header: "Department Code",
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "departmentName",
+      header: "Department Name",
     },
     {
       accessorKey: "campusName",
       header: "Campus Name",
-      cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
-      },
     },
 
     {
@@ -110,7 +118,7 @@ const CampusTables = () => {
 
     {
       header: "Action",
-      accessorFn: (row) => `${row.campus_id} ${row.isDeleted}`,
+      accessorFn: (row) => `${row.department_id} ${row.isDeleted}`,
       id: "action",
       cell: ({ row }) => {
         return (
@@ -124,11 +132,11 @@ const CampusTables = () => {
                   <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                     <DialogHeader>
                       <DialogTitle className="text-2xl font-bold">
-                        Reactivate
+                        Reactivate Department
                       </DialogTitle>
                       <DialogDescription asChild className="mt-2">
                         <p className="mb-5">
-                          Are you sure you want to reactivate this campus?
+                          Are you sure you want to reactivate this department?
                         </p>
                       </DialogDescription>
                     </DialogHeader>
@@ -136,7 +144,7 @@ const CampusTables = () => {
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                         <ButtonActionDepartment
                           action="reactivate"
-                          departmentId={row.getValue("campus_id")}
+                          departmentId={row.getValue("department_id")}
                           onSuccess={() => {
                             fetchDepartmentsDeleted();
                             fetchDepartments();
@@ -201,7 +209,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="max-w-full overflow-x-auto">
+      <div className="xsm:max-w-full xsm:!w-auto !w-[13.5em] overflow-x-auto">
         <Table className="border border-stroke dark:border-strokedark">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

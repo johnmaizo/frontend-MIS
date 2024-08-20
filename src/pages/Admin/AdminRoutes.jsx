@@ -15,9 +15,6 @@ import AddStudentPage from "./SubPages/AddStudentPage";
 import StudentTablePage from "./SubPages/StudentTablePage";
 import ViewStudentPage from "./SubPages/ViewStudentPage";
 
-import TeacherTablePage from "./SubPages/TeacherTablePage";
-import AddTeacherPage from "./SubPages/AddTeacherPage";
-
 import { SchoolProvider } from "../../components/context/SchoolContext";
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
@@ -68,7 +65,7 @@ const AdminRoutes = () => {
           }
         />
 
-        <Route
+        {/* <Route
           path="/teachers/add-teacher"
           element={
             <>
@@ -86,8 +83,18 @@ const AdminRoutes = () => {
               <TeacherTablePage />
             </>
           }
-        />
+        /> */}
         
+        <Route
+          path="/teachers"
+          element={
+            <>
+              <PageTitle title="Teachers | MIS - Benedicto College" />
+              <DepartmentPage />
+            </>
+          }
+        />
+
         <Route
           path="/departments"
           element={

@@ -443,13 +443,13 @@ export const SubjectIcon = () => {
     <svg
       className="fill-current"
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
+      width="1.3em"
+      height="1.3em"
+      viewBox="0 0 256 256"
     >
       <path
         fill=""
-        d="M17 4v6l-2-2l-2 2V4H9v16h10V4zM3 7V5h2V4a2 2 0 0 1 2-2h12c1.05 0 2 .95 2 2v16c0 1.05-.95 2-2 2H7c-1.05 0-2-.95-2-2v-1H3v-2h2v-4H3v-2h2V7zm2-2v2h2V5zm0 14h2v-2H5zm0-6h2v-2H5z"
+        d="M208 32H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16M80 208H48V48h32Zm96-56h-64a8 8 0 0 1 0-16h64a8 8 0 0 1 0 16m0-32h-64a8 8 0 0 1 0-16h64a8 8 0 0 1 0 16"
       />
     </svg>
   );
@@ -485,6 +485,23 @@ export const UndoIcon = () => {
       <path
         fill=""
         d="M7 19v-2h7.1q1.575 0 2.738-1T18 13.5T16.838 11T14.1 10H7.8l2.6 2.6L9 14L4 9l5-5l1.4 1.4L7.8 8h6.3q2.425 0 4.163 1.575T20 13.5t-1.737 3.925T14.1 19z"
+      />
+    </svg>
+  );
+};
+
+export const CourseIcon = () => {
+  return (
+    <svg
+      className="fill-current"
+      xmlns="http://www.w3.org/2000/svg"
+      width="1.2em"
+      height="1.2em"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill=""
+        d="M19 3h-2v6.5l-3-2.25l-3 2.25V3H5v18h14zm-6 0v2.5l1-.75l1 .75V3zm8 20H3V1h18z"
       />
     </svg>
   );

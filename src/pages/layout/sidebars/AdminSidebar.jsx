@@ -6,6 +6,7 @@ import SidebarLinkGroup from "../../../components/Sidebar/SidebarLinkGroup";
 import {
   CalendarIcon,
   CampusIcon,
+  CourseIcon,
   DepartmentIcon,
   SubjectIcon,
   TeacherIcon,
@@ -109,8 +110,47 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
             </NavLink>
           </li>
 
+          <li>
+            <NavLink
+              to="/course"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/course" || pathname.includes("course")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <CourseIcon />
+              Courses
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/teachers"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/teachers" || pathname.includes("teachers")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <TeacherIcon />
+              Teachers
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/subjects"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/subjects" || pathname.includes("subjects")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <SubjectIcon />
+              Subjects
+            </NavLink>
+          </li>
+
           {/* <!-- Menu Item Teacher --> */}
-          <SidebarLinkGroup
+          {/* <SidebarLinkGroup
             activeCondition={
               pathname === "/teachers" || pathname.includes("teachers")
             }
@@ -152,7 +192,6 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                       />
                     </svg>
                   </NavLink>
-                  {/* <!-- Dropdown Menu Start --> */}
                   <div
                     className={`translate transform overflow-hidden ${
                       !open && "hidden"
@@ -189,29 +228,15 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                       </li>
                     </ul>
                   </div>
-                  {/* <!-- Dropdown Menu End --> */}
                 </React.Fragment>
               );
             }}
-          </SidebarLinkGroup>
+          </SidebarLinkGroup> */}
           {/* <!-- Menu Item Teacher --> */}
 
           <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             STUDENT SECTION
           </h3>
-
-          <li>
-            <NavLink
-              to="/subjects"
-              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                (pathname === "/subjects" || pathname.includes("subjects")) &&
-                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
-              }`}
-            >
-              <SubjectIcon />
-              Subjects
-            </NavLink>
-          </li>
 
           {/* <!-- Menu Item Student --> */}
           <SidebarLinkGroup

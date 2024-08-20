@@ -51,8 +51,6 @@ import AddSemester from "../../../components/api/AddSemester";
 
 import EditSemester from "../../../components/api/EditSemester";
 
-import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
-import DeletedCampus from "../../../components/api/DeletedCampus";
 import ButtonActionSemester from "../../../components/reuseable/ButtonActionSemester";
 import DeletedSemesters from "../../../components/api/DeletedSemesters";
 

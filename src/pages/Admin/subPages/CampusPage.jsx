@@ -268,7 +268,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="mb-5 flex w-full justify-between items-center gap-3">
-          <div className="w-[11em]">
+          <div className="w-[11.5em]">
             <StatusFilter table={table} option={"campus"} />
           </div>
 
@@ -357,7 +357,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination table={table} totalDepartments={data.length} />
+          <DataTablePagination totalName={"Campus"} table={table} totalDepartments={data.length} />
         </div>
       </div>
     </>

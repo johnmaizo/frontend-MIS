@@ -22,6 +22,7 @@ export function DataTablePagination({
   table,
   totalStudents,
   totalDepartments,
+  totalName
 }) {
   const [pageSize, setPageSize] = useState(5); // State to manage the page size
 
@@ -41,6 +42,10 @@ export function DataTablePagination({
           <div>
             <p>Total Students: {totalStudents}</p>
           </div>
+        ) : totalName && totalName !== undefined ? (
+          <div>
+              <p>Total {totalName}: {totalDepartments}</p>
+            </div>
         ) : (
           totalDepartments &&
           totalDepartments !== undefined && (

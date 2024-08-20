@@ -10,7 +10,7 @@ import { EyeCancel, EyeIconSignIn } from "../../components/Icons";
 const SignIn = () => {
   const motto = 'Your education is our mission.';
   // const motto = "Your tuition, is our mission.";
-  const loginText = "Sign in to SIS - Benedicto College";
+  const loginText = "Sign in to MIS - Benedicto College";
 
   const { user, login } = useContext(AuthContext);
   const [email, setEmail] = useState("");

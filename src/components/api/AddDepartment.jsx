@@ -26,7 +26,8 @@ import { AddDepartmentIcon } from "../Icons";
 import { useStudents } from "../context/StudentContext";
 
 const AddDepartment = () => {
-  const { fetchDepartments, campusActive, fetchCampusActive, loading } = useStudents();
+  const { fetchDepartments, campusActive, fetchCampusActive, loading } =
+    useStudents();
   const [open, setOpen] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
@@ -121,7 +122,7 @@ const AddDepartment = () => {
   }, [errors]);
 
   return (
-    <div className="md:flex w-full items-center justify-end gap-2">
+    <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
         <Dialog
           open={open}
@@ -134,7 +135,7 @@ const AddDepartment = () => {
             }
           }}
         >
-          <DialogTrigger className="flex gap-1 justify-center w-full md:w-auto md:justify-normal rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
+          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Add Department </span>
           </DialogTrigger>
@@ -143,7 +144,7 @@ const AddDepartment = () => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Department
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -258,7 +259,11 @@ const AddDepartment = () => {
                         disabled={localLoading || success || loading}
                       >
                         <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                          <SelectValue placeholder={loading ? "Loading..." : "Select campus"} />
+                          <SelectValue
+                            placeholder={
+                              loading ? "Loading..." : "Select campus"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>

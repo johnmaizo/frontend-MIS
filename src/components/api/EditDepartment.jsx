@@ -169,7 +169,7 @@ const EditDepartment = ({ departmentId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Department
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[20em] lg:h-auto overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="w-full pb-3 xl:w-[12em]">
@@ -196,7 +196,10 @@ const EditDepartment = ({ departmentId }) => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="dept_code"
                         >
-                          Department Code
+                          Department Code{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                         </label>
                         <input
                           id="dept_code"
@@ -227,7 +230,10 @@ const EditDepartment = ({ departmentId }) => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="dept_name"
                         >
-                          Department Name
+                          Department Name{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                         </label>
                         <input
                           id="dept_name"
@@ -259,7 +265,10 @@ const EditDepartment = ({ departmentId }) => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="dept_dean"
                       >
-                        Department Dean
+                        Department Dean{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="dept_dean"

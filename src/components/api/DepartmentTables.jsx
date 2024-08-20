@@ -81,6 +81,9 @@ const DepartmentTables = () => {
           </Button>
         );
       },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
     },
     {
       accessorKey: "departmentName",
@@ -255,7 +258,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="mb-5 flex w-full items-center justify-between gap-3">
-          <div className="w-[11em]">
+          <div className="w-[11.5em]">
             <StatusFilter table={table} option={"department"} />
           </div>
 

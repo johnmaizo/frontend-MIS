@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 import { Switch } from "../ui/switch";
 
 import {
@@ -28,7 +28,7 @@ import {
 } from "../ui/select";
 
 const EditDepartment = ({ departmentId }) => {
-  const { fetchDepartments, campusActive } = useStudents();
+  const { fetchDepartments, campusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
@@ -191,7 +191,7 @@ const EditDepartment = ({ departmentId }) => {
                     </div>
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[12em]">
+                      <div className="w-full xl:w-[13.5em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="dept_code"
@@ -299,7 +299,7 @@ const EditDepartment = ({ departmentId }) => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="campus"
                       >
-                        Select Campus{" "}
+                        Campus{" "}
                         <span className="inline-block font-bold text-red-700">
                           *
                         </span>

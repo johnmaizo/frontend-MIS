@@ -42,14 +42,14 @@ import { DeleteIcon } from "../Icons";
 
 import StatusFilter from "../reuseable/StatusFilter";
 
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 import AddDepartment from "./AddDepartment";
 import EditDepartment from "./EditDepartment";
 import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
 import DeletedDepartment from "./DeletedDepartment";
 
 const DepartmentTables = () => {
-  const { departments, fetchDepartments, fetchDepartmentsDeleted, loading, error } = useStudents();
+  const { departments, fetchDepartments, fetchDepartmentsDeleted, loading, error } = useSchool();
 
   const columns = [
     {

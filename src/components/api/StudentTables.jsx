@@ -42,10 +42,10 @@ import { Link } from "react-router-dom";
 import StatusFilter from "../reuseable/StatusFilter";
 
 import ButtonActionStudent from "../reuseable/ButtonActionStudent";
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 
 const StudentTables = () => {
-  const { students, fetchStudents, loading, error } = useStudents();
+  const { students, fetchStudents, loading, error } = useSchool();
 
   const columns = [
     {

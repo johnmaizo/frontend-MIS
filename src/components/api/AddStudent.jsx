@@ -11,10 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 
 const AddStudent = () => {
-  const { fetchStudents } = useStudents()
+  const { fetchStudents } = useSchool()
    
   const {
     register,

@@ -18,14 +18,14 @@ import ViewStudentPage from "./SubPages/ViewStudentPage";
 import TeacherTablePage from "./SubPages/TeacherTablePage";
 import AddTeacherPage from "./SubPages/AddTeacherPage";
 
-import { StudentProvider } from "../../components/context/StudentContext";
+import { SchoolProvider } from "../../components/context/SchoolContext";
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
 import SubjectPage from "./SubPages/SubjectPage";
 
 const AdminRoutes = () => {
   return (
-    <StudentProvider>
+    <SchoolProvider>
       <Routes>
         <Route
           path="/"
@@ -123,7 +123,7 @@ const AdminRoutes = () => {
 
         {/* <OtherRoutes /> */}
       </Routes>
-    </StudentProvider>
+    </SchoolProvider>
   );
 };
 

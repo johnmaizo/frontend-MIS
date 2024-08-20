@@ -36,7 +36,7 @@ import SmallLoader from "../styles/SmallLoader";
 
 import { ArchiveIcon, UndoIcon } from "../Icons";
 
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 
 import ButtonActionCampus from "../reuseable/ButtonActionCampus";
 
@@ -72,7 +72,7 @@ const DeletedCampus = () => {
 
 const CampusTables = () => {
   const { fetchCampus, campusDeleted, fetchCampusDeleted, loading, error } =
-    useStudents();
+    useSchool();
 
   const columns = [
     {

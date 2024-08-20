@@ -45,7 +45,7 @@ import { DeleteIcon } from "../../../components/Icons";
 
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 
-import { useStudents } from "../../../components/context/StudentContext";
+import { useSchool } from "../../../components/context/SchoolContext";
 
 import AddCampus from "../../../components/api/AddCampus";
 
@@ -76,7 +76,7 @@ const CampusPage = () => {
 
 const CampusTables = () => {
   const { campus, fetchCampus, fetchCampusDeleted, loading, error } =
-    useStudents();
+    useSchool();
 
   const columns = [
     {

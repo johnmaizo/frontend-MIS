@@ -23,11 +23,11 @@ import {
 } from "../ui/select";
 
 import { AddDepartmentIcon } from "../Icons";
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 
 const AddDepartment = () => {
   const { fetchDepartments, campusActive, fetchCampusActive, loading } =
-    useStudents();
+    useSchool();
   const [open, setOpen] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
@@ -144,7 +144,7 @@ const AddDepartment = () => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Department
               </DialogTitle>
-              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[20em] lg:h-auto overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">

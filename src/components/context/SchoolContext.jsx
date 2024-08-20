@@ -2,13 +2,13 @@
 import axios from "axios";
 import { createContext, useState, useContext, useEffect } from "react";
 
-const StudentContext = createContext();
+const SchoolContext = createContext();
 
-export const useStudents = () => {
-  return useContext(StudentContext);
+export const useSchool = () => {
+  return useContext(SchoolContext);
 };
 
-export const StudentProvider = ({ children }) => {
+export const SchoolProvider = ({ children }) => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -142,7 +142,7 @@ export const StudentProvider = ({ children }) => {
   // ! Campus END
 
   return (
-    <StudentContext.Provider
+    <SchoolContext.Provider
       value={{
         loading,
         error,
@@ -168,6 +168,6 @@ export const StudentProvider = ({ children }) => {
       }}
     >
       {children}
-    </StudentContext.Provider>
+    </SchoolContext.Provider>
   );
 };

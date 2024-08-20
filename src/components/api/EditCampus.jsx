@@ -14,11 +14,11 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 import { Switch } from "../ui/switch";
 
 const EditCampus = ({ campusId }) => {
-  const { fetchCampus } = useStudents();
+  const { fetchCampus } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch

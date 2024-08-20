@@ -13,10 +13,10 @@ import {
 } from "../ui/dialog";
 
 import { AddDepartmentIcon } from "../Icons";
-import { useStudents } from "../context/StudentContext";
+import { useSchool } from "../context/SchoolContext";
 
 const AddCampus = () => {
-  const { fetchCampus } = useStudents();
+  const { fetchCampus } = useSchool();
   const [open, setOpen] = useState(false);
 
   const {

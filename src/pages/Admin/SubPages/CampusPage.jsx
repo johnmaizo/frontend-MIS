@@ -238,15 +238,15 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-3 mt-2 md:flex w-full items-start justify-between">
-        <div className="md:flex gap-5">
+      <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
+        <div className="gap-5 md:flex">
           <Input
             placeholder="Search by campus name..."
             value={table.getColumn("campusName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("campusName")?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em] mb-5 md:mb-0"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
           <Input
@@ -257,7 +257,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("campusAddress")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[15em] mb-5 md:mb-0"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[15em]"
           />
         </div>
 
@@ -267,7 +267,7 @@ const DataTable = ({ data, columns, loading, error }) => {
       </div>
 
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="mb-5 flex w-full justify-between items-center gap-3">
+        <div className="mb-5 flex w-full items-center justify-between gap-3">
           <div className="w-[11.5em]">
             <StatusFilter table={table} option={"campus"} />
           </div>
@@ -357,7 +357,11 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination totalName={"Campus"} table={table} totalDepartments={data.length} />
+          <DataTablePagination
+            totalName={"Campus"}
+            table={table}
+            totalDepartments={data.length}
+          />
         </div>
       </div>
     </>

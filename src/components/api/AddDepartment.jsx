@@ -279,7 +279,7 @@ const AddDepartment = () => {
                               ))
                             ) : (
                               <SelectItem disabled>
-                                (Empty, Please add new Course)
+                                (Empty, Please add new Campus)
                               </SelectItem>
                             )}
                           </SelectGroup>

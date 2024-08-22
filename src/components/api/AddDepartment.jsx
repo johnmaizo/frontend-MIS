@@ -273,12 +273,13 @@ const AddDepartment = () => {
                                 <SelectItem
                                   key={campus.campus_id}
                                   value={campus.campus_id.toString()}
+                                  className="text-[1.2rem] font-medium"
                                 >
                                   {campus.campusName}
                                 </SelectItem>
                               ))
                             ) : (
-                              <SelectItem disabled>
+                              <SelectItem disabled className="text-xl font-medium ">
                                 (Empty, Please add new Campus)
                               </SelectItem>
                             )}

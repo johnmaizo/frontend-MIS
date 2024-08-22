@@ -206,13 +206,13 @@ const AddSemester = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Semesters</SelectLabel>
-                            <SelectItem value="1st Semester">
+                            <SelectItem value="1st Semester" className="text-[1.2rem]  font-medium ">
                               1st Semester
                             </SelectItem>
-                            <SelectItem value="2nd Semester">
+                            <SelectItem value="2nd Semester" className="text-[1.2rem] font-medium ">
                               2nd Semester
                             </SelectItem>
-                            <SelectItem value="Summer">Summer</SelectItem>
+                            <SelectItem value="Summer" className="text-[1.2rem] font-medium ">Summer</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -224,9 +224,7 @@ const AddSemester = () => {
                     </div>
 
                     {error && (
-                      <p className="mb-5 text-center text-red-600">
-                        {error}
-                      </p>
+                      <p className="mb-5 text-center text-red-600">{error}</p>
                     )}
 
                     <button

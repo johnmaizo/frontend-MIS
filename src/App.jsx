@@ -39,6 +39,16 @@ const DefaultRoutes = () => {
   return (
     <Routes>
       <Route
+        index
+        element={
+          <>
+            <PageTitle title="Benedicto College" />
+            <Navigate to="/auth/signin" />
+          </>
+        }
+      />
+
+      {/* <Route
         path="/"
         element={
           <>
@@ -46,7 +56,7 @@ const DefaultRoutes = () => {
             <HomePage />
           </>
         }
-      />
+      /> */}
 
       <Route
         path="/auth/signin"

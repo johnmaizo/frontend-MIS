@@ -82,7 +82,7 @@ const CampusTables = () => {
   const columns = [
     {
       accessorKey: "department_id",
-      header: "ID",
+      header: "Numeric ID",
     },
     {
       accessorKey: "departmentCode",

@@ -9,7 +9,7 @@ import { EyeCancel, EyeIconSignIn, LogInImage } from "../../components/Icons";
 import Loader from "../../components/styles/Loader";
 
 const SignIn = () => {
-  const motto = "Your education is our mission.";
+  const motto = "Your Education... Our Mission.";
   // const motto = "Your tuition, is our mission.";
   const loginText = "Sign in to MIS - Benedicto College";
 

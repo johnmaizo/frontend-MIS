@@ -1,3 +1,6 @@
+import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
+import DefaultLayout from "../../layout/DefaultLayout";
+
 /* eslint-disable react/prop-types */
 import {
   flexRender,
@@ -15,12 +18,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../../components/ui/table";
 
 import { useState } from "react";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import {
   Dialog,
   DialogClose,
@@ -30,26 +33,56 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../../components/ui/dialog";
 
-import { DataTablePagination } from "../reuseable/DataTablePagination";
+import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
 import { ArrowUpDown } from "lucide-react";
 
-import SmallLoader from "../styles/SmallLoader";
+import SmallLoader from "../../../components/styles/SmallLoader";
 
-import { DeleteIcon } from "../Icons";
+import { DeleteIcon } from "../../../components/Icons";
 
-import StatusFilter from "../reuseable/StatusFilter";
+import StatusFilter from "../../../components/reuseable/StatusFilter";
 
-import { useSchool } from "../context/SchoolContext";
-import AddDepartment from "./AddDepartment";
-import EditDepartment from "./EditDepartment";
-import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
-import DeletedDepartment from "./DeletedDepartment";
+import { useSchool } from "../../../components/context/SchoolContext";
 
-const DepartmentTables = () => {
-  const { departments, fetchDepartments, fetchDepartmentsDeleted, loading, error } = useSchool();
+import AddDepartment from "../../../components/api/AddDepartment";
+
+import EditDepartment from "../../../components/api/EditDepartment";
+
+import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
+
+import DeletedDepartment from "../../../components/api/DeletedDepartment";
+
+const CoursePage = () => {
+  const NavItems = [
+    { to: "/", label: "Dashboard" },
+    // { to: "/course/add-course", label: "Add Course" },
+    { label: "Course" },
+  ];
+
+  return (
+    <DefaultLayout>
+      <BreadcrumbResponsive
+        pageName={"Course"}
+        items={NavItems}
+        ITEMS_TO_DISPLAY={2}
+      />
+
+      <CampusTables />
+    </DefaultLayout>
+  );
+};
+
+const CampusTables = () => {
+  const {
+    departments,
+    fetchDepartments,
+    fetchDepartmentsDeleted,
+    loading,
+    error,
+  } = useSchool();
 
   const columns = [
     {
@@ -220,15 +253,15 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
 
   return (
     <>
-      <div className="mb-3 mt-2 md:flex w-full items-start justify-between">
-        <div className="md:flex gap-5">
+      <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
+        <div className="gap-5 md:flex">
           <Input
             placeholder="Search by department name..."
             value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
@@ -237,7 +270,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("departmentName")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em] mb-5 md:mb-0"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
           <Input
@@ -248,7 +281,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("departmentCode")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em] mb-5 md:mb-0"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[12em]"
           />
         </div>
 
@@ -355,4 +388,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default DepartmentTables;
+export default CoursePage;

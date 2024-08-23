@@ -20,6 +20,7 @@ import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
 import SubjectPage from "./SubPages/SubjectPage";
 import SemesterPage from "./SubPages/SemesterPage";
+import CoursePage from "./SubPages/CoursePage";
 
 const AdminRoutes = () => {
   return (
@@ -84,13 +85,23 @@ const AdminRoutes = () => {
             </>
           }
         /> */}
-        
+
         <Route
-          path="/teachers"
+          path="/semester"
           element={
             <>
-              <PageTitle title="Teachers | MIS - Benedicto College" />
-              <DepartmentPage />
+              <PageTitle title="Semester | MIS - Benedicto College" />
+              <SemesterPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/campus"
+          element={
+            <>
+              <PageTitle title="Campuses | MIS - Benedicto College" />
+              <CampusPage />
             </>
           }
         />
@@ -104,33 +115,33 @@ const AdminRoutes = () => {
             </>
           }
         />
-        
+
         <Route
-          path="/semester"
+          path="/course"
           element={
             <>
-              <PageTitle title="Semester | MIS - Benedicto College" />
-              <SemesterPage />
+              <PageTitle title="Course | MIS - Benedicto College" />
+              <CoursePage />
             </>
           }
         />
-        
-        <Route
-          path="/campus"
-          element={
-            <>
-              <PageTitle title="Campuses | MIS - Benedicto College" />
-              <CampusPage />
-            </>
-          }
-        />
-        
+
         <Route
           path="/subjects"
           element={
             <>
               <PageTitle title="Subjects | MIS - Benedicto College" />
               <SubjectPage />
+            </>
+          }
+        />
+
+        <Route
+          path="/teachers"
+          element={
+            <>
+              <PageTitle title="Teachers | MIS - Benedicto College" />
+              <DepartmentPage />
             </>
           }
         />

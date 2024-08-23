@@ -47,7 +47,7 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 
 import { useSchool } from "../../../components/context/SchoolContext";
 
-import AddDepartment from "../../../components/api/AddDepartment";
+import AddCourse from "../../../components/api/AddCourse";
 
 import EditDepartment from "../../../components/api/EditDepartment";
 
@@ -59,34 +59,34 @@ const CoursePage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/course/add-course", label: "Add Course" },
-    { label: "Course" },
+    { label: "Courses" },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Course"}
+        pageName={"Courses"}
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
 
-      <CampusTables />
+      <CourseTables />
     </DefaultLayout>
   );
 };
 
-const CampusTables = () => {
+const CourseTables = () => {
   const {
-    departments,
-    fetchDepartments,
-    fetchDepartmentsDeleted,
+    course,
+    fetchCourse,
+    fetchCourseDeleted,
     loading,
     error,
   } = useSchool();
 
   const columns = [
     {
-      accessorKey: "department_id",
+      accessorKey: "course_id",
 
       header: ({ column }) => {
         return (
@@ -102,7 +102,7 @@ const CampusTables = () => {
       },
     },
     {
-      accessorKey: "departmentCode",
+      accessorKey: "courseCode",
       header: ({ column }) => {
         return (
           <Button
@@ -110,13 +110,28 @@ const CampusTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Department Code
+            Course Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "courseName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Course Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
       },
     },
     {
@@ -128,30 +143,11 @@ const CampusTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Department Name
+            Department
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-    },
-    // {
-    //   accessorFn: (row) => {
-    //     const middleInitial =
-    //       row.middleName && row.middleName.trim() !== ""
-    //         ? `${row.middleName.charAt(0)}.`
-    //         : "";
-    //     return `${row.firstName} ${middleInitial} ${row.lastName}`;
-    //   },
-    //   id: "fullName",
-    //   header: "Name",
-    // },
-    {
-      accessorKey: "departmentDean",
-      header: "Dean",
-    },
-    {
-      accessorKey: "campusName",
-      header: "Campus",
     },
     {
       accessorKey: "isActive",
@@ -199,8 +195,8 @@ const CampusTables = () => {
                       action="delete"
                       departmentId={row.getValue("department_id")}
                       onSuccess={() => {
-                        fetchDepartments();
-                        fetchDepartmentsDeleted();
+                        fetchCourse();
+                        fetchCourseDeleted();
                       }}
                     />
                     <DialogClose asChild>
@@ -225,7 +221,7 @@ const CampusTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={departments}
+        data={course}
         loading={loading}
         error={error}
       />
@@ -286,7 +282,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className=" ">
-          <AddDepartment />
+          <AddCourse />
         </div>
       </div>
 
@@ -381,7 +377,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination table={table} totalDepartments={data.length} />
+          <DataTablePagination table={table} totalcourse={data.length} />
         </div>
       </div>
     </>

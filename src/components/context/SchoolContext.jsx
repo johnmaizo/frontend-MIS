@@ -37,7 +37,9 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Departments START
   const [departments, setDepartments] = useState([]);
+  const [deparmentsActive, setDepartmentsActive] = useState([]);
   const [deparmentsDeleted, setDepartmentsDeleted] = useState([]);
+  const [deparmentsCustom, setDepartmentsCustom] = useState([]);
 
   const fetchDepartments = async () => {
     setLoading(true);
@@ -49,6 +51,21 @@ export const SchoolProvider = ({ children }) => {
         setError(err.response.data.message);
       } else {
         setError("Failed to fetch departments");
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchDepartmentsActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/departments/active");
+      setDepartmentsActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Campus active: (${err})`);
       }
     }
     setLoading(false);
@@ -69,12 +86,39 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
+  const fetchDepartmentsCustom = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/departments/active");
+      const modifiedDepartments = response.data.map((department) => ({
+        ...department,
+        departmentName: `${department.departmentName} - ${department.campusName}`,
+      }));
+      setDepartmentsCustom(modifiedDepartments);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Campus active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchDepartments();
   }, []);
 
   useEffect(() => {
     fetchDepartmentsDeleted();
+  }, []);
+
+  useEffect(() => {
+    fetchDepartmentsActive();
+  }, []);
+
+  useEffect(() => {
+    fetchDepartmentsCustom();
   }, []);
   // ! Departments END
 
@@ -184,6 +228,69 @@ export const SchoolProvider = ({ children }) => {
   }, []);
   // ! Semester END
 
+  // ! Course START
+  const [course, setCourse] = useState([]);
+  const [courseDeleted, setCourseDeleted] = useState([]);
+  const [courseActive, setCourseActive] = useState([]);
+
+  const fetchCourse = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course");
+      setCourse(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch course: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchCourseDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course/deleted");
+      setCourseDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch course deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchCourseActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course/active");
+      setCourseActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Campus active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCourse();
+  }, []);
+
+  useEffect(() => {
+    fetchCourseDeleted();
+  }, []);
+
+  useEffect(() => {
+    fetchCourseActive();
+  }, []);
+  // ! Course END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -200,6 +307,10 @@ export const SchoolProvider = ({ children }) => {
         fetchDepartments,
         deparmentsDeleted,
         fetchDepartmentsDeleted,
+        deparmentsActive,
+        fetchDepartmentsActive,
+        deparmentsCustom,
+        fetchDepartmentsCustom,
 
         // ! Campus
         campus,
@@ -214,6 +325,14 @@ export const SchoolProvider = ({ children }) => {
         fetchSemesters,
         semestersDeleted,
         fetchSemestersDeleted,
+
+        // ! Courses
+        course,
+        fetchCourse,
+        courseDeleted,
+        fetchCourseDeleted,
+        courseActive,
+        fetchCourseActive,
       }}
     >
       {children}

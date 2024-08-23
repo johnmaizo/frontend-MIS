@@ -614,13 +614,13 @@ export const UndoIcon = () => {
   );
 };
 
-export const CourseIcon = () => {
+export const CourseIcon = ({ forCard, width, height }) => {
   return (
     <svg
-      className="fill-current"
+      className={`fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
       xmlns="http://www.w3.org/2000/svg"
-      width="1.2em"
-      height="1.2em"
+      width={`${width && width ? width : "1.2em"}`}
+      height={`${height && height ? height : "1.2em"}`}
       viewBox="0 0 24 24"
     >
       <path

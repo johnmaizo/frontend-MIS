@@ -35,7 +35,7 @@ import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 
 const AddCourse = () => {
-  const { fetchCourse, deparmentsCustom, fetchDepartmentsActive, loading } =
+  const { fetchCourse, deparmentsCustom, fetchDepartmentsCustom, loading } =
     useSchool();
 
   const [open, setOpen] = useState(false);
@@ -59,7 +59,7 @@ const AddCourse = () => {
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchDepartmentsActive();
+    fetchDepartmentsCustom();
   }, []);
 
   const onSubmit = async (data) => {

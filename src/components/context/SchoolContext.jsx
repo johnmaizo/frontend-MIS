@@ -65,7 +65,7 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Campus active: (${err})`);
+        setError(`Failed to fetch Department active: (${err})`);
       }
     }
     setLoading(false);
@@ -99,7 +99,7 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Campus active: (${err})`);
+        setError(`Failed to fetch Department Custom: (${err})`);
       }
     }
     setLoading(false);
@@ -213,7 +213,7 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch department deleted: (${err})`);
+        setError(`Failed to fetch Semesters deleted: (${err})`);
       }
     }
     setLoading(false);
@@ -257,7 +257,7 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch course deleted: (${err})`);
+        setError(`Failed to fetch Course deleted: (${err})`);
       }
     }
     setLoading(false);
@@ -272,7 +272,7 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Campus active: (${err})`);
+        setError(`Failed to fetch Course active: (${err})`);
       }
     }
     setLoading(false);

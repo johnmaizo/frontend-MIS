@@ -374,10 +374,10 @@ const EditCourse = ({ courseId }) => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Updating Department..."
+                        ? "Updating Course..."
                         : success
-                          ? "Department Updated!"
-                          : "Update Department"}
+                          ? "Course Updated!"
+                          : "Update Course"}
                     </button>
                   </div>
                 </form>

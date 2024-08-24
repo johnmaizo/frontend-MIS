@@ -255,14 +255,14 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row md:items-center gap-5 py-4">
+      <div className="flex flex-col gap-5 py-4 md:flex-row md:items-center">
         <Input
           placeholder="Search by ID ..."
           value={table.getColumn("student_id")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("student_id")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] w-full md:max-w-[10em] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[10em]"
         />
 
         <Input
@@ -271,7 +271,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           onChange={(event) =>
             table.getColumn("fullName")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] w-full md:max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-xs"
         />
 
         <Input
@@ -280,10 +280,10 @@ const DataTable = ({ data, columns, loading, error }) => {
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="h-[3em] w-full md:max-w-xs !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary"
+          className="h-[3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-xs"
         />
 
-        <div className=" lg:ml-auto flex w-[11.5em] items-center">
+        <div className="flex w-[11.5em] items-center lg:ml-auto">
           <StatusFilter table={table} />
         </div>
       </div>
@@ -370,7 +370,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           </Table>
         </div>
 
-        <div className="flex w-full justify-start md:items-center md:justify-end py-4">
+        <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination table={table} totalStudents={data.length} />
         </div>
       </div>

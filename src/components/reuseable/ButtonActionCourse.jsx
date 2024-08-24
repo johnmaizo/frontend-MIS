@@ -14,17 +14,17 @@ const ButtonActionCourse = ({ action, courseId, onSuccess }) => {
     try {
       const isDeleted = action === "reactivate" ? false : true;
       await toast.promise(
-        axios.put(`/departments/${courseId}`, { isDeleted }),
+        axios.put(`/course/${courseId}`, { isDeleted }),
         {
           loading: isDeleted
-            ? "Deleting department..."
-            : "Reactivating department...",
+            ? "Deleting course..."
+            : "Reactivating course...",
           success: isDeleted
-            ? "Department deleted successfully!"
-            : "Department reactivated successfully!",
+            ? "Course deleted successfully!"
+            : "Course reactivated successfully!",
           error: isDeleted
-            ? "Failed to delete department."
-            : "Failed to reactivate department.",
+            ? "Failed to delete course."
+            : "Failed to reactivate course.",
         },
         {
           position: "bottom-right",
@@ -41,7 +41,7 @@ const ButtonActionCourse = ({ action, courseId, onSuccess }) => {
           duration: 4500,
         });
       } else {
-        toast.error("Failed to update department status", {
+        toast.error("Failed to update course status", {
           position: "bottom-right",
           duration: 4500,
         });

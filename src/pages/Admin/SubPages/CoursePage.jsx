@@ -54,6 +54,8 @@ import EditDepartment from "../../../components/api/EditDepartment";
 import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
 
 import DeletedDepartment from "../../../components/api/DeletedDepartment";
+import EditCourse from "../../../components/api/EditCourse";
+import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
 
 const CoursePage = () => {
   const NavItems = [
@@ -167,12 +169,12 @@ const CourseTables = () => {
 
     {
       header: "Actions",
-      accessorFn: (row) => `${row.department_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.course_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditDepartment departmentId={row.getValue("department_id")} />
+            <EditCourse courseId={row.getValue("course_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
@@ -191,9 +193,9 @@ const CourseTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionDepartment
+                    <ButtonActionCourse
                       action="delete"
-                      departmentId={row.getValue("department_id")}
+                      courseId={row.getValue("course_id")}
                       onSuccess={() => {
                         fetchCourse();
                         fetchCourseDeleted();

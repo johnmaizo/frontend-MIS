@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { EditDepartmentIcon } from "../Icons";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -23,70 +24,88 @@ import {
   CommandSeparator,
 } from "../ui/command";
 
+import { useSchool } from "../context/SchoolContext";
+import { Switch } from "../ui/switch";
+
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { Button } from "../ui/button";
-
 import { useMediaQuery } from "../../hooks/use-media-query";
 
-import { AddDepartmentIcon } from "../Icons";
-import { useSchool } from "../context/SchoolContext";
-
-const AddCourse = () => {
-  const { fetchCourse, deparmentsCustom, fetchDepartmentsActive, loading } =
-    useSchool();
-
+const EditCourse = ({ courseId }) => {
+  const { fetchCourse, deparmentsCustom } = useSchool();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isActive, setIsActive] = useState(true); // State for status switch
 
   const [openComboBox, setOpenComboBox] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState(""); // State for selected department
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    setError,
+    setValue,
     clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
-  const [error, setGeneralError] = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchDepartmentsActive();
-  }, []);
+    if (courseId && open) {
+      // Fetch the course data when the modal is opened
+      setLoading(true);
+      axios
+        .get(`/course/${courseId}`)
+        .then((response) => {
+          const course = response.data;
+          // Pre-fill the form with course data
+          setValue("courseCode", course.courseCode);
+          setValue("courseName", course.courseName);
+          setIsActive(course.isActive); // Set the initial status
+          setSelectedDepartment(course.departmentName.toString()); // Set the initial department
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(`Failed to fetch course data: (${err})`);
+          setLoading(false);
+        });
+    }
+  }, [courseId, open, setValue]);
 
   const onSubmit = async (data) => {
     if (!selectedDepartment) {
-      setError("departmentName", {
-        type: "manual",
-        message: "You must select a department.",
-      });
+      setError("departmentName", "You must select a department.");
       return;
     }
 
-    setLocalLoading(true);
+    setLoading(true);
+    // Add isActive and selectedDepartment to the form data
     const transformedData = {
-      ...data,
-      departmentName: selectedDepartment,
+      ...Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value.trim() === "" ? null : value.trim(),
+        ]),
+      ),
+      isActive: isActive ? true : false, // Set isActive based on the switch value
+      departmentName: selectedDepartment, // Add the selected department to the form data
     };
 
-    console.log(transformedData);
-
-    setGeneralError("");
+    setError("");
     try {
       const response = await toast.promise(
-        axios.post("/course/add-course", transformedData),
+        axios.put(`/course/${courseId}`, transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Updating Course...",
+          success: "Course updated successfully!",
+          error: "Failed to update Course.",
         },
         {
           position: "bottom-right",
@@ -99,14 +118,14 @@ const AddCourse = () => {
         fetchCourse();
         setOpen(false); // Close the dialog
       }
-      setLocalLoading(false);
+      setLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        setGeneralError(err.response.data.message);
+        setError(err.response.data.message);
       } else {
-        setGeneralError("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
-      setLocalLoading(false);
+      setLoading(false);
     }
   };
 
@@ -115,11 +134,10 @@ const AddCourse = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedDepartment(""); // Reset selected campus
       }, 5000);
     } else if (error) {
       setTimeout(() => {
-        setGeneralError("");
+        setError("");
       }, 6000);
     }
   }, [success, error, reset]);
@@ -138,7 +156,7 @@ const AddCourse = () => {
   }, [errors]);
 
   return (
-    <div className="w-full items-center justify-end gap-2 md:flex">
+    <div className="flex items-center justify-end gap-2">
       <div>
         <Dialog
           open={open}
@@ -151,25 +169,46 @@ const AddCourse = () => {
             }
           }}
         >
-          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
-            <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Course </span>
+          <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
+            <EditDepartmentIcon forActions={"Edit Course"} />
           </DialogTrigger>
+
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Course
+                Edit Course
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
+                    <div className="w-full pb-3 xl:w-[12em]">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="course_active"
+                      >
+                        Status{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <Switch
+                        id="course_active"
+                        checked={isActive}
+                        onCheckedChange={setIsActive} // Update the status when the switch is toggled
+                        disabled={success || loading}
+                      />
+                    </div>
+
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[12em]">
+                      <div className="w-full xl:w-[13.5em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="course_code"
                         >
-                          Course Code
+                          Course Code{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="course_code"
@@ -186,7 +225,7 @@ const AddCourse = () => {
                                 "Course Code cannot be empty or just spaces",
                             },
                           })}
-                          disabled={localLoading || success}
+                          disabled={success || loading}
                         />
                         {errors.courseCode && (
                           <ErrorMessage>
@@ -200,7 +239,10 @@ const AddCourse = () => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="course_name"
                         >
-                          Course Name
+                          Course Name{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="course_name"
@@ -217,7 +259,7 @@ const AddCourse = () => {
                                 "Course Name cannot be empty or just spaces",
                             },
                           })}
-                          disabled={localLoading || success}
+                          disabled={success || loading}
                         />
                         {errors.courseName && (
                           <ErrorMessage>
@@ -243,12 +285,15 @@ const AddCourse = () => {
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
+                              disabled={loading}
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
                               {selectedDepartment ? (
                                 <>{selectedDepartment}</>
                               ) : (
-                                <>Select Department</>
+                                <>
+                                  {loading ? "Loading..." : "Select Department"}
+                                </>
                               )}
                             </Button>
                           </PopoverTrigger>
@@ -274,12 +319,17 @@ const AddCourse = () => {
                             <DrawerTrigger asChild>
                               <Button
                                 variant="outline"
+                                disabled={loading}
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
                                 {selectedDepartment ? (
                                   <>{selectedDepartment}</>
                                 ) : (
-                                  <>Select Department</>
+                                  <>
+                                    {loading
+                                      ? "Loading..."
+                                      : "Select Department"}
+                                  </>
                                 )}
                               </Button>
                             </DrawerTrigger>
@@ -306,21 +356,28 @@ const AddCourse = () => {
                     </div>
 
                     {error && (
-                      <span className="mt-2 inline-block py-3 font-medium text-red-600">
+                      <span className="mt-2 inline-block pb-6 font-medium text-red-600">
                         Error: {error}
                       </span>
                     )}
 
                     <button
                       type="submit"
-                      className="mt-5 inline-flex w-full items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
-                      disabled={localLoading || success}
+                      className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                        loading || success
+                          ? "bg-[#505456] hover:!bg-opacity-100"
+                          : ""
+                      }`}
+                      disabled={loading || success}
                     >
-                      {localLoading ? (
-                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                      ) : (
-                        "Add Course"
+                      {loading && (
+                        <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
+                      {loading
+                        ? "Updating Department..."
+                        : success
+                          ? "Department Updated!"
+                          : "Update Department"}
                     </button>
                   </div>
                 </form>
@@ -395,4 +452,4 @@ function DepartmentList({
   );
 }
 
-export default AddCourse;
+export default EditCourse;

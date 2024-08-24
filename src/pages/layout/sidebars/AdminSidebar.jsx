@@ -125,19 +125,6 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
 
           <li>
             <NavLink
-              to="/teachers"
-              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                (pathname === "/teachers" || pathname.includes("teachers")) &&
-                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
-              }`}
-            >
-              <TeacherIcon />
-              Teachers
-            </NavLink>
-          </li>
-
-          <li>
-            <NavLink
               to="/subjects"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
                 (pathname === "/subjects" || pathname.includes("subjects")) &&
@@ -146,6 +133,19 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
             >
               <SubjectIcon />
               Subjects
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/teachers"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/teachers" || pathname.includes("teachers")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <TeacherIcon />
+              Teachers
             </NavLink>
           </li>
 

@@ -131,6 +131,13 @@ const CampusTables = () => {
       },
     },
     {
+      accessorKey: "updatedAt",
+      header: "Date Updated",
+      cell: ({ cell }) => {
+        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
+      },
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ cell }) => {

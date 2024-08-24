@@ -60,7 +60,7 @@ const DeletedSemesters = () => {
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
               Deleted Semesters
             </DialogTitle>
-            <DialogDescription className="overflow-y-auto h-[15em] overscroll-none text-xl">
+            <DialogDescription className="h-[15em] overflow-y-auto overscroll-none text-xl">
               <SemesterTables />
             </DialogDescription>
           </DialogHeader>
@@ -71,13 +71,18 @@ const DeletedSemesters = () => {
 };
 
 const SemesterTables = () => {
-  const { fetchSemesters, semestersDeleted, fetchSemestersDeleted, loading, error } =
-    useSchool();
+  const {
+    fetchSemesters,
+    semestersDeleted,
+    fetchSemestersDeleted,
+    loading,
+    error,
+  } = useSchool();
 
   const columns = [
     {
       accessorKey: "semester_id",
-      header: "ID",
+      header: "Numeric ID",
     },
     {
       accessorKey: "schoolYear",
@@ -200,7 +205,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="xsm:max-w-full xsm:!w-auto !w-[13.5em] overflow-auto overflow-x-auto">
+      <div className="!w-[13.5em] overflow-auto overflow-x-auto xsm:!w-auto xsm:max-w-full">
         <Table className="border border-stroke dark:border-strokedark">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -22,7 +22,7 @@ const AdminHome = () => {
         <CardDataDepartment />
         <CardDataCourse />
         
-        <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
+        {/* <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -105,7 +105,7 @@ const AdminHome = () => {
               fill=""
             />
           </svg>
-        </CardDataStats>
+        </CardDataStats> */}
       </div>
 
       <div className="mt-8">
@@ -116,10 +116,10 @@ const AdminHome = () => {
         <ChartOne />
         <ChartTwo />
         <ChartThree />
-        <div className="col-span-12 xl:col-span-8">
+        {/* <div className="col-span-12 xl:col-span-8">
           <TableOne />
-        </div>
-        <ChatCard />
+        </div> */}
+        {/* <ChatCard /> */}
       </div>
     </DefaultLayout>
   );

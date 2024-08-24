@@ -60,7 +60,7 @@ const DeletedCampus = () => {
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
               Deleted Campus
             </DialogTitle>
-            <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+            <DialogDescription className="h-[15em] overflow-y-auto overscroll-none text-xl">
               <CampusTables />
             </DialogDescription>
           </DialogHeader>
@@ -199,7 +199,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="xsm:max-w-full xsm:!w-auto !w-[13.5em] overflow-x-auto">
+      <div className="!w-[13.5em] overflow-x-auto xsm:!w-auto xsm:max-w-full">
         <Table className="border border-stroke dark:border-strokedark">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

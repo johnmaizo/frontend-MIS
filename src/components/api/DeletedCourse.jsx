@@ -47,7 +47,6 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
 import ButtonActionCourse from "../reuseable/ButtonActionCourse";
 
 const DeletedCourse = () => {
@@ -70,7 +69,7 @@ const DeletedCourse = () => {
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
               Deleted Courses
             </DialogTitle>
-            <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+            <DialogDescription className="h-[15em] overflow-y-auto overscroll-none text-xl">
               <CourseTables />
             </DialogDescription>
           </DialogHeader>
@@ -90,14 +89,12 @@ const CourseTables = () => {
       header: "Numeric ID",
     },
     {
-        accessorKey: "courseCode",
-        header: "Course",
-        cell: ({ cell }) => {
-            return (
-                <span className=" font-bold">{cell.getValue()}</span>
-            )
-        }
+      accessorKey: "courseCode",
+      header: "Course",
+      cell: ({ cell }) => {
+        return <span className="font-bold">{cell.getValue()}</span>;
       },
+    },
     {
       accessorKey: "departmentName",
       header: ({ column }) => {

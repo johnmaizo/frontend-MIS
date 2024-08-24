@@ -161,6 +161,8 @@ const CourseTables = () => {
           return `${initials} - ${campus}`; // Combine initials with campus
         };
 
+        const getCampusName = cell.getValue().split(" - ")[0];
+
         return (
           <TooltipProvider>
             <Tooltip>
@@ -173,7 +175,7 @@ const CourseTables = () => {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="text-[1rem]">{cell.getValue()}</p>
+                <p className="text-[1rem]">{getCampusName}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

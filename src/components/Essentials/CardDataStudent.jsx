@@ -43,7 +43,6 @@ const CardDataStudent = () => {
         const previousResponse = await axios.get("/students/previous-active");
         const previousTotal = previousResponse.data.total;
         setPreviousTotalStudent(previousTotal);
-        
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);

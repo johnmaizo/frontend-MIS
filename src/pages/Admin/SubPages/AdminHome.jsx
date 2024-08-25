@@ -7,7 +7,6 @@ import TableOne from "../../../components/Tables/TableOne";
 import DefaultLayout from "../../layout/DefaultLayout";
 import UserTables from "../../../components/api/UserTables";
 
-
 import CardDataStudent from "../../../components/Essentials/CardDataStudent";
 import CardDataDepartment from "../../../components/Essentials/CardDataDepartment";
 import CardDataCampus from "../../../components/Essentials/CardDataCampus";
@@ -16,12 +15,12 @@ import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 const AdminHome = () => {
   return (
     <DefaultLayout>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-5 2xl:gap-4">
         <CardDataStudent />
         <CardDataCampus />
         <CardDataDepartment />
         <CardDataCourse />
-        
+
         {/* <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -114,8 +113,8 @@ const AdminHome = () => {
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
-        <ChartTwo />
         <ChartThree />
+        <ChartTwo />
         {/* <div className="col-span-12 xl:col-span-8">
           <TableOne />
         </div> */}

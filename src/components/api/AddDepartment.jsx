@@ -59,7 +59,12 @@ const AddDepartment = () => {
 
     setLocalLoading(true);
     const transformedData = {
-      ...data,
+      ...Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value.trim() === "" ? null : value.trim(),
+        ]),
+      ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
 

@@ -54,7 +54,12 @@ const AddSemester = () => {
 
     setLoading(true);
     const transformedData = {
-      ...data,
+      ...Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value.trim() === "" ? null : value.trim(),
+        ]),
+      ),
       semesterName: selectedSemester, // Add the selected semester to the form data
     };
 
@@ -206,13 +211,24 @@ const AddSemester = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Semesters</SelectLabel>
-                            <SelectItem value="1st Semester" className="text-[1.2rem]  font-medium ">
+                            <SelectItem
+                              value="1st Semester"
+                              className="text-[1.2rem] font-medium"
+                            >
                               1st Semester
                             </SelectItem>
-                            <SelectItem value="2nd Semester" className="text-[1.2rem] font-medium ">
+                            <SelectItem
+                              value="2nd Semester"
+                              className="text-[1.2rem] font-medium"
+                            >
                               2nd Semester
                             </SelectItem>
-                            <SelectItem value="Summer" className="text-[1.2rem] font-medium ">Summer</SelectItem>
+                            <SelectItem
+                              value="Summer"
+                              className="text-[1.2rem] font-medium"
+                            >
+                              Summer
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

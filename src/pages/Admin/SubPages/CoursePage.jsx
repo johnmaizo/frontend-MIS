@@ -164,7 +164,7 @@ const CourseTables = () => {
         const getCampusName = cell.getValue().split(" - ")[0];
 
         return (
-          <TooltipProvider>
+          <TooltipProvider delayDuration={75}>
             <Tooltip>
               <TooltipTrigger
                 asChild
@@ -174,7 +174,7 @@ const CourseTables = () => {
                   {getInitialsWithCampus(cell.getValue())}
                 </span>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
                 <p className="text-[1rem]">{getCampusName}</p>
               </TooltipContent>
             </Tooltip>
@@ -282,7 +282,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 5,
       },
     },
   });
@@ -292,21 +292,32 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by course name..."
-            value={table.getColumn("courseName")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table.getColumn("courseName")?.setFilterValue(event.target.value)
-            }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
-          />
-
-          <Input
             placeholder="Search by course code..."
             value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("courseCode")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[13.5em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[13em]"
+          />
+
+          <Input
+            placeholder="Search by course name..."
+            value={table.getColumn("courseName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table.getColumn("courseName")?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+          />
+
+          <Input
+            placeholder="Search by department..."
+            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("departmentName")
+                ?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
         </div>
 

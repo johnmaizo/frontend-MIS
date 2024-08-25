@@ -74,7 +74,12 @@ const AddCourse = () => {
 
     setLocalLoading(true);
     const transformedData = {
-      ...data,
+      ...Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value.trim() === "" ? null : value.trim(),
+        ]),
+      ),
       department_id: parseInt(selectedDepartmentID),
     };
 

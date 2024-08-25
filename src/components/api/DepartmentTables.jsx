@@ -49,7 +49,13 @@ import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
 import DeletedDepartment from "./DeletedDepartment";
 
 const DepartmentTables = () => {
-  const { departments, fetchDepartments, fetchDepartmentsDeleted, loading, error } = useSchool();
+  const {
+    departments,
+    fetchDepartments,
+    fetchDepartmentsDeleted,
+    loading,
+    error,
+  } = useSchool();
 
   const columns = [
     {
@@ -238,19 +244,8 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-3 mt-2 md:flex w-full items-start justify-between">
-        <div className="md:flex gap-5">
-          <Input
-            placeholder="Search by department name..."
-            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table
-                .getColumn("departmentName")
-                ?.setFilterValue(event.target.value)
-            }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:w-[17em] mb-5 md:mb-0"
-          />
-
+      <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
+        <div className="gap-5 md:flex">
           <Input
             placeholder="Search by code..."
             value={table.getColumn("departmentCode")?.getFilterValue() ?? ""}
@@ -259,7 +254,18 @@ const DataTable = ({ data, columns, loading, error }) => {
                 .getColumn("departmentCode")
                 ?.setFilterValue(event.target.value)
             }
-            className="h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:max-w-[12em] mb-5 md:mb-0"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[12em]"
+          />
+
+          <Input
+            placeholder="Search by department name..."
+            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("departmentName")
+                ?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
         </div>
 

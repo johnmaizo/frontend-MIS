@@ -43,7 +43,8 @@ const EditCourse = ({ courseId }) => {
   const [openComboBox, setOpenComboBox] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [selectedDepartment, setSelectedDepartment] = useState(""); // State for selected department
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState(""); // State for selected department ID
+  const [selectedDepartmenName, setSelectedDepartmenName] = useState(""); // State for selected department Name
 
   const {
     register,
@@ -69,7 +70,8 @@ const EditCourse = ({ courseId }) => {
           setValue("courseCode", course.courseCode);
           setValue("courseName", course.courseName);
           setIsActive(course.isActive); // Set the initial status
-          setSelectedDepartment(course.departmentName.toString()); // Set the initial department
+          setSelectedDepartmentID(course.department_id.toString()); // Set the initial department
+          setSelectedDepartmenName(course.departmentName);
           setLoading(false);
         })
         .catch((err) => {
@@ -80,8 +82,8 @@ const EditCourse = ({ courseId }) => {
   }, [courseId, open, setValue]);
 
   const onSubmit = async (data) => {
-    if (!selectedDepartment) {
-      setError("departmentName", "You must select a department.");
+    if (!selectedDepartmentID) {
+      setError("department_id", "You must select a department.");
       return;
     }
 
@@ -95,8 +97,10 @@ const EditCourse = ({ courseId }) => {
         ]),
       ),
       isActive: isActive ? true : false, // Set isActive based on the switch value
-      departmentName: selectedDepartment, // Add the selected department to the form data
+      department_id: selectedDepartmentID, // Add the selected department to the form data
     };
+
+    console.log(transformedData);
 
     setError("");
     try {
@@ -134,6 +138,8 @@ const EditCourse = ({ courseId }) => {
       setTimeout(() => {
         setSuccess(false);
         reset();
+        setSelectedDepartmentID(""); // Reset selected department
+        setSelectedDepartmenName(""); // Reset selected department
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -164,8 +170,9 @@ const EditCourse = ({ courseId }) => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
-              setSelectedDepartment(""); // Reset selected campus
-              clearErrors("campus_id"); // Clear campus selection error when dialog closes
+              setSelectedDepartmentID(""); // Reset selected department ID
+              setSelectedDepartmenName(""); // Reset selected department Name
+              clearErrors("department_id"); // Clear deparment selection error when dialog closes
             }
           }}
         >
@@ -288,8 +295,8 @@ const EditCourse = ({ courseId }) => {
                               disabled={loading}
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
-                              {selectedDepartment ? (
-                                <>{selectedDepartment}</>
+                              {selectedDepartmentID ? (
+                                <>{selectedDepartmenName}</>
                               ) : (
                                 <>
                                   {loading ? "Loading..." : "Select Department"}
@@ -303,7 +310,10 @@ const EditCourse = ({ courseId }) => {
                           >
                             <DepartmentList
                               setOpen={setOpenComboBox}
-                              setSelectedDepartment={setSelectedDepartment}
+                              setSelectedDepartmentID={setSelectedDepartmentID}
+                              setSelectedDepartmenName={
+                                setSelectedDepartmenName
+                              }
                               data={deparmentsCustom}
                               loading={loading}
                               clearErrors={clearErrors}
@@ -322,8 +332,8 @@ const EditCourse = ({ courseId }) => {
                                 disabled={loading}
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
-                                {selectedDepartment ? (
-                                  <>{selectedDepartment}</>
+                                {selectedDepartmentID ? (
+                                  <>{selectedDepartmenName}</>
                                 ) : (
                                   <>
                                     {loading
@@ -337,7 +347,12 @@ const EditCourse = ({ courseId }) => {
                               <div className="mt-4 border-t">
                                 <DepartmentList
                                   setOpen={setOpenComboBox}
-                                  setSelectedDepartment={setSelectedDepartment}
+                                  setSelectedDepartmentID={
+                                    setSelectedDepartmentID
+                                  }
+                                  setSelectedDepartmenName={
+                                    setSelectedDepartmenName
+                                  }
                                   data={deparmentsCustom}
                                   loading={loading}
                                   clearErrors={clearErrors}
@@ -348,9 +363,9 @@ const EditCourse = ({ courseId }) => {
                         )
                       )}
 
-                      {errors.departmentName && (
+                      {errors.department_id && (
                         <ErrorMessage>
-                          *{errors.departmentName.message}
+                          *{errors.department_id.message}
                         </ErrorMessage>
                       )}
                     </div>
@@ -401,13 +416,23 @@ const ErrorMessage = ({ children }) => {
 
 function DepartmentList({
   setOpen,
-  setSelectedDepartment,
+  setSelectedDepartmentID,
+  setSelectedDepartmenName,
   data,
   loading,
   clearErrors,
 }) {
   return (
-    <Command className="md:!w-[34.5em]">
+    <Command
+      className="md:!w-[34.5em]"
+      filter={(value, search, keywords = []) => {
+        const extendValue = value + " " + keywords.join(" ");
+        if (extendValue.toLowerCase().includes(search.toLowerCase())) {
+          return 1;
+        }
+        return 0;
+      }}
+    >
       <CommandInput placeholder="Filter department..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
@@ -422,21 +447,22 @@ function DepartmentList({
           )}
           {data && data.length ? (
             data.map((department, index) => (
-              <>
+              <div key={index}>
                 <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 <CommandItem
-                  key={index}
-                  value={department.departmentName.toString()}
+                  value={department.department_id.toString()}
+                  keywords={[department.departmentName]}
                   onSelect={(value) => {
-                    setSelectedDepartment(value);
+                    setSelectedDepartmentID(value);
+                    setSelectedDepartmenName(department.departmentName);
                     setOpen(false);
-                    clearErrors("departmentName");
+                    clearErrors("department_id");
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
                   {department.departmentName}
                 </CommandItem>
-              </>
+              </div>
             ))
           ) : (
             <CommandItem

@@ -1,0 +1,423 @@
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "../ui/command";
+
+import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
+
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
+import { Button } from "../ui/button";
+
+import { useMediaQuery } from "../../hooks/use-media-query";
+
+import { AddDepartmentIcon } from "../Icons";
+import { useSchool } from "../context/SchoolContext";
+
+const AddSubject = () => {
+  const { fetchCourse, deparmentsCustom, fetchDepartmentsCustom, loading } =
+    useSchool();
+
+  const [open, setOpen] = useState(false);
+
+  const [openComboBox, setOpenComboBox] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState("");
+  const [selectedDepartmenName, setSelectedDepartmenName] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+    clearErrors, // Added clearErrors to manually clear errors
+  } = useForm();
+
+  const [error, setGeneralError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
+
+  useEffect(() => {
+    fetchDepartmentsCustom();
+  }, []);
+
+  const onSubmit = async (data) => {
+    if (!selectedDepartmentID) {
+      setError("department_id", {
+        type: "manual",
+        message: "You must select a department.",
+      });
+      return;
+    }
+
+    setLocalLoading(true);
+    const transformedData = {
+      ...Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          value.trim() === "" ? null : value.trim(),
+        ]),
+      ),
+      department_id: parseInt(selectedDepartmentID),
+    };
+
+    setGeneralError("");
+    try {
+      const response = await toast.promise(
+        axios.post("/course/add-course", transformedData),
+        {
+          loading: "Adding Course...",
+          success: "Course Added successfully!",
+          error: "Failed to add Course.",
+        },
+        {
+          position: "bottom-right",
+          duration: 5000,
+        },
+      );
+
+      if (response.data) {
+        setSuccess(true);
+        fetchCourse();
+        setOpen(false); // Close the dialog
+      }
+      setLocalLoading(false);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setGeneralError(err.response.data.message);
+      } else {
+        setGeneralError("An unexpected error occurred. Please try again.");
+      }
+      setLocalLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+        reset();
+        setSelectedDepartmentID(""); // Reset selected department
+        setSelectedDepartmenName(""); // Reset selected department
+      }, 5000);
+    } else if (error) {
+      setTimeout(() => {
+        setGeneralError("");
+      }, 6000);
+    }
+  }, [success, error, reset]);
+
+  useEffect(() => {
+    if (errors && Object.keys(errors).length > 0) {
+      const firstErrorField = Object.keys(errors)[0];
+      const errorElement = document.querySelector(
+        `[name="${firstErrorField}"]`,
+      );
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        errorElement.focus();
+      }
+    }
+  }, [errors]);
+
+  return (
+    <div className="w-full items-center justify-end gap-2 md:flex">
+      <div>
+        <Dialog
+          open={open}
+          onOpenChange={(isOpen) => {
+            setOpen(isOpen);
+            if (!isOpen) {
+              reset(); // Reset form fields when the dialog is closed
+              setSelectedDepartmentID(""); // Reset selected department ID
+              setSelectedDepartmenName(""); // Reset selected department Name
+              clearErrors("department_id"); // Clear deparment selection error when dialog closes
+            }
+          }}
+        >
+          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
+            <AddDepartmentIcon />
+            <span className="max-w-[8em]">Add Subject </span>
+          </DialogTrigger>
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-medium text-black dark:text-white">
+                Add new Subject
+              </DialogTitle>
+              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="p-6.5">
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="w-full xl:w-[12em]">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="subject_code"
+                        >
+                          Subject Code
+                        </label>
+                        <input
+                          id="subject_code"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("subjectCode", {
+                            required: {
+                              value: true,
+                              message: "Subject Code is required",
+                            },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "Subject Code cannot be empty or just spaces",
+                            },
+                          })}
+                          disabled={localLoading || success}
+                        />
+                        {errors.subjectCode && (
+                          <ErrorMessage>
+                            *{errors.subjectCode.message}
+                          </ErrorMessage>
+                        )}
+                      </div>
+
+                      <div className="w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="subject_name"
+                        >
+                          Subject Name
+                        </label>
+                        <input
+                          id="subject_name"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("subjectName", {
+                            required: {
+                              value: true,
+                              message: "Subject Name is required",
+                            },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "Subject Name cannot be empty or just spaces",
+                            },
+                          })}
+                          disabled={localLoading || success}
+                        />
+                        {errors.subjectName && (
+                          <ErrorMessage>
+                            *{errors.subjectName.message}
+                          </ErrorMessage>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="course_department"
+                      >
+                        Department
+                      </label>
+
+                      {isDesktop ? (
+                        <Popover
+                          open={openComboBox}
+                          onOpenChange={setOpenComboBox}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
+                            >
+                              {selectedDepartmentID ? (
+                                <>{selectedDepartmenName}</>
+                              ) : (
+                                <>Select Department</>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            className="w-[200px] p-0"
+                            align="start"
+                          >
+                            <DepartmentList
+                              setOpen={setOpenComboBox}
+                              setSelectedDepartmentID={setSelectedDepartmentID}
+                              setSelectedDepartmenName={
+                                setSelectedDepartmenName
+                              }
+                              data={deparmentsCustom}
+                              loading={loading}
+                              clearErrors={clearErrors}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        !isDesktop && (
+                          <Drawer
+                            open={openComboBox}
+                            onOpenChange={setOpenComboBox}
+                          >
+                            <DrawerTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
+                              >
+                                {selectedDepartmentID ? (
+                                  <>{selectedDepartmenName}</>
+                                ) : (
+                                  <>Select Department</>
+                                )}
+                              </Button>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                              <div className="mt-4 border-t">
+                                <DepartmentList
+                                  setOpen={setOpenComboBox}
+                                  setSelectedDepartmentID={
+                                    setSelectedDepartmentID
+                                  }
+                                  setSelectedDepartmenName={
+                                    setSelectedDepartmenName
+                                  }
+                                  data={deparmentsCustom}
+                                  loading={loading}
+                                  clearErrors={clearErrors}
+                                />
+                              </div>
+                            </DrawerContent>
+                          </Drawer>
+                        )
+                      )}
+
+                      {errors.department_id && (
+                        <ErrorMessage>
+                          *{errors.department_id.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    {error && (
+                      <span className="mt-2 inline-block py-3 font-medium text-red-600">
+                        Error: {error}
+                      </span>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="mt-5 inline-flex w-full items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
+                      disabled={localLoading || success}
+                    >
+                      {localLoading ? (
+                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                      ) : (
+                        "Add Course"
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+};
+
+// eslint-disable-next-line react/prop-types
+const ErrorMessage = ({ children }) => {
+  return (
+    <span className="mt-2 inline-block text-sm font-medium text-red-600">
+      {children}
+    </span>
+  );
+};
+
+function DepartmentList({
+  setOpen,
+  setSelectedDepartmentID,
+  setSelectedDepartmenName,
+  data,
+  loading,
+  clearErrors,
+}) {
+  return (
+    <Command
+      className="md:!w-[34.5em]"
+      filter={(value, search, keywords = []) => {
+        const extendValue = value + " " + keywords.join(" ");
+        if (extendValue.toLowerCase().includes(search.toLowerCase())) {
+          return 1;
+        }
+        return 0;
+      }}
+    >
+      <CommandInput placeholder="Filter department..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup>
+          {loading && (
+            <CommandItem
+              disabled
+              className="text-[1rem] font-medium text-black dark:text-white md:text-[1.2rem]"
+            >
+              Searching...
+            </CommandItem>
+          )}
+          {data && data.length ? (
+            data.map((department, index) => (
+              <div key={index}>
+                <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
+                <CommandItem
+                  value={department.department_id.toString()}
+                  keywords={[department.departmentName]}
+                  onSelect={(value) => {
+                    setSelectedDepartmentID(value);
+                    setSelectedDepartmenName(department.departmentName);
+                    setOpen(false);
+                    clearErrors("department_id");
+                  }}
+                  className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+                >
+                  {department.departmentName}
+                </CommandItem>
+              </div>
+            ))
+          ) : (
+            <CommandItem
+              disabled
+              className="text-[1rem] font-medium text-black dark:text-white"
+            >
+              Empty, please add a department.
+            </CommandItem>
+          )}
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}
+
+export default AddSubject;

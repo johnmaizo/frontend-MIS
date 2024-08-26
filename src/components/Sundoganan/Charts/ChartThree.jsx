@@ -9,7 +9,7 @@ const options = {
   colors: ["#3C50E0", "#6577F3", "#8FD0EF", "#0FADCF"],
   labels: ["Desktop", "Tablet", "Mobile", "Unknown"],
   legend: {
-    show: false,
+    show: true,
     position: "bottom",
   },
 
@@ -22,7 +22,13 @@ const options = {
     },
   },
   dataLabels: {
-    enabled: false,
+    enabled: true,
+    style: {
+      fontSize: "13px",
+      fontFamily: "Helvetica, Arial, sans-serif",
+      fontWeight: "bold",
+      colors: ["#000000"],
+    },
   },
   responsive: [
     {
@@ -62,7 +68,7 @@ const ChartThree = () => {
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-xl font-semibold text-black dark:text-white">
-            Course Analytics
+            Department Analytics
           </h5>
         </div>
         <div>
@@ -70,13 +76,13 @@ const ChartThree = () => {
             <select
               name=""
               id=""
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
+              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-[0.75rem] font-medium outline-none"
             >
               <option value="" className="dark:bg-boxdark">
-                Monthly
+                Mandaue Campus
               </option>
               <option value="" className="dark:bg-boxdark">
-                Yearly
+                Cebu Campus
               </option>
             </select>
             <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
@@ -113,7 +119,7 @@ const ChartThree = () => {
         </div>
       </div>
 
-      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
+      {/* <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
         <div className="w-full px-8 sm:w-1/2">
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
@@ -150,7 +156,7 @@ const ChartThree = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

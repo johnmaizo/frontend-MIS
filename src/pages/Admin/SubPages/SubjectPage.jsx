@@ -55,6 +55,7 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 import { useSchool } from "../../../components/context/SchoolContext";
 
 import AddCourse from "../../../components/api/AddCourse";
+import AddSubject from "../../../components/api/AddSubject";
 
 import EditCourse from "../../../components/api/EditCourse";
 
@@ -62,7 +63,7 @@ import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse
 
 import DeletedCourse from "../../../components/api/DeletedCourse";
 
-const CoursePage = () => {
+const SubjectPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/subject/add-subject", label: "Add Subject" },
@@ -77,12 +78,12 @@ const CoursePage = () => {
         ITEMS_TO_DISPLAY={2}
       />
 
-      <SubjectTables />
+      <CourseTables />
     </DefaultLayout>
   );
 };
 
-const SubjectTables = () => {
+const CourseTables = () => {
   const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
 
@@ -164,7 +165,7 @@ const SubjectTables = () => {
         const getCampusName = cell.getValue().split(" - ")[0];
 
         return (
-          <TooltipProvider>
+          <TooltipProvider delayDuration={75}>
             <Tooltip>
               <TooltipTrigger
                 asChild
@@ -174,7 +175,7 @@ const SubjectTables = () => {
                   {getInitialsWithCampus(cell.getValue())}
                 </span>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
                 <p className="text-[1rem]">{getCampusName}</p>
               </TooltipContent>
             </Tooltip>
@@ -282,7 +283,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 5,
       },
     },
   });
@@ -292,26 +293,37 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
+            placeholder="Search by code..."
+            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table.getColumn("courseCode")?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[10em]"
+          />
+
+          <Input
             placeholder="Search by course name..."
             value={table.getColumn("courseName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("courseName")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
 
           <Input
-            placeholder="Search by course code..."
-            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
+            placeholder="Search by department..."
+            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("courseCode")?.setFilterValue(event.target.value)
+              table
+                .getColumn("departmentName")
+                ?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[13.5em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
         </div>
 
         <div className=" ">
-          <AddCourse />
+          <AddSubject />
         </div>
       </div>
 
@@ -406,11 +418,11 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination table={table} totalcourse={data.length} />
+          <DataTablePagination totalName={"Subject"} table={table} totalDepartments={data.length} />
         </div>
       </div>
     </>
   );
 };
 
-export default CoursePage;
+export default SubjectPage;

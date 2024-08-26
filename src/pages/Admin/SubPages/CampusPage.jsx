@@ -123,20 +123,20 @@ const CampusTables = () => {
         return cell.getValue();
       },
     },
-    {
-      accessorKey: "createdAt",
-      header: "Date Created",
-      cell: ({ cell }) => {
-        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-      },
-    },
-    {
-      accessorKey: "updatedAt",
-      header: "Date Updated",
-      cell: ({ cell }) => {
-        return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-      },
-    },
+    // {
+    //   accessorKey: "createdAt",
+    //   header: "Date Created",
+    //   cell: ({ cell }) => {
+    //     return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
+    //   },
+    // },
+    // {
+    //   accessorKey: "updatedAt",
+    //   header: "Date Updated",
+    //   cell: ({ cell }) => {
+    //     return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
+    //   },
+    // },
     {
       accessorKey: "isActive",
       header: "Status",

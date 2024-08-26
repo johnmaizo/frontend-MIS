@@ -328,14 +328,13 @@ const AddCourse = () => {
 
                     <button
                       type="submit"
-                      className="mt-5 inline-flex w-full items-center justify-center rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
+                      className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                       disabled={localLoading || success}
                     >
-                      {localLoading ? (
+                      {localLoading && (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                      ) : (
-                        "Add Course"
                       )}
+                      {localLoading ? "Loading..." : "Add Course"}
                     </button>
                   </div>
                 </form>

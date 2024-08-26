@@ -99,7 +99,7 @@ const AddCampus = () => {
   }, [errors]);
 
   return (
-    <div className="md:flex w-full items-center justify-end gap-2">
+    <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
         <Dialog
           open={open}
@@ -110,7 +110,7 @@ const AddCampus = () => {
             }
           }}
         >
-          <DialogTrigger className="flex justify-center w-full md:w-auto md:justify-normal gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700">
+          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Add Campus </span>
           </DialogTrigger>

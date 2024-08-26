@@ -33,18 +33,18 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
+import { getInitialCourseCodeAndCampus } from "../reuseable/GetInitialNames";
 
 const AddSubject = () => {
-  const { fetchCourse, deparmentsCustom, fetchDepartmentsCustom, loading } =
-    useSchool();
+  const { fetchSubject, course, fetchCourse, loading } = useSchool();
 
   const [open, setOpen] = useState(false);
 
   const [openComboBox, setOpenComboBox] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [selectedDepartmentID, setSelectedDepartmentID] = useState("");
-  const [selectedDepartmenName, setSelectedDepartmenName] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState({});
+  const [selectedCourseName, setSelectedCourseName] = useState("");
 
   const {
     register,
@@ -60,14 +60,14 @@ const AddSubject = () => {
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchDepartmentsCustom();
+    fetchCourse();
   }, []);
 
   const onSubmit = async (data) => {
-    if (!selectedDepartmentID) {
-      setError("department_id", {
+    if (Object.keys(selectedCourse).length === 0) {
+      setError("course_id", {
         type: "manual",
-        message: "You must select a department.",
+        message: "You must select a course.",
       });
       return;
     }
@@ -80,17 +80,25 @@ const AddSubject = () => {
           value.trim() === "" ? null : value.trim(),
         ]),
       ),
-      department_id: parseInt(selectedDepartmentID),
+      unit: parseInt(data.unit),
+      course_id: parseInt(selectedCourse.course_id),
+      courseCode: selectedCourse.CourseCode,
+      courseName: selectedCourse.CourseName,
+      departmentCode: selectedCourse.DepartmentCode,
+      departmentName: selectedCourse.Department,
+      campusName: selectedCourse.Campus,
     };
+
+    console.log(transformedData);
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/course/add-course", transformedData),
+        axios.post("/subjects/add-subject", transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Adding Subject...",
+          success: "Subject Added successfully!",
+          error: "Failed to add Subject.",
         },
         {
           position: "bottom-right",
@@ -100,7 +108,7 @@ const AddSubject = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchSubject();
         setOpen(false); // Close the dialog
       }
       setLocalLoading(false);
@@ -119,8 +127,8 @@ const AddSubject = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedDepartmentID(""); // Reset selected department
-        setSelectedDepartmenName(""); // Reset selected department
+        setSelectedCourse({}); // Reset selected department
+        setSelectedCourseName(""); // Reset selected department
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -151,9 +159,9 @@ const AddSubject = () => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
-              setSelectedDepartmentID(""); // Reset selected department ID
-              setSelectedDepartmenName(""); // Reset selected department Name
-              clearErrors("department_id"); // Clear deparment selection error when dialog closes
+              setSelectedCourse({});
+              setSelectedCourseName(""); // Reset selected department Name
+              clearErrors("course_id"); // Clear deparment selection error when dialog closes
             }
           }}
         >
@@ -170,7 +178,7 @@ const AddSubject = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[12em]">
+                      <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="subject_code"
@@ -190,6 +198,9 @@ const AddSubject = () => {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
                                 "Subject Code cannot be empty or just spaces",
+                              isUpperCaseAndNumbers: (value) =>
+                                /^[A-Z0-9]+$/.test(value) ||
+                                "Subject Code must contain only capital letters and numbers",
                             },
                           })}
                           disabled={localLoading || success}
@@ -204,31 +215,33 @@ const AddSubject = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="subject_name"
+                          htmlFor="unit"
                         >
-                          Subject Name
+                          Unit
                         </label>
+
                         <input
-                          id="subject_name"
-                          type="text"
+                          id="unit"
+                          type="number"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("subjectName", {
+                          {...register("unit", {
                             required: {
                               value: true,
-                              message: "Subject Name is required",
+                              message: "Unit is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Subject Name cannot be empty or just spaces",
+                                "Unit cannot be empty or just spaces",
+                              validUnit: (value) =>
+                                [1, 2, 3].includes(Number(value)) ||
+                                "Unit must be 1, 2, or 3",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.subjectName && (
-                          <ErrorMessage>
-                            *{errors.subjectName.message}
-                          </ErrorMessage>
+                        {errors.unit && (
+                          <ErrorMessage>*{errors.unit.message}</ErrorMessage>
                         )}
                       </div>
                     </div>
@@ -236,25 +249,57 @@ const AddSubject = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_department"
+                        htmlFor="subjectDescription"
                       >
-                        Department
+                        Subject Description
+                      </label>
+                      <input
+                        id="subjectDescription"
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("subjectDescription", {
+                          required: {
+                            value: true,
+                            message: "Subject Description is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Subject Description cannot be empty or just spaces",
+                          },
+                        })}
+                        disabled={localLoading || success}
+                      />
+                      {errors.subjectDescription && (
+                        <ErrorMessage>
+                          *{errors.subjectDescription.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="course_code"
+                      >
+                        Course
                       </label>
 
                       {isDesktop ? (
                         <Popover
                           open={openComboBox}
                           onOpenChange={setOpenComboBox}
+                          modal={true}
                         >
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
-                              {selectedDepartmentID ? (
-                                <>{selectedDepartmenName}</>
+                              {selectedCourse.course_id ? (
+                                <>{selectedCourseName}</>
                               ) : (
-                                <>Select Department</>
+                                <>Select Course</>
                               )}
                             </Button>
                           </PopoverTrigger>
@@ -262,13 +307,11 @@ const AddSubject = () => {
                             className="w-[200px] p-0"
                             align="start"
                           >
-                            <DepartmentList
+                            <CourseList
                               setOpen={setOpenComboBox}
-                              setSelectedDepartmentID={setSelectedDepartmentID}
-                              setSelectedDepartmenName={
-                                setSelectedDepartmenName
-                              }
-                              data={deparmentsCustom}
+                              setSelectedCourse={setSelectedCourse}
+                              setSelectedCourseName={setSelectedCourseName}
+                              data={course}
                               loading={loading}
                               clearErrors={clearErrors}
                             />
@@ -285,24 +328,20 @@ const AddSubject = () => {
                                 variant="outline"
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
-                                {selectedDepartmentID ? (
-                                  <>{selectedDepartmenName}</>
+                                {selectedCourse.course_id ? (
+                                  <>{selectedCourseName}</>
                                 ) : (
-                                  <>Select Department</>
+                                  <>Select Course</>
                                 )}
                               </Button>
                             </DrawerTrigger>
                             <DrawerContent>
                               <div className="mt-4 border-t">
-                                <DepartmentList
+                                <CourseList
                                   setOpen={setOpenComboBox}
-                                  setSelectedDepartmentID={
-                                    setSelectedDepartmentID
-                                  }
-                                  setSelectedDepartmenName={
-                                    setSelectedDepartmenName
-                                  }
-                                  data={deparmentsCustom}
+                                  setSelectedCourse={setSelectedCourse}
+                                  setSelectedCourseName={setSelectedCourseName}
+                                  data={course}
                                   loading={loading}
                                   clearErrors={clearErrors}
                                 />
@@ -312,10 +351,8 @@ const AddSubject = () => {
                         )
                       )}
 
-                      {errors.department_id && (
-                        <ErrorMessage>
-                          *{errors.department_id.message}
-                        </ErrorMessage>
+                      {errors.course_id && (
+                        <ErrorMessage>*{errors.course_id.message}</ErrorMessage>
                       )}
                     </div>
 
@@ -333,7 +370,7 @@ const AddSubject = () => {
                       {localLoading ? (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       ) : (
-                        "Add Course"
+                        "Add Subject"
                       )}
                     </button>
                   </div>
@@ -356,10 +393,10 @@ const ErrorMessage = ({ children }) => {
   );
 };
 
-function DepartmentList({
+function CourseList({
   setOpen,
-  setSelectedDepartmentID,
-  setSelectedDepartmenName,
+  setSelectedCourse,
+  setSelectedCourseName,
   data,
   loading,
   clearErrors,
@@ -375,7 +412,8 @@ function DepartmentList({
         return 0;
       }}
     >
-      <CommandInput placeholder="Filter department..." />
+      <CommandInput placeholder="Filter course..." />
+
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
@@ -388,21 +426,29 @@ function DepartmentList({
             </CommandItem>
           )}
           {data && data.length ? (
-            data.map((department, index) => (
+            data.map((course, index) => (
               <div key={index}>
                 <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 <CommandItem
-                  value={department.department_id.toString()}
-                  keywords={[department.departmentName]}
+                  value={course.course_id.toString()}
+                  keywords={[course.fullCourseNameWithCampus]}
                   onSelect={(value) => {
-                    setSelectedDepartmentID(value);
-                    setSelectedDepartmenName(department.departmentName);
+                    setSelectedCourseName(
+                      getInitialCourseCodeAndCampus(
+                        course.fullCourseNameWithCampus,
+                      ),
+                    );
+
+                    setSelectedCourse({ ...course, course_id: value });
+
                     setOpen(false);
-                    clearErrors("department_id");
+                    clearErrors("course_id");
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
-                  {department.departmentName}
+                  {getInitialCourseCodeAndCampus(
+                    course.fullCourseNameWithCampus,
+                  )}
                 </CommandItem>
               </div>
             ))
@@ -411,7 +457,7 @@ function DepartmentList({
               disabled
               className="text-[1rem] font-medium text-black dark:text-white"
             >
-              Empty, please add a department.
+              Empty, please add a course.
             </CommandItem>
           )}
         </CommandGroup>

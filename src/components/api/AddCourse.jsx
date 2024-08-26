@@ -245,6 +245,7 @@ const AddCourse = () => {
                         <Popover
                           open={openComboBox}
                           onOpenChange={setOpenComboBox}
+                          modal={true}
                         >
                           <PopoverTrigger asChild>
                             <Button

@@ -54,7 +54,6 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 
 import { useSchool } from "../../../components/context/SchoolContext";
 
-import AddCourse from "../../../components/api/AddCourse";
 import AddSubject from "../../../components/api/AddSubject";
 
 import EditCourse from "../../../components/api/EditCourse";
@@ -84,12 +83,12 @@ const SubjectPage = () => {
 };
 
 const CourseTables = () => {
-  const { course, fetchCourse, fetchCourseDeleted, loading, error } =
+  const { subjects, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
 
   const columns = [
     {
-      accessorKey: "course_id",
+      accessorKey: "subject_id",
 
       header: ({ column }) => {
         return (
@@ -105,7 +104,7 @@ const CourseTables = () => {
       },
     },
     {
-      accessorKey: "courseCode",
+      accessorKey: "subjectCode",
       header: ({ column }) => {
         return (
           <Button
@@ -113,17 +112,17 @@ const CourseTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Code
+            Subject Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span className=" font-semibold">{cell.getValue()}</span>;
       },
     },
     {
-      accessorKey: "courseName",
+      accessorKey: "subjectDescription",
       header: ({ column }) => {
         return (
           <Button
@@ -131,14 +130,14 @@ const CourseTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Name
+            Subject Description
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
     },
     {
-      accessorKey: "departmentName",
+      accessorKey: "unit",
       header: ({ column }) => {
         return (
           <Button
@@ -146,40 +145,63 @@ const CourseTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Department
+            Unit
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      id: "fullCourseName",
+      accessorFn: (row) => `${row.CourseCode} - ${row.CourseName}`, // Return a string
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Course
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
       cell: ({ cell }) => {
-        const getInitialsWithCampus = (name) => {
-          const [collegeName, campus] = name.split(" - "); // Split into college name and campus
-          const initials = collegeName
-            .split(" ") // Split by spaces
-            .filter((word) => /^[A-Z]/.test(word)) // Filter words starting with uppercase letters
-            .map((word) => word[0]) // Get the first letter of each word
-            .join(""); // Join them to form the acronym
-          return `${initials} - ${campus}`; // Combine initials with campus
-        };
-
-        const getCampusName = cell.getValue().split(" - ")[0];
+        const value = cell.getValue(); // Get the value of the cell
+        const [courseCode, courseName] = value.split(" - "); // Assuming `value` is in the format "CourseCode - CourseName"
 
         return (
           <TooltipProvider delayDuration={75}>
             <Tooltip>
-              <TooltipTrigger
-                asChild
-                className="hover:cursor-auto hover:underline hover:underline-offset-2"
-              >
-                <span className="font-medium">
-                  {getInitialsWithCampus(cell.getValue())}
+              <TooltipTrigger asChild>
+                <span className="cursor-pointer font-medium hover:underline hover:underline-offset-2">
+                  {courseCode} {/* Display the course code */}
                 </span>
               </TooltipTrigger>
-              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                <p className="text-[1rem]">{getCampusName}</p>
+              <TooltipContent
+                side="top"
+                align="center"
+                className="rounded bg-white px-2 py-1 text-black shadow-lg dark:bg-[#1A222C] dark:text-white"
+              >
+                <p>{courseName}</p> {/* Display the course name */}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+        );
+      },
+    },
+    {
+      accessorKey: "Campus",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
         );
       },
     },
@@ -201,12 +223,12 @@ const CourseTables = () => {
 
     {
       header: "Actions",
-      accessorFn: (row) => `${row.course_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.subject_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCourse courseId={row.getValue("course_id")} />
+            <EditCourse courseId={row.getValue("subject_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
@@ -227,7 +249,7 @@ const CourseTables = () => {
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     <ButtonActionCourse
                       action="delete"
-                      courseId={row.getValue("course_id")}
+                      courseId={row.getValue("subject_id")}
                       onSuccess={() => {
                         fetchCourse();
                         fetchCourseDeleted();
@@ -255,7 +277,7 @@ const CourseTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={course}
+        data={subjects}
         loading={loading}
         error={error}
       />
@@ -294,28 +316,28 @@ const DataTable = ({ data, columns, loading, error }) => {
         <div className="gap-5 md:flex">
           <Input
             placeholder="Search by code..."
-            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
+            value={table.getColumn("subjectCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("courseCode")?.setFilterValue(event.target.value)
+              table.getColumn("subjectCode")?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[10em]"
           />
 
           <Input
-            placeholder="Search by course name..."
-            value={table.getColumn("courseName")?.getFilterValue() ?? ""}
+            placeholder="Search by subject description..."
+            value={table.getColumn("subjectDescription")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("courseName")?.setFilterValue(event.target.value)
+              table.getColumn("subjectDescription")?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
 
           <Input
-            placeholder="Search by department..."
-            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+            placeholder="Search by course..."
+            value={table.getColumn("fullCourseName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
-                .getColumn("departmentName")
+                .getColumn("fullCourseName")
                 ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
@@ -418,7 +440,11 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination totalName={"Subject"} table={table} totalDepartments={data.length} />
+          <DataTablePagination
+            totalName={"Subject"}
+            table={table}
+            totalDepartments={data.length}
+          />
         </div>
       </div>
     </>

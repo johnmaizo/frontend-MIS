@@ -332,7 +332,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            totalName={"Semesters"}
+            totalName={"Semester"}
             table={table}
             totalDepartments={data.length}
           />

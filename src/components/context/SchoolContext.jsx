@@ -237,7 +237,14 @@ export const SchoolProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.get("/course");
-      setCourse(response.data);
+
+      const modifiedCourse = response.data.map((course) => ({
+        ...course,
+        fullCourseNameWithCampus: `${course.CourseCode} - ${course.CourseName} - ${course.Campus}`,
+      }));
+
+      // setCourse(response.data);
+      setCourse(modifiedCourse);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -291,6 +298,76 @@ export const SchoolProvider = ({ children }) => {
   }, []);
   // ! Course END
 
+  // ! Subject START
+  const [subjects, setSubjects] = useState([]);
+  const [subjectsActive, setSubjectsActive] = useState([]);
+  const [subjectsDeleted, setSubjectsDeleted] = useState([]);
+
+  const fetchSubject = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/subjects");
+
+      // const modifiedSubject = response.data.map((subject) => ({
+      //   ...subject,
+      //   fullCourseNameWithCampus: `${subject.CourseCode} - ${subject.CourseName} - ${subject.Campus}`,
+      // }));
+
+      // setSubjects(modifiedSubject);
+      setSubjects(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Subjects: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchSubjectActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/subjects/active");
+      setSubjectsActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Subjects Active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchSubjectDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/subjects/deleted");
+      setSubjectsDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Subjects Deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchSubject();
+  }, []);
+
+  useEffect(() => {
+    fetchSubjectActive();
+  }, []);
+
+  useEffect(() => {
+    fetchSubjectDeleted();
+  }, []);
+  // ! Subject END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -333,6 +410,14 @@ export const SchoolProvider = ({ children }) => {
         fetchCourseDeleted,
         courseActive,
         fetchCourseActive,
+
+        // ! Subjects
+        subjects,
+        fetchSubject,
+        subjectsDeleted,
+        fetchSubjectDeleted,
+        subjectsActive,
+        fetchSubjectActive,
       }}
     >
       {children}

@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "../../../components/ui/table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -86,6 +86,10 @@ const CoursePage = () => {
 const CourseTables = () => {
   const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
+
+    useEffect(() => {
+      fetchCourse()
+    },[])
 
   const columns = [
     {
@@ -159,7 +163,7 @@ const CourseTables = () => {
             <Tooltip>
               <TooltipTrigger
                 asChild
-                className="hover:underline hover:underline-offset-2"
+                className="cursor-pointer hover:underline hover:underline-offset-2"
               >
                 <span className="font-medium">
                   {getInitialsWithCampus(cell.getValue())}

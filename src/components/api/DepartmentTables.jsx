@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "../ui/table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -56,6 +56,10 @@ const DepartmentTables = () => {
     loading,
     error,
   } = useSchool();
+
+  useEffect(() => {
+    fetchDepartments()
+  },[])
 
   const columns = [
     {

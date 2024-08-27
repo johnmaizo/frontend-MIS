@@ -105,21 +105,6 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  useEffect(() => {
-    fetchDepartmentsDeleted();
-  }, []);
-
-  useEffect(() => {
-    fetchDepartmentsActive();
-  }, []);
-
-  useEffect(() => {
-    fetchDepartmentsCustom();
-  }, []);
   // ! Departments END
 
   // ! Campus START
@@ -285,17 +270,6 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchCourse();
-  }, []);
-
-  useEffect(() => {
-    fetchCourseDeleted();
-  }, []);
-
-  useEffect(() => {
-    fetchCourseActive();
-  }, []);
   // ! Course END
 
   // ! Subject START
@@ -354,18 +328,6 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchSubject();
-  }, []);
-
-  useEffect(() => {
-    fetchSubjectActive();
-  }, []);
-
-  useEffect(() => {
-    fetchSubjectDeleted();
-  }, []);
   // ! Subject END
 
   return (

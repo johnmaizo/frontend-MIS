@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "../../../components/ui/table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -83,8 +83,12 @@ const SubjectPage = () => {
 };
 
 const CourseTables = () => {
-  const { subjects, fetchCourse, fetchCourseDeleted, loading, error } =
+  const { subjects, fetchSubject, fetchSubjectDeleted, loading, error } =
     useSchool();
+
+  useEffect(() => {
+    fetchSubject();
+  }, []);
 
   const columns = [
     {
@@ -118,7 +122,7 @@ const CourseTables = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className=" font-semibold">{cell.getValue()}</span>;
+        return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
     {
@@ -153,7 +157,8 @@ const CourseTables = () => {
     },
     {
       id: "fullCourseName",
-      accessorFn: (row) => `${row.course.courseCode} - ${row.course.courseName}`, // Return a string
+      accessorFn: (row) =>
+        `${row.course.courseCode} - ${row.course.courseName}`, // Return a string
       header: ({ column }) => {
         return (
           <Button
@@ -175,7 +180,7 @@ const CourseTables = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-pointer font-medium hover:underline hover:underline-offset-2">
-                  {courseCode} 
+                  {courseCode}
                 </span>
               </TooltipTrigger>
               <TooltipContent
@@ -251,8 +256,8 @@ const CourseTables = () => {
                       action="delete"
                       courseId={row.getValue("subject_id")}
                       onSuccess={() => {
-                        fetchCourse();
-                        fetchCourseDeleted();
+                        fetchSubject();
+                        fetchSubjectDeleted();
                       }}
                     />
                     <DialogClose asChild>
@@ -325,9 +330,13 @@ const DataTable = ({ data, columns, loading, error }) => {
 
           <Input
             placeholder="Search by subject description..."
-            value={table.getColumn("subjectDescription")?.getFilterValue() ?? ""}
+            value={
+              table.getColumn("subjectDescription")?.getFilterValue() ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("subjectDescription")?.setFilterValue(event.target.value)
+              table
+                .getColumn("subjectDescription")
+                ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />

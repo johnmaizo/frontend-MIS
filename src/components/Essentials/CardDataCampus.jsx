@@ -14,8 +14,8 @@ const CardDataCampus = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentResponse = await axios.get("/campus/active");
-        const total = currentResponse.data.length;
+        const currentResponse = await axios.get("/campus/count");
+        const total = currentResponse.data;
         setTotalCampus(total);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {

@@ -11,6 +11,7 @@ import CardDataStudent from "../../../components/Essentials/CardDataStudent";
 import CardDataDepartment from "../../../components/Essentials/CardDataDepartment";
 import CardDataCampus from "../../../components/Essentials/CardDataCampus";
 import CardDataCourse from "../../../components/Essentials/CardDataCourse";
+import CardDataSubject from "../../../components/Essentials/CardDataSubject";
 
 const AdminHome = () => {
   return (
@@ -20,6 +21,7 @@ const AdminHome = () => {
         <CardDataCampus />
         <CardDataDepartment />
         <CardDataCourse />
+        <CardDataSubject />
 
         {/* <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
           <svg

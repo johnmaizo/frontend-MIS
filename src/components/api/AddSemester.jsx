@@ -108,19 +108,6 @@ const AddSemester = () => {
     }
   }, [success, error, reset]);
 
-  useEffect(() => {
-    if (errors && Object.keys(errors).length > 0) {
-      const firstErrorField = Object.keys(errors)[0];
-      const errorElement = document.querySelector(
-        `[name="${firstErrorField}"]`,
-      );
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        errorElement.focus();
-      }
-    }
-  }, [errors]);
-
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>

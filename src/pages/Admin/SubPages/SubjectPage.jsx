@@ -153,7 +153,7 @@ const CourseTables = () => {
     },
     {
       id: "fullCourseName",
-      accessorFn: (row) => `${row.CourseCode} - ${row.CourseName}`, // Return a string
+      accessorFn: (row) => `${row.course.courseCode} - ${row.course.courseName}`, // Return a string
       header: ({ column }) => {
         return (
           <Button
@@ -168,14 +168,14 @@ const CourseTables = () => {
       },
       cell: ({ cell }) => {
         const value = cell.getValue(); // Get the value of the cell
-        const [courseCode, courseName] = value.split(" - "); // Assuming `value` is in the format "CourseCode - CourseName"
+        const [courseCode, courseName] = value.split(" - ");
 
         return (
           <TooltipProvider delayDuration={75}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-pointer font-medium hover:underline hover:underline-offset-2">
-                  {courseCode} {/* Display the course code */}
+                  {courseCode} 
                 </span>
               </TooltipTrigger>
               <TooltipContent
@@ -183,7 +183,7 @@ const CourseTables = () => {
                 align="center"
                 className="rounded bg-white px-2 py-1 text-black shadow-lg dark:bg-[#1A222C] dark:text-white"
               >
-                <p>{courseName}</p> {/* Display the course name */}
+                <p>{courseName}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -191,7 +191,7 @@ const CourseTables = () => {
       },
     },
     {
-      accessorKey: "Campus",
+      accessorKey: "course.department.campus.campusName",
       header: ({ column }) => {
         return (
           <Button

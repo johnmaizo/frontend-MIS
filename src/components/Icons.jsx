@@ -562,13 +562,13 @@ export const CalendarIcon = () => {
   );
 };
 
-export const SubjectIcon = () => {
+export const SubjectIcon = ({ forCard, width, height }) => {
   return (
     <svg
-      className="fill-current"
+      className={`fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
       xmlns="http://www.w3.org/2000/svg"
-      width="1.3em"
-      height="1.3em"
+      width={`${width && width ? width : "1.3em"}`}
+      height={`${height && height ? height : "1.3em"}`}
       viewBox="0 0 256 256"
     >
       <path

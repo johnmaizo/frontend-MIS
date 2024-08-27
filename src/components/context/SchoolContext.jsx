@@ -240,7 +240,7 @@ export const SchoolProvider = ({ children }) => {
 
       const modifiedCourse = response.data.map((course) => ({
         ...course,
-        fullCourseNameWithCampus: `${course.CourseCode} - ${course.CourseName} - ${course.Campus}`,
+        fullCourseNameWithCampus: `${course.courseCode} - ${course.courseName} - ${course.department.campus.campusName}`,
       }));
 
       // setCourse(response.data);

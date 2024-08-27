@@ -15,7 +15,6 @@ import AddStudentPage from "./SubPages/AddStudentPage";
 import StudentTablePage from "./SubPages/StudentTablePage";
 import ViewStudentPage from "./SubPages/ViewStudentPage";
 
-import { SchoolProvider } from "../../components/context/SchoolContext";
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
 import SubjectPage from "./SubPages/SubjectPage";
@@ -24,49 +23,48 @@ import CoursePage from "./SubPages/CoursePage";
 
 const AdminRoutes = () => {
   return (
-    <SchoolProvider>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <PageTitle title="Dashboard | MIS - Benedicto College" />
-              <AdminHome />
-            </>
-          }
-        />
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+            <PageTitle title="Dashboard | MIS - Benedicto College" />
+            <AdminHome />
+          </>
+        }
+      />
 
-        <Route
-          path="/students/add-student"
-          element={
-            <>
-              <PageTitle title="Add Student | MIS - Benedicto College" />
-              <AddStudentPage />
-            </>
-          }
-        />
+      <Route
+        path="/students/add-student"
+        element={
+          <>
+            <PageTitle title="Add Student | MIS - Benedicto College" />
+            <AddStudentPage />
+          </>
+        }
+      />
 
-        <Route
-          path="/students/student-list"
-          element={
-            <>
-              <PageTitle title="Student List | MIS - Benedicto College" />
-              <StudentTablePage />
-            </>
-          }
-        />
+      <Route
+        path="/students/student-list"
+        element={
+          <>
+            <PageTitle title="Student List | MIS - Benedicto College" />
+            <StudentTablePage />
+          </>
+        }
+      />
 
-        <Route
-          path="/students/student-list/:id"
-          element={
-            <>
-              <PageTitle title="Student Information | MIS - Benedicto College" />
-              <ViewStudentPage />
-            </>
-          }
-        />
+      <Route
+        path="/students/student-list/:id"
+        element={
+          <>
+            <PageTitle title="Student Information | MIS - Benedicto College" />
+            <ViewStudentPage />
+          </>
+        }
+      />
 
-        {/* <Route
+      {/* <Route
           path="/teachers/add-teacher"
           element={
             <>
@@ -86,73 +84,72 @@ const AdminRoutes = () => {
           }
         /> */}
 
-        <Route
-          path="/semester"
-          element={
-            <>
-              <PageTitle title="Semester | MIS - Benedicto College" />
-              <SemesterPage />
-            </>
-          }
-        />
+      <Route
+        path="/semester"
+        element={
+          <>
+            <PageTitle title="Semester | MIS - Benedicto College" />
+            <SemesterPage />
+          </>
+        }
+      />
 
-        <Route
-          path="/campus"
-          element={
-            <>
-              <PageTitle title="Campuses | MIS - Benedicto College" />
-              <CampusPage />
-            </>
-          }
-        />
+      <Route
+        path="/campus"
+        element={
+          <>
+            <PageTitle title="Campuses | MIS - Benedicto College" />
+            <CampusPage />
+          </>
+        }
+      />
 
-        <Route
-          path="/departments"
-          element={
-            <>
-              <PageTitle title="Departments | MIS - Benedicto College" />
-              <DepartmentPage />
-            </>
-          }
-        />
+      <Route
+        path="/departments"
+        element={
+          <>
+            <PageTitle title="Departments | MIS - Benedicto College" />
+            <DepartmentPage />
+          </>
+        }
+      />
 
-        <Route
-          path="/course"
-          element={
-            <>
-              <PageTitle title="Course | MIS - Benedicto College" />
-              <CoursePage />
-            </>
-          }
-        />
+      <Route
+        path="/course"
+        element={
+          <>
+            <PageTitle title="Course | MIS - Benedicto College" />
+            <CoursePage />
+          </>
+        }
+      />
 
-        <Route
-          path="/subjects"
-          element={
-            <>
-              <PageTitle title="Subjects | MIS - Benedicto College" />
-              <SubjectPage />
-            </>
-          }
-        />
+      <Route
+        path="/subjects"
+        element={
+          <>
+            <PageTitle title="Subjects | MIS - Benedicto College" />
+            <SubjectPage />
+          </>
+        }
+      />
 
-        <Route
-          path="/teachers"
-          element={
-            <>
-              <PageTitle title="Teachers | MIS - Benedicto College" />
-              <DepartmentPage />
-            </>
-          }
-        />
+      <Route
+        path="/teachers"
+        element={
+          <>
+            <PageTitle title="Teachers | MIS - Benedicto College" />
+            <DepartmentPage />
+          </>
+        }
+      />
 
-        <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to="/" />} />
 
-        {/* ! Mga way labot */}
+      {/* ! Mga way labot */}
 
-        {/* <OtherRoutes /> */}
-      </Routes>
-    </SchoolProvider>
+      {/* <OtherRoutes /> */}
+    </Routes>
   );
 };
 

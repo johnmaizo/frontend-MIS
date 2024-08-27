@@ -61,6 +61,7 @@ import EditCourse from "../../../components/api/EditCourse";
 import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
 
 import DeletedCourse from "../../../components/api/DeletedCourse";
+import { getInitialsWithCampus } from "../../../components/reuseable/GetInitialNames";
 
 const CoursePage = () => {
   const NavItems = [
@@ -151,16 +152,6 @@ const CourseTables = () => {
         );
       },
       cell: ({ cell }) => {
-        const getInitialsWithCampus = (name) => {
-          const [collegeName, campus] = name.split(" - "); // Split into college name and campus
-          const initials = collegeName
-            .split(" ") // Split by spaces
-            .filter((word) => /^[A-Z]/.test(word)) // Filter words starting with uppercase letters
-            .map((word) => word[0]) // Get the first letter of each word
-            .join(""); // Join them to form the acronym
-          return `${initials} - ${campus}`; // Combine initials with campus
-        };
-
         const getCampusName = cell.getValue().split(" - ")[0];
 
         return (
@@ -168,7 +159,7 @@ const CourseTables = () => {
             <Tooltip>
               <TooltipTrigger
                 asChild
-                className="hover:cursor-auto hover:underline hover:underline-offset-2"
+                className="hover:underline hover:underline-offset-2"
               >
                 <span className="font-medium">
                   {getInitialsWithCampus(cell.getValue())}

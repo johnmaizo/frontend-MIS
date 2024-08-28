@@ -53,6 +53,7 @@ import EditSemester from "../../../components/api/EditSemester";
 
 import ButtonActionSemester from "../../../components/reuseable/ButtonActionSemester";
 import DeletedSemesters from "../../../components/api/DeletedSemesters";
+import { Input } from "../../../components/ui/input";
 
 const SemesterPage = () => {
   const NavItems = [
@@ -225,15 +226,35 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
 
   return (
     <>
-      <div className="mb-3 mt-2 w-full items-start justify-end md:flex">
-        
+      <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
+        <div className="gap-5 md:flex">
+          <Input
+            placeholder="Search by Shool Year..."
+            value={table.getColumn("schoolYear")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table.getColumn("schoolYear")?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+          />
+
+          <Input
+            placeholder="Search by Semester..."
+            value={table.getColumn("semesterName")?.getFilterValue() ?? ""}
+            onChange={(event) =>
+              table
+                .getColumn("semesterName")
+                ?.setFilterValue(event.target.value)
+            }
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[15em]"
+          />
+        </div>
 
         <div className="">
           <AddSemester />
@@ -332,6 +353,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
+            rowsPerPage={10}
             totalName={"Semester"}
             table={table}
             totalDepartments={data.length}

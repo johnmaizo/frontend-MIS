@@ -32,15 +32,24 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+
+import { ArrowUpDown } from "lucide-react";
+
 import SmallLoader from "../styles/SmallLoader";
 
 import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
+import ButtonActionSubject from "../reuseable/ButtonActionSubject";
 
-const DeletedDepartment = () => {
+const DeletedSubject = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -53,15 +62,15 @@ const DeletedDepartment = () => {
       >
         <DialogTrigger className="flex items-center gap-1 rounded bg-blue-600 p-2 text-xs font-medium text-white hover:bg-blue-700">
           <ArchiveIcon />
-          <span className="max-w-[10em]">Deleted Department </span>
+          <span className="max-w-[10em]">Deleted Subjects </span>
         </DialogTrigger>
-        <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+        <DialogContent className="max-w-[50em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
           <DialogHeader>
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
-              Deleted Departments
+              Deleted Subjects
             </DialogTitle>
             <DialogDescription className="h-[15em] overflow-y-auto overscroll-none text-xl">
-              <CampusTables />
+              <SubjectTables />
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
@@ -70,34 +79,83 @@ const DeletedDepartment = () => {
   );
 };
 
-const CampusTables = () => {
-  const {
-    fetchDepartments,
-    deparmentsDeleted,
-    fetchDepartmentsDeleted,
-    loading,
-    error,
-  } = useSchool();
+const SubjectTables = () => {
+  const { fetchSubject, subjectsDeleted, fetchSubjectDeleted, loading, error } =
+    useSchool();
 
   const columns = [
     {
-      accessorKey: "department_id",
+      accessorKey: "subject_id",
       header: "Numeric ID",
     },
     {
-      accessorKey: "departmentCode",
-      header: "Department Code",
+      accessorKey: "subjectCode",
+      header: "Subject Code",
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span className="font-bold">{cell.getValue()}</span>;
       },
     },
     {
-      accessorKey: "departmentName",
-      header: "Department Name",
+      accessorKey: "subjectDescription",
+      header: "Subject Description",
+      cell: ({ cell }) => {
+        return <span className="font-bold">{cell.getValue()}</span>;
+      },
     },
     {
-      accessorKey: "campusName",
-      header: "Campus Name",
+      id: "fullCourseName",
+      accessorFn: (row) =>
+        `${row.course.courseCode} - ${row.course.courseName}`, // Return a string
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Course
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        const value = cell.getValue(); // Get the value of the cell
+        const [courseCode, courseName] = value.split(" - ");
+
+        return (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-default font-medium hover:underline hover:underline-offset-2">
+                  {courseCode}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent
+                side="top"
+                align="center"
+                className="rounded bg-white px-2 py-1 text-black shadow-lg dark:bg-[#1A222C] dark:text-white"
+              >
+                <p>{courseName}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
+    },
+    {
+      accessorKey: "course.department.campus.campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
     },
 
     {
@@ -118,7 +176,7 @@ const CampusTables = () => {
 
     {
       header: "Action",
-      accessorFn: (row) => `${row.department_id} ${row.isDeleted}`,
+      accessorFn: (row) => `${row.subject_id} ${row.isDeleted}`,
       id: "action",
       cell: ({ row }) => {
         return (
@@ -127,27 +185,27 @@ const CampusTables = () => {
               <>
                 <Dialog>
                   <DialogTrigger className="rounded-md bg-blue-600 p-1 text-white hover:bg-blue-700">
-                    <UndoIcon title={"Reactivate Department"} />
+                    <UndoIcon title={"Reactivate Subject"} />
                   </DialogTrigger>
                   <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                     <DialogHeader>
                       <DialogTitle className="text-2xl font-bold">
-                        Reactivate Department
+                        Reactivate Subject
                       </DialogTitle>
                       <DialogDescription asChild className="mt-2">
                         <p className="mb-5">
-                          Are you sure you want to reactivate this department?
+                          Are you sure you want to reactivate this Subject?
                         </p>
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionDepartment
+                        <ButtonActionSubject
                           action="reactivate"
-                          departmentId={row.getValue("department_id")}
+                          subjectId={row.getValue("subject_id")}
                           onSuccess={() => {
-                            fetchDepartmentsDeleted();
-                            fetchDepartments();
+                            fetchSubjectDeleted();
+                            fetchSubject();
                           }}
                         />
                         <DialogClose asChild>
@@ -174,7 +232,7 @@ const CampusTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={deparmentsDeleted}
+        data={subjectsDeleted}
         loading={loading}
         error={error}
       />
@@ -209,7 +267,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="!w-[13.5em] overflow-x-auto xsm:!w-auto xsm:max-w-full">
+      <div className="!w-[19.5em] overflow-x-auto sm:!w-auto sm:max-w-full">
         <Table className="border border-stroke dark:border-strokedark">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -293,4 +351,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default DeletedDepartment;
+export default DeletedSubject;

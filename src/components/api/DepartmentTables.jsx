@@ -58,8 +58,8 @@ const DepartmentTables = () => {
   } = useSchool();
 
   useEffect(() => {
-    fetchDepartments()
-  },[])
+    fetchDepartments();
+  }, []);
 
   const columns = [
     {
@@ -241,7 +241,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
@@ -251,7 +251,7 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by code..."
+            placeholder="Search by Code..."
             value={table.getColumn("departmentCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
@@ -262,7 +262,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by department name..."
+            placeholder="Search by Department name..."
             value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
@@ -369,7 +369,11 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination table={table} totalDepartments={data.length} />
+          <DataTablePagination
+            rowsPerPage={10}
+            table={table}
+            totalDepartments={data.length}
+          />
         </div>
       </div>
     </>

@@ -123,7 +123,7 @@ const SemesterTables = () => {
               <>
                 <Dialog>
                   <DialogTrigger className="rounded-md bg-blue-600 p-1 text-white hover:bg-blue-700">
-                    <UndoIcon />
+                    <UndoIcon title={"Reactivate Semester"}/>
                   </DialogTrigger>
                   <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                     <DialogHeader>

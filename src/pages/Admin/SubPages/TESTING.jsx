@@ -70,7 +70,7 @@ export function ComboboxDemo() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="h-auto w-full justify-between px-3 py-5" // change the width of the button here (w-[200px])
+          className="h-auto w-full justify-between bg-white px-3 py-5 transition dark:bg-boxdark" // change the width of the button here (w-[200px])
         >
           <div className="flex flex-wrap justify-start gap-2">
             {value?.length ? (
@@ -108,6 +108,7 @@ export function ComboboxDemo() {
 const SubjectList = ({ handleSetValue, value, data }) => {
   return (
     <Command
+      className="w-[34.5em] md:w-auto"
       filter={(value, search, keywords = []) => {
         const extendValue = value + " " + keywords.join(" ");
         if (extendValue.toLowerCase().includes(search.toLowerCase())) {

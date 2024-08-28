@@ -56,12 +56,12 @@ import { useSchool } from "../../../components/context/SchoolContext";
 
 import AddSubject from "../../../components/api/AddSubject";
 
-import EditCourse from "../../../components/api/EditCourse";
+import EditSubject from "../../../components/api/EditSubject";
 
-import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
+import ButtonActionSubject from "../../../components/reuseable/ButtonActionSubject";
 
 import DeletedCourse from "../../../components/api/DeletedCourse";
-import EditSubject from "../../../components/api/EditSubject";
+import DeletedSubject from "../../../components/api/DeletedSubject";
 
 const SubjectPage = () => {
   const NavItems = [
@@ -238,24 +238,24 @@ const CourseTables = () => {
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Course"} />
+                <DeleteIcon forActions={"Delete Subject"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold">
-                    Delete Course
+                    Delete Subject
                   </DialogTitle>
                   <DialogDescription asChild className="mt-2">
                     <p className="mb-5">
-                      Are you sure you want to delete this course?
+                      Are you sure you want to delete this Subject?
                     </p>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCourse
+                    <ButtonActionSubject
                       action="delete"
-                      courseId={row.getValue("subject_id")}
+                      subjectId={row.getValue("subject_id")}
                       onSuccess={() => {
                         fetchSubject();
                         fetchSubjectDeleted();
@@ -311,7 +311,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 20,
+        pageSize: 10,
       },
     },
   });
@@ -321,7 +321,7 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by code..."
+            placeholder="Search by Code..."
             value={table.getColumn("subjectCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("subjectCode")?.setFilterValue(event.target.value)
@@ -330,7 +330,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by subject description..."
+            placeholder="Search by Subject description..."
             value={
               table.getColumn("subjectDescription")?.getFilterValue() ?? ""
             }
@@ -343,7 +343,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by course..."
+            placeholder="Search by Course..."
             value={table.getColumn("fullCourseName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
@@ -365,7 +365,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             <StatusFilter table={table} option={"department"} />
           </div>
 
-          <DeletedCourse />
+          <DeletedSubject />
         </div>
 
         <div className="max-w-full overflow-x-auto">
@@ -454,7 +454,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             totalName={"Subject"}
             table={table}
             totalDepartments={data.length}
-            rowsPerPage={20}
+            rowsPerPage={10}
           />
         </div>
       </div>

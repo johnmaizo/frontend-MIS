@@ -248,7 +248,7 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by campus name..."
+            placeholder="Search by Campus name..."
             value={table.getColumn("campusName")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("campusName")?.setFilterValue(event.target.value)
@@ -257,7 +257,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by address..."
+            placeholder="Search by Address..."
             value={table.getColumn("campusAddress")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table

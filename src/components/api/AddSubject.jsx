@@ -387,7 +387,7 @@ function CourseList({
 }) {
   return (
     <Command
-      className="md:!w-[34.5em]"
+      className="md:w-[34.5em]"
       filter={(value, search, keywords = []) => {
         const extendValue = value + " " + keywords.join(" ");
         if (extendValue.toLowerCase().includes(search.toLowerCase())) {

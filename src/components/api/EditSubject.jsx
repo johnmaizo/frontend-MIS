@@ -36,7 +36,7 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 import { getInitialCourseCodeAndCampus } from "../reuseable/GetInitialNames";
 
 const EditSubject = ({ subjectId }) => {
-  const { fetchCourse, course } = useSchool();
+  const { fetchSubject, course } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true);
@@ -67,8 +67,6 @@ const EditSubject = ({ subjectId }) => {
         .get(`/subjects/${subjectId}`)
         .then((response) => {
           const subject = response.data;
-
-          console.log(subject);
 
           // Pre-fill the form with subject data
           setValue("subjectCode", subject.subjectCode);
@@ -128,16 +126,14 @@ const EditSubject = ({ subjectId }) => {
       campusName: selectedSubject.campusName,
     };
 
-    console.log("SUBMITTING: ", transformedData);
-
     setError("");
     try {
       const response = await toast.promise(
         axios.put(`/subjects/${subjectId}`, transformedData),
         {
-          loading: "Updating Course...",
-          success: "Course updated successfully!",
-          error: "Failed to update Course.",
+          loading: "Updating Subject...",
+          success: "Subject updated successfully!",
+          error: "Failed to update Subject.",
         },
         {
           position: "bottom-right",
@@ -147,7 +143,7 @@ const EditSubject = ({ subjectId }) => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchSubject();
         setOpen(false); // Close the dialog
       }
       setLoading(false);
@@ -175,10 +171,6 @@ const EditSubject = ({ subjectId }) => {
       }, 6000);
     }
   }, [success, error, reset]);
-
-  useEffect(() => {
-    console.log("SELECTED SUBJECT UPDATED: ", selectedSubject);
-  }, [selectedSubject]);
 
   return (
     <div className="flex items-center justify-end gap-2">
@@ -458,8 +450,6 @@ const ErrorMessage = ({ children }) => {
 };
 
 function CourseList({
-  selectedSubject,
-
   setOpen,
   setSelectedSubject,
   setSelectedCourseName,
@@ -509,6 +499,8 @@ function CourseList({
                       ...prevSelectedSubject,
                       ...course,
                       course_id: value,
+                      departmentCode: course.department.departmentCode,
+                      departmentName: course.department.departmentName,
                     }));
 
                     setOpen(false);

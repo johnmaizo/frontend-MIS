@@ -4,6 +4,7 @@ import { createContext, useState, useContext, useEffect } from "react";
 
 const SchoolContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSchool = () => {
   return useContext(SchoolContext);
 };
@@ -90,10 +91,12 @@ export const SchoolProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.get("/departments/active");
+
       const modifiedDepartments = response.data.map((department) => ({
         ...department,
         departmentName: `${department.departmentName} - ${department.campusName}`,
       }));
+
       setDepartmentsCustom(modifiedDepartments);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -104,6 +107,10 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDepartmentsDeleted();
+  }, []);
 
   // ! Departments END
 
@@ -270,6 +277,10 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    fetchCourseDeleted();
+  }, []);
+
   // ! Course END
 
   // ! Subject START
@@ -328,6 +339,10 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchSubjectDeleted();
+  }, []);
   // ! Subject END
 
   return (

@@ -11,5 +11,9 @@ export const getInitialsWithCampus = (name) => {
     .filter((word) => /^[A-Z]/.test(word)) // Filter words starting with uppercase letters
     .map((word) => word[0]) // Get the first letter of each word
     .join(""); // Join them to form the acronym
-  return `${initials} - ${campus}`; // Combine initials with campus
+  return initials === "CE"
+    ? `COE - ${campus}`
+    : initials === "CN"
+      ? `CON - ${campus}`
+      : `${initials} - ${campus}`; // Combine initials with campus
 };

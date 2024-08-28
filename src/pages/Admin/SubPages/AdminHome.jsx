@@ -13,6 +13,8 @@ import CardDataCampus from "../../../components/Essentials/CardDataCampus";
 import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 import CardDataSubject from "../../../components/Essentials/CardDataSubject";
 
+import { ComboboxDemo } from "./TESTING";
+
 const AdminHome = () => {
   return (
     <DefaultLayout>
@@ -121,6 +123,10 @@ const AdminHome = () => {
           <TableOne />
         </div> */}
         {/* <ChatCard /> */}
+      </div>
+
+      <div className="mt-8 h-[50em]">
+          <ComboboxDemo />
       </div>
     </DefaultLayout>
   );

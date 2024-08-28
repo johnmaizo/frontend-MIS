@@ -61,6 +61,7 @@ import EditCourse from "../../../components/api/EditCourse";
 import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
 
 import DeletedCourse from "../../../components/api/DeletedCourse";
+import EditSubject from "../../../components/api/EditSubject";
 
 const SubjectPage = () => {
   const NavItems = [
@@ -179,7 +180,7 @@ const CourseTables = () => {
           <TooltipProvider delayDuration={75}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-pointer font-medium hover:underline hover:underline-offset-2">
+                <span className="cursor-default font-medium hover:underline hover:underline-offset-2">
                   {courseCode}
                 </span>
               </TooltipTrigger>
@@ -233,7 +234,7 @@ const CourseTables = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCourse courseId={row.getValue("subject_id")} />
+            <EditSubject subjectId={row.getValue("subject_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
@@ -310,7 +311,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 20,
       },
     },
   });
@@ -453,6 +454,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             totalName={"Subject"}
             table={table}
             totalDepartments={data.length}
+            rowsPerPage={20}
           />
         </div>
       </div>

@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { EditDepartmentIcon } from "../Icons";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -23,27 +24,27 @@ import {
   CommandSeparator,
 } from "../ui/command";
 
+import { useSchool } from "../context/SchoolContext";
+import { Switch } from "../ui/switch";
+
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { Button } from "../ui/button";
-
 import { useMediaQuery } from "../../hooks/use-media-query";
-
-import { AddDepartmentIcon } from "../Icons";
-import { useSchool } from "../context/SchoolContext";
 import { getInitialCourseCodeAndCampus } from "../reuseable/GetInitialNames";
 
-const AddSubject = () => {
-  const { fetchSubject, course, fetchCourse, loading } = useSchool();
-
+const EditSubject = ({ subjectId }) => {
+  const { fetchCourse, course } = useSchool();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isActive, setIsActive] = useState(true);
 
   const [openComboBox, setOpenComboBox] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const [selectedCourse, setSelectedCourse] = useState({});
+  const [selectedSubject, setSelectedSubject] = useState({});
   const [selectedCourseName, setSelectedCourseName] = useState("");
 
   const {
@@ -51,20 +52,53 @@ const AddSubject = () => {
     handleSubmit,
     reset,
     formState: { errors },
-    setError,
+    setValue,
     clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
-  const [error, setGeneralError] = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchCourse();
-  }, []);
+    if (subjectId && open) {
+      // Fetch the course data when the modal is opened
+      setLoading(true);
+      axios
+        .get(`/subjects/${subjectId}`)
+        .then((response) => {
+          const subject = response.data;
+
+          console.log(subject);
+
+          // Pre-fill the form with subject data
+          setValue("subjectCode", subject.subjectCode);
+          setValue("unit", subject.unit);
+          setValue("subjectDescription", subject.subjectDescription);
+          setIsActive(subject.isActive);
+
+          // Spread the course object directly into selectedSubject
+          setSelectedSubject({
+            ...subject,
+            ...subject.course,
+            departmentCode: subject.course.department.departmentCode,
+            departmentName: subject.course.department.departmentName,
+            campusName: subject.course.department.campus.campusName,
+          });
+
+          setSelectedCourseName(
+            getInitialCourseCodeAndCampus(subject.fullCourseNameWithCampus),
+          );
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(`Failed to fetch subject data: (${err})`);
+          setLoading(false);
+        });
+    }
+  }, [subjectId, open, setValue]);
 
   const onSubmit = async (data) => {
-    if (Object.keys(selectedCourse).length === 0) {
+    if (Object.keys(selectedSubject).length === 0) {
       setError("course_id", {
         type: "manual",
         message: "You must select a course.",
@@ -72,31 +106,38 @@ const AddSubject = () => {
       return;
     }
 
-    setLocalLoading(true);
+    setLoading(true);
+
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
           key,
-          value.trim() === "" ? null : value.trim(),
+          typeof value === "string"
+            ? value.trim() === ""
+              ? null
+              : value.trim()
+            : value,
         ]),
       ),
-      unit: parseInt(data.unit),
-      course_id: parseInt(selectedCourse.course_id),
-      courseCode: selectedCourse.courseCode,
-      courseName: selectedCourse.courseName,
-      departmentCode: selectedCourse.department.departmentCode,
-      departmentName: selectedCourse.department.departmentName,
-      campusName: selectedCourse.department.campus.campusName,
+      isActive: isActive ? true : false,
+      course_id: parseInt(selectedSubject.course_id),
+      courseCode: selectedSubject.courseCode,
+      courseName: selectedSubject.courseName,
+      departmentCode: selectedSubject.departmentCode,
+      departmentName: selectedSubject.departmentName,
+      campusName: selectedSubject.campusName,
     };
 
-    setGeneralError("");
+    console.log("SUBMITTING: ", transformedData);
+
+    setError("");
     try {
       const response = await toast.promise(
-        axios.post("/subjects/add-subject", transformedData),
+        axios.put(`/subjects/${subjectId}`, transformedData),
         {
-          loading: "Adding Subject...",
-          success: "Subject Added successfully!",
-          error: "Failed to add Subject.",
+          loading: "Updating Course...",
+          success: "Course updated successfully!",
+          error: "Failed to update Course.",
         },
         {
           position: "bottom-right",
@@ -106,17 +147,17 @@ const AddSubject = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchSubject();
+        fetchCourse();
         setOpen(false); // Close the dialog
       }
-      setLocalLoading(false);
+      setLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
-        setGeneralError(err.response.data.message);
+        setError(err.response.data.message);
       } else {
-        setGeneralError("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
-      setLocalLoading(false);
+      setLoading(false);
     }
   };
 
@@ -125,50 +166,75 @@ const AddSubject = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCourse({});
+        setSelectedSubject({});
         setSelectedCourseName("");
       }, 5000);
     } else if (error) {
       setTimeout(() => {
-        setGeneralError("");
+        setError("");
       }, 6000);
     }
   }, [success, error, reset]);
 
+  useEffect(() => {
+    console.log("SELECTED SUBJECT UPDATED: ", selectedSubject);
+  }, [selectedSubject]);
+
   return (
-    <div className="w-full items-center justify-end gap-2 md:flex">
+    <div className="flex items-center justify-end gap-2">
       <div>
         <Dialog
           open={open}
           onOpenChange={(isOpen) => {
             setOpen(isOpen);
             if (!isOpen) {
-              reset(); 
-              setSelectedCourse({});
-              setSelectedCourseName(""); 
-              clearErrors("course_id"); 
+              reset(); // Reset form fields when the dialog is closed
+              setSelectedSubject({});
+              setSelectedCourseName("");
+              clearErrors("course_id");
             }
           }}
         >
-          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
-            <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Subject </span>
+          <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
+            <EditDepartmentIcon forActions={"Edit Subject"} />
           </DialogTrigger>
+
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Subject
+                Edit Subject
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
+                    <div className="w-full pb-3 xl:w-[12em]">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="subject_active"
+                      >
+                        Status{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <Switch
+                        id="subject_active"
+                        checked={isActive}
+                        onCheckedChange={setIsActive} // Update the status when the switch is toggled
+                        disabled={success || loading}
+                      />
+                    </div>
+
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="subject_code"
                         >
-                          Subject Code
+                          Subject Code{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="subject_code"
@@ -188,7 +254,7 @@ const AddSubject = () => {
                                 "Subject Code must contain only capital letters and numbers",
                             },
                           })}
-                          disabled={localLoading || success}
+                          disabled={success || loading}
                         />
                         {errors.subjectCode && (
                           <ErrorMessage>
@@ -202,7 +268,10 @@ const AddSubject = () => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="unit"
                         >
-                          Unit
+                          Unit{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
 
                         <input
@@ -215,15 +284,12 @@ const AddSubject = () => {
                               message: "Unit is required",
                             },
                             validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Unit cannot be empty or just spaces",
                               validUnit: (value) =>
                                 [1, 2, 3].includes(Number(value)) ||
                                 "Unit must be 1, 2, or 3",
                             },
                           })}
-                          disabled={localLoading || success}
+                          disabled={success || loading}
                         />
                         {errors.unit && (
                           <ErrorMessage>*{errors.unit.message}</ErrorMessage>
@@ -236,7 +302,10 @@ const AddSubject = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="subjectDescription"
                       >
-                        Subject Description
+                        Subject Description{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="subjectDescription"
@@ -253,7 +322,7 @@ const AddSubject = () => {
                               "Subject Description cannot be empty or just spaces",
                           },
                         })}
-                        disabled={localLoading || success}
+                        disabled={loading || success}
                       />
                       {errors.subjectDescription && (
                         <ErrorMessage>
@@ -278,10 +347,11 @@ const AddSubject = () => {
                         >
                           <PopoverTrigger asChild>
                             <Button
+                              disabled={loading || success}
                               variant="outline"
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
-                              {selectedCourse.course_id ? (
+                              {selectedSubject.course_id ? (
                                 <>{selectedCourseName}</>
                               ) : (
                                 <>Select Course</>
@@ -293,8 +363,9 @@ const AddSubject = () => {
                             align="start"
                           >
                             <CourseList
+                              selectedSubject={selectedSubject}
                               setOpen={setOpenComboBox}
-                              setSelectedCourse={setSelectedCourse}
+                              setSelectedSubject={setSelectedSubject}
                               setSelectedCourseName={setSelectedCourseName}
                               data={course}
                               loading={loading}
@@ -310,10 +381,11 @@ const AddSubject = () => {
                           >
                             <DrawerTrigger asChild>
                               <Button
+                                disabled={loading || success}
                                 variant="outline"
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
-                                {selectedCourse.course_id ? (
+                                {selectedSubject.course_id ? (
                                   <>{selectedCourseName}</>
                                 ) : (
                                   <>Select Course</>
@@ -324,7 +396,7 @@ const AddSubject = () => {
                               <div className="mt-4 border-t">
                                 <CourseList
                                   setOpen={setOpenComboBox}
-                                  setSelectedCourse={setSelectedCourse}
+                                  setSelectedSubject={setSelectedSubject}
                                   setSelectedCourseName={setSelectedCourseName}
                                   data={course}
                                   loading={loading}
@@ -342,20 +414,28 @@ const AddSubject = () => {
                     </div>
 
                     {error && (
-                      <span className="mt-2 inline-block py-3 font-medium text-red-600">
+                      <span className="mt-2 inline-block pb-6 font-medium text-red-600">
                         Error: {error}
                       </span>
                     )}
 
                     <button
                       type="submit"
-                      className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
-                      disabled={localLoading || success}
+                      className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                        loading || success
+                          ? "bg-[#505456] hover:!bg-opacity-100"
+                          : ""
+                      }`}
+                      disabled={loading || success}
                     >
-                      {localLoading && (
-                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                      {loading && (
+                        <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
-                      {localLoading ? "Loading..." : "Add Subject"}
+                      {loading
+                        ? "Updating Subject..."
+                        : success
+                          ? "Subject Updated!"
+                          : "Update Subject"}
                     </button>
                   </div>
                 </form>
@@ -378,8 +458,10 @@ const ErrorMessage = ({ children }) => {
 };
 
 function CourseList({
+  selectedSubject,
+
   setOpen,
-  setSelectedCourse,
+  setSelectedSubject,
   setSelectedCourseName,
   data,
   loading,
@@ -423,7 +505,11 @@ function CourseList({
                       ),
                     );
 
-                    setSelectedCourse({ ...course, course_id: value });
+                    setSelectedSubject((prevSelectedSubject) => ({
+                      ...prevSelectedSubject,
+                      ...course,
+                      course_id: value,
+                    }));
 
                     setOpen(false);
                     clearErrors("course_id");
@@ -450,4 +536,4 @@ function CourseList({
   );
 }
 
-export default AddSubject;
+export default EditSubject;

@@ -23,8 +23,9 @@ export function DataTablePagination({
   totalStudents,
   totalDepartments,
   totalName,
+  rowsPerPage
 }) {
-  const [pageSize, setPageSize] = useState(5); // State to manage the page size
+  const [pageSize, setPageSize] = useState(rowsPerPage ? rowsPerPage : 5); // State to manage the page size
 
   const handleRowsPerPageChange = (newPageSize) => {
     setPageSize(newPageSize);

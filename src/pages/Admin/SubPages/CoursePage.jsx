@@ -163,7 +163,7 @@ const CourseTables = () => {
             <Tooltip>
               <TooltipTrigger
                 asChild
-                className="cursor-pointer hover:underline hover:underline-offset-2"
+                className="cursor-default hover:underline hover:underline-offset-2"
               >
                 <span className="font-medium">
                   {getInitialsWithCampus(cell.getValue())}
@@ -277,7 +277,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
@@ -412,7 +412,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination totalName={"Course"} table={table} totalDepartments={data.length} />
+          <DataTablePagination totalName={"Course"} rowsPerPage={10} table={table} totalDepartments={data.length} />
         </div>
       </div>
     </>

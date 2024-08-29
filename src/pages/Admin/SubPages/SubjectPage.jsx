@@ -60,7 +60,7 @@ import EditSubject from "../../../components/api/EditSubject";
 
 import ButtonActionSubject from "../../../components/reuseable/ButtonActionSubject";
 
-import DeletedCourse from "../../../components/api/DeletedCourse";
+import DeletedCourse from "../../../components/api/DeletedProgram";
 import DeletedSubject from "../../../components/api/DeletedSubject";
 
 const SubjectPage = () => {

@@ -40,13 +40,20 @@ export const SchoolProvider = ({ children }) => {
   const [departments, setDepartments] = useState([]);
   const [deparmentsActive, setDepartmentsActive] = useState([]);
   const [deparmentsDeleted, setDepartmentsDeleted] = useState([]);
-  const [deparmentsCustom, setDepartmentsCustom] = useState([]);
 
   const fetchDepartments = async () => {
     setLoading(true);
     try {
       const response = await axios.get("/departments");
-      setDepartments(response.data);
+
+      const modifiedDepartments = response.data.map((department) => ({
+        ...department,
+        departmentNameAndCampus: `${department.departmentName} - ${department.campus.campusName}`,
+      }));
+
+
+      setDepartments(modifiedDepartments);
+      // setDepartments(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -82,27 +89,6 @@ export const SchoolProvider = ({ children }) => {
         setError(err.response.data.message);
       } else {
         setError(`Failed to fetch department deleted: (${err})`);
-      }
-    }
-    setLoading(false);
-  };
-
-  const fetchDepartmentsCustom = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/departments/active");
-
-      const modifiedDepartments = response.data.map((department) => ({
-        ...department,
-        departmentName: `${department.departmentName} - ${department.campusName}`,
-      }));
-
-      setDepartmentsCustom(modifiedDepartments);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch Department Custom: (${err})`);
       }
     }
     setLoading(false);
@@ -363,8 +349,6 @@ export const SchoolProvider = ({ children }) => {
         fetchDepartmentsDeleted,
         deparmentsActive,
         fetchDepartmentsActive,
-        deparmentsCustom,
-        fetchDepartmentsCustom,
 
         // ! Campus
         campus,

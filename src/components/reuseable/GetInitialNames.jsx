@@ -4,6 +4,12 @@ export const getInitialDepartmentCodeAndCampus = (name) => {
   return `${DepartmentCode} - ${Campus}`;
 };
 
+export const getInitialDepartmentNameAndCampus = (name) => {
+  const DepartmentName = name.split(" - ")[1];
+  const Campus = name.split(" - ")[2];
+  return `${DepartmentName} - ${Campus}`;
+};
+
 export const getInitialProgramCodeAndCampus = (name) => {
   const ProgramCode = name.split(" - ")[0];
   const Campus = name.split(" - ")[2];

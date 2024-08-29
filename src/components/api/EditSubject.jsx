@@ -33,7 +33,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { Button } from "../ui/button";
 import { useMediaQuery } from "../../hooks/use-media-query";
-import { getInitialCourseCodeAndCampus } from "../reuseable/GetInitialNames";
+import { getInitialProgramCodeAndCampus } from "../reuseable/GetInitialNames";
 
 const EditSubject = ({ subjectId }) => {
   const { fetchSubject, course } = useSchool();
@@ -84,7 +84,7 @@ const EditSubject = ({ subjectId }) => {
           });
 
           setSelectedCourseName(
-            getInitialCourseCodeAndCampus(subject.fullCourseNameWithCampus),
+            getInitialProgramCodeAndCampus(subject.fullCourseNameWithCampus),
           );
           setLoading(false);
         })
@@ -490,7 +490,7 @@ function CourseList({
                   keywords={[course.fullCourseNameWithCampus]}
                   onSelect={(value) => {
                     setSelectedCourseName(
-                      getInitialCourseCodeAndCampus(
+                      getInitialProgramCodeAndCampus(
                         course.fullCourseNameWithCampus,
                       ),
                     );
@@ -508,7 +508,7 @@ function CourseList({
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
-                  {getInitialCourseCodeAndCampus(
+                  {getInitialProgramCodeAndCampus(
                     course.fullCourseNameWithCampus,
                   )}
                 </CommandItem>

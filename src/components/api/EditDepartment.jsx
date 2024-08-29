@@ -169,7 +169,7 @@ const EditDepartment = ({ departmentId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Department
               </DialogTitle>
-              <DialogDescription className="h-[20em] lg:h-auto overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="w-full pb-3 xl:w-[12em]">
@@ -197,9 +197,9 @@ const EditDepartment = ({ departmentId }) => {
                           htmlFor="dept_code"
                         >
                           Department Code{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="dept_code"
@@ -231,9 +231,9 @@ const EditDepartment = ({ departmentId }) => {
                           htmlFor="dept_name"
                         >
                           Department Name{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="dept_name"

@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import SmallLoader from "../styles/SmallLoader";
 
-const ButtonActionCourse = ({ action, courseId, onSuccess }) => {
+const ButtonActionProgram = ({ action, programId, onSuccess }) => {
   const [loading, setLoading] = useState(false);
 
   const handleAction = async () => {
@@ -14,23 +14,22 @@ const ButtonActionCourse = ({ action, courseId, onSuccess }) => {
     try {
       const isDeleted = action === "reactivate" ? false : true;
       await toast.promise(
-        axios.put(`/course/${courseId}`, { isDeleted }),
+        axios.put(`/programs/${programId}`, { isDeleted }),
         {
           loading: isDeleted
-            ? "Deleting course..."
-            : "Reactivating course...",
+            ? "Deleting program..."
+            : "Reactivating program...",
           success: isDeleted
-            ? "Course deleted successfully!"
-            : "Course reactivated successfully!",
+            ? "Program deleted successfully!"
+            : "Program reactivated successfully!",
           error: isDeleted
-            ? "Failed to delete course."
-            : "Failed to reactivate course.",
+            ? "Failed to delete program."
+            : "Failed to reactivate program.",
         },
         {
           position: "bottom-right",
           duration: 4500,
         },
-
       );
       setLoading(false);
       onSuccess();
@@ -62,4 +61,4 @@ const ButtonActionCourse = ({ action, courseId, onSuccess }) => {
   );
 };
 
-export default ButtonActionCourse;
+export default ButtonActionProgram;

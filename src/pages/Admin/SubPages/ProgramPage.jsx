@@ -4,22 +4,12 @@ import DefaultLayout from "../../layout/DefaultLayout";
 
 /* eslint-disable react/prop-types */
 import {
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../../components/ui/table";
 
 import { useEffect, useState } from "react";
 
@@ -46,23 +36,20 @@ import {
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
 import { ArrowUpDown } from "lucide-react";
-
-import SmallLoader from "../../../components/styles/SmallLoader";
-
 import { DeleteIcon } from "../../../components/Icons";
 
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 
 import { useSchool } from "../../../components/context/SchoolContext";
 
-import AddCourse from "../../../components/api/AddCourse";
+import AddProgram from "../../../components/api/AddProgram";
 
-import EditCourse from "../../../components/api/EditCourse";
-
-import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
-
-import DeletedCourse from "../../../components/api/DeletedCourse";
-import { getInitialsWithCampus } from "../../../components/reuseable/GetInitialNames";
+import DeletedCourse from "../../../components/api/DeletedProgram";
+import { getInitialDepartmentCodeAndCampus } from "../../../components/reuseable/GetInitialNames";
+import EditProgram from "../../../components/api/EditProgram";
+import ButtonActionProgram from "../../../components/reuseable/ButtonActionProgram";
+import ReuseTable from "../../../components/reuseable/ReuseTable";
+import DeletedProgram from "../../../components/api/DeletedProgram";
 
 const ProgramPage = () => {
   const NavItems = [
@@ -88,9 +75,9 @@ const ProgramTables = () => {
   const { program, fetchProgram, fetchProgramDeleted, loading, error } =
     useSchool();
 
-    useEffect(() => {
-      fetchProgram()
-    },[])
+  useEffect(() => {
+    fetchProgram();
+  }, []);
 
   const columns = [
     {
@@ -143,7 +130,7 @@ const ProgramTables = () => {
       },
     },
     {
-      accessorKey: "departmentName",
+      accessorKey: "fullDepartmentNameWithCampus",
       header: ({ column }) => {
         return (
           <Button
@@ -157,7 +144,7 @@ const ProgramTables = () => {
         );
       },
       cell: ({ cell }) => {
-        const getCampusName = cell.getValue().split(" - ")[0];
+        const getDeparmentName = cell.getValue().split(" - ")[1];
 
         return (
           <TooltipProvider delayDuration={75}>
@@ -167,11 +154,11 @@ const ProgramTables = () => {
                 className="cursor-default hover:underline hover:underline-offset-2"
               >
                 <span className="font-medium">
-                  {getInitialsWithCampus(cell.getValue())}
+                  {getInitialDepartmentCodeAndCampus(cell.getValue())}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                <p className="text-[1rem]">{getCampusName}</p>
+                <p className="text-[1rem]">{getDeparmentName}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -201,28 +188,28 @@ const ProgramTables = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCourse courseId={row.getValue("program_id")} />
+            <EditProgram programId={row.getValue("program_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Course"} />
+                <DeleteIcon forActions={"Delete Program"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold">
-                    Delete Course
+                    Delete Program
                   </DialogTitle>
                   <DialogDescription asChild className="mt-2">
                     <p className="mb-5">
-                      Are you sure you want to delete this course?
+                      Are you sure you want to delete this program?
                     </p>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCourse
+                    <ButtonActionProgram
                       action="delete"
-                      courseId={row.getValue("program_id")}
+                      programId={row.getValue("program_id")}
                       onSuccess={() => {
                         fetchProgram();
                         fetchProgramDeleted();
@@ -250,7 +237,7 @@ const ProgramTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={course}
+        data={program}
         loading={loading}
         error={error}
       />
@@ -289,28 +276,36 @@ const DataTable = ({ data, columns, loading, error }) => {
         <div className="gap-5 md:flex">
           <Input
             placeholder="Search by Code..."
-            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
+            value={table.getColumn("programCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("courseCode")?.setFilterValue(event.target.value)
+              table.getColumn("programCode")?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[10em]"
           />
 
           <Input
-            placeholder="Search by Course name..."
-            value={table.getColumn("courseName")?.getFilterValue() ?? ""}
+            placeholder="Search by Program description..."
+            value={
+              table.getColumn("programDescription")?.getFilterValue() ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("courseName")?.setFilterValue(event.target.value)
+              table
+                .getColumn("programDescription")
+                ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
 
           <Input
             placeholder="Search by Department..."
-            value={table.getColumn("departmentName")?.getFilterValue() ?? ""}
+            value={
+              table
+                .getColumn("fullDepartmentNameWithCampus")
+                ?.getFilterValue() ?? ""
+            }
             onChange={(event) =>
               table
-                .getColumn("departmentName")
+                .getColumn("fullDepartmentNameWithCampus")
                 ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
@@ -318,7 +313,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className=" ">
-          <AddCourse />
+          <AddProgram />
         </div>
       </div>
 
@@ -328,92 +323,25 @@ const DataTable = ({ data, columns, loading, error }) => {
             <StatusFilter table={table} option={"department"} />
           </div>
 
-          <DeletedCourse />
+          <DeletedProgram />
         </div>
 
         <div className="max-w-full overflow-x-auto">
-          <Table className="border border-stroke dark:border-strokedark">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="border-none bg-gray-2 dark:bg-meta-4"
-                >
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className="h-[0.5em] !border-none px-4 py-4 text-[1rem] font-medium text-black dark:text-white"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody
-              className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
-            >
-              {loading ? (
-                <TableRow className="border-none hover:!bg-transparent">
-                  <TableCell
-                    colSpan={columns.length}
-                    className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black dark:text-white"
-                  >
-                    <SmallLoader /> Loading...
-                  </TableCell>
-                </TableRow>
-              ) : error ? (
-                <TableRow className="border-none hover:!bg-transparent">
-                  <TableCell
-                    colSpan={columns.length}
-                    className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-red-500"
-                  >
-                    Error: {error}
-                  </TableCell>
-                </TableRow>
-              ) : table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row, i) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    className={`${i === 0 ? "border-none" : ""}`}
-                  >
-                    {row.getVisibleCells().map((cell, i) => (
-                      <TableCell
-                        key={cell.id}
-                        className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] text-black dark:border-strokedark dark:text-white`}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow className="border-none hover:!bg-transparent">
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center text-2xl font-[500]"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <ReuseTable
+            table={table}
+            columns={columns}
+            loading={loading}
+            error={error}
+          />
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-          <DataTablePagination totalName={"Course"} rowsPerPage={10} table={table} totalDepartments={data.length} />
+          <DataTablePagination
+            totalName={"Program"}
+            rowsPerPage={10}
+            table={table}
+            totalDepartments={data.length}
+          />
         </div>
       </div>
     </>

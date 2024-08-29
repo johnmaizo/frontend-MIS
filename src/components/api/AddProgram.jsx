@@ -33,10 +33,10 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
+import { getInitialDepartmentNameAndCampus } from "../reuseable/GetInitialNames";
 
-const AddCourse = () => {
-  const { fetchCourse, deparmentsCustom, fetchDepartmentsCustom, loading } =
-    useSchool();
+const AddProgram = () => {
+  const { fetchProgram, departments, fetchDepartments, loading } = useSchool();
 
   const [open, setOpen] = useState(false);
 
@@ -60,7 +60,8 @@ const AddCourse = () => {
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchDepartmentsCustom();
+    fetchDepartments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data) => {
@@ -81,16 +82,20 @@ const AddCourse = () => {
         ]),
       ),
       department_id: parseInt(selectedDepartmentID),
+
+      departmentCode: selectedDepartmenName.split(" - ")[0],
+      departmentName: selectedDepartmenName.split(" - ")[1],
+      campusName: selectedDepartmenName.split(" - ")[2],
     };
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/course/add-course", transformedData),
+        axios.post("/programs/add-program", transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Adding Program...",
+          success: "Program Added successfully!",
+          error: "Failed to add Program.",
         },
         {
           position: "bottom-right",
@@ -100,7 +105,7 @@ const AddCourse = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchProgram();
         setOpen(false); // Close the dialog
       }
       setLocalLoading(false);
@@ -145,13 +150,13 @@ const AddCourse = () => {
           }}
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
-            <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Course </span>
+            <AddDepartmentIcon title={"Add Program"} />
+            <span className="max-w-[8em]">Add Program </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Course
+                Add new Program
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -160,30 +165,30 @@ const AddCourse = () => {
                       <div className="w-full xl:w-[12em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_code"
+                          htmlFor="program_code"
                         >
-                          Course Code
+                          Program Code
                         </label>
                         <input
-                          id="course_code"
+                          id="program_code"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseCode", {
+                          {...register("programCode", {
                             required: {
                               value: true,
-                              message: "Course Code is required",
+                              message: "Program Code is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Code cannot be empty or just spaces",
+                                "Program Code cannot be empty or just spaces",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.courseCode && (
+                        {errors.programCode && (
                           <ErrorMessage>
-                            *{errors.courseCode.message}
+                            *{errors.programCode.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -191,30 +196,30 @@ const AddCourse = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_name"
+                          htmlFor="program_description"
                         >
-                          Course Name
+                          Program Description
                         </label>
                         <input
-                          id="course_name"
+                          id="program_description"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseName", {
+                          {...register("programDescription", {
                             required: {
                               value: true,
-                              message: "Course Name is required",
+                              message: "Program Description is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Name cannot be empty or just spaces",
+                                "Program Description cannot be empty or just spaces",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.courseName && (
+                        {errors.programDescription && (
                           <ErrorMessage>
-                            *{errors.courseName.message}
+                            *{errors.programDescription.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -223,7 +228,7 @@ const AddCourse = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_department"
+                        htmlFor="program_department"
                       >
                         Department
                       </label>
@@ -240,7 +245,11 @@ const AddCourse = () => {
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
                               {selectedDepartmentID ? (
-                                <>{selectedDepartmenName}</>
+                                <>
+                                  {getInitialDepartmentNameAndCampus(
+                                    selectedDepartmenName,
+                                  )}
+                                </>
                               ) : (
                                 <>Select Department</>
                               )}
@@ -256,7 +265,7 @@ const AddCourse = () => {
                               setSelectedDepartmenName={
                                 setSelectedDepartmenName
                               }
-                              data={deparmentsCustom}
+                              data={departments}
                               loading={loading}
                               clearErrors={clearErrors}
                             />
@@ -274,7 +283,11 @@ const AddCourse = () => {
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
                                 {selectedDepartmentID ? (
-                                  <>{selectedDepartmenName}</>
+                                  <>
+                                    {getInitialDepartmentNameAndCampus(
+                                      selectedDepartmenName,
+                                    )}
+                                  </>
                                 ) : (
                                   <>Select Department</>
                                 )}
@@ -290,7 +303,7 @@ const AddCourse = () => {
                                   setSelectedDepartmenName={
                                     setSelectedDepartmenName
                                   }
-                                  data={deparmentsCustom}
+                                  data={departments}
                                   loading={loading}
                                   clearErrors={clearErrors}
                                 />
@@ -321,7 +334,7 @@ const AddCourse = () => {
                       {localLoading && (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       )}
-                      {localLoading ? "Loading..." : "Add Course"}
+                      {localLoading ? "Loading..." : "Add Program"}
                     </button>
                   </div>
                 </form>
@@ -380,16 +393,24 @@ function DepartmentList({
                 <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 <CommandItem
                   value={department.department_id.toString()}
-                  keywords={[department.departmentName]}
+                  keywords={[
+                    getInitialDepartmentNameAndCampus(
+                      department.fullDepartmentNameWithCampus,
+                    ),
+                  ]}
                   onSelect={(value) => {
                     setSelectedDepartmentID(value);
-                    setSelectedDepartmenName(department.departmentName);
+                    setSelectedDepartmenName(
+                      department.fullDepartmentNameWithCampus,
+                    );
                     setOpen(false);
                     clearErrors("department_id");
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
-                  {department.departmentName}
+                  {getInitialDepartmentNameAndCampus(
+                    department.fullDepartmentNameWithCampus,
+                  )}
                 </CommandItem>
               </div>
             ))
@@ -407,4 +428,4 @@ function DepartmentList({
   );
 }
 
-export default AddCourse;
+export default AddProgram;

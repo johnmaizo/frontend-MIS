@@ -507,7 +507,7 @@ export const ProfileLoadingIcon = () => {
 // ! ViewStudentPage.jsx END
 
 // ! DepartmentPage.jsx START
-export const AddDepartmentIcon = () => {
+export const AddDepartmentIcon = ({title}) => {
   return (
     <svg
       className="fill-current"
@@ -516,7 +516,7 @@ export const AddDepartmentIcon = () => {
       height="1.5em"
       viewBox="0 0 24 24"
     >
-      <title>Add Department</title>
+      <title>{title ? title : "Add Department"}</title>
       <path fill="" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
     </svg>
   );

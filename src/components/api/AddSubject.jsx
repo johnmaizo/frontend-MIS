@@ -33,7 +33,7 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
-import { getInitialCourseCodeAndCampus } from "../reuseable/GetInitialNames";
+import { getInitialProgramCodeAndCampus } from "../reuseable/GetInitialNames";
 
 const AddSubject = () => {
   const { fetchSubject, course, fetchCourse, loading } = useSchool();
@@ -418,7 +418,7 @@ function CourseList({
                   keywords={[course.fullCourseNameWithCampus]}
                   onSelect={(value) => {
                     setSelectedCourseName(
-                      getInitialCourseCodeAndCampus(
+                      getInitialProgramCodeAndCampus(
                         course.fullCourseNameWithCampus,
                       ),
                     );
@@ -430,7 +430,7 @@ function CourseList({
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
-                  {getInitialCourseCodeAndCampus(
+                  {getInitialProgramCodeAndCampus(
                     course.fullCourseNameWithCampus,
                   )}
                 </CommandItem>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { flexRender } from "@tanstack/react-table";
 
 import {
@@ -10,7 +11,7 @@ import {
 } from "../ui/table";
 import SmallLoader from "../styles/SmallLoader";
 
-const ReuseTable = () => {
+const ReuseTable = ({ table, columns, loading, error }) => {
   return (
     <Table className="border border-stroke dark:border-strokedark">
       <TableHeader>

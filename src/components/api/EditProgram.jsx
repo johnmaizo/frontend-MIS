@@ -33,9 +33,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { Button } from "../ui/button";
 import { useMediaQuery } from "../../hooks/use-media-query";
+import { getInitialDepartmentNameAndCampus } from "../reuseable/GetInitialNames";
 
-const EditCourse = ({ courseId }) => {
-  const { fetchCourse, deparmentsCustom } = useSchool();
+const EditProgram = ({ programId }) => {
+  const { fetchProgram, departments } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
@@ -59,27 +60,27 @@ const EditCourse = ({ courseId }) => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (courseId && open) {
-      // Fetch the course data when the modal is opened
+    if (programId && open) {
+      // Fetch the program data when the modal is opened
       setLoading(true);
       axios
-        .get(`/course/${courseId}`)
+        .get(`/programs/${programId}`)
         .then((response) => {
-          const course = response.data;
-          // Pre-fill the form with course data
-          setValue("courseCode", course.courseCode);
-          setValue("courseName", course.courseName);
-          setIsActive(course.isActive); // Set the initial status
-          setSelectedDepartmentID(course.department_id.toString()); // Set the initial department
-          setSelectedDepartmenName(course.departmentName);
+          const program = response.data;
+          // Pre-fill the form with program data
+          setValue("programCode", program.programCode);
+          setValue("programDescription", program.programDescription);
+          setIsActive(program.isActive); // Set the initial status
+          setSelectedDepartmentID(program.department_id.toString()); // Set the initial department
+          setSelectedDepartmenName(program.fullDepartmentNameWithCampus);
           setLoading(false);
         })
         .catch((err) => {
-          setError(`Failed to fetch course data: (${err})`);
+          setError(`Failed to fetch program data: (${err})`);
           setLoading(false);
         });
     }
-  }, [courseId, open, setValue]);
+  }, [programId, open, setValue]);
 
   const onSubmit = async (data) => {
     if (!selectedDepartmentID) {
@@ -98,18 +99,20 @@ const EditCourse = ({ courseId }) => {
       ),
       isActive: isActive ? true : false, // Set isActive based on the switch value
       department_id: selectedDepartmentID, // Add the selected department to the form data
-    };
 
-    console.log(transformedData);
+      departmentCode: selectedDepartmenName.split(" - ")[0],
+      departmentName: selectedDepartmenName.split(" - ")[1],
+      campusName: selectedDepartmenName.split(" - ")[2],
+    };
 
     setError("");
     try {
       const response = await toast.promise(
-        axios.put(`/course/${courseId}`, transformedData),
+        axios.put(`/programs/${programId}`, transformedData),
         {
-          loading: "Updating Course...",
-          success: "Course updated successfully!",
-          error: "Failed to update Course.",
+          loading: "Updating Program...",
+          success: "Program updated successfully!",
+          error: "Failed to update Program.",
         },
         {
           position: "bottom-right",
@@ -119,7 +122,7 @@ const EditCourse = ({ courseId }) => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchProgram();
         setOpen(false); // Close the dialog
       }
       setLoading(false);
@@ -177,13 +180,13 @@ const EditCourse = ({ courseId }) => {
           }}
         >
           <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
-            <EditDepartmentIcon forActions={"Edit Course"} />
+            <EditDepartmentIcon forActions={"Edit Program"} />
           </DialogTrigger>
 
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Edit Course
+                Edit Program
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -191,7 +194,7 @@ const EditCourse = ({ courseId }) => {
                     <div className="w-full pb-3 xl:w-[12em]">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_active"
+                        htmlFor="program_active"
                       >
                         Status{" "}
                         <span className="inline-block font-bold text-red-700">
@@ -199,7 +202,7 @@ const EditCourse = ({ courseId }) => {
                         </span>
                       </label>
                       <Switch
-                        id="course_active"
+                        id="program_active"
                         checked={isActive}
                         onCheckedChange={setIsActive} // Update the status when the switch is toggled
                         disabled={success || loading}
@@ -210,33 +213,33 @@ const EditCourse = ({ courseId }) => {
                       <div className="w-full xl:w-[13.5em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_code"
+                          htmlFor="program_code"
                         >
-                          Course Code{" "}
+                          Program Code{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
                         <input
-                          id="course_code"
+                          id="program_code"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseCode", {
+                          {...register("programCode", {
                             required: {
                               value: true,
-                              message: "Course Code is required",
+                              message: "Program Code is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Code cannot be empty or just spaces",
+                                "Program Code cannot be empty or just spaces",
                             },
                           })}
                           disabled={success || loading}
                         />
-                        {errors.courseCode && (
+                        {errors.programCode && (
                           <ErrorMessage>
-                            *{errors.courseCode.message}
+                            *{errors.programCode.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -244,33 +247,33 @@ const EditCourse = ({ courseId }) => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_name"
+                          htmlFor="program_description"
                         >
-                          Course Name{" "}
+                          Program Description{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
                         <input
-                          id="course_name"
+                          id="program_description"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseName", {
+                          {...register("programDescription", {
                             required: {
                               value: true,
-                              message: "Course Name is required",
+                              message: "Program Description is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Name cannot be empty or just spaces",
+                                "Program Description cannot be empty or just spaces",
                             },
                           })}
                           disabled={success || loading}
                         />
-                        {errors.courseName && (
+                        {errors.programDescription && (
                           <ErrorMessage>
-                            *{errors.courseName.message}
+                            *{errors.programDescription.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -279,7 +282,7 @@ const EditCourse = ({ courseId }) => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_department"
+                        htmlFor="program_department"
                       >
                         Department
                       </label>
@@ -296,7 +299,11 @@ const EditCourse = ({ courseId }) => {
                               className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                             >
                               {selectedDepartmentID ? (
-                                <>{selectedDepartmenName}</>
+                                <>
+                                  {getInitialDepartmentNameAndCampus(
+                                    selectedDepartmenName,
+                                  )}
+                                </>
                               ) : (
                                 <>
                                   {loading ? "Loading..." : "Select Department"}
@@ -314,7 +321,7 @@ const EditCourse = ({ courseId }) => {
                               setSelectedDepartmenName={
                                 setSelectedDepartmenName
                               }
-                              data={deparmentsCustom}
+                              data={departments}
                               loading={loading}
                               clearErrors={clearErrors}
                             />
@@ -333,7 +340,11 @@ const EditCourse = ({ courseId }) => {
                                 className="h-[2.5em] w-[13em] justify-start text-xl text-black dark:bg-form-input dark:text-white md:w-full"
                               >
                                 {selectedDepartmentID ? (
-                                  <>{selectedDepartmenName}</>
+                                  <>
+                                    {getInitialDepartmentNameAndCampus(
+                                      selectedDepartmenName,
+                                    )}
+                                  </>
                                 ) : (
                                   <>
                                     {loading
@@ -353,7 +364,7 @@ const EditCourse = ({ courseId }) => {
                                   setSelectedDepartmenName={
                                     setSelectedDepartmenName
                                   }
-                                  data={deparmentsCustom}
+                                  data={departments}
                                   loading={loading}
                                   clearErrors={clearErrors}
                                 />
@@ -389,10 +400,10 @@ const EditCourse = ({ courseId }) => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Updating Course..."
+                        ? "Updating Program..."
                         : success
-                          ? "Course Updated!"
-                          : "Update Course"}
+                          ? "Program Updated!"
+                          : "Update Program"}
                     </button>
                   </div>
                 </form>
@@ -451,16 +462,24 @@ function DepartmentList({
                 <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 <CommandItem
                   value={department.department_id.toString()}
-                  keywords={[department.departmentName]}
+                  keywords={[
+                    getInitialDepartmentNameAndCampus(
+                      department.fullDepartmentNameWithCampus,
+                    ),
+                  ]}
                   onSelect={(value) => {
                     setSelectedDepartmentID(value);
-                    setSelectedDepartmenName(department.departmentName);
+                    setSelectedDepartmenName(
+                      department.fullDepartmentNameWithCampus,
+                    );
                     setOpen(false);
                     clearErrors("department_id");
                   }}
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
-                  {department.departmentName}
+                  {getInitialDepartmentNameAndCampus(
+                    department.fullDepartmentNameWithCampus,
+                  )}
                 </CommandItem>
               </div>
             ))
@@ -478,4 +497,4 @@ function DepartmentList({
   );
 }
 
-export default EditCourse;
+export default EditProgram;

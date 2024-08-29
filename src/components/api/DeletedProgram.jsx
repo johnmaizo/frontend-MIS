@@ -1,21 +1,11 @@
 /* eslint-disable react/prop-types */
 import {
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
 
 import { useState } from "react";
 
@@ -41,15 +31,16 @@ import {
 
 import { ArrowUpDown } from "lucide-react";
 
-import SmallLoader from "../styles/SmallLoader";
-
 import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionCourse from "../reuseable/ButtonActionCourse";
+import ButtonActionCourse from "../reuseable/ButtonActionProgram";
+import ReuseTable from "../reuseable/ReuseTable";
+import { getInitialProgramCodeAndCampus } from "../reuseable/GetInitialNames";
+import ButtonActionProgram from "../reuseable/ButtonActionProgram";
 
-const DeletedCourse = () => {
+const DeletedProgram = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -62,15 +53,15 @@ const DeletedCourse = () => {
       >
         <DialogTrigger className="flex items-center gap-1 rounded bg-blue-600 p-2 text-xs font-medium text-white hover:bg-blue-700">
           <ArchiveIcon />
-          <span className="max-w-[10em]">Deleted Course </span>
+          <span className="max-w-[10em]">Deleted Program </span>
         </DialogTrigger>
         <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
           <DialogHeader>
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
-              Deleted Courses
+              Deleted Programs
             </DialogTitle>
             <DialogDescription className="h-[15em] overflow-y-auto overscroll-none text-xl">
-              <CourseTables />
+              <ProgramTables />
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
@@ -79,24 +70,24 @@ const DeletedCourse = () => {
   );
 };
 
-const CourseTables = () => {
-  const { fetchCourse, courseDeleted, fetchCourseDeleted, loading, error } =
+const ProgramTables = () => {
+  const { fetchProgram, programDeleted, fetchProgramDeleted, loading, error } =
     useSchool();
 
   const columns = [
     {
-      accessorKey: "course_id",
+      accessorKey: "program_id",
       header: "Numeric ID",
     },
     {
-      accessorKey: "courseCode",
+      accessorKey: "programCode",
       header: "Course",
       cell: ({ cell }) => {
         return <span className="font-bold">{cell.getValue()}</span>;
       },
     },
     {
-      accessorKey: "departmentName",
+      accessorKey: "fullDepartmentNameWithCampus",
       header: ({ column }) => {
         return (
           <Button
@@ -110,18 +101,6 @@ const CourseTables = () => {
         );
       },
       cell: ({ cell }) => {
-        const getInitialsWithCampus = (name) => {
-          const [collegeName, campus] = name.split(" - "); // Split into college name and campus
-          const initials = collegeName
-            .split(" ") // Split by spaces
-            .filter((word) => /^[A-Z]/.test(word)) // Filter words starting with uppercase letters
-            .map((word) => word[0]) // Get the first letter of each word
-            .join(""); // Join them to form the acronym
-          return `${initials} - ${campus}`; // Combine initials with campus
-        };
-
-        const getCampusName = cell.getValue().split(" - ")[0];
-
         return (
           <TooltipProvider delayDuration={75}>
             <Tooltip>
@@ -130,11 +109,11 @@ const CourseTables = () => {
                 className="hover:cursor-auto hover:underline hover:underline-offset-2"
               >
                 <span className="font-medium">
-                  {getInitialsWithCampus(cell.getValue())}
+                  {getInitialProgramCodeAndCampus(cell.getValue())}
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="text-[1rem]">{getCampusName}</p>
+                <p className="text-[1rem]">{cell.getValue().split(" - ")[1]}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -160,7 +139,7 @@ const CourseTables = () => {
 
     {
       header: "Action",
-      accessorFn: (row) => `${row.course_id} ${row.isDeleted}`,
+      accessorFn: (row) => `${row.program_id} ${row.isDeleted}`,
       id: "action",
       cell: ({ row }) => {
         return (
@@ -169,27 +148,27 @@ const CourseTables = () => {
               <>
                 <Dialog>
                   <DialogTrigger className="rounded-md bg-blue-600 p-1 text-white hover:bg-blue-700">
-                    <UndoIcon title={"Reactivate Course"} />
+                    <UndoIcon title={"Reactivate Program"} />
                   </DialogTrigger>
                   <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                     <DialogHeader>
                       <DialogTitle className="text-2xl font-bold">
-                        Reactivate Course
+                        Reactivate Program
                       </DialogTitle>
                       <DialogDescription asChild className="mt-2">
                         <p className="mb-5">
-                          Are you sure you want to reactivate this course?
+                          Are you sure you want to reactivate this Program?
                         </p>
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionCourse
+                        <ButtonActionProgram
                           action="reactivate"
-                          courseId={row.getValue("course_id")}
+                          programId={row.getValue("program_id")}
                           onSuccess={() => {
-                            fetchCourseDeleted();
-                            fetchCourse();
+                            fetchProgramDeleted();
+                            fetchProgram();
                           }}
                         />
                         <DialogClose asChild>
@@ -216,7 +195,7 @@ const CourseTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={courseDeleted}
+        data={programDeleted}
         loading={loading}
         error={error}
       />
@@ -252,87 +231,15 @@ const DataTable = ({ data, columns, loading, error }) => {
   return (
     <>
       <div className="!w-[13.5em] overflow-x-auto xsm:!w-auto xsm:max-w-full">
-        <Table className="border border-stroke dark:border-strokedark">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="border-none bg-gray-2 dark:bg-meta-4"
-              >
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="h-[0.5em] !border-none px-4 py-4 text-[1rem] font-medium text-black dark:text-white"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody
-            className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
-          >
-            {loading ? (
-              <TableRow className="border-none hover:!bg-transparent">
-                <TableCell
-                  colSpan={columns.length}
-                  className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black dark:text-white"
-                >
-                  <SmallLoader /> Loading...
-                </TableCell>
-              </TableRow>
-            ) : error ? (
-              <TableRow className="border-none hover:!bg-transparent">
-                <TableCell
-                  colSpan={columns.length}
-                  className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-red-500"
-                >
-                  Error: {error}
-                </TableCell>
-              </TableRow>
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, i) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className={`${i === 0 ? "border-none" : ""}`}
-                >
-                  {row.getVisibleCells().map((cell, i) => (
-                    <TableCell
-                      key={cell.id}
-                      className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] text-black dark:border-strokedark dark:text-white`}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="border-none hover:!bg-transparent">
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-2xl font-[500]"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        <ReuseTable
+          table={table}
+          columns={columns}
+          loading={loading}
+          error={error}
+        />
       </div>
     </>
   );
 };
 
-export default DeletedCourse;
+export default DeletedProgram;

@@ -220,68 +220,68 @@ export const SchoolProvider = ({ children }) => {
   }, []);
   // ! Semester END
 
-  // ! Course START
-  const [course, setCourse] = useState([]);
-  const [courseDeleted, setCourseDeleted] = useState([]);
-  const [courseActive, setCourseActive] = useState([]);
+  // ! Program START
+  const [program, setProgram] = useState([]);
+  const [programDeleted, setProgramDeleted] = useState([]);
+  const [programActive, setProgramActive] = useState([]);
 
-  const fetchCourse = async () => {
+  const fetchProgram = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course");
+      const response = await axios.get("/programs");
 
-      const modifiedCourse = response.data.map((course) => ({
-        ...course,
-        fullCourseNameWithCampus: `${course.courseCode} - ${course.courseName} - ${course.department.campus.campusName}`,
+      const modifiedprogram = response.data.map((program) => ({
+        ...program,
+        fullProgramNameWithCampus: `${program.programCode} - ${program.programName} - ${program.department.campus.campusName}`,
       }));
 
-      // setCourse(response.data);
-      setCourse(modifiedCourse);
+      // setProgram(response.data);
+      setProgram(modifiedprogram);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch course: (${err})`);
+        setError(`Failed to fetch program: (${err})`);
       }
     }
     setLoading(false);
   };
 
-  const fetchCourseDeleted = async () => {
+  const fetchProgramDeleted = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course/deleted");
-      setCourseDeleted(response.data);
+      const response = await axios.get("/programs/deleted");
+      setProgramDeleted(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Course deleted: (${err})`);
+        setError(`Failed to fetch program deleted: (${err})`);
       }
     }
     setLoading(false);
   };
 
-  const fetchCourseActive = async () => {
+  const fetchProgramActive = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course/active");
-      setCourseActive(response.data);
+      const response = await axios.get("/programs/active");
+      setProgramActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Course active: (${err})`);
+        setError(`Failed to fetch program active: (${err})`);
       }
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCourseDeleted();
+    fetchProgramDeleted();
   }, []);
 
-  // ! Course END
+  // ! Program END
 
   // ! Subject START
   const [subjects, setSubjects] = useState([]);
@@ -295,7 +295,7 @@ export const SchoolProvider = ({ children }) => {
 
       // const modifiedSubject = response.data.map((subject) => ({
       //   ...subject,
-      //   fullCourseNameWithCampus: `${subject.CourseCode} - ${subject.CourseName} - ${subject.Campus}`,
+      //   fullprogramNameWithCampus: `${subject.programCode} - ${subject.programName} - ${subject.Campus}`,
       // }));
 
       // setSubjects(modifiedSubject);
@@ -340,9 +340,9 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchSubjectDeleted();
-  }, []);
+  // useEffect(() => {
+  //   fetchSubjectDeleted();
+  // }, []);
   // ! Subject END
 
   return (
@@ -380,13 +380,13 @@ export const SchoolProvider = ({ children }) => {
         semestersDeleted,
         fetchSemestersDeleted,
 
-        // ! Courses
-        course,
-        fetchCourse,
-        courseDeleted,
-        fetchCourseDeleted,
-        courseActive,
-        fetchCourseActive,
+        // ! programs
+        program,
+        fetchProgram,
+        programDeleted,
+        fetchProgramDeleted,
+        programActive,
+        fetchProgramActive,
 
         // ! Subjects
         subjects,

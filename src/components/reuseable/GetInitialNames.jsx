@@ -1,7 +1,13 @@
-export const getInitialCourseCodeAndCampus = (name) => {
-  const CourseCode = name.split(" - ")[0];
+export const getInitialDepartmentCodeAndCampus = (name) => {
+  const DepartmentCode = name.split(" - ")[0];
   const Campus = name.split(" - ")[2];
-  return `${CourseCode} - ${Campus}`;
+  return `${DepartmentCode} - ${Campus}`;
+};
+
+export const getInitialProgramCodeAndCampus = (name) => {
+  const ProgramCode = name.split(" - ")[0];
+  const Campus = name.split(" - ")[2];
+  return `${ProgramCode} - ${Campus}`;
 };
 
 export const getInitialsWithCampus = (name) => {

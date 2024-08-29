@@ -67,34 +67,34 @@ import { getInitialsWithCampus } from "../../../components/reuseable/GetInitialN
 const ProgramPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
-    // { to: "/course/add-course", label: "Add Course" },
-    { label: "Courses" },
+    // { to: "/program/add-program", label: "Add Program" },
+    { label: "Programs" },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Courses"}
+        pageName={"Programs"}
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
 
-      <CourseTables />
+      <ProgramTables />
     </DefaultLayout>
   );
 };
 
-const CourseTables = () => {
-  const { course, fetchCourse, fetchCourseDeleted, loading, error } =
+const ProgramTables = () => {
+  const { program, fetchProgram, fetchProgramDeleted, loading, error } =
     useSchool();
 
     useEffect(() => {
-      fetchCourse()
+      fetchProgram()
     },[])
 
   const columns = [
     {
-      accessorKey: "course_id",
+      accessorKey: "program_id",
 
       header: ({ column }) => {
         return (
@@ -110,7 +110,7 @@ const CourseTables = () => {
       },
     },
     {
-      accessorKey: "courseCode",
+      accessorKey: "programCode",
       header: ({ column }) => {
         return (
           <Button
@@ -128,7 +128,7 @@ const CourseTables = () => {
       },
     },
     {
-      accessorKey: "courseName",
+      accessorKey: "programDescription",
       header: ({ column }) => {
         return (
           <Button
@@ -136,7 +136,7 @@ const CourseTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Name
+            Program Description
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -196,12 +196,12 @@ const CourseTables = () => {
 
     {
       header: "Actions",
-      accessorFn: (row) => `${row.course_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.program_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCourse courseId={row.getValue("course_id")} />
+            <EditCourse courseId={row.getValue("program_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
@@ -222,10 +222,10 @@ const CourseTables = () => {
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     <ButtonActionCourse
                       action="delete"
-                      courseId={row.getValue("course_id")}
+                      courseId={row.getValue("program_id")}
                       onSuccess={() => {
-                        fetchCourse();
-                        fetchCourseDeleted();
+                        fetchProgram();
+                        fetchProgramDeleted();
                       }}
                     />
                     <DialogClose asChild>

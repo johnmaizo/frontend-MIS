@@ -4,7 +4,7 @@ import { ProgramIcon } from "../Icons";
 
 /* eslint-disable react/prop-types */
 const CardDataPrograms = () => {
-  const [totalStudent, setTotalStudent] = useState(null);
+  const [totalPrograms, setTotalPrograms] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,9 +14,9 @@ const CardDataPrograms = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentResponse = await axios.get("/course/count");
+        const currentResponse = await axios.get("/programs/count");
         const total = currentResponse.data;
-        setTotalStudent(total);
+        setTotalPrograms(total);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
@@ -40,7 +40,7 @@ const CardDataPrograms = () => {
           <h4
             className={`text-title-md font-bold text-black dark:text-white ${error ? "text-red-500" : ""}`}
           >
-            {loading ? "Loading..." : error ? "Error" : totalStudent}
+            {loading ? "Loading..." : error ? "Error" : totalPrograms}
           </h4>
           <span className="text-sm font-medium">{title}</span>
         </div>

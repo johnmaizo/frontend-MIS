@@ -35,7 +35,6 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionCourse from "../reuseable/ButtonActionProgram";
 import ReuseTable from "../reuseable/ReuseTable";
 import { getInitialProgramCodeAndCampus } from "../reuseable/GetInitialNames";
 import ButtonActionProgram from "../reuseable/ButtonActionProgram";

@@ -80,7 +80,7 @@ const ProgramTables = () => {
     },
     {
       accessorKey: "programCode",
-      header: "Course",
+      header: "Program Code",
       cell: ({ cell }) => {
         return <span className="font-bold">{cell.getValue()}</span>;
       },

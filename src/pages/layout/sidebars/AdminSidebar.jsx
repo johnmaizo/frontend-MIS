@@ -6,7 +6,7 @@ import SidebarLinkGroup from "../../../components/Sidebar/SidebarLinkGroup";
 import {
   CalendarIcon,
   CampusIcon,
-  CourseIcon,
+  ProgramIcon,
   DepartmentIcon,
   SubjectIcon,
   TeacherIcon,
@@ -112,14 +112,14 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
 
           <li>
             <NavLink
-              to="/course"
+              to="/programs"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                (pathname === "/course" || pathname.includes("course")) &&
+                (pathname === "/programs" || pathname.includes("programs")) &&
                 "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
               }`}
             >
-              <CourseIcon />
-              Courses
+              <ProgramIcon />
+              Programs
             </NavLink>
           </li>
 

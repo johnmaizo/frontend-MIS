@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { CourseIcon } from "../Icons";
+import { ProgramIcon } from "../Icons";
 
 /* eslint-disable react/prop-types */
-const CardDataCourse = () => {
+const CardDataPrograms = () => {
   const [totalStudent, setTotalStudent] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const title = "Total Courses";
+  const title = "Total Programs";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +32,7 @@ const CardDataCourse = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-        <CourseIcon forCard={"true"} width={22} height={22} />
+        <ProgramIcon forCard={"true"} width={22} height={22} />
       </div>
 
       <div className="mt-4 flex items-end justify-between">
@@ -49,4 +49,4 @@ const CardDataCourse = () => {
   );
 };
 
-export default CardDataCourse;
+export default CardDataPrograms;

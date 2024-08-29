@@ -614,7 +614,7 @@ export const UndoIcon = ({title}) => {
   );
 };
 
-export const CourseIcon = ({ forCard, width, height }) => {
+export const ProgramIcon = ({ forCard, width, height }) => {
   return (
     <svg
       className={`fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}

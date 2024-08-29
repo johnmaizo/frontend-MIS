@@ -10,7 +10,7 @@ import UserTables from "../../../components/api/UserTables";
 import CardDataStudent from "../../../components/Essentials/CardDataStudent";
 import CardDataDepartment from "../../../components/Essentials/CardDataDepartment";
 import CardDataCampus from "../../../components/Essentials/CardDataCampus";
-import CardDataCourse from "../../../components/Essentials/CardDataCourse";
+import CardDataPrograms from "../../../components/Essentials/CardDataPrograms";
 import CardDataSubject from "../../../components/Essentials/CardDataSubject";
 
 import { ComboboxDemo } from "./TESTING";
@@ -22,7 +22,7 @@ const AdminHome = () => {
         <CardDataStudent />
         <CardDataCampus />
         <CardDataDepartment />
-        <CardDataCourse />
+        <CardDataPrograms />
         <CardDataSubject />
 
         {/* <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>

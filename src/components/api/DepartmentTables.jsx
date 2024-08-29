@@ -111,23 +111,12 @@ const DepartmentTables = () => {
         );
       },
     },
-    // {
-    //   accessorFn: (row) => {
-    //     const middleInitial =
-    //       row.middleName && row.middleName.trim() !== ""
-    //         ? `${row.middleName.charAt(0)}.`
-    //         : "";
-    //     return `${row.firstName} ${middleInitial} ${row.lastName}`;
-    //   },
-    //   id: "fullName",
-    //   header: "Name",
-    // },
     {
       accessorKey: "departmentDean",
       header: "Dean",
     },
     {
-      accessorKey: "campusName",
+      accessorKey: "campus.campusName",
       header: ({ column }) => {
         return (
           <Button

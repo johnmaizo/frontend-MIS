@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout";
 
@@ -63,7 +64,7 @@ import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import { getInitialsWithCampus } from "../../../components/reuseable/GetInitialNames";
 
-const CoursePage = () => {
+const ProgramPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/course/add-course", label: "Add Course" },
@@ -419,4 +420,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default CoursePage;
+export default ProgramPage;

@@ -59,13 +59,13 @@ const SemesterPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/semester/add-semester", label: "Add Semester" },
-    { label: "Semester" },
+    { label: "Semesters" },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Semester"}
+        pageName={"Semesters"}
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />

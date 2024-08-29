@@ -1,6 +1,5 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import PageTitle from "../../components/Essentials/PageTitle";
-import Tables from "../Sundoganan/Tables";
 import Settings from "../Sundoganan/Settings";
 import Chart from "../Sundoganan/Chart";
 import Alerts from "../Sundoganan/UiElements/Alerts";
@@ -175,16 +174,6 @@ const OtherRoutes = () => {
           <>
             <PageTitle title="Profile | MIS - Benedicto College" />
             <Profile />
-          </>
-        }
-      />
-
-      <Route
-        path="/tables"
-        element={
-          <>
-            <PageTitle title="Tables | MIS - Benedicto College" />
-            <Tables />
           </>
         }
       />

@@ -44,7 +44,6 @@ import { useSchool } from "../../../components/context/SchoolContext";
 
 import AddProgram from "../../../components/api/AddProgram";
 
-import DeletedCourse from "../../../components/api/DeletedProgram";
 import { getInitialDepartmentCodeAndCampus } from "../../../components/reuseable/GetInitialNames";
 import EditProgram from "../../../components/api/EditProgram";
 import ButtonActionProgram from "../../../components/reuseable/ButtonActionProgram";

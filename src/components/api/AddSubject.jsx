@@ -61,7 +61,7 @@ const AddSubject = () => {
 
   useEffect(() => {
     fetchCourse();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data) => {
@@ -144,10 +144,10 @@ const AddSubject = () => {
           onOpenChange={(isOpen) => {
             setOpen(isOpen);
             if (!isOpen) {
-              reset(); 
+              reset();
               setSelectedCourse({});
-              setSelectedCourseName(""); 
-              clearErrors("course_id"); 
+              setSelectedCourseName("");
+              clearErrors("course_id");
             }
           }}
         >
@@ -184,9 +184,9 @@ const AddSubject = () => {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
                                 "Subject Code cannot be empty or just spaces",
-                              isUpperCaseAndNumbers: (value) =>
-                                /^[A-Z0-9]+$/.test(value) ||
-                                "Subject Code must contain only capital letters and numbers",
+                              isValidSubjectCode: (value) =>
+                                /^[A-Z0-9\s-]+$/.test(value) ||
+                                "Subject Code must contain only capital letters, numbers, and hyphens",
                             },
                           })}
                           disabled={localLoading || success}

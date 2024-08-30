@@ -27,7 +27,7 @@ function App() {
       <Suspense fallback={<Loader />}>
         {user === null && <DefaultRoutes />}
 
-        {user?.role === "Admin" && (
+        {(user?.role === "Admin" || user?.role === "SuperAdmin") && (
           <SchoolProvider>
             <AdminRoutes />
           </SchoolProvider>

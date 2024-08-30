@@ -562,10 +562,10 @@ export const CalendarIcon = () => {
   );
 };
 
-export const SubjectIcon = ({ forCard, width, height }) => {
+export const CourseIcon = ({ forCard, width, height }) => {
   return (
     <svg
-      className={`fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
+      className={`fill-current flex-none ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
       xmlns="http://www.w3.org/2000/svg"
       width={`${width && width ? width : "1.3em"}`}
       height={`${height && height ? height : "1.3em"}`}

@@ -19,6 +19,7 @@ import CampusPage from "./SubPages/CampusPage";
 import SubjectPage from "./SubPages/SubjectPage";
 import SemesterPage from "./SubPages/SemesterPage";
 import ProgramPage from "./SubPages/ProgramPage";
+import CoursePage from "./SubPages/CoursePage";
 
 const AdminRoutes = () => {
   return (
@@ -124,7 +125,17 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/subjects"
+        path="/courses"
+        element={
+          <>
+            <PageTitle title="Courses | MIS - Benedicto College" />
+            <CoursePage />
+          </>
+        }
+      />
+
+      <Route
+        path="/subjectss"
         element={
           <>
             <PageTitle title="Subjects | MIS - Benedicto College" />

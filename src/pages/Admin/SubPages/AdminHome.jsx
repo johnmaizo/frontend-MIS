@@ -8,7 +8,7 @@ import CardDataStudent from "../../../components/Essentials/CardDataStudent";
 import CardDataDepartment from "../../../components/Essentials/CardDataDepartment";
 import CardDataCampus from "../../../components/Essentials/CardDataCampus";
 import CardDataPrograms from "../../../components/Essentials/CardDataPrograms";
-import CardDataSubject from "../../../components/Essentials/CardDataSubject";
+import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 
 import { ComboboxDemo } from "./TESTING";
 
@@ -20,7 +20,7 @@ const AdminHome = () => {
         <CardDataCampus />
         <CardDataDepartment />
         <CardDataPrograms />
-        <CardDataSubject />
+        <CardDataCourse />
       </div>
 
       <div className="mt-8">

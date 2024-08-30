@@ -51,7 +51,6 @@ export const SchoolProvider = ({ children }) => {
         departmentNameAndCampus: `${department.departmentName} - ${department.campus.campusName}`,
       }));
 
-
       setDepartments(modifiedDepartments);
       // setDepartments(response.data);
     } catch (err) {
@@ -158,9 +157,6 @@ export const SchoolProvider = ({ children }) => {
     fetchCampusDeleted();
   }, []);
 
-  useEffect(() => {
-    fetchCampusActive();
-  }, []);
   // ! Campus END
 
   // ! Semester START
@@ -331,6 +327,66 @@ export const SchoolProvider = ({ children }) => {
   // }, []);
   // ! Subject END
 
+  // ! Course START
+  const [course, setCourse] = useState([]);
+  const [courseDeleted, setCourseDeleted] = useState([]);
+  const [courseActive, setCourseActive] = useState([]);
+
+  const fetchCourse = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course");
+      setCourse(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch Course");
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchCourseDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course/deleted");
+      setCourseDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Course deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchCourseActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/course/active");
+      setCourseActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Course active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCourse();
+  }, []);
+
+  useEffect(() => {
+    fetchCourseDeleted();
+  }, []);
+
+  // ! Course END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -364,13 +420,21 @@ export const SchoolProvider = ({ children }) => {
         semestersDeleted,
         fetchSemestersDeleted,
 
-        // ! programs
+        // ! Programs
         program,
         fetchProgram,
         programDeleted,
         fetchProgramDeleted,
         programActive,
         fetchProgramActive,
+
+        // ! Courses
+        course,
+        fetchCourse,
+        courseDeleted,
+        fetchCourseDeleted,
+        courseActive,
+        fetchCourseActive,
 
         // ! Subjects
         subjects,

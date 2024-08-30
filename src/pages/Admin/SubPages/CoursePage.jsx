@@ -35,14 +35,13 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 
 import { useSchool } from "../../../components/context/SchoolContext";
 
-import AddCampus from "../../../components/api/AddCampus";
-
-import EditCampus from "../../../components/api/EditCampus";
-
-import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
-import DeletedCampus from "../../../components/api/DeletedCampus";
-import ReuseTable from "../../../components/reuseable/ReuseTable";
 import AddCourse from "../../../components/api/AddCourse";
+
+import EditCourse from "../../../components/api/EditCourse";
+
+import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
+import DeletedCourse from "../../../components/api/DeletedCourse";
+import ReuseTable from "../../../components/reuseable/ReuseTable";
 
 const CoursePage = () => {
   const NavItems = [
@@ -164,16 +163,16 @@ const CourseTables = () => {
 
     {
       header: "Actions",
-      accessorFn: (row) => `${row.campus_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.course_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCampus campusId={row.getValue("campus_id")} />
+            <EditCourse courseId={row.getValue("course_id")} />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Campus"} />
+                <DeleteIcon forActions={"Delete Course"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>
@@ -182,15 +181,15 @@ const CourseTables = () => {
                   </DialogTitle>
                   <DialogDescription asChild className="mt-2">
                     <p className="mb-5">
-                      Are you sure you want to delete this campus?
+                      Are you sure you want to delete this Course?
                     </p>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCampus
+                    <ButtonActionCourse
                       action="delete"
-                      campusId={row.getValue("campus_id")}
+                      courseId={row.getValue("course_id")}
                       onSuccess={() => {
                         fetchCourse();
                         fetchCourseDeleted();
@@ -288,7 +287,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             <StatusFilter table={table} option={"campus"} />
           </div>
 
-          <DeletedCampus />
+          <DeletedCourse />
         </div>
 
         <div className="max-w-full overflow-x-auto">

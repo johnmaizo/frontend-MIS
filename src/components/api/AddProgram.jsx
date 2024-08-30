@@ -181,7 +181,10 @@ const AddProgram = () => {
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Program Code cannot be empty or just spaces",
+                                "Subject Code cannot be empty or just spaces",
+                              isUpperCase: (value) =>
+                                /^[A-Z]+$/.test(value) ||
+                                "Subject Code must contain only capital letters",
                             },
                           })}
                           disabled={localLoading || success}

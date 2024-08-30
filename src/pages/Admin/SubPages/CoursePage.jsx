@@ -42,6 +42,7 @@ import EditCampus from "../../../components/api/EditCampus";
 import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
 import DeletedCampus from "../../../components/api/DeletedCampus";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
+import AddCourse from "../../../components/api/AddCourse";
 
 const CoursePage = () => {
   const NavItems = [
@@ -64,12 +65,12 @@ const CoursePage = () => {
 };
 
 const CourseTables = () => {
-  const { campus, fetchCampus, fetchCampusDeleted, loading, error } =
+  const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
 
   const columns = [
     {
-      accessorKey: "campus_id",
+      accessorKey: "course_id",
       header: ({ column }) => {
         return (
           <Button
@@ -87,7 +88,7 @@ const CourseTables = () => {
       },
     },
     {
-      accessorKey: "campusName",
+      accessorKey: "courseCode",
       header: ({ column }) => {
         return (
           <Button
@@ -95,7 +96,7 @@ const CourseTables = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Campus Name
+            Course Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -106,8 +107,19 @@ const CourseTables = () => {
     },
 
     {
-      accessorKey: "campusAddress",
-      header: "Campus Address",
+      accessorKey: "courseDescription",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Course Description
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ cell }) => {
         return cell.getValue();
       },
@@ -126,6 +138,14 @@ const CourseTables = () => {
     //     return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
     //   },
     // },
+
+    {
+      accessorKey: "unit",
+      header: "Unit",
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
     {
       accessorKey: "isActive",
       header: "Status",
@@ -172,8 +192,8 @@ const CourseTables = () => {
                       action="delete"
                       campusId={row.getValue("campus_id")}
                       onSuccess={() => {
-                        fetchCampus();
-                        fetchCampusDeleted();
+                        fetchCourse();
+                        fetchCourseDeleted();
                       }}
                     />
 
@@ -199,7 +219,7 @@ const CourseTables = () => {
     <>
       <DataTable
         columns={columns}
-        data={campus}
+        data={course}
         loading={loading}
         error={error}
       />
@@ -237,28 +257,28 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by Campus name..."
-            value={table.getColumn("campusName")?.getFilterValue() ?? ""}
+            placeholder="Search by Code..."
+            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("campusName")?.setFilterValue(event.target.value)
+              table.getColumn("courseCode")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
           />
 
           <Input
-            placeholder="Search by Address..."
-            value={table.getColumn("campusAddress")?.getFilterValue() ?? ""}
+            placeholder="Search by Course Description..."
+            value={table.getColumn("courseDescription")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
-                .getColumn("campusAddress")
+                .getColumn("courseDescription")
                 ?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[15em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
           />
         </div>
 
         <div className=" ">
-          <AddCampus />
+          <AddCourse />
         </div>
       </div>
 

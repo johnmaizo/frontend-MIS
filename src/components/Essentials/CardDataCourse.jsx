@@ -42,7 +42,10 @@ const CardDataCourse = () => {
           >
             {loading ? "Loading..." : error ? "Error" : totalCourse}
           </h4>
-          <span className="text-sm font-medium">{title}</span>
+          <span className="text-sm font-medium">
+            {title}
+            {totalCourse > 1 && "s"}
+          </span>
         </div>
       </div>
     </div>

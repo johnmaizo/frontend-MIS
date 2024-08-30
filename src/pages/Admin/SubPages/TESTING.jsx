@@ -15,6 +15,13 @@ import {
 } from "../../../components/ui/command";
 
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip";
+
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -141,7 +148,19 @@ const SubjectList = ({ handleSetValue, value, data }) => {
                           : "opacity-0",
                       )}
                     />
-                    {data.label}
+                    <TooltipProvider delayDuration={75}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          asChild
+                          className="cursor-default hover:underline hover:underline-offset-2"
+                        >
+                          <span className="font-medium">{data.label}</span>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                          <p className="text-[1rem]">gwapo ko</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </CommandItem>
                 </div>
               ))

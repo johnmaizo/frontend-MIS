@@ -79,11 +79,11 @@ const AddCourse = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-      }, 5000);
+      }, 2000);
     } else if (error) {
       setTimeout(() => {
         setError("");
-      }, 6000);
+      }, 7000);
     }
   }, [success, error, reset]);
 

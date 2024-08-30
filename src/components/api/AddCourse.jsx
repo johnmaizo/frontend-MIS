@@ -83,7 +83,7 @@ const AddCourse = () => {
     } else if (error) {
       setTimeout(() => {
         setError("");
-      }, 7000);
+      }, 5000);
     }
   }, [success, error, reset]);
 

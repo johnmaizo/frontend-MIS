@@ -47,13 +47,13 @@ const CoursePage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/courses/add-course", label: "Add Course" },
-    { label: "Course" },
+    { label: "Course List" },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Course"}
+        pageName={"Course List"}
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />

@@ -125,7 +125,7 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/courses"
+        path="/courses/course-list"
         element={
           <>
             <PageTitle title="Courses | MIS - Benedicto College" />

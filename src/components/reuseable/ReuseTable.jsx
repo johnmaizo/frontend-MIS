@@ -39,7 +39,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         ))}
       </TableHeader>
       <TableBody
-        className={`!divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
+        className={`!divide-x !divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
       >
         {loading ? (
           <TableRow className="border-none hover:!bg-transparent">

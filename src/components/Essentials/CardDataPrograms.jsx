@@ -9,7 +9,7 @@ const CardDataPrograms = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const title = "Total Programs";
+  const title = "Total Program";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +42,10 @@ const CardDataPrograms = () => {
           >
             {loading ? "Loading..." : error ? "Error" : totalPrograms}
           </h4>
-          <span className="text-sm font-medium">{title}</span>
+          <span className="text-sm font-medium">
+            {title}
+            {totalPrograms > 1 && "s"}
+          </span>
         </div>
       </div>
     </div>

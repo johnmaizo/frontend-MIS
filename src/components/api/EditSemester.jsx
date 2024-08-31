@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { EditDepartmentIcon } from "../Icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -24,16 +24,22 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import { useSchool } from "../context/SchoolContext";
 import { Switch } from "../ui/switch";
 
+import { useSchool } from "../context/SchoolContext";
+import { AuthContext } from "../context/AuthContext";
+
 const EditSemester = ({ semesterId }) => {
-  const { fetchSemesters } = useSchool();
+  const { user } = useContext(AuthContext);
+
+  const { fetchSemesters, campusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
 
   const [selectedSemester, setSelectedSemester] = useState(""); // State to hold the selected semester
+
+  const [selectedCampus, setSelectedCampus] = useState(""); // State for selected campus
 
   const {
     register,
@@ -59,6 +65,7 @@ const EditSemester = ({ semesterId }) => {
           setValue("schoolYear", semester.schoolYear);
           setSelectedSemester(semester.semesterName);
           setIsActive(semester.isActive); // Set the initial status
+          setSelectedCampus(semester.campus_id.toString()); // Set the initial campus
           setLoading(false);
         })
         .catch((err) => {
@@ -74,6 +81,10 @@ const EditSemester = ({ semesterId }) => {
         type: "manual",
         message: "You must select a semester.",
       });
+      return;
+    }
+    if (!selectedCampus) {
+      setError("campus_id", "You must select a campus.");
       return;
     }
 
@@ -134,19 +145,6 @@ const EditSemester = ({ semesterId }) => {
     }
   }, [success, error, reset]);
 
-  useEffect(() => {
-    if (errors && Object.keys(errors).length > 0) {
-      const firstErrorField = Object.keys(errors)[0];
-      const errorElement = document.querySelector(
-        `[name="${firstErrorField}"]`,
-      );
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        errorElement.focus();
-      }
-    }
-  }, [errors]);
-
   return (
     <div className="flex items-center justify-end gap-2">
       <div>
@@ -156,6 +154,8 @@ const EditSemester = ({ semesterId }) => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
+              setSelectedCampus(""); // Reset selected campus
+              clearErrors("campus_id"); // Clear campus selection error when dialog closes
             }
           }}
         >
@@ -267,6 +267,60 @@ const EditSemester = ({ semesterId }) => {
                         <ErrorMessage>
                           *{errors.semester_name.message}
                         </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="campus"
+                      >
+                        Campus
+                      </label>
+
+                      {user.role !== "SuperAdmin" ? (
+                        <input
+                          id="campus"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={
+                            campusActive.find(
+                              (campus) =>
+                                campus.campus_id.toString() === selectedCampus,
+                            )?.campusName || ""
+                          }
+                          disabled
+                        />
+                      ) : (
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCampus(value);
+                            clearErrors("campus_id");
+                          }}
+                          value={selectedCampus}
+                          disabled={success || loading}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue placeholder="Select a campus" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Campuses</SelectLabel>
+                              {campusActive.map((campus) => (
+                                <SelectItem
+                                  key={campus.campus_id}
+                                  value={campus.campus_id.toString()}
+                                >
+                                  {campus.campusName}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+
+                      {errors.campus_id && (
+                        <ErrorMessage>{errors.campus_id.message}</ErrorMessage>
                       )}
                     </div>
 

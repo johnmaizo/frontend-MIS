@@ -85,7 +85,6 @@ const AddCampus = () => {
     }
   }, [success, error, reset]);
 
-
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>

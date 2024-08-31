@@ -26,12 +26,15 @@ import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
 
-const AddDepartment = () => {
+const AddAccount = () => {
   const { user } = useContext(AuthContext);
 
-  const { fetchDepartments, campusActive, fetchCampusActive } = useSchool();
+  const roles = ["Admin", "Staff", "Teacher"];
+
+  const { fetchAccounts, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
+  const [selectedRole, setSelectedRole] = useState("");
 
   const {
     register,
@@ -40,6 +43,7 @@ const AddDepartment = () => {
     formState: { errors },
     setError,
     clearErrors, // Added clearErrors to manually clear errors
+    getValues,
   } = useForm();
 
   const [error, setGeneralError] = useState("");
@@ -63,6 +67,13 @@ const AddDepartment = () => {
       });
       return;
     }
+    if (!selectedRole) {
+      setError("role", {
+        type: "manual",
+        message: "You must select a Role.",
+      });
+      return;
+    }
 
     setLocalLoading(true);
     const transformedData = {
@@ -73,16 +84,18 @@ const AddDepartment = () => {
         ]),
       ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      role: selectedRole,
+      acceptTerms: true,
     };
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/departments/add-department", transformedData),
+        axios.post("/accounts/", transformedData),
         {
-          loading: "Adding Department...",
-          success: "Department Added successfully!",
-          error: "Failed to add Department.",
+          loading: "Adding Account...",
+          success: "Account Added successfully!",
+          error: "Failed to add Account.",
         },
         {
           position: "bottom-right",
@@ -92,7 +105,7 @@ const AddDepartment = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchDepartments();
+        fetchAccounts();
         setOpen(false); // Close the dialog
       }
       setLocalLoading(false);
@@ -129,56 +142,84 @@ const AddDepartment = () => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
+              setSelectedRole("");
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
-              clearErrors("campus_id"); // Clear campus selection error when dialog closes
+              clearErrors("campus_id");
+              clearErrors("role");
             }
           }}
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
-            <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Department </span>
+            <AddDepartmentIcon title={"Add Account"} />
+            <span className="max-w-[8em]">Add Account </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Department
+                Add new Account
               </DialogTitle>
-              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
+              <DialogDescription className="h-[24em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-[12em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="dept_code"
+                          htmlFor="title"
                         >
-                          Department Code
+                          Title
                         </label>
                         <input
-                          id="dept_code"
+                          id="title"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("departmentCode", {
+                          {...register("title", {
                             required: {
                               value: true,
-                              message: "Department Code is required",
+                              message: "Title is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Department Code cannot be empty or just spaces",
-                              isUpperCase: (value) =>
-                                /^[A-Z]+$/.test(value) ||
-                                "Department Code must contain only capital letters",
+                                "Title cannot be empty or just spaces",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.departmentCode && (
+                        {errors.title && (
+                          <ErrorMessage>*{errors.title.message}</ErrorMessage>
+                        )}
+                      </div>
+
+                      <div className="w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="first_name"
+                        >
+                          First Name
+                        </label>
+                        <input
+                          id="first_name"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("firstName", {
+                            required: {
+                              value: true,
+                              message: "First Name is required",
+                            },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "First Name cannot be empty or just spaces",
+                            },
+                          })}
+                          disabled={localLoading || success}
+                        />
+                        {errors.firstName && (
                           <ErrorMessage>
-                            *{errors.departmentCode.message}
+                            *{errors.firstName.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -186,30 +227,30 @@ const AddDepartment = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="dept_name"
+                          htmlFor="last_name"
                         >
-                          Department Name
+                          Last Name
                         </label>
                         <input
-                          id="dept_name"
+                          id="last_name"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("departmentName", {
+                          {...register("lastName", {
                             required: {
                               value: true,
-                              message: "Department Name is required",
+                              message: "Last Name is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Department Name cannot be empty or just spaces",
+                                "Last Name cannot be empty or just spaces",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.departmentName && (
+                        {errors.lastName && (
                           <ErrorMessage>
-                            *{errors.departmentName.message}
+                            *{errors.lastName.message}
                           </ErrorMessage>
                         )}
                       </div>
@@ -218,30 +259,91 @@ const AddDepartment = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="dept_dean"
+                        htmlFor="email"
                       >
-                        Department Dean
+                        Email
                       </label>
                       <input
-                        id="dept_dean"
-                        type="text"
+                        id="email"
+                        type="email"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("departmentDean", {
+                        {...register("email", {
                           required: {
                             value: true,
-                            message: "Department Dean is required",
+                            message: "Email is required",
                           },
                           validate: {
                             notEmpty: (value) =>
                               value.trim() !== "" ||
-                              "Department Dean cannot be empty or just spaces",
+                              "Email cannot be empty or just spaces",
                           },
                         })}
                         disabled={localLoading || success}
                       />
-                      {errors.departmentDean && (
+                      {errors.email && (
+                        <ErrorMessage>*{errors.email.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="password"
+                      >
+                        Password
+                      </label>
+                      <input
+                        id="password"
+                        type="password"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("password", {
+                          required: {
+                            value: true,
+                            message: "Password is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Password cannot be empty or just spaces",
+                          },
+                        })}
+                        disabled={localLoading || success}
+                      />
+                      {errors.password && (
+                        <ErrorMessage>*{errors.password.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="confirm_password"
+                      >
+                        Confirm Password
+                      </label>
+                      <input
+                        id="confirm_password"
+                        type="password"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("confirmPassword", {
+                          required: {
+                            value: true,
+                            message: "Confirm Password is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Confirm Password cannot be empty or just spaces",
+                            matchesPassword: (value) =>
+                              value === getValues("password") ||
+                              "Passwords do not match",
+                          },
+                        })}
+                        disabled={localLoading || success}
+                      />
+                      {errors.confirmPassword && (
                         <ErrorMessage>
-                          *{errors.departmentDean.message}
+                          *{errors.confirmPassword.message}
                         </ErrorMessage>
                       )}
                     </div>
@@ -249,7 +351,46 @@ const AddDepartment = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="dept_campus"
+                        htmlFor="role"
+                      >
+                        Role
+                      </label>
+
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedRole(value);
+                          clearErrors("role");
+                        }}
+                        value={selectedRole}
+                        disabled={localLoading || success}
+                      >
+                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                          <SelectValue
+                            placeholder="Select Role"
+                            defaultValue={selectedRole}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Roles</SelectLabel>
+                            {roles.map((role) => (
+                              <SelectItem key={role} value={role.toString()}>
+                                {role}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      {errors.role && (
+                        <ErrorMessage>*{errors.role.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="acc_campus"
                       >
                         Campus
                       </label>
@@ -317,7 +458,7 @@ const AddDepartment = () => {
                       {localLoading && (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       )}
-                      {localLoading ? "Loading..." : "Add Department"}
+                      {localLoading ? "Loading..." : "Add Account"}
                     </button>
                   </div>
                 </form>
@@ -339,4 +480,4 @@ const ErrorMessage = ({ children }) => {
   );
 };
 
-export default AddDepartment;
+export default AddAccount;

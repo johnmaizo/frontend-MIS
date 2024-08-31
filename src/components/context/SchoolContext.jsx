@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { createContext, useState, useContext, useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 
 const SchoolContext = createContext();
 
@@ -10,6 +12,9 @@ export const useSchool = () => {
 };
 
 export const SchoolProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
+
+  // ! Students START
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -36,6 +41,31 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Students END
 
+  // ! Accounts START
+  const [accounts, setAccounts] = useState([]);
+
+  const fetchAccounts = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/accounts");
+      setAccounts(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch accounts: ${err}`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ! Departments END
+
   // ! Departments START
   const [departments, setDepartments] = useState([]);
   const [deparmentsActive, setDepartmentsActive] = useState([]);
@@ -44,7 +74,12 @@ export const SchoolProvider = ({ children }) => {
   const fetchDepartments = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/departments");
+      // Fetch departments based on the user's campus
+      const response = await axios.get("/departments", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
 
       const modifiedDepartments = response.data.map((department) => ({
         ...department,
@@ -52,7 +87,6 @@ export const SchoolProvider = ({ children }) => {
       }));
 
       setDepartments(modifiedDepartments);
-      // setDepartments(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -66,7 +100,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchDepartmentsActive = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/departments/active");
+      const response = await axios.get("/departments/active", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setDepartmentsActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -81,7 +119,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchDepartmentsDeleted = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/departments/deleted");
+      const response = await axios.get("/departments/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setDepartmentsDeleted(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -95,6 +137,7 @@ export const SchoolProvider = ({ children }) => {
 
   useEffect(() => {
     fetchDepartmentsDeleted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ! Departments END
@@ -166,7 +209,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchSemesters = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/semesters");
+      const response = await axios.get("/semesters", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setSemesters(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -181,7 +228,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchSemestersDeleted = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/semesters/deleted");
+      const response = await axios.get("/semesters/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setSemestersDeleted(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -322,9 +373,6 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   fetchSubjectDeleted();
-  // }, []);
   // ! Subject END
 
   // ! Course START
@@ -392,6 +440,10 @@ export const SchoolProvider = ({ children }) => {
       value={{
         loading,
         error,
+
+        // ! Accounts
+        accounts,
+        fetchAccounts,
 
         // ! Students
         students,

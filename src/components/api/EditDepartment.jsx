@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { EditDepartmentIcon } from "../Icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,6 +15,8 @@ import {
 } from "../ui/dialog";
 
 import { useSchool } from "../context/SchoolContext";
+import { AuthContext } from "../context/AuthContext";
+
 import { Switch } from "../ui/switch";
 
 import {
@@ -28,6 +30,8 @@ import {
 } from "../ui/select";
 
 const EditDepartment = ({ departmentId }) => {
+  const { user } = useContext(AuthContext);
+
   const { fetchDepartments, campusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -133,19 +137,6 @@ const EditDepartment = ({ departmentId }) => {
     }
   }, [success, error, reset]);
 
-  useEffect(() => {
-    if (errors && Object.keys(errors).length > 0) {
-      const firstErrorField = Object.keys(errors)[0];
-      const errorElement = document.querySelector(
-        `[name="${firstErrorField}"]`,
-      );
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        errorElement.focus();
-      }
-    }
-  }, [errors]);
-
   return (
     <div className="flex items-center justify-end gap-2">
       <div>
@@ -196,10 +187,7 @@ const EditDepartment = ({ departmentId }) => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="dept_code"
                         >
-                          Department Code{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
+                          Department Code
                         </label>
                         <input
                           id="dept_code"
@@ -230,10 +218,7 @@ const EditDepartment = ({ departmentId }) => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="dept_name"
                         >
-                          Department Name{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
+                          Department Name
                         </label>
                         <input
                           id="dept_name"
@@ -250,7 +235,7 @@ const EditDepartment = ({ departmentId }) => {
                                 "Department Name cannot be empty or just spaces",
                             },
                           })}
-                          disabled={success || loading}
+                          disabled={loading || success}
                         />
                         {errors.departmentName && (
                           <ErrorMessage>
@@ -265,10 +250,7 @@ const EditDepartment = ({ departmentId }) => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="dept_dean"
                       >
-                        Department Dean{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
+                        Department Dean
                       </label>
                       <input
                         id="dept_dean"
@@ -285,7 +267,7 @@ const EditDepartment = ({ departmentId }) => {
                               "Department Dean cannot be empty or just spaces",
                           },
                         })}
-                        disabled={success || loading}
+                        disabled={loading || success}
                       />
                       {errors.departmentDean && (
                         <ErrorMessage>
@@ -299,37 +281,50 @@ const EditDepartment = ({ departmentId }) => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="campus"
                       >
-                        Campus{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
+                        Campus
                       </label>
-                      <Select
-                        onValueChange={(value) => {
-                          setSelectedCampus(value);
-                          clearErrors("campus_id");
-                        }}
-                        value={selectedCampus}
-                        disabled={success || loading}
-                      >
-                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                          <SelectValue placeholder="Select a campus" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Campuses</SelectLabel>
-                            {campusActive.map((campus) => (
-                              <SelectItem
-                                key={campus.campus_id}
-                                value={campus.campus_id.toString()}
-                              >
-                                {/* {campus.campusCode} - {campus.campusName} */}
-                                {campus.campusName}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+
+                      {user.role !== "SuperAdmin" ? (
+                        <input
+                          id="campus"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={
+                            campusActive.find(
+                              (campus) =>
+                                campus.campus_id.toString() === selectedCampus,
+                            )?.campusName || ""
+                          }
+                          disabled
+                        />
+                      ) : (
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCampus(value);
+                            clearErrors("campus_id");
+                          }}
+                          value={selectedCampus}
+                          disabled={success || loading}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue placeholder="Select a campus" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Campuses</SelectLabel>
+                              {campusActive.map((campus) => (
+                                <SelectItem
+                                  key={campus.campus_id}
+                                  value={campus.campus_id.toString()}
+                                >
+                                  {campus.campusName}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+
                       {errors.campus_id && (
                         <ErrorMessage>{errors.campus_id.message}</ErrorMessage>
                       )}

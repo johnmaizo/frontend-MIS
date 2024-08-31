@@ -2,6 +2,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import ProfileUser from "../../assets/images/profile-user.jpg";
+import ProfileVons from "../../assets/images/profile-vons.jpg";
+import ProfileMaizo from "../../assets/images/profile-maizo.jpg";
+
 import { AuthContext } from "../context/AuthContext";
 
 const DropdownUser = () => {
@@ -60,7 +63,13 @@ const DropdownUser = () => {
           </span>
 
           <img
-            src={ProfileUser}
+            src={
+              user.firstName === "Vonsleryl"
+                ? ProfileVons
+                : user.firstName === "John Robert"
+                  ? ProfileMaizo
+                  : ProfileUser
+            }
             alt="User"
             className="h-12 w-12 rounded-full"
           />

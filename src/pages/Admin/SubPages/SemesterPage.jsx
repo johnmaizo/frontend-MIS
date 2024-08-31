@@ -83,8 +83,9 @@ const SemesterTables = () => {
           </Button>
         );
       },
-      cell: ({ cell }) => {
-        return <span className="font-semibold">{cell.getValue()}</span>;
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span>{info.row.index + 1}</span>; // +1 to start numbering from 1
       },
     },
 
@@ -92,7 +93,7 @@ const SemesterTables = () => {
       accessorKey: "schoolYear",
       header: "School Year",
       cell: ({ cell }) => {
-        return cell.getValue();
+        return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
 
@@ -112,6 +113,21 @@ const SemesterTables = () => {
       },
       cell: ({ cell }) => {
         return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "campus.campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
       },
     },
     {

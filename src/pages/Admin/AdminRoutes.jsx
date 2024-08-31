@@ -21,7 +21,13 @@ import SemesterPage from "./SubPages/SemesterPage";
 import ProgramPage from "./SubPages/ProgramPage";
 import CoursePage from "./SubPages/CoursePage";
 
+import { useContext } from "react";
+import { AuthContext } from "../../components/context/AuthContext";
+import AccountPage from "./SubPages/AccountPage";
+
 const AdminRoutes = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <Routes>
       <Route
@@ -64,25 +70,29 @@ const AdminRoutes = () => {
         }
       />
 
-      {/* <Route
-          path="/teachers/add-teacher"
-          element={
-            <>
-              <PageTitle title="Add Teacher | MIS - Benedicto College" />
-              <AddTeacherPage />
-            </>
-          }
-        />
+      {user.role === "SuperAdmin" && (
+        <>
+          <Route
+            path="/campus"
+            element={
+              <>
+                <PageTitle title="Campuses | MIS - Benedicto College" />
+                <CampusPage />
+              </>
+            }
+          />
 
-        <Route
-          path="/teachers/teacher-list"
-          element={
-            <>
-              <PageTitle title="Teacher List | MIS - Benedicto College" />
-              <TeacherTablePage />
-            </>
-          }
-        /> */}
+          <Route
+            path="/accounts"
+            element={
+              <>
+                <PageTitle title="Accounts | MIS - Benedicto College" />
+                <AccountPage />
+              </>
+            }
+          />
+        </>
+      )}
 
       <Route
         path="/semester"
@@ -90,16 +100,6 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Semester | MIS - Benedicto College" />
             <SemesterPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/campus"
-        element={
-          <>
-            <PageTitle title="Campuses | MIS - Benedicto College" />
-            <CampusPage />
           </>
         }
       />

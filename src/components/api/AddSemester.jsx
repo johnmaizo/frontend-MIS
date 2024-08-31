@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -23,12 +23,18 @@ import {
 } from "../ui/select";
 
 import { AddDepartmentIcon } from "../Icons";
+
 import { useSchool } from "../context/SchoolContext";
+import { AuthContext } from "../context/AuthContext";
 
 const AddSemester = () => {
-  const { fetchSemesters } = useSchool();
+  const { user } = useContext(AuthContext);
+
+  const { fetchSemesters, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);
+
   const [selectedSemester, setSelectedSemester] = useState(""); // State to hold the selected semester
+  const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
   const {
     register,
@@ -43,11 +49,27 @@ const AddSemester = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetchCampusActive();
+    if (user && user.campus_id) {
+      // Automatically set the campus if the user has a campus_id
+      setSelectedCampus(user.campus_id.toString());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onSubmit = async (data) => {
     if (!selectedSemester) {
       setError("semester_name", {
         type: "manual",
         message: "You must select a semester.",
+      });
+      return;
+    }
+    if (!selectedCampus) {
+      setError("campus_id", {
+        type: "manual",
+        message: "You must select a campus.",
       });
       return;
     }
@@ -61,6 +83,7 @@ const AddSemester = () => {
         ]),
       ),
       semesterName: selectedSemester, // Add the selected semester to the form data
+      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
 
     setGeneralError("");
@@ -118,7 +141,11 @@ const AddSemester = () => {
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
               setSelectedSemester(""); // Reset selected semester
+              setSelectedCampus(
+                user.campus_id ? user.campus_id.toString() : "",
+              ); // Reset selected campus based on user role
               clearErrors("semester_name"); // Clear semester selection error when dialog closes
+              clearErrors("campus_id");
             }
           }}
         >
@@ -223,6 +250,63 @@ const AddSemester = () => {
                         <ErrorMessage>
                           *{errors.semester_name.message}
                         </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="dept_campus"
+                      >
+                        Campus
+                      </label>
+
+                      {user.role === "SuperAdmin" ? (
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCampus(value);
+                            clearErrors("campus_id");
+                          }}
+                          value={selectedCampus}
+                          disabled={loading || success}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue
+                              placeholder="Select Campus"
+                              defaultValue={selectedCampus}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Campuses</SelectLabel>
+                              {campusActive.map((campus) => (
+                                <SelectItem
+                                  key={campus.campus_id}
+                                  value={campus.campus_id.toString()}
+                                >
+                                  {campus.campusName}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <input
+                          id="dept_campus"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={
+                            campusActive.find(
+                              (campus) =>
+                                campus.campus_id.toString() === selectedCampus,
+                            )?.campusName || ""
+                          }
+                          disabled
+                        />
+                      )}
+
+                      {errors.campus_id && (
+                        <ErrorMessage>*{errors.campus_id.message}</ErrorMessage>
                       )}
                     </div>
 

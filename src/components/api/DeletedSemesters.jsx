@@ -28,6 +28,7 @@ import { useSchool } from "../context/SchoolContext";
 
 import ButtonActionSemester from "../reuseable/ButtonActionSemester";
 import ReuseTable from "../reuseable/ReuseTable";
+import { ArrowUpDown } from "lucide-react";
 
 const DeletedSemesters = () => {
   const [open, setOpen] = useState(false);
@@ -72,6 +73,10 @@ const SemesterTables = () => {
     {
       accessorKey: "semester_id",
       header: "Numeric ID",
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span>{info.row.index + 1}</span>; // +1 to start numbering from 1
+      },
     },
     {
       accessorKey: "schoolYear",
@@ -84,7 +89,21 @@ const SemesterTables = () => {
       accessorKey: "semesterName",
       header: "Semester",
     },
-
+    {
+      accessorKey: "campus.campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
     {
       accessorKey: "isDeleted",
       header: "Status",

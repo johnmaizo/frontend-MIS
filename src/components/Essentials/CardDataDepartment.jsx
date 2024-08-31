@@ -1,9 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DepartmentIcon } from "../Icons";
+import { AuthContext } from "../context/AuthContext";
 
 /* eslint-disable react/prop-types */
 const CardDataDepartment = () => {
+  const { user } = useContext(AuthContext);
+
   const [totalDepartment, setTotalDepartment] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -14,7 +17,11 @@ const CardDataDepartment = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentResponse = await axios.get("/departments/count");
+        const currentResponse = await axios.get("/departments/count", {
+          params: {
+            campus_id: user.campus_id,
+          },
+        });
         const total = currentResponse.data;
         setTotalDepartment(total);
       } catch (err) {
@@ -27,6 +34,7 @@ const CardDataDepartment = () => {
       setLoading(false);
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

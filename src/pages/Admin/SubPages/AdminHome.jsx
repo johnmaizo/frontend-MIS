@@ -12,33 +12,38 @@ import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 
 import { ComboboxDemo } from "./TESTING";
 
+import { useContext } from "react";
+import { AuthContext } from "../../../components/context/AuthContext";
+
 const AdminHome = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <DefaultLayout>
-      <div className="grid grid-cols-1 xsm:grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
+      <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
         <CardDataStudent />
-        <CardDataCampus />
+        {user.role === "SuperAdmin" && <CardDataCampus />}
         <CardDataDepartment />
         <CardDataPrograms />
         <CardDataCourse />
       </div>
 
-      <div className="mt-8">
-        {/* <UserTables /> */}
-      </div>
+      <div className="mt-8">{/* <UserTables /> */}</div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartThree />
-        <ChartTwo />
-        {/* <div className="col-span-12 xl:col-span-8">
+      {user.role === "SuperAdmin" && (
+        <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+          <ChartOne />
+          <ChartThree />
+          <ChartTwo />
+          {/* <div className="col-span-12 xl:col-span-8">
           <TableOne />
         </div> */}
-        {/* <ChatCard /> */}
-      </div>
+          {/* <ChatCard /> */}
+        </div>
+      )}
 
       <div className="mt-8 h-[50em]">
-          <ComboboxDemo />
+        <ComboboxDemo />
       </div>
     </DefaultLayout>
   );

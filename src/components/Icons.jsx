@@ -125,7 +125,51 @@ export const LogInImage = () => {
   );
 };
 
+export const EmailIcon = () => {
+  return (
+    <span className="absolute right-4 top-4">
+      <svg
+        className="fill-current"
+        width="22"
+        height="22"
+        viewBox="0 0 22 22"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g opacity="0.5">
+          <path
+            d="M19.2516 3.30005H2.75156C1.58281 3.30005 0.585938 4.26255 0.585938 5.46567V16.6032C0.585938 17.7719 1.54844 18.7688 2.75156 18.7688H19.2516C20.4203 18.7688 21.4172 17.8063 21.4172 16.6032V5.4313C21.4172 4.26255 20.4203 3.30005 19.2516 3.30005ZM19.2516 4.84692C19.2859 4.84692 19.3203 4.84692 19.3547 4.84692L11.0016 10.2094L2.64844 4.84692C2.68281 4.84692 2.71719 4.84692 2.75156 4.84692H19.2516ZM19.2516 17.1532H2.75156C2.40781 17.1532 2.13281 16.8782 2.13281 16.5344V6.35942L10.1766 11.5157C10.4172 11.6875 10.6922 11.7563 10.9672 11.7563C11.2422 11.7563 11.5172 11.6875 11.7578 11.5157L19.8016 6.35942V16.5688C19.8703 16.9125 19.5953 17.1532 19.2516 17.1532Z"
+            fill=""
+          />
+        </g>
+      </svg>
+    </span>
+  );
+};
+
 // ! StudentTablePage.jsx START
+export const StudentIcon = () => {
+  return (
+    <svg
+      className="fill-current"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.0002 7.79065C11.0814 7.79065 12.7689 6.1594 12.7689 4.1344C12.7689 2.1094 11.0814 0.478149 9.0002 0.478149C6.91895 0.478149 5.23145 2.1094 5.23145 4.1344C5.23145 6.1594 6.91895 7.79065 9.0002 7.79065ZM9.0002 1.7719C10.3783 1.7719 11.5033 2.84065 11.5033 4.16252C11.5033 5.4844 10.3783 6.55315 9.0002 6.55315C7.62207 6.55315 6.49707 5.4844 6.49707 4.16252C6.49707 2.84065 7.62207 1.7719 9.0002 1.7719Z"
+        fill=""
+      />
+      <path
+        d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
+        fill=""
+      />
+    </svg>
+  );
+};
+
 export const EyeIcon = () => {
   return (
     <svg
@@ -507,7 +551,7 @@ export const ProfileLoadingIcon = () => {
 // ! ViewStudentPage.jsx END
 
 // ! DepartmentPage.jsx START
-export const AddDepartmentIcon = ({title}) => {
+export const AddDepartmentIcon = ({ title }) => {
   return (
     <svg
       className="fill-current"
@@ -565,7 +609,7 @@ export const CalendarIcon = () => {
 export const CourseIcon = ({ forCard, width, height }) => {
   return (
     <svg
-      className={`fill-current flex-none ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
+      className={`flex-none fill-current ${forCard && forCard === "true" ? "fill-primary dark:fill-white" : ""}`}
       xmlns="http://www.w3.org/2000/svg"
       width={`${width && width ? width : "1.3em"}`}
       height={`${height && height ? height : "1.3em"}`}
@@ -596,7 +640,7 @@ export const ArchiveIcon = () => {
   );
 };
 
-export const UndoIcon = ({title}) => {
+export const UndoIcon = ({ title }) => {
   return (
     <svg
       className="fill-current"
@@ -626,6 +670,23 @@ export const ProgramIcon = ({ forCard, width, height }) => {
       <path
         fill=""
         d="M19 3h-2v6.5l-3-2.25l-3 2.25V3H5v18h14zm-6 0v2.5l1-.75l1 .75V3zm8 20H3V1h18z"
+      />
+    </svg>
+  );
+};
+
+export const AccountsIcon = () => {
+  return (
+    <svg
+      className="fill-current flex-none"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill=""
+        d="M16 17v2H2v-2s0-4 7-4s7 4 7 4m-3.5-9.5A3.5 3.5 0 1 0 9 11a3.5 3.5 0 0 0 3.5-3.5m3.44 5.5A5.32 5.32 0 0 1 18 17v2h4v-2s0-3.63-6.06-4M15 4a3.4 3.4 0 0 0-1.93.59a5 5 0 0 1 0 5.82A3.4 3.4 0 0 0 15 11a3.5 3.5 0 0 0 0-7"
       />
     </svg>
   );

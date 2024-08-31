@@ -126,11 +126,11 @@ const AddProgram = () => {
         reset();
         setSelectedDepartmentID(""); // Reset selected department
         setSelectedDepartmenName(""); // Reset selected department
-      }, 5000);
+      }, 2000);
     } else if (error) {
       setTimeout(() => {
         setGeneralError("");
-      }, 6000);
+      }, 5000);
     }
   }, [success, error, reset]);
 
@@ -183,7 +183,7 @@ const AddProgram = () => {
                                 value.trim() !== "" ||
                                 "Subject Code cannot be empty or just spaces",
                               isUpperCase: (value) =>
-                                /^[A-Z]+$/.test(value) ||
+                                /^[A-Z\s-]+$/.test(value) ||
                                 "Subject Code must contain only capital letters",
                             },
                           })}

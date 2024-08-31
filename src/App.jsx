@@ -32,7 +32,7 @@ function App() {
             <AdminRoutes />
           </SchoolProvider>
         )}
-        {user?.role === "User" && <StudentRoutes />}
+        {user?.role === "Student" && <StudentRoutes />}
       </Suspense>
     </>
   );

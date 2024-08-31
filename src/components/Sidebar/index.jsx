@@ -109,34 +109,37 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         <nav className="mt-5 px-4 py-4 pt-0 lg:px-6">
           {/* ! Mogamit rag sidebarExpanded/setSidebarExpanded if mogamit og SidebarLinkGroup nga component */}
 
-          {user.role === "Admin" && (
+          {(user.role === "Admin" || user.role === "SuperAdmin") && (
             <AdminSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}
             />
           )}
-          {user.role === "User" && <StudentSidebar />}
+          {user.role === "Student" && <StudentSidebar />}
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>
 
       <HoverCard>
         <HoverCardTrigger asChild className="py-3">
-          <Button variant="link"> © {new Date().getFullYear()} - MIS - Hiro</Button>
+          <Button variant="link">
+            {" "}
+            © {new Date().getFullYear()} - MIS - Hiro
+          </Button>
         </HoverCardTrigger>
         <HoverCardContent>
-        <div className="space-y-1">
-              <h4 className="text-sm font-semibold">@nextjs</h4>
-              <p className="text-sm">
-                The React Framework – created and maintained by @vercel.
-              </p>
-              <div className="flex items-center pt-2">
-                <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
-                <span className="text-muted-foreground text-xs">
-                  Joined December 2021
-                </span>
-              </div>
+          <div className="space-y-1">
+            <h4 className="text-sm font-semibold">@nextjs</h4>
+            <p className="text-sm">
+              The React Framework – created and maintained by @vercel.
+            </p>
+            <div className="flex items-center pt-2">
+              <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+              <span className="text-muted-foreground text-xs">
+                Joined December 2021
+              </span>
             </div>
+          </div>
         </HoverCardContent>
       </HoverCard>
     </aside>

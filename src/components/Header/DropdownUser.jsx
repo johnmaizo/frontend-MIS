@@ -52,7 +52,10 @@ const DropdownUser = () => {
               {user.firstName} {user.lastName}
             </span>
             <p className="block text-xs">
-              Role: <span className="font-semibold">{user.role}</span>
+              Role:{" "}
+              <span className="font-semibold">
+                {user.role} {user.campusName && `(${user.campusName})`}
+              </span>
             </p>
           </span>
 
@@ -116,8 +119,6 @@ const DropdownUser = () => {
                 My Profile
               </Link>
             </li> */}
-
-
 
             {/* <li>
               <Link

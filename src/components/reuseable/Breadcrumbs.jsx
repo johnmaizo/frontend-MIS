@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import * as React from "react";
 import { Link } from "react-router-dom";
 
 // import { useMediaQuery } from "@/hooks/use-media-query";
@@ -32,9 +31,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useState } from "react";
 
 export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (

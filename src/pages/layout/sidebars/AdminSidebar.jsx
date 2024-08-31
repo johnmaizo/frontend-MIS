@@ -191,7 +191,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                         <NavLink
                           to="/courses/program-assign"
                           className={({ isActive }) =>
-                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                            `group pointer-events-none relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                               (pathname === "/courses/program-assign" ||
                                 pathname.includes("program-assign")) &&
                               "!underline "
@@ -213,7 +213,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
           <li>
             <NavLink
               to="/teachers"
-              className={`group pointer-events-none relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
                 (pathname === "/teachers" || pathname.includes("teachers")) &&
                 "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
               }`}

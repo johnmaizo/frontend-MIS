@@ -40,7 +40,7 @@ const AddCourse = () => {
       ]),
     );
 
-    console.log(transformedData)
+    console.log(transformedData);
 
     setError("");
     try {
@@ -131,11 +131,21 @@ const AddCourse = () => {
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Code cannot be empty or just spaces",
-                              isValidCourseCode: (value) =>
-                                /^[A-Z0-9\s-]+$/.test(value) ||
-                                "Course Code must contain only capital letters, numbers, and hyphens",
+                                "Subject Code cannot be empty or just spaces",
+                              noMultipleSpaces: (value) =>
+                                !/\s{2,}/.test(value) ||
+                                "Subject Code cannot contain multiple consecutive spaces",
+                              isValidSubjectCode: (value) => {
+                                // Replace multiple spaces with a single space
+                                value = value.replace(/\s{2,}/g, " ");
+                                return (
+                                  /^[A-Z0-9\s-]+$/.test(value) ||
+                                  "Subject Code must contain only capital letters, numbers, and hyphens"
+                                );
+                              },
                             },
+                            setValueAs: (value) =>
+                              value.replace(/\s{2,}/g, " ").trim(), // Automatically trim and replace multiple spaces
                           })}
                           disabled={loading || success}
                         />

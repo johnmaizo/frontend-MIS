@@ -4,6 +4,8 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import PageTitle from "./components/Essentials/PageTitle";
 import SignIn from "./pages/Authentication/SignIn";
 import SignUp from "./pages/Authentication/SignUp";
+
+// eslint-disable-next-line no-unused-vars
 import HomePage from "./pages/HomePage";
 
 import { AuthContext } from "./components/context/AuthContext";

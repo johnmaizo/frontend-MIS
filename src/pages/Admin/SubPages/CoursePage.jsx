@@ -10,7 +10,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -66,6 +66,11 @@ const CoursePage = () => {
 const CourseTables = () => {
   const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
+
+  useEffect(() => {
+    fetchCourse();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const columns = [
     {

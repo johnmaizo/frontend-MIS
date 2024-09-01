@@ -58,13 +58,7 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchAccounts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ! Departments END
+  // ! Accounts END
 
   // ! Departments START
   const [departments, setDepartments] = useState([]);
@@ -193,10 +187,6 @@ export const SchoolProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchCampus();
-  }, []);
-
-  useEffect(() => {
     fetchCampusDeleted();
   }, []);
 
@@ -243,10 +233,6 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchSemesters();
-  }, []);
 
   useEffect(() => {
     fetchSemestersDeleted();
@@ -389,10 +375,6 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchCourse();
-  }, []);
 
   useEffect(() => {
     fetchCourseDeleted();

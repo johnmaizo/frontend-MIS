@@ -10,7 +10,7 @@ import CardDataCampus from "../../../components/Essentials/CardDataCampus";
 import CardDataPrograms from "../../../components/Essentials/CardDataPrograms";
 import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 
-import { ComboboxDemo } from "./TESTING";
+import { ComboboxDemo } from "./ComboboxDemo";
 
 import { useContext } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
@@ -20,6 +20,12 @@ const AdminHome = () => {
 
   return (
     <DefaultLayout>
+      {user && user.campusName && (
+        <div className="mb-8">
+          <h2 className="text-[2rem] font-bold text-black dark:text-white">{user.campusName}</h2>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
         <CardDataStudent />
         {user.role === "SuperAdmin" && <CardDataCampus />}

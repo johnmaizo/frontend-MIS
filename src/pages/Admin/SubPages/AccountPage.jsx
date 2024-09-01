@@ -141,6 +141,7 @@ const AccountTables = () => {
     },
     {
       accessorKey: "id",
+      id: "Actions",
 
       header: "Action",
       cell: ({ cell }) => {

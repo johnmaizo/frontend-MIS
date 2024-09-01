@@ -59,8 +59,6 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  console.log(accounts);
-
   useEffect(() => {
     fetchAccounts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -330,65 +328,6 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Program END
 
-  // ! Subject START
-  const [subjects, setSubjects] = useState([]);
-  const [subjectsActive, setSubjectsActive] = useState([]);
-  const [subjectsDeleted, setSubjectsDeleted] = useState([]);
-
-  const fetchSubject = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/subjects");
-
-      // const modifiedSubject = response.data.map((subject) => ({
-      //   ...subject,
-      //   fullprogramNameWithCampus: `${subject.programCode} - ${subject.programName} - ${subject.Campus}`,
-      // }));
-
-      // setSubjects(modifiedSubject);
-      setSubjects(response.data);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch Subjects: (${err})`);
-      }
-    }
-    setLoading(false);
-  };
-
-  const fetchSubjectActive = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/subjects/active");
-      setSubjectsActive(response.data);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch Subjects Active: (${err})`);
-      }
-    }
-    setLoading(false);
-  };
-
-  const fetchSubjectDeleted = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/subjects/deleted");
-      setSubjectsDeleted(response.data);
-    } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch Subjects Deleted: (${err})`);
-      }
-    }
-    setLoading(false);
-  };
-
-  // ! Subject END
-
   // ! Course START
   const [course, setCourse] = useState([]);
   const [courseDeleted, setCourseDeleted] = useState([]);
@@ -514,13 +453,6 @@ export const SchoolProvider = ({ children }) => {
         courseActive,
         fetchCourseActive,
 
-        // ! Subjects
-        subjects,
-        fetchSubject,
-        subjectsDeleted,
-        fetchSubjectDeleted,
-        subjectsActive,
-        fetchSubjectActive,
       }}
     >
       {children}

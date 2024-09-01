@@ -119,7 +119,6 @@ const AccountTables = () => {
       accessorKey: "created",
       header: "Date Created",
       cell: ({ cell }) => {
-        // return `${new Date(cell.getValue()).toDateString()} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
         return (
           <relative-time datetime={cell.getValue()}>
             {new Date(cell.getValue()).toDateString()}
@@ -131,9 +130,13 @@ const AccountTables = () => {
       accessorKey: "updated",
       header: "Date Updated",
       cell: ({ cell }) => {
-        return cell.getValue()
-          ? `${new Date(cell.getValue()).toDateString()} at ${new Date(cell.getValue()).toLocaleTimeString()}`
-          : "N/A";
+        return cell.getValue() ? (
+          <relative-time datetime={cell.getValue()}>
+            {new Date(cell.getValue()).toDateString()}
+          </relative-time>
+        ) : (
+          "N/A"
+        );
       },
     },
     {

@@ -172,16 +172,16 @@ const AddCourse = () => {
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Subject Code cannot be empty or just spaces",
+                                "Course Code cannot be empty or just spaces",
                               noMultipleSpaces: (value) =>
                                 !/\s{2,}/.test(value) ||
-                                "Subject Code cannot contain multiple consecutive spaces",
-                              isValidSubjectCode: (value) => {
+                                "Course Code cannot contain multiple consecutive spaces",
+                              isValidCourseCode: (value) => {
                                 // Replace multiple spaces with a single space
                                 value = value.replace(/\s{2,}/g, " ");
                                 return (
                                   /^[A-Z0-9\s-]+$/.test(value) ||
-                                  "Subject Code must contain only capital letters, numbers, and hyphens"
+                                  "Course Code must contain only capital letters, numbers, and hyphens"
                                 );
                               },
                             },

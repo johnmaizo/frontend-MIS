@@ -77,6 +77,10 @@ const ProgramTables = () => {
     {
       accessorKey: "program_id",
       header: "Numeric ID",
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
+      },
     },
     {
       accessorKey: "programCode",

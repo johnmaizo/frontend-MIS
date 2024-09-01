@@ -59,7 +59,7 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  console.log(accounts)
+  console.log(accounts);
 
   useEffect(() => {
     fetchAccounts();
@@ -263,7 +263,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchProgram = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/programs");
+      const response = await axios.get("/programs", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
 
       const modifiedprogram = response.data.map((program) => ({
         ...program,
@@ -285,7 +289,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchProgramDeleted = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/programs/deleted");
+      const response = await axios.get("/programs/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setProgramDeleted(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -300,7 +308,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchProgramActive = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/programs/active");
+      const response = await axios.get("/programs/active", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setProgramActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {

@@ -58,7 +58,7 @@ const AddCourse = () => {
 
   const onSubmit = async (data) => {
     if (!selectedCampus) {
-      setGeneralError("campus_id", {
+      setError("campus_id", {
         type: "manual",
         message: "You must select a campus.",
       });

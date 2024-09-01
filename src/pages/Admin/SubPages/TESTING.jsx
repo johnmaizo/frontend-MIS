@@ -157,7 +157,7 @@ const SubjectList = ({ handleSetValue, value, data }) => {
                           <span className="font-medium">{data.label}</span>
                         </TooltipTrigger>
                         <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                          <p className="text-[1rem]">gwapo ko</p>
+                          <p className="text-[1rem]">{data.value}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

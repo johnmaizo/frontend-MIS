@@ -33,6 +33,7 @@ const IsLoggingOut = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusedButton]);
 
   return (

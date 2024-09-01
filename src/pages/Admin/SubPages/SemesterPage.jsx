@@ -10,7 +10,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 
@@ -67,6 +67,11 @@ const SemesterPage = () => {
 const SemesterTables = () => {
   const { semesters, fetchSemesters, fetchSemestersDeleted, loading, error } =
     useSchool();
+
+    useEffect(() => {
+      fetchSemesters();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   const columns = [
     {

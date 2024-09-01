@@ -119,7 +119,12 @@ const AccountTables = () => {
       accessorKey: "created",
       header: "Date Created",
       cell: ({ cell }) => {
-        return `${new Date(cell.getValue()).toDateString()} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
+        // return `${new Date(cell.getValue()).toDateString()} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
+        return (
+          <relative-time datetime={cell.getValue()}>
+            {new Date(cell.getValue()).toDateString()}
+          </relative-time>
+        );
       },
     },
     {

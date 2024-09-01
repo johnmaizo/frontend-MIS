@@ -1,9 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CourseIcon } from "../Icons";
+import { AuthContext } from "../context/AuthContext";
 
 /* eslint-disable react/prop-types */
 const CardDataCourse = () => {
+  const { user } = useContext(AuthContext);
+
   const [totalCourse, setTotalCourse] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -14,7 +17,11 @@ const CardDataCourse = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const currentResponse = await axios.get("/course/count");
+        const currentResponse = await axios.get("/course/count", {
+          params: {
+            campus_id: user.campus_id,
+          },
+        });
         const total = currentResponse.data;
         setTotalCourse(total);
       } catch (err) {

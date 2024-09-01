@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { EditDepartmentIcon } from "../Icons";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -14,14 +14,29 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
 import { useSchool } from "../context/SchoolContext";
 import { Switch } from "../ui/switch";
+import { AuthContext } from "../context/AuthContext";
 
 const EditCourse = ({ courseId }) => {
-  const { fetchCourse } = useSchool();
+  const { user } = useContext(AuthContext);
+
+  const { fetchCourse, campusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
+
+  const [selectedCampus, setSelectedCampus] = useState(""); // State for selected campus
 
   const {
     register,
@@ -29,6 +44,7 @@ const EditCourse = ({ courseId }) => {
     reset,
     formState: { errors },
     setValue,
+    clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
   const [error, setError] = useState("");
@@ -47,6 +63,7 @@ const EditCourse = ({ courseId }) => {
           setValue("courseDescription", course.courseDescription);
           setValue("unit", course.unit);
           setIsActive(course.isActive); // Set the initial status
+          setSelectedCampus(course.campus_id.toString()); // Set the initial campus
           setLoading(false);
         })
         .catch((err) => {
@@ -57,6 +74,11 @@ const EditCourse = ({ courseId }) => {
   }, [courseId, open, setValue]);
 
   const onSubmit = async (data) => {
+    if (!selectedCampus) {
+      setError("campus_id", "You must select a campus.");
+      return;
+    }
+
     setLoading(true);
     // Add isActive to the form data
     const transformedData = {
@@ -71,6 +93,7 @@ const EditCourse = ({ courseId }) => {
         ]),
       ),
       isActive: isActive ? true : false, // Set isActive based on the switch value
+      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
 
     setError("");
@@ -126,6 +149,8 @@ const EditCourse = ({ courseId }) => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
+              setSelectedCampus(""); // Reset selected campus
+              clearErrors("campus_id"); // Clear campus selection error when dialog closes
             }
           }}
         >
@@ -256,6 +281,66 @@ const EditCourse = ({ courseId }) => {
                       )}
                     </div>
 
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="campus"
+                      >
+                        Campus
+                      </label>
+
+                      {user.role !== "SuperAdmin" ? (
+                        <input
+                          id="campus"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          value={
+                            campusActive.find(
+                              (campus) =>
+                                campus.campus_id.toString() === selectedCampus,
+                            )?.campusName || ""
+                          }
+                          disabled
+                        />
+                      ) : (
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCampus(value);
+                            clearErrors("campus_id");
+                          }}
+                          value={selectedCampus}
+                          disabled={success || loading}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue placeholder="Select a campus" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Campuses</SelectLabel>
+                              {campusActive.map((campus) => (
+                                <SelectItem
+                                  key={campus.campus_id}
+                                  value={campus.campus_id.toString()}
+                                >
+                                  {campus.campusName}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+
+                      {errors.campus_id && (
+                        <ErrorMessage>{errors.campus_id.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    {error && (
+                      <span className="mt-2 inline-block pb-6 font-medium text-red-600">
+                        Error: {error}
+                      </span>
+                    )}
+
                     <button
                       type="submit"
                       className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
@@ -276,10 +361,6 @@ const EditCourse = ({ courseId }) => {
                     </button>
                   </div>
                 </form>
-
-                {error && (
-                  <div className="mb-5 text-center text-red-600">{error}</div>
-                )}
               </DialogDescription>
             </DialogHeader>
           </DialogContent>

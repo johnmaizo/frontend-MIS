@@ -59,6 +59,8 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
+  console.log(accounts)
+
   useEffect(() => {
     fetchAccounts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -383,7 +385,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchCourse = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course");
+      const response = await axios.get("/course", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setCourse(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -398,7 +404,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchCourseDeleted = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course/deleted");
+      const response = await axios.get("/course/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setCourseDeleted(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -413,7 +423,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchCourseActive = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/course/active");
+      const response = await axios.get("/course/active", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setCourseActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {

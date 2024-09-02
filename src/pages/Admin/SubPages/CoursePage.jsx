@@ -10,7 +10,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -42,18 +42,30 @@ import EditCourse from "../../../components/api/EditCourse";
 import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
+import { AuthContext } from "../../../components/context/AuthContext";
 
 const CoursePage = () => {
+  const { user } = useContext(AuthContext);
+
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/courses/add-course", label: "Add Course" },
-    { label: "Course List" },
+    {
+      label:
+        user && user.campusName
+          ? `Course List (${user.campusName})`
+          : "Course List",
+    },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Course List"}
+        pageName={
+          user && user.campusName
+            ? `Course List (${user.campusName})`
+            : "Course List"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
@@ -64,6 +76,8 @@ const CoursePage = () => {
 };
 
 const CourseTables = () => {
+  const { user } = useContext(AuthContext);
+
   const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
 
@@ -88,8 +102,7 @@ const CourseTables = () => {
         );
       },
       cell: (info) => {
-        // `info.row.index` gives the zero-based index of the row
-        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
+        return <span className="font-semibold">{info.row.index + 1}</span>;
       },
     },
     {
@@ -110,7 +123,6 @@ const CourseTables = () => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
       },
     },
-
     {
       accessorKey: "courseDescription",
       header: ({ column }) => {
@@ -129,21 +141,6 @@ const CourseTables = () => {
         return cell.getValue();
       },
     },
-    // {
-    //   accessorKey: "createdAt",
-    //   header: "Date Created",
-    //   cell: ({ cell }) => {
-    //     return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-    //   },
-    // },
-    // {
-    //   accessorKey: "updatedAt",
-    //   header: "Date Updated",
-    //   cell: ({ cell }) => {
-    //     return `${cell.getValue().toString().split("T")[0]} at ${new Date(cell.getValue()).toLocaleTimeString()}`;
-    //   },
-    // },
-
     {
       accessorKey: "unit",
       header: "Unit",
@@ -151,21 +148,27 @@ const CourseTables = () => {
         return cell.getValue();
       },
     },
-    {
-      accessorKey: "campus.campusName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-    },
+    ...(user && user.role === "SuperAdmin"
+      ? [
+          {
+            accessorKey: "campus.campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+          },
+        ]
+      : []),
     {
       accessorKey: "isActive",
       header: "Status",
@@ -189,7 +192,6 @@ const CourseTables = () => {
         return (
           <div className="flex items-center gap-1">
             <EditCourse courseId={row.getValue("course_id")} />
-
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Course"} />
@@ -215,7 +217,6 @@ const CourseTables = () => {
                         fetchCourseDeleted();
                       }}
                     />
-
                     <DialogClose asChild>
                       <Button
                         variant="ghost"

@@ -49,6 +49,8 @@ import EditProgram from "../../../components/api/EditProgram";
 import ButtonActionProgram from "../../../components/reuseable/ButtonActionProgram";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import DeletedProgram from "../../../components/api/DeletedProgram";
+import { DataTableFacetedFilter } from "./test/DataTableFacetedFilter";
+import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
 
 const ProgramPage = () => {
   const NavItems = [
@@ -112,6 +114,9 @@ const ProgramTables = () => {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
@@ -324,6 +329,14 @@ const DataTable = ({ data, columns, loading, error }) => {
         <div className="mb-5 flex w-full items-center justify-between gap-3">
           <div className="w-[11.5em]">
             <StatusFilter table={table} option={"department"} />
+
+            <div className=" mt-5">
+              <DataTableFacetedFilter
+                column={table.getColumn("programCode")}
+                title="Program Codes"
+                options={getUniqueCodes(data, "programCode")}
+              />
+            </div>
           </div>
 
           <DeletedProgram />

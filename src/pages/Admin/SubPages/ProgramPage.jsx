@@ -11,7 +11,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -51,18 +51,26 @@ import ReuseTable from "../../../components/reuseable/ReuseTable";
 import DeletedProgram from "../../../components/api/DeletedProgram";
 import { DataTableFacetedFilter } from "./test/DataTableFacetedFilter";
 import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
+import { AuthContext } from "../../../components/context/AuthContext";
 
 const ProgramPage = () => {
+  const { user } = useContext(AuthContext);
+
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/program/add-program", label: "Add Program" },
-    { label: "Programs" },
+    {
+      label:
+        user && user.campusName ? `Programs (${user.campusName})` : "Programs",
+    },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Programs"}
+        pageName={
+          user && user.campusName ? `Programs (${user.campusName})` : "Programs"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
@@ -330,7 +338,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           <div className="w-[11.5em]">
             <StatusFilter table={table} option={"department"} />
 
-            <div className=" mt-5">
+            <div className="mt-5">
               <DataTableFacetedFilter
                 column={table.getColumn("programCode")}
                 title="Program Codes"

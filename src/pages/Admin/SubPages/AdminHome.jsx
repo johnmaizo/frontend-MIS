@@ -22,7 +22,9 @@ const AdminHome = () => {
     <DefaultLayout>
       {user && user.campusName && (
         <div className="mb-8">
-          <h2 className="text-[2rem] font-bold text-black dark:text-white">{user.campusName}</h2>
+          <h2 className="text-[2rem] font-bold text-black dark:text-white">
+            {user.campusName}
+          </h2>
         </div>
       )}
 

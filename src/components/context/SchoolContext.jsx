@@ -382,6 +382,76 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Course END
 
+  // ! Program Courses START
+
+  const [programCourse, setProgramCourse] = useState([]);
+  const [programCourseDeleted, setProgramCourseDeleted] = useState([]);
+  const [programCourseActive, setProgramCourseActive] = useState([]);
+
+  const fetchProgramCourse = async (campusName, programId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/program-courses/", {
+        params: {
+          campus_id: user.campus_id,
+          campusName: campusName,
+          program_id: programId,
+        },
+      });
+      setProgramCourse(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch Course");
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchProgramCourseDeleted = async (campusName, programId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/program-courses/deleted", {
+        params: {
+          campus_id: user.campus_id,
+          campusName: campusName,
+          program_id: programId,
+        },
+      });
+      setProgramCourseDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Course deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchProgramCourseActive = async (campusName, programId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/program-courses/active", {
+        params: {
+          campus_id: user.campus_id,
+          campusName: campusName,
+          program_id: programId,
+        },
+      });
+      setProgramCourseActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Course active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+  // ! Program Course END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -435,6 +505,13 @@ export const SchoolProvider = ({ children }) => {
         courseActive,
         fetchCourseActive,
 
+        // ! Program Courses
+        programCourse,
+        fetchProgramCourse,
+        programCourseDeleted,
+        fetchProgramCourseDeleted,
+        programCourseActive,
+        fetchProgramCourseActive,
       }}
     >
       {children}

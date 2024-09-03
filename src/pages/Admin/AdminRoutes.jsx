@@ -23,6 +23,8 @@ import CoursePage from "./SubPages/CoursePage";
 import { useContext } from "react";
 import { AuthContext } from "../../components/context/AuthContext";
 import AccountPage from "./SubPages/AccountPage";
+import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
+import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -129,6 +131,26 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Courses | MIS - Benedicto College" />
             <CoursePage />
+          </>
+        }
+      />
+
+      <Route
+        path="/courses/program-courses"
+        element={
+          <>
+            <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
+            <ProgramCoursesPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/courses/program-courses/:campusName/:program_id"
+        element={
+          <>
+            <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
+            <ViewProgramCoursePage />
           </>
         }
       />

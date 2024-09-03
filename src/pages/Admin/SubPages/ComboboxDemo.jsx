@@ -25,7 +25,7 @@ import {
 import { useEffect, useState } from "react";
 
 const frameworks = [
-  { value: "HAHAHAHA", label: "Next.js" },
+  { value: "HAHAHAHA", label: "Next.js Next.js Next.js Next.js Next.js " },
   { value: "bruh", label: "SvelteKit" },
   { value: "whut", label: "Nuxt.js" },
   { value: "bleee", label: "Remix" },
@@ -34,7 +34,7 @@ const frameworks = [
   { value: "whutt", label: "Nuxt.jss" },
   { value: "bleeeeh", label: "Remixxes" },
   { value: "wowsws", label: "lorem" },
-  { value: "wowswshaha", label: "lorem" },
+  { value: "wowswshaha", label: "lorem lorem ipsum dolor sit amet " },
 ];
 
 export function ComboboxDemo() {
@@ -88,14 +88,14 @@ export function ComboboxDemo() {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <SubjectList
           handleSetValue={handleSetValue}
           value={value}
           data={frameworks}
         />
         {value.length > 0 && (
-          <div className="p-4">
+          <div className="p-4 !w-full">
             <Button
               variant="destructive"
               onClick={clearAllSelections}
@@ -113,7 +113,7 @@ export function ComboboxDemo() {
 const SubjectList = ({ handleSetValue, value, data }) => {
   return (
     <Command
-      className="w-[34.5em] md:w-auto"
+      className="w-[20em]"
       filter={(value, search, keywords = []) => {
         const extendValue = value + " " + keywords.join(" ");
         return extendValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
@@ -123,7 +123,7 @@ const SubjectList = ({ handleSetValue, value, data }) => {
       <CommandEmpty>No Course found.</CommandEmpty>
       <CommandList className="!overflow-hidden">
         <CommandGroup>
-          <CommandList>
+          <CommandList className="h-[10em]">
             {data && data.length ? (
               data.map((data) => (
                 <div key={data.value}>
@@ -131,7 +131,7 @@ const SubjectList = ({ handleSetValue, value, data }) => {
                   <CommandItem
                     value={data.value}
                     onSelect={() => handleSetValue(data.value)}
-                    className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+                    className="text-[1rem] font-medium text-black dark:text-white md:text-[1.2rem]"
                   >
                     <Check
                       className={cn(

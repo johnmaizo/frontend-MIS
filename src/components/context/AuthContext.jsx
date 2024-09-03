@@ -87,9 +87,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = (isSessionExpired = false) => {
-    if (expiryTimer) {
-      clearTimeout(expiryTimer);
-    }
+    clearTimeout(expiryTimer);
     
     localStorage.removeItem("jwtToken");
     setUser(null);

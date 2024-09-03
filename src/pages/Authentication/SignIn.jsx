@@ -5,7 +5,12 @@ import { AuthContext } from "../../components/context/AuthContext";
 
 import toast from "react-hot-toast";
 
-import { EmailIcon, EyeCancel, EyeIconSignIn, LogInImage } from "../../components/Icons";
+import {
+  EmailIcon,
+  EyeCancel,
+  EyeIconSignIn,
+  LogInImage,
+} from "../../components/Icons";
 import Loader from "../../components/styles/Loader";
 
 const SignIn = () => {
@@ -42,7 +47,10 @@ const SignIn = () => {
   };
 
   const handleCapsLock = (e) => {
-    if (e.getModifierState("CapsLock")) {
+    if (
+      typeof e.getModifierState === "function" &&
+      e.getModifierState("CapsLock")
+    ) {
       setCapsLockOn(true);
     } else {
       setCapsLockOn(false);
@@ -146,11 +154,8 @@ const SignIn = () => {
                           placeholder="Enter your password"
                           className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none"
                           value={password}
-                          onChange={(e) => {
-                            setPassword(e.target.value);
-                            handleCapsLock(e);
-                          }}
-                          onKeyUp={handleCapsLock}
+                          onChange={(e) => setPassword(e.target.value)} // Just update the state
+                          onKeyUp={handleCapsLock} // Only use handleCapsLock here
                           required
                         />
 

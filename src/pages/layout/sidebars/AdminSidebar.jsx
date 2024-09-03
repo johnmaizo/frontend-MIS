@@ -222,7 +222,7 @@ const AdminSidebar = ({ sidebarExpanded, setSidebarExpanded }) => {
                         <NavLink
                           to="/courses/program-courses"
                           className={({ isActive }) =>
-                            `group pointer-events-none relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                            `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                               (pathname === "/courses/program-courses" ||
                                 pathname.includes("program-courses")) &&
                               "!underline "

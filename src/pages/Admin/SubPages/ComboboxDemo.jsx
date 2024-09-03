@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "../../../lib/utils";
 import { Button } from "../../../components/ui/button";
-
 import {
   Command,
   CommandEmpty,
@@ -13,14 +11,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "../../../components/ui/command";
-
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../../../components/ui/tooltip";
-
 import {
   Popover,
   PopoverContent,
@@ -28,29 +24,17 @@ import {
 } from "../../../components/ui/popover";
 import { useEffect, useState } from "react";
 
-// from "@/components/ui/popover"
-
 const frameworks = [
-  {
-    value: "HAHAHAHA",
-    label: "Next.js",
-  },
-  {
-    value: "bruh",
-    label: "SvelteKit",
-  },
-  {
-    value: "whut",
-    label: "Nuxt.js",
-  },
-  {
-    value: "bleee",
-    label: "Remix",
-  },
-  {
-    value: "wow",
-    label: "Astro",
-  },
+  { value: "HAHAHAHA", label: "Next.js" },
+  { value: "bruh", label: "SvelteKit" },
+  { value: "whut", label: "Nuxt.js" },
+  { value: "bleee", label: "Remix" },
+  { value: "wow", label: "Astro" },
+  { value: "brugh", label: "SvelteKit" },
+  { value: "whutt", label: "Nuxt.jss" },
+  { value: "bleeeeh", label: "Remixxes" },
+  { value: "wowsws", label: "lorem" },
+  { value: "wowswshaha", label: "lorem" },
 ];
 
 export function ComboboxDemo() {
@@ -59,11 +43,14 @@ export function ComboboxDemo() {
 
   const handleSetValue = (val) => {
     if (value.includes(val)) {
-      value.splice(value.indexOf(val), 1);
       setValue(value.filter((item) => item !== val));
     } else {
       setValue((prevValue) => [...prevValue, val]);
     }
+  };
+
+  const clearAllSelections = () => {
+    setValue([]);
   };
 
   useEffect(() => {
@@ -107,6 +94,17 @@ export function ComboboxDemo() {
           value={value}
           data={frameworks}
         />
+        {value.length > 0 && (
+          <div className="p-4">
+            <Button
+              variant="destructive"
+              onClick={clearAllSelections}
+              className="w-full"
+            >
+              Clear All
+            </Button>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );
@@ -118,15 +116,12 @@ const SubjectList = ({ handleSetValue, value, data }) => {
       className="w-[34.5em] md:w-auto"
       filter={(value, search, keywords = []) => {
         const extendValue = value + " " + keywords.join(" ");
-        if (extendValue.toLowerCase().includes(search.toLowerCase())) {
-          return 1;
-        }
-        return 0;
+        return extendValue.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
       }}
     >
-      <CommandInput placeholder="Search framework..." />
-      <CommandEmpty>No framework found.</CommandEmpty>
-      <CommandList>
+      <CommandInput placeholder="Search Course..." />
+      <CommandEmpty>No Course found.</CommandEmpty>
+      <CommandList className="!overflow-hidden">
         <CommandGroup>
           <CommandList>
             {data && data.length ? (
@@ -135,9 +130,7 @@ const SubjectList = ({ handleSetValue, value, data }) => {
                   <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                   <CommandItem
                     value={data.value}
-                    onSelect={() => {
-                      handleSetValue(data.value);
-                    }}
+                    onSelect={() => handleSetValue(data.value)}
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                   >
                     <Check

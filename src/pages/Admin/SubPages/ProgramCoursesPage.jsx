@@ -220,7 +220,7 @@ const DataTable = ({ data, columns, loading, error }) => {
       ) : !loading && data && data.length > 0 ? (
         <>
           <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-            <div className="gap-5 md:flex mb-5 mt-2">
+            <div className="mb-5 mt-2 gap-5 md:flex">
               <Input
                 placeholder="Search by Code..."
                 value={table.getColumn("programCode")?.getFilterValue() ?? ""}
@@ -265,13 +265,15 @@ const DataTable = ({ data, columns, loading, error }) => {
           </div>
         </>
       ) : (
-        <div className="grid h-[20em] w-full place-content-center">
-          <p className="text-[2rem]">
-            No program found.{" "}
-            <Link to={"/programs"} className="text-primary hover:underline">
-              Click here to add program
-            </Link>
-          </p>
+        <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+          <div className="grid h-[20em] w-full place-content-center">
+            <p className="text-[2rem]">
+              No program found.{" "}
+              <Link to={"/programs"} className="text-primary hover:underline">
+                Click here to add program
+              </Link>
+            </p>
+          </div>
         </div>
       )}
     </>

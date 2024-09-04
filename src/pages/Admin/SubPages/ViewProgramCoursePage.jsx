@@ -38,7 +38,6 @@ import { useParams } from "react-router-dom";
 import EditCourse from "../../../components/api/EditCourse";
 import { DeleteIcon } from "../../../components/Icons";
 import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
-import AddCourse from "../../../components/api/AddCourse";
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import AddCourseProgram from "../../../components/api/AddCourseProgram";
@@ -115,6 +114,7 @@ const ProgramCourseTables = () => {
     },
     {
       accessorKey: "courseinfo.courseCode",
+      id: "courseCode",
       header: ({ column }) => {
         return (
           <Button
@@ -133,6 +133,7 @@ const ProgramCourseTables = () => {
     },
     {
       accessorKey: "courseinfo.courseDescription",
+      id: "courseDescription",
       header: ({ column }) => {
         return (
           <Button
@@ -171,7 +172,11 @@ const ProgramCourseTables = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold text-center w-full inline-block">{cell.getValue()}</span>;
+        return (
+          <span className="inline-block w-full text-center text-lg font-semibold">
+            {cell.getValue()}
+          </span>
+        );
       },
     },
     ...(user && user.role === "SuperAdmin"

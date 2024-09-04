@@ -36,7 +36,7 @@ import { useSchool } from "../context/SchoolContext";
 import { getInitialDepartmentNameAndCampus } from "../reuseable/GetInitialNames";
 
 const AddProgram = () => {
-  const { fetchProgram, departments, fetchDepartments, loading } = useSchool();
+  const { fetchProgram, deparmentsActive, fetchDepartmentsActive, loading } = useSchool();
 
   const [open, setOpen] = useState(false);
 
@@ -60,7 +60,7 @@ const AddProgram = () => {
   const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
-    fetchDepartments();
+    fetchDepartmentsActive();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -268,7 +268,7 @@ const AddProgram = () => {
                               setSelectedDepartmenName={
                                 setSelectedDepartmenName
                               }
-                              data={departments}
+                              data={deparmentsActive}
                               loading={loading}
                               clearErrors={clearErrors}
                             />
@@ -306,7 +306,7 @@ const AddProgram = () => {
                                   setSelectedDepartmenName={
                                     setSelectedDepartmenName
                                   }
-                                  data={departments}
+                                  data={deparmentsActive}
                                   loading={loading}
                                   clearErrors={clearErrors}
                                 />

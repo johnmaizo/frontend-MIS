@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -12,30 +13,50 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "../ui/command";
+
+import { Button } from "../ui/button";
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
 
+import { useParams } from "react-router-dom";
+import { getUniqueCourseCodes } from "../reuseable/GetUniqueValues";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "../../lib/utils";
+import useFetchProgramById from "../reuseable/useFetchProgramById";
+
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
 
-  const { fetchCourse, campusActive, fetchCampusActive } = useSchool();
+  const { campusName, program_id } = useParams();
+
+  const { fetchProgramCourse, courseActive, fetchCourseActive } = useSchool();
+
+  const { program } = useFetchProgramById(program_id, campusName);
+
   const [open, setOpen] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
 
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
+  const uniqueCourses = getUniqueCourseCodes(courseActive, "courseCode");
+
+  const [selectedCourses, setSelectedCourses] = useState([]);
+
   const {
-    register,
     handleSubmit,
     reset,
     formState: { errors },
@@ -47,20 +68,35 @@ const AddCourseProgram = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handleSetCourses = (val) => {
+    if (selectedCourses.includes(val)) {
+      setSelectedCourses(selectedCourses.filter((item) => item !== val));
+    } else {
+      setSelectedCourses((prevValue) => [...prevValue, val]);
+    }
+  };
+
+  const clearAllSelections = () => {
+    setSelectedCourses([]);
+  };
+
   useEffect(() => {
-    fetchCampusActive();
-    if (user && user.campus_id) {
+    fetchCourseActive();
+    if (user && user.role === "SuperAdmin") {
+      setSelectedCampus(program.department.campus.campus_id);
+    } else if (user && user.campus_id) {
       // Automatically set the campus if the user has a campus_id
       setSelectedCampus(user.campus_id.toString());
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data) => {
-    if (!selectedCampus) {
-      setError("campus_id", {
+    if (!selectedCourses.length) {
+      setError("courseChoose", {
         type: "manual",
-        message: "You must select a campus.",
+        message: "You must select a course.",
       });
       return;
     }
@@ -75,6 +111,8 @@ const AddCourseProgram = () => {
         ]),
       ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      programCode: program.programCode,
+      courseCode: selectedCourses,
     };
 
     console.log(transformedData);
@@ -82,7 +120,7 @@ const AddCourseProgram = () => {
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/course/add-course", transformedData),
+        axios.post("/program-courses/assign-program-course", transformedData),
         {
           loading: "Adding Course...",
           success: "Course Added successfully!",
@@ -96,7 +134,7 @@ const AddCourseProgram = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchProgramCourse(campusName, program_id);
         setOpen(false); // Close the dialog
       }
       setLoading(false);
@@ -116,6 +154,7 @@ const AddCourseProgram = () => {
         setSuccess(false);
         reset();
         setSelectedCampus(""); // Reset selected campus
+        setSelectedCourses([]); // Reset selected courses
       }, 2000);
     } else if (error) {
       setTimeout(() => {
@@ -136,7 +175,8 @@ const AddCourseProgram = () => {
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
-              clearErrors("campus_id"); // Clear campus selection error when dialog closes
+              clearErrors("courseChoose"); // Clear campus selection error when dialog closes
+              setSelectedCourses([]); // Reset selected courses
             }
           }}
         >
@@ -150,116 +190,22 @@ const AddCourseProgram = () => {
                 Assign new Course
               </DialogTitle>
               <DialogDescription className="overflow-y-auto overscroll-none text-xl">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_code"
-                        >
-                          Course Code
-                        </label>
-                        <input
-                          id="course_code"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseCode", {
-                            required: {
-                              value: true,
-                              message: "Course Code is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Course Code cannot be empty or just spaces",
-                              noMultipleSpaces: (value) =>
-                                !/\s{2,}/.test(value) ||
-                                "Course Code cannot contain multiple consecutive spaces",
-                              isValidCourseCode: (value) => {
-                                // Replace multiple spaces with a single space
-                                value = value.replace(/\s{2,}/g, " ");
-                                return (
-                                  /^[A-Z0-9\s-]+$/.test(value) ||
-                                  "Course Code must contain only capital letters, numbers, and hyphens"
-                                );
-                              },
-                            },
-                            setValueAs: (value) =>
-                              value.replace(/\s{2,}/g, " ").trim(), // Automatically trim and replace multiple spaces
-                          })}
-                          disabled={loading || success}
-                        />
-                        {errors.courseCode && (
-                          <ErrorMessage>
-                            *{errors.courseCode.message}
-                          </ErrorMessage>
-                        )}
-                      </div>
-
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="unit"
-                        >
-                          Unit
-                        </label>
-
-                        <input
-                          id="unit"
-                          type="number"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("unit", {
-                            required: {
-                              value: true,
-                              message: "Unit is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Unit cannot be empty or just spaces",
-                              validUnit: (value) =>
-                                [1, 2, 3].includes(Number(value)) ||
-                                "Unit must be 1, 2, or 3",
-                            },
-                          })}
-                          disabled={loading || success}
-                        />
-                        {errors.unit && (
-                          <ErrorMessage>*{errors.unit.message}</ErrorMessage>
-                        )}
-                      </div>
-                    </div>
-
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_description"
+                        htmlFor="program_code"
                       >
-                        Course Description
+                        Program
                       </label>
                       <input
-                        id="course_description"
+                        id="program_code"
                         type="text"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("courseDescription", {
-                          required: {
-                            value: true,
-                            message: "Course Description is required",
-                          },
-                          validate: {
-                            notEmpty: (value) =>
-                              value.trim() !== "" ||
-                              "Course Description cannot be empty or just spaces",
-                          },
-                        })}
-                        disabled={loading || success}
+                        value={`${program?.programCode} - ${program?.programDescription}`}
+                        disabled
                       />
-                      {errors.courseDescription && (
-                        <ErrorMessage>
-                          *{errors.courseDescription.message}
-                        </ErrorMessage>
-                      )}
                     </div>
 
                     <div className="mb-4.5 w-full">
@@ -267,55 +213,99 @@ const AddCourseProgram = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="dept_campus"
                       >
-                        Campus
+                        Select Course
                       </label>
 
-                      {user.role === "SuperAdmin" ? (
-                        <Select
-                          onValueChange={(value) => {
-                            setSelectedCampus(value);
-                            clearErrors("campus_id");
-                          }}
-                          value={selectedCampus}
-                          disabled={loading || success}
-                        >
-                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                            <SelectValue
-                              placeholder="Select Campus"
-                              defaultValue={selectedCampus}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Campuses</SelectLabel>
-                              {campusActive.map((campus) => (
-                                <SelectItem
-                                  key={campus.campus_id}
-                                  value={campus.campus_id.toString()}
-                                >
-                                  {campus.campusName}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <input
-                          id="dept_campus"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          value={
-                            campusActive.find(
-                              (campus) =>
-                                campus.campus_id.toString() === selectedCampus,
-                            )?.campusName || ""
-                          }
-                          disabled
-                        />
-                      )}
+                      {/* <Select
+                        onValueChange={(value) => {
+                          setSelectedCampus(value);
+                          clearErrors("campus_id");
+                        }}
+                        value={selectedCampus}
+                        disabled={loading || success}
+                      >
+                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                          <SelectValue
+                            placeholder="Select Campus"
+                            defaultValue={selectedCampus}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Campuses</SelectLabel>
+                            {courseActive.map((course) => (
+                              <SelectItem
+                                key={course.course_id}
+                                value={course.course_id.toString()}
+                              >
+                                {course.courseCode} - {course.courseDescription}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select> */}
 
-                      {errors.campus_id && (
-                        <ErrorMessage>*{errors.campus_id.message}</ErrorMessage>
+                      <Popover
+                        open={openPopover}
+                        onOpenChange={setOpenPopover}
+                        modal={true}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
+                            disabled={loading || success}
+                          >
+                            <div className="flex flex-wrap justify-start gap-2">
+                              {selectedCourses?.length ? (
+                                selectedCourses.map((val, i) => (
+                                  <div
+                                    key={i}
+                                    className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white"
+                                  >
+                                    {
+                                      uniqueCourses.find(
+                                        (course) => course.value === val,
+                                      )?.value
+                                    }
+                                  </div>
+                                ))
+                              ) : (
+                                <span className="inline-block text-[1.2rem]">
+                                  Select Course..
+                                </span>
+                              )}
+                            </div>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <SubjectList
+                            handleSetCourses={handleSetCourses}
+                            value={selectedCourses}
+                            data={uniqueCourses}
+                            clearErrors={clearErrors}
+                          />
+                          {selectedCourses.length > 0 && (
+                            <div className="!w-full p-4">
+                              <Button
+                                variant="destructive"
+                                onClick={clearAllSelections}
+                                className="w-full"
+                              >
+                                Clear All
+                              </Button>
+                            </div>
+                          )}
+                        </PopoverContent>
+                      </Popover>
+
+                      {errors.courseChoose && (
+                        <ErrorMessage>
+                          *{errors.courseChoose.message}
+                        </ErrorMessage>
                       )}
                     </div>
 
@@ -360,6 +350,65 @@ const ErrorMessage = ({ children }) => {
     <span className="mt-2 inline-block text-sm font-medium text-red-600">
       {children}
     </span>
+  );
+};
+
+const SubjectList = ({ handleSetCourses, value, data, clearErrors }) => {
+  return (
+    <Command
+      className="w-[21em] md:w-[45em]"
+      filter={(itemValue, search) => {
+        // Find the item in the data array based on the value
+        const item = data.find((d) => d.value === itemValue);
+
+        // Combine the value and label for searching
+        const combinedText = `${item?.value} ${item?.label}`.toLowerCase();
+
+        // Check if the search term exists in the combined value and label text
+        return combinedText.includes(search.toLowerCase()) ? 1 : 0;
+      }}
+    >
+      <CommandInput placeholder="Search Course..." />
+      <CommandEmpty>No Course found.</CommandEmpty>
+      <CommandList className="!overflow-hidden">
+        <CommandGroup>
+          <CommandList className="h-[12em]">
+            {data && data.length ? (
+              data.map((data) => (
+                <div key={data.value}>
+                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
+                  <CommandItem
+                    value={data.value}
+                    onSelect={() => {
+                      handleSetCourses(data.value);
+                      clearErrors("courseChoose");
+                    }}
+                    className="py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value.includes(data.value)
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                    {data.label}
+                  </CommandItem>
+                </div>
+              ))
+            ) : (
+              <CommandItem
+                disabled
+                className="text-[1rem] font-medium text-black dark:text-white"
+              >
+                Empty, please add a course.
+              </CommandItem>
+            )}
+          </CommandList>
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 };
 

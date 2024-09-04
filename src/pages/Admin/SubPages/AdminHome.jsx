@@ -50,9 +50,9 @@ const AdminHome = () => {
         </div>
       )}
 
-      <div className="mt-8 h-[50em]">
+      {/* <div className="mt-8 h-[50em]">
         <ComboboxDemo />
-      </div>
+      </div> */}
     </DefaultLayout>
   );
 };

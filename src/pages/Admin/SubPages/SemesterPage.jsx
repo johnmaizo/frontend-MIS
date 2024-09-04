@@ -39,7 +39,7 @@ import AddSemester from "../../../components/api/AddSemester";
 
 import EditSemester from "../../../components/api/EditSemester";
 
-import ButtonActionSemester from "../../../components/reuseable/ButtonActionSemester";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import DeletedSemesters from "../../../components/api/DeletedSemesters";
 import { Input } from "../../../components/ui/input";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
@@ -51,13 +51,22 @@ const SemesterPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/semester/add-semester", label: "Add Semester" },
-    { label: user && user.campusName ? `Semesters (${user.campusName})` : "Semesters", },
+    {
+      label:
+        user && user.campusName
+          ? `Semesters (${user.campusName})`
+          : "Semesters",
+    },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={user && user.campusName ? `Semesters (${user.campusName})` : "Semesters"}
+        pageName={
+          user && user.campusName
+            ? `Semesters (${user.campusName})`
+            : "Semesters"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
@@ -71,10 +80,10 @@ const SemesterTables = () => {
   const { semesters, fetchSemesters, fetchSemestersDeleted, loading, error } =
     useSchool();
 
-    useEffect(() => {
-      fetchSemesters();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  useEffect(() => {
+    fetchSemesters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const columns = [
     {
@@ -191,9 +200,18 @@ const SemesterTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionSemester
+                    {/* <ButtonActionSemester
                       action="delete"
                       semesterId={row.getValue("semester_id")}
+                      onSuccess={() => {
+                        fetchSemesters();
+                        fetchSemestersDeleted();
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"semester"}
+                      entityId={row.getValue("semester_id")}
+                      action="delete"
                       onSuccess={() => {
                         fetchSemesters();
                         fetchSemestersDeleted();

@@ -37,7 +37,7 @@ import { useSchool } from "../context/SchoolContext";
 
 import ReuseTable from "../reuseable/ReuseTable";
 import { getInitialProgramCodeAndCampus } from "../reuseable/GetInitialNames";
-import ButtonActionProgram from "../reuseable/ButtonActionProgram";
+import ButtonAction from "../reuseable/ButtonAction";
 
 const DeletedProgram = () => {
   const [open, setOpen] = useState(false);
@@ -166,9 +166,18 @@ const ProgramTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionProgram
+                        {/* <ButtonActionProgram
                           action="reactivate"
                           programId={row.getValue("program_id")}
+                          onSuccess={() => {
+                            fetchProgramDeleted();
+                            fetchProgram();
+                          }}
+                        /> */}
+                        <ButtonAction
+                          entityType={"program"}
+                          entityId={row.getValue("program_id")}
+                          action="reactivate"
                           onSuccess={() => {
                             fetchProgramDeleted();
                             fetchProgram();

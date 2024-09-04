@@ -46,7 +46,7 @@ import AddProgram from "../../../components/api/AddProgram";
 
 import { getInitialDepartmentCodeAndCampus } from "../../../components/reuseable/GetInitialNames";
 import EditProgram from "../../../components/api/EditProgram";
-import ButtonActionProgram from "../../../components/reuseable/ButtonActionProgram";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import DeletedProgram from "../../../components/api/DeletedProgram";
 import { DataTableFacetedFilter } from "./test/DataTableFacetedFilter";
@@ -223,9 +223,18 @@ const ProgramTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionProgram
+                    {/* <ButtonActionProgram
                       action="delete"
                       programId={row.getValue("program_id")}
+                      onSuccess={() => {
+                        fetchProgram();
+                        fetchProgramDeleted();
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"program"}
+                      entityId={row.getValue("program_id")}
+                      action="delete"
                       onSuccess={() => {
                         fetchProgram();
                         fetchProgramDeleted();

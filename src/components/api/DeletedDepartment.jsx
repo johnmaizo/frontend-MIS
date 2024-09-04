@@ -26,7 +26,7 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionDepartment from "../reuseable/ButtonActionDepartment";
+import ButtonAction from "../reuseable/ButtonAction";
 import ReuseTable from "../reuseable/ReuseTable";
 
 const DeletedDepartment = () => {
@@ -135,9 +135,18 @@ const CampusTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionDepartment
+                        {/* <ButtonActionDepartment
                           action="reactivate"
                           departmentId={row.getValue("department_id")}
+                          onSuccess={() => {
+                            fetchDepartmentsDeleted();
+                            fetchDepartments();
+                          }}
+                        /> */}
+                        <ButtonAction
+                          entityType={"department"}
+                          entityId={row.getValue("department_id")}
+                          action="reactivate"
                           onSuccess={() => {
                             fetchDepartmentsDeleted();
                             fetchDepartments();

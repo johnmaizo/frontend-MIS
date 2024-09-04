@@ -211,11 +211,21 @@ const DataTable = ({ data, columns, loading, error }) => {
     <>
       <div className="mb-5 flex w-full items-center justify-between gap-3"></div>
       {loading ? (
-        <div className="grid h-[20em] w-full place-content-center">
-          <p className="inline-flex items-center gap-4 text-[2rem]">
-            <SmallLoader width={8} height={8} />
-            Loading...
-          </p>
+        <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+          <div className="grid h-[20em] w-full place-content-center">
+            <p className="inline-flex items-center gap-4 text-[2rem]">
+              <SmallLoader width={8} height={8} />
+              Loading...
+            </p>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+          <div className="grid h-[20em] w-full place-content-center">
+            <p className="text-[2rem] font-semibold text-red-700">
+              Error: {error}
+            </p>
+          </div>
         </div>
       ) : !loading && data && data.length > 0 ? (
         <>

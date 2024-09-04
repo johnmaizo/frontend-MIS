@@ -122,9 +122,9 @@ const AddCourseProgram = () => {
       const response = await toast.promise(
         axios.post("/program-courses/assign-program-course", transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Assigning Course...",
+          success: "Assigned Course successfully!",
+          error: "Failed to Assign Course.",
         },
         {
           position: "bottom-right",
@@ -153,7 +153,6 @@ const AddCourseProgram = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCampus(""); // Reset selected campus
         setSelectedCourses([]); // Reset selected courses
       }, 2000);
     } else if (error) {
@@ -189,7 +188,7 @@ const AddCourseProgram = () => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Assign new Course
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[18em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
                     <div className="mb-4.5 w-full">
@@ -288,7 +287,7 @@ const AddCourseProgram = () => {
                             data={uniqueCourses}
                             clearErrors={clearErrors}
                           />
-                          {selectedCourses.length > 0 && (
+                          {/* {selectedCourses.length > 0 && (
                             <div className="!w-full p-4">
                               <Button
                                 variant="destructive"
@@ -298,7 +297,7 @@ const AddCourseProgram = () => {
                                 Clear All
                               </Button>
                             </div>
-                          )}
+                          )} */}
                         </PopoverContent>
                       </Popover>
 

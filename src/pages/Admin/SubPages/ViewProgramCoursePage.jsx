@@ -37,7 +37,7 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import { useParams } from "react-router-dom";
 import EditCourse from "../../../components/api/EditCourse";
 import { DeleteIcon } from "../../../components/Icons";
-import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import AddCourseProgram from "../../../components/api/AddCourseProgram";
@@ -57,14 +57,14 @@ const ViewProgramCoursePage = () => {
       label: "Assign Courses to Program",
     },
     {
-      label: "ambot onsay e pangalan ani", // New breadcrumb item
+      label: "Program Courses Offered", // New breadcrumb item
     },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"ambot onsay e pangalan ani"} // Updated page name
+        pageName={"Program Courses Offered"} // Updated page name
         items={NavItems}
         ITEMS_TO_DISPLAY={3}
       />
@@ -240,9 +240,18 @@ const ProgramCourseTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCourse
+                    {/* <ButtonActionCourse
                       action="delete"
                       courseId={row.getValue("programCourse_id")}
+                      onSuccess={() => {
+                        fetchProgramCourse(campusName, program_id);
+                        fetchProgramCourseDeleted(campusName, program_id);
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"course"}
+                      entityId={row.getValue("programCourse_id")}
+                      action="delete"
                       onSuccess={() => {
                         fetchProgramCourse(campusName, program_id);
                         fetchProgramCourseDeleted(campusName, program_id);

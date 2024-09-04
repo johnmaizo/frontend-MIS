@@ -34,7 +34,7 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 import { useSchool } from "../../../components/context/SchoolContext";
 import AddDepartment from "../../../components/api/AddDepartment";
 import EditDepartment from "../../../components/api/EditDepartment";
-import ButtonActionDepartment from "../../../components/reuseable/ButtonActionDepartment";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import DeletedDepartment from "../../../components/api/DeletedDepartment";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 
@@ -193,9 +193,18 @@ const DepartmentTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionDepartment
+                    {/* <ButtonActionDepartment
                       action="delete"
                       departmentId={row.getValue("department_id")}
+                      onSuccess={() => {
+                        fetchDepartments();
+                        fetchDepartmentsDeleted();
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"department"}
+                      entityId={row.getValue("department_id")}
+                      action="delete"
                       onSuccess={() => {
                         fetchDepartments();
                         fetchDepartmentsDeleted();

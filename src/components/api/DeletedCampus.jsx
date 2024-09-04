@@ -26,8 +26,8 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionCampus from "../reuseable/ButtonActionCampus";
 import ReuseTable from "../reuseable/ReuseTable";
+import ButtonAction from "../reuseable/ButtonAction";
 
 const DeletedCampus = () => {
   const [open, setOpen] = useState(false);
@@ -121,9 +121,10 @@ const CampusTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionCampus
+                        <ButtonAction
+                          entityType={"campus"}
+                          entityId={row.getValue("campus_id")}
                           action="reactivate"
-                          campusId={row.getValue("campus_id")}
                           onSuccess={() => {
                             fetchCampusDeleted();
                             fetchCampus();

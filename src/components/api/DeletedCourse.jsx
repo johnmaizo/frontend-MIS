@@ -26,7 +26,7 @@ import { ArchiveIcon, UndoIcon } from "../Icons";
 
 import { useSchool } from "../context/SchoolContext";
 
-import ButtonActionCourse from "../reuseable/ButtonActionCourse";
+import ButtonAction from "../reuseable/ButtonAction";
 import ReuseTable from "../reuseable/ReuseTable";
 import { ArrowUpDown } from "lucide-react";
 
@@ -152,9 +152,18 @@ const CourseTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        <ButtonActionCourse
+                        {/* <ButtonActionCourse
                           action="reactivate"
                           courseId={row.getValue("course_id")}
+                          onSuccess={() => {
+                            fetchCourseDeleted();
+                            fetchCourse();
+                          }}
+                        /> */}
+                        <ButtonAction
+                          entityType={"course"}
+                          entityId={row.getValue("course_id")}
+                          action="reactivate"
                           onSuccess={() => {
                             fetchCourseDeleted();
                             fetchCourse();

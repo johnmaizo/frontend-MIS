@@ -3,13 +3,13 @@ import axios from "axios";
 
 const useFetchProgramById = (program_id, campusName) => {
   const [program, setProgram] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [programLoading, setProgramLoading] = useState(true);
+  const [programError, setProgramError] = useState(null);
 
   useEffect(() => {
     const fetchProgramById = async () => {
-      setLoading(true);
-      setError(null);
+      setProgramLoading(true);
+      setProgramError(null);
       try {
         const response = await axios.get(`/programs/${program_id}`, {
           params: {
@@ -19,12 +19,12 @@ const useFetchProgramById = (program_id, campusName) => {
         setProgram(response.data);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
+          setProgramError(err.response.data.message);
         } else {
-          setError("Failed to fetch program data");
+          setProgramError("Failed to fetch program data");
         }
       } finally {
-        setLoading(false);
+        setProgramLoading(false);
       }
     };
 
@@ -33,7 +33,7 @@ const useFetchProgramById = (program_id, campusName) => {
     }
   }, [program_id, campusName]);
 
-  return { program, loading, error };
+  return { program, programLoading, programError };
 };
 
 export default useFetchProgramById;

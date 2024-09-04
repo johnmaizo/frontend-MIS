@@ -39,7 +39,7 @@ import AddCampus from "../../../components/api/AddCampus";
 
 import EditCampus from "../../../components/api/EditCampus";
 
-import ButtonActionCampus from "../../../components/reuseable/ButtonActionCampus";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import DeletedCampus from "../../../components/api/DeletedCampus";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 
@@ -173,9 +173,10 @@ const CampusTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCampus
+                    <ButtonAction
+                      entityType={"campus"}
+                      entityId={row.getValue("campus_id")}
                       action="delete"
-                      campusId={row.getValue("campus_id")}
                       onSuccess={() => {
                         fetchCampus();
                         fetchCampusDeleted();

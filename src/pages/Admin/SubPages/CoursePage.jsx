@@ -39,7 +39,7 @@ import AddCourse from "../../../components/api/AddCourse";
 
 import EditCourse from "../../../components/api/EditCourse";
 
-import ButtonActionCourse from "../../../components/reuseable/ButtonActionCourse";
+import ButtonAction from "../../../components/reuseable/ButtonAction";
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
@@ -209,9 +209,18 @@ const CourseTables = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionCourse
+                    {/* <ButtonActionCourse
                       action="delete"
                       courseId={row.getValue("course_id")}
+                      onSuccess={() => {
+                        fetchCourse();
+                        fetchCourseDeleted();
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"course"}
+                      entityId={row.getValue("course_id")}
+                      action="delete"
                       onSuccess={() => {
                         fetchCourse();
                         fetchCourseDeleted();

@@ -12,12 +12,9 @@ import {
 
 import { useContext, useEffect, useState } from "react";
 
-import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
-
-import { ArrowUpDown } from "lucide-react";
 
 import { useSchool } from "../../../components/context/SchoolContext";
 
@@ -25,6 +22,7 @@ import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { Link } from "react-router-dom";
 import SmallLoader from "../../../components/styles/SmallLoader";
+import { useColumns } from "../../../components/reuseable/Columns";
 
 const ProgramCoursesPage = () => {
   const { user } = useContext(AuthContext);
@@ -63,115 +61,12 @@ const CourseTables = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const columns = [
-    {
-      accessorKey: "program_id",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Numeric ID
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: (info) => {
-        return <span className="font-semibold">{info.row.index + 1}</span>;
-      },
-    },
-    {
-      accessorKey: "programCode",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
-      },
-    },
-    {
-      accessorKey: "programDescription",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program Description
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return cell.getValue();
-      },
-    },
-    ...(user && user.role === "SuperAdmin"
-      ? [
-          {
-            accessorKey: "department.campus.campusName",
-            header: ({ column }) => {
-              return (
-                <Button
-                  variant="ghost"
-                  onClick={() =>
-                    column.toggleSorting(column.getIsSorted() === "asc")
-                  }
-                  className="p-1 hover:underline hover:underline-offset-4"
-                >
-                  Campus
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              );
-            },
-            cell: ({ cell }) => {
-              return (
-                <span className="inline-block font-semibold">
-                  {cell.getValue()}
-                </span>
-              );
-            },
-          },
-        ]
-      : []),
-    {
-      header: () => {
-        return <span className="sr-only">Select Program</span>;
-      },
-      accessorFn: (row) =>
-        `${row.program_id} ${row.department.campus.campusName} ${row.isActive}`,
-      id: "select",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-1">
-            <Link
-              to={`/courses/program-courses/${row.original.department.campus.campusName}/${row.original.program_id}`}
-              className="rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
-            >
-              Select Program
-            </Link>
-          </div>
-        );
-      },
-    },
-  ];
+  const { columnProgramCourse } = useColumns();
 
   return (
     <>
       <DataTable
-        columns={columns}
+        columns={columnProgramCourse}
         data={programActive}
         loading={loading}
         error={error}

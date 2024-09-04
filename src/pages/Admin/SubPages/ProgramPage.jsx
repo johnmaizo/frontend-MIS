@@ -13,30 +13,10 @@ import {
 
 import { useContext, useEffect, useState } from "react";
 
-import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../../components/ui/dialog";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../../components/ui/tooltip";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
-import { ArrowUpDown } from "lucide-react";
-import { DeleteIcon } from "../../../components/Icons";
 
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 
@@ -44,14 +24,12 @@ import { useSchool } from "../../../components/context/SchoolContext";
 
 import AddProgram from "../../../components/api/AddProgram";
 
-import { getInitialDepartmentCodeAndCampus } from "../../../components/reuseable/GetInitialNames";
-import EditProgram from "../../../components/api/EditProgram";
-import ButtonAction from "../../../components/reuseable/ButtonAction";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import DeletedProgram from "../../../components/api/DeletedProgram";
 import { DataTableFacetedFilter } from "./test/DataTableFacetedFilter";
 import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
 import { AuthContext } from "../../../components/context/AuthContext";
+import { useColumns } from "../../../components/reuseable/Columns";
 
 const ProgramPage = () => {
   const { user } = useContext(AuthContext);
@@ -81,187 +59,18 @@ const ProgramPage = () => {
 };
 
 const ProgramTables = () => {
-  const { program, fetchProgram, fetchProgramDeleted, loading, error } =
-    useSchool();
+  const { program, fetchProgram, loading, error } = useSchool();
 
   useEffect(() => {
     fetchProgram();
   }, []);
 
-  const columns = [
-    {
-      accessorKey: "program_id",
-
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Numeric ID
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: (info) => {
-        // `info.row.index` gives the zero-based index of the row
-        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
-      },
-    },
-    {
-      accessorKey: "programCode",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
-      cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
-      },
-    },
-    {
-      accessorKey: "programDescription",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program Description
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-    },
-    {
-      accessorKey: "fullDepartmentNameWithCampus",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Department
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        const getDeparmentName = cell.getValue().split(" - ")[1];
-
-        return (
-          <TooltipProvider delayDuration={75}>
-            <Tooltip>
-              <TooltipTrigger
-                asChild
-                className="cursor-default hover:underline hover:underline-offset-2"
-              >
-                <span className="font-medium">
-                  {getInitialDepartmentCodeAndCampus(cell.getValue())}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                <p className="text-[1rem]">{getDeparmentName}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        );
-      },
-    },
-    {
-      accessorKey: "isActive",
-      header: "Status",
-      cell: ({ cell }) => {
-        return (
-          <span
-            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-              cell.getValue() ? "bg-success" : "bg-danger"
-            }`}
-          >
-            {cell.getValue() ? "Active" : "Inactive"}
-          </span>
-        );
-      },
-    },
-
-    {
-      header: "Actions",
-      accessorFn: (row) => `${row.program_id} ${row.isActive}`,
-      id: "actions",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-1">
-            <EditProgram programId={row.getValue("program_id")} />
-
-            <Dialog>
-              <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Program"} />
-              </DialogTrigger>
-              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">
-                    Delete Program
-                  </DialogTitle>
-                  <DialogDescription asChild className="mt-2">
-                    <p className="mb-5">
-                      Are you sure you want to delete this program?
-                    </p>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    {/* <ButtonActionProgram
-                      action="delete"
-                      programId={row.getValue("program_id")}
-                      onSuccess={() => {
-                        fetchProgram();
-                        fetchProgramDeleted();
-                      }}
-                    /> */}
-                    <ButtonAction
-                      entityType={"program"}
-                      entityId={row.getValue("program_id")}
-                      action="delete"
-                      onSuccess={() => {
-                        fetchProgram();
-                        fetchProgramDeleted();
-                      }}
-                    />
-                    <DialogClose asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full underline-offset-4 hover:underline"
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        );
-      },
-    },
-  ];
+  const { columnProgram } = useColumns();
 
   return (
     <>
       <DataTable
-        columns={columns}
+        columns={columnProgram}
         data={program}
         loading={loading}
         error={error}

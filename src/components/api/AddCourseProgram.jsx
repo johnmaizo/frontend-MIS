@@ -175,7 +175,9 @@ const AddCourseProgram = () => {
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
               clearErrors("courseChoose"); // Clear campus selection error when dialog closes
-              setSelectedCourses([]); // Reset selected courses
+              if (!selectedCourses.length) {
+                setSelectedCourses([]); // Reset selected courses
+              }
             }
           }}
         >

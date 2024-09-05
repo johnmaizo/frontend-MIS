@@ -71,7 +71,7 @@ const DropdownUser = () => {
                   : ProfileUser
             }
             alt="User"
-            className="h-12 w-12 rounded-full"
+            className="aspect-square  w-12 rounded-full"
           />
 
           <svg

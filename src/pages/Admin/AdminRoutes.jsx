@@ -25,6 +25,7 @@ import { AuthContext } from "../../components/context/AuthContext";
 import AccountPage from "./SubPages/AccountPage";
 import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
 import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
+import TeacherPage from "./SubPages/TeacherPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -160,7 +161,7 @@ const AdminRoutes = () => {
         element={
           <>
             <PageTitle title="Teachers | MIS - Benedicto College" />
-            <DepartmentPage />
+            <TeacherPage />
           </>
         }
       />

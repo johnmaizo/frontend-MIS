@@ -452,6 +452,82 @@ export const SchoolProvider = ({ children }) => {
   };
   // ! Program Course END
 
+
+  // ! Program START
+  const [teacher, setTeacher] = useState([]);
+  const [teacherDeleted, setTeacherDeleted] = useState([]);
+  const [teacherActive, setTeacherActive] = useState([]);
+
+  const fetchTeacher = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/teachers", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+
+      const modifiedteacher = response.data.map((teacher) => ({
+        ...teacher,
+        fullTeacherNameWithCampus: `${teacher.firstName} ${teacher.lastName} - ${teacher.department.campus.campusName}`,
+      }));
+
+      // setTeacher(response.data);
+      setTeacher(modifiedteacher);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch teacher: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchTeacherDeleted = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/teachers/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setTeacherDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch teacher deleted: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  const fetchTeacherActive = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/teachers/active", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setTeacherActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch teacher active: (${err})`);
+      }
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchTeacherDeleted();
+  }, []);
+
+  // ! Program END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -512,6 +588,16 @@ export const SchoolProvider = ({ children }) => {
         fetchProgramCourseDeleted,
         programCourseActive,
         fetchProgramCourseActive,
+
+        // ! Teachers
+        teacher,
+        fetchTeacher,
+        teacherDeleted,
+        fetchTeacherDeleted,
+        teacherActive,
+        fetchTeacherActive
+
+
       }}
     >
       {children}

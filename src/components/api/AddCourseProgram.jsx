@@ -387,12 +387,12 @@ const SubjectList = ({ handleSetCourses, value, data, clearErrors }) => {
                     className="py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
                   >
                     <Check
-                      className={cn(
+                      className={`${cn(
                         "mr-2 h-4 w-4",
                         value.includes(data.value)
                           ? "opacity-100"
                           : "opacity-0",
-                      )}
+                      )} flex-none`}
                     />
                     {data.label}
                   </CommandItem>

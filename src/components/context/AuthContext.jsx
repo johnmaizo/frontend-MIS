@@ -11,20 +11,29 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
-  const handleLogout = () => {
+  // BroadcastChannel to sync logout across tabs
+  const bc = new BroadcastChannel("auth");
+
+  // Handle logout (including session expiration scenario)
+  const handleLogout = (isSessionExpired = false) => {
+    if (isSessionExpired && !isLoggingOut) {
+      setSessionExpired(false);
+      toast.error("Session expired, please login again!");
+    } else {
+      toast.success("Logged out successfully!");
+    }
     setIsLoggingOut(false);
     logout();
+    bc.postMessage("logout");
     <Navigate to="/auth/signin" />;
   };
 
-  const [sessionExpired, setSessionExpired] = useState(false);
-
+  // Fetch user data if token exists
   useEffect(() => {
     const storedToken = localStorage.getItem("jwtToken");
-
     if (storedToken) {
       fetchUser(storedToken)
         .then((userData) => {
@@ -40,7 +49,17 @@ const AuthProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // Listen for broadcast logout from other tabs
+    bc.onmessage = (event) => {
+      if (event.data === "logout") {
+        logout();
+      }
+    };
+
+    return () => {
+      bc.close();
+    };
   }, []);
 
   const fetchUser = async (token) => {
@@ -64,9 +83,15 @@ const AuthProvider = ({ children }) => {
     const { exp } = jwtDecode(token);
     const expiryTime = exp * 1000 - Date.now();
 
-    expiryTimer = setTimeout(() => {
-      setSessionExpired(true);
-    }, expiryTime);
+    // Automatically refresh token 5 minutes before expiry
+    expiryTimer = setTimeout(
+      () => {
+        if (!isLoggingOut) {
+          refreshToken();
+        }
+      },
+      expiryTime - 5 * 60 * 1000,
+    );
   };
 
   const login = async (email, password) => {
@@ -88,18 +113,10 @@ const AuthProvider = ({ children }) => {
 
   const logout = (isSessionExpired = false) => {
     clearTimeout(expiryTimer);
-    
     localStorage.removeItem("jwtToken");
     setUser(null);
     document.cookie =
       "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    if (isSessionExpired) {
-      toast.error("Session expired, please login again!");
-      setSessionExpired(false);
-      setIsLoggingOut(false);
-    } else {
-      toast.success("Logged out successfully!");
-    }
   };
 
   const refreshToken = async () => {
@@ -115,9 +132,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const isAuthenticated = () => {
-    return !!user;
-  };
+  const isAuthenticated = () => !!user;
 
   return (
     <AuthContext.Provider

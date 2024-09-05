@@ -1,14 +1,51 @@
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+// import { logoutUser } from '../components/context/AuthContext'; // Assuming a global logout function exists
+import { LogoutUser } from './LogoutUser';
+
 
 axios.defaults.baseURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 axios.defaults.withCredentials = true; // Include cookies in requests
 
-axios.interceptors.request.use(config => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('jwtToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
+
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // Session expired or unauthorized, attempt refresh
+      originalRequest._retry = true;
+      
+      try {
+        const refreshResponse = await axios.post('/accounts/refresh-token');
+        localStorage.setItem('jwtToken', refreshResponse.data.jwtToken);
+        
+        // Update the Authorization header and retry the request
+        axios.defaults.headers.common['Authorization'] = `Bearer ${refreshResponse.data.jwtToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${refreshResponse.data.jwtToken}`;
+
+        return axios(originalRequest);
+      } catch (refreshError) {
+        // If token refresh fails, logout globally
+        toast.error('Session expired. Please log in again.');
+        // logoutUser(); // Global logout method (could be imported)
+        LogoutUser();
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default axios;

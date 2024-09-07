@@ -48,12 +48,13 @@ const CampusPage = () => {
 };
 
 const CampusTables = () => {
-  const { campus, fetchCampus, loading, error } = useSchool();
+  const { campus, fetchCampus, fetchCampusDeleted, loading, error } = useSchool();
 
   const { columnCampus } = useColumns();
 
   useEffect(() => {
     fetchCampus();
+    fetchCampusDeleted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

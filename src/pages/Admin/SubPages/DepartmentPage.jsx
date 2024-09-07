@@ -60,12 +60,14 @@ const DepartmentTables = () => {
   const {
     departments,
     fetchDepartments,
+    fetchDepartmentsDeleted,
     loading,
     error,
   } = useSchool();
 
   useEffect(() => {
     fetchDepartments();
+    fetchDepartmentsDeleted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

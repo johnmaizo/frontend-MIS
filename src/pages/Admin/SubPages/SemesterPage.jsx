@@ -58,10 +58,11 @@ const SemesterPage = () => {
 };
 
 const SemesterTables = () => {
-  const { semesters, fetchSemesters, loading, error } = useSchool();
+  const { semesters, fetchSemesters, fetchSemestersDeleted, loading, error } = useSchool();
 
   useEffect(() => {
     fetchSemesters();
+    fetchSemestersDeleted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

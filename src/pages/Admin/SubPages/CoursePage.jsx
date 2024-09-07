@@ -61,11 +61,12 @@ const CoursePage = () => {
 const CourseTables = () => {
   const { user } = useContext(AuthContext);
 
-  const { course, fetchCourse, loading, error } =
+  const { course, fetchCourse, fetchCourseDeleted, loading, error } =
     useSchool();
 
   useEffect(() => {
     fetchCourse();
+    fetchCourseDeleted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

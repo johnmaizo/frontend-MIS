@@ -10,9 +10,9 @@ import FormElements from "../Sundoganan/Form/FormElements";
 import FormLayout from "../Sundoganan/Form/FormLayout";
 
 import AdminHome from "./SubPages/AdminHome";
-import AddStudentPage from "./SubPages/AddStudentPage";
-import StudentTablePage from "./SubPages/StudentTablePage";
-import ViewStudentPage from "./SubPages/ViewStudentPage";
+// import AddStudentPage from "./SubPages/AddStudentPage";
+// import StudentTablePage from "./SubPages/StudentTablePage";
+// import ViewStudentPage from "./SubPages/ViewStudentPage";
 
 import DepartmentPage from "./SubPages/DepartmentPage";
 import CampusPage from "./SubPages/CampusPage";
@@ -25,7 +25,6 @@ import { AuthContext } from "../../components/context/AuthContext";
 import AccountPage from "./SubPages/AccountPage";
 import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
 import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
-import TeacherPage from "./SubPages/TeacherPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -42,7 +41,7 @@ const AdminRoutes = () => {
         }
       />
 
-      <Route
+      {/* <Route
         path="/students/add-student"
         element={
           <>
@@ -70,7 +69,7 @@ const AdminRoutes = () => {
             <ViewStudentPage />
           </>
         }
-      />
+      /> */}
 
       {user.role === "SuperAdmin" && (
         <>
@@ -83,17 +82,19 @@ const AdminRoutes = () => {
               </>
             }
           />
-
-          <Route
-            path="/accounts"
-            element={
-              <>
-                <PageTitle title="Accounts | MIS - Benedicto College" />
-                <AccountPage />
-              </>
-            }
-          />
         </>
+      )}
+
+      {user.role === "Admin" && (
+        <Route
+          path="/accounts"
+          element={
+            <>
+              <PageTitle title="Accounts | MIS - Benedicto College" />
+              <AccountPage />
+            </>
+          }
+        />
       )}
 
       <Route
@@ -145,23 +146,13 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/courses/program-courses/:campusName/:program_id"
         element={
           <>
             <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
             <ViewProgramCoursePage />
-          </>
-        }
-      />
-
-      <Route
-        path="/teachers"
-        element={
-          <>
-            <PageTitle title="Teachers | MIS - Benedicto College" />
-            <TeacherPage />
           </>
         }
       />

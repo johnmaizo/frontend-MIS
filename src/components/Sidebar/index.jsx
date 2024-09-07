@@ -17,34 +17,56 @@ import BenedictoLogo from "../../assets/small-logo-transparent.png";
 import StudentSidebar from "../../pages/layout/sidebars/StudentSidebar";
 import { Button } from "../ui/button";
 import { CalendarDays } from "lucide-react";
+import { useMediaQuery } from "../../hooks/use-media-query";
+import { ArrowIcon } from "../Icons";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({
+  sidebarOpen,
+  setSidebarOpen,
+  handleSetSidebarOpened,
+  SidebarOpened,
+}) => {
   const { user } = useContext(AuthContext);
 
   const trigger = useRef(null);
   const sidebar = useRef(null);
+
+  // const isDesktop = useMediaQuery("(min-width: 769px)");
+  const isDesktop = useMediaQuery("(min-width: 880px)");
 
   const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
   );
 
+  useEffect(() => {
+    localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
+    if (sidebarExpanded) {
+      document.querySelector("body")?.classList.add("sidebar-expanded");
+    } else {
+      document.querySelector("body")?.classList.remove("sidebar-expanded");
+    }
+  }, [sidebarExpanded]);
+
   // close on click outside
   useEffect(() => {
-    const clickHandler = (event) => {
-      const { target } = event;
-      if (!sidebar.current || !trigger.current) return;
-      if (
-        !sidebarOpen ||
-        sidebar.current.contains(target) ||
-        trigger.current.contains(target)
-      )
-        return;
-      setSidebarOpen(false);
-    };
+    if (!isDesktop) {
+      const clickHandler = (event) => {
+        const { target } = event;
+        if (!sidebar.current || !trigger.current) return;
+        if (
+          !sidebarOpen ||
+          sidebar.current.contains(target) ||
+          trigger.current.contains(target)
+        )
+          return;
+        setSidebarOpen(false);
+      };
 
-    document.addEventListener("click", clickHandler);
-    return () => document.removeEventListener("click", clickHandler);
+      document.addEventListener("click", clickHandler);
+      return () => document.removeEventListener("click", clickHandler);
+    }
   });
 
   // close if the esc key is pressed
@@ -57,24 +79,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
-  useEffect(() => {
-    localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
-    if (sidebarExpanded) {
-      document.querySelector("body")?.classList.add("sidebar-expanded");
-    } else {
-      document.querySelector("body")?.classList.remove("sidebar-expanded");
-    }
-  }, [sidebarExpanded]);
-
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      // className={`absolute left-0 top-0 z-9999 ${!isDesktop ? "!translate-x-[0%]" : "-translate-x-[70%]"} flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black lg:bg-transparent ${
+      className={`absolute left-0 top-0 z-9999 ${!isDesktop && SidebarOpened === "open" ? "lg:!translate-x-[0%]" : "lg:-translate-x-[70%]"} flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black lg:pointer-events-none lg:bg-transparent ${
+        !isDesktop
+          ? sidebarOpen
+            ? "!translate-x-[0%] duration-300 ease-linear"
+            : "-translate-x-full duration-300 ease-linear lg:-translate-x-[70%]"
+          : isDesktop && "lg:-translate-x-[0%]"
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 shadow-2">
+      <div
+        className={`flex items-center justify-between gap-2 px-6 py-5.5 shadow-2 lg:pointer-events-auto`}
+      >
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}
           <img src={BenedictoLogo} alt="Logo" width={127} />
@@ -82,29 +102,36 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
         <button
           ref={trigger}
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSidebarOpen(!sidebarOpen);
+            handleSetSidebarOpened();
+          }}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
-          className="block lg:hidden"
+          className="block"
         >
-          <svg
-            className="fill-current dark:text-white"
-            width="20"
-            height="18"
-            viewBox="0 0 20 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 8.175H2.98748L9.36248 1.6875C9.69998 1.35 9.69998 0.825 9.36248 0.4875C9.02498 0.15 8.49998 0.15 8.16248 0.4875L0.399976 8.3625C0.0624756 8.7 0.0624756 9.225 0.399976 9.5625L8.16248 17.4375C8.31248 17.5875 8.53748 17.7 8.76248 17.7C8.98748 17.7 9.17498 17.625 9.36248 17.475C9.69998 17.1375 9.69998 16.6125 9.36248 16.275L3.02498 9.8625H19C19.45 9.8625 19.825 9.4875 19.825 9.0375C19.825 8.55 19.45 8.175 19 8.175Z"
-              fill=""
+          {isDesktop ? (
+            <HamburgerMenuIcon
+              width={30}
+              height={30}
+              className="rounded-md bg-[#E8EAF6] p-[0.3em] transition-colors duration-300 hover:bg-[#3949AB] hover:text-white dark:bg-boxdark dark:text-white dark:hover:bg-white dark:hover:text-black"
             />
-          </svg>
+          ) : (
+            <ArrowIcon />
+          )}
         </button>
       </div>
       {/* <!-- SIDEBAR HEADER --> */}
 
-      <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+      <div
+        className={`no-scrollbar relative -z-10 flex flex-col overflow-y-auto bg-white dark:bg-boxdark lg:pointer-events-auto ${
+          isDesktop &&
+          (SidebarOpened === "open"
+            ? "!left-[0] duration-300 ease-linear"
+            : "left-[-11.5em] duration-300 ease-linear")
+        } `}
+      >
         {/* <!-- Sidebar Menu --> */}
         <nav className="mt-5 px-4 py-4 pt-0 lg:px-6">
           {/* ! Mogamit rag sidebarExpanded/setSidebarExpanded if mogamit og SidebarLinkGroup nga component */}
@@ -113,35 +140,40 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <AdminSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}
+              handleSetSidebarOpened={handleSetSidebarOpened}
+              SidebarOpened={SidebarOpened}
             />
           )}
           {user.role === "Student" && <StudentSidebar />}
+
+          <HoverCard>
+            <HoverCardTrigger
+              asChild
+              className={`py-3 dark:bg-boxdark lg:bg-white`}
+            >
+              <Button variant="link">
+                {" "}
+                © {new Date().getFullYear()} - MIS - Hiro
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <div className="space-y-1">
+                <h4 className="text-sm font-semibold">@nextjs</h4>
+                <p className="text-sm">
+                  The React Framework – created and maintained by @vercel.
+                </p>
+                <div className="flex items-center pt-2">
+                  <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
+                  <span className="text-muted-foreground text-xs">
+                    Joined December 2021
+                  </span>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>
-
-      <HoverCard>
-        <HoverCardTrigger asChild className="py-3">
-          <Button variant="link">
-            {" "}
-            © {new Date().getFullYear()} - MIS - Hiro
-          </Button>
-        </HoverCardTrigger>
-        <HoverCardContent>
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold">@nextjs</h4>
-            <p className="text-sm">
-              The React Framework – created and maintained by @vercel.
-            </p>
-            <div className="flex items-center pt-2">
-              <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
-              <span className="text-muted-foreground text-xs">
-                Joined December 2021
-              </span>
-            </div>
-          </div>
-        </HoverCardContent>
-      </HoverCard>
     </aside>
   );
 };

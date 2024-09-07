@@ -59,10 +59,11 @@ const ProgramPage = () => {
 };
 
 const ProgramTables = () => {
-  const { program, fetchProgram, loading, error } = useSchool();
+  const { program, fetchProgram, fetchProgramDeleted, loading, error } = useSchool();
 
   useEffect(() => {
     fetchProgram();
+    fetchProgramDeleted();
   }, []);
 
   const { columnProgram } = useColumns();

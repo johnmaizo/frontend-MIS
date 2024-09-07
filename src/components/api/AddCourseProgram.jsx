@@ -45,7 +45,10 @@ const AddCourseProgram = () => {
 
   const { fetchProgramCourse, courseActive, fetchCourseActive } = useSchool();
 
-  const { program } = useFetchProgramById(program_id, campusName);
+  const { program, programLoading } = useFetchProgramById(
+    program_id,
+    campusName,
+  );
 
   const [open, setOpen] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
@@ -204,7 +207,11 @@ const AddCourseProgram = () => {
                         id="program_code"
                         type="text"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        value={`${program?.programCode} - ${program?.programDescription}`}
+                        value={
+                          programLoading
+                            ? "Loading..."
+                            : `${program?.programCode} - ${program?.programDescription}`
+                        }
                         disabled
                       />
                     </div>
@@ -257,7 +264,7 @@ const AddCourseProgram = () => {
                             role="combobox"
                             aria-expanded={open}
                             className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
-                            disabled={loading || success}
+                            disabled={loading || programLoading || success}
                           >
                             <div className="flex flex-wrap justify-start gap-2">
                               {selectedCourses?.length ? (
@@ -323,16 +330,18 @@ const AddCourseProgram = () => {
                           ? "bg-[#505456] hover:!bg-opacity-100"
                           : ""
                       }`}
-                      disabled={loading || success || error}
+                      disabled={loading || programLoading || success || error}
                     >
                       {loading && (
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
                         ? "Adding Course..."
-                        : success
-                          ? "Course Added!"
-                          : "Add Course"}
+                        : programLoading
+                          ? "Loading..."
+                          : success
+                            ? "Course Added!"
+                            : "Add Course"}
                     </button>
                   </div>
                 </form>

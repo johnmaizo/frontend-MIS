@@ -1,20 +1,34 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState } from "react";
 // import Header from '../Header';
-import Header from '../../components/Header';
+import Header from "../../components/Header";
 // import Sidebar from '../Sidebar';
-import Sidebar from '../../components/Sidebar';
-import { Outlet } from 'react-router-dom';
+import Sidebar from "../../components/Sidebar";
+import { Outlet } from "react-router-dom";
+import useOpenMode from "../../hooks/useOpenMode";
 
 const DefaultLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [SidebarOpened, setSidebarOpened] = useOpenMode();
+
+  const handleSetSidebarOpened = () => {
+    if (typeof setSidebarOpened === "function") {
+      setSidebarOpened((prev) => (prev === "open" ? "close" : "open"));
+    }
+  };
 
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Sidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          handleSetSidebarOpened={handleSetSidebarOpened}
+          SidebarOpened={SidebarOpened}
+        />
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
@@ -24,7 +38,9 @@ const DefaultLayout = ({ children }) => {
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
-          <main>
+          <main
+            className={`duration-300 ease-linear lg:relative ${SidebarOpened === "open" ? "lg:ml-[16em]" : "lg:ml-[5em]"}`}
+          >
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <Outlet />
               {children}

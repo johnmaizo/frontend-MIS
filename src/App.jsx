@@ -16,6 +16,7 @@ import StudentRoutes from "./pages/Student/StudentRoutes";
 import { Toaster } from "react-hot-toast";
 import IsLoggingOut from "./pages/Authentication/IsLoggingOut";
 import { SchoolProvider } from "./components/context/SchoolContext";
+import { HasRole } from "./components/reuseable/HasRole";
 
 function App() {
   const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
@@ -29,12 +30,15 @@ function App() {
       <Suspense fallback={<Loader />}>
         {user === null && <DefaultRoutes />}
 
-        {(user?.role === "Admin" || user?.role === "SuperAdmin") && (
-          <SchoolProvider>
-            <AdminRoutes />
-          </SchoolProvider>
-        )}
-        {user?.role === "Student" && <StudentRoutes />}
+        {/* {(user?.role === "Admin" || user?.role === "SuperAdmin") && ( */}
+        {user &&
+          (HasRole(user?.role, "Admin") ||
+            HasRole(user?.role, "SuperAdmin")) && (
+            <SchoolProvider>
+              <AdminRoutes />
+            </SchoolProvider>
+          )}
+        {/* {user?.role === "Student" && <StudentRoutes />} */}
       </Suspense>
     </>
   );

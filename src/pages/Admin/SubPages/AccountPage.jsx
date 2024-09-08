@@ -9,21 +9,18 @@ import {
 
 import { useEffect, useState } from "react";
 
-import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
-import { ArrowUpDown } from "lucide-react";
-
 import { useSchool } from "../../../components/context/SchoolContext";
 import AddAccount from "../../../components/api/AddAccount";
-import EditDepartment from "../../../components/api/EditDepartment";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 
 // !bruh
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout";
+import { useColumns } from "../../../components/reuseable/Columns";
 
 const AccountPage = () => {
   const NavItems = [
@@ -53,111 +50,12 @@ const AccountTables = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const columns = [
-    {
-      accessorKey: "id",
-
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Numeric ID
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: (info) => {
-        // `info.row.index` gives the zero-based index of the row
-        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
-      },
-    },
-    {
-      accessorKey: "role",
-      header: "Role",
-    },
-    {
-      accessorKey: "email",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-    },
-    {
-      accessorFn: (row) => {
-        return `${row.firstName} ${row.lastName}`;
-      },
-      id: "fullName",
-      header: "Name",
-    },
-
-    {
-      accessorKey: "campusName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return cell.getValue() ? cell.getValue() : "N/A";
-      },
-    },
-    {
-      accessorKey: "created",
-      header: "Date Created",
-      cell: ({ cell }) => {
-        return (
-          <relative-time datetime={cell.getValue()}>
-            {new Date(cell.getValue()).toDateString()}
-          </relative-time>
-        );
-      },
-    },
-    {
-      accessorKey: "updated",
-      header: "Date Updated",
-      cell: ({ cell }) => {
-        return cell.getValue() ? (
-          <relative-time datetime={cell.getValue()}>
-            {new Date(cell.getValue()).toDateString()}
-          </relative-time>
-        ) : (
-          "N/A"
-        );
-      },
-    },
-    {
-      accessorKey: "id",
-      id: "Actions",
-
-      header: "Action",
-      cell: ({ cell }) => {
-        return <EditDepartment departmentId={cell.getValue()} />;
-      },
-    },
-  ];
+  const { columnsAccount } = useColumns();
 
   return (
     <>
       <DataTable
-        columns={columns}
+        columns={columnsAccount}
         data={accounts}
         loading={loading}
         error={error}
@@ -201,7 +99,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             onChange={(event) =>
               table.getColumn("role")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[12em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[12em]"
           />
 
           <Input
@@ -210,7 +108,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             onChange={(event) =>
               table.getColumn("fullName")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
           <Input
@@ -219,7 +117,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             onChange={(event) =>
               table.getColumn("email")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
         </div>
 

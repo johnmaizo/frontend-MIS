@@ -20,6 +20,7 @@ import { CalendarDays } from "lucide-react";
 import { useMediaQuery } from "../../hooks/use-media-query";
 import { ArrowIcon } from "../Icons";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { HasRole } from "../reuseable/HasRole";
 
 const Sidebar = ({
   sidebarOpen,
@@ -93,7 +94,7 @@ const Sidebar = ({
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div
-        className={`flex items-center justify-between gap-2 bg-transparent dark:bg-boxdark bg-white lg:bg-transparent px-6 py-5.5 shadow-2 lg:pointer-events-auto`}
+        className={`flex items-center justify-between gap-2 bg-transparent bg-white px-6 py-5.5 shadow-2 dark:bg-boxdark lg:pointer-events-auto lg:bg-transparent`}
       >
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}
@@ -127,19 +128,20 @@ const Sidebar = ({
       {/* <!-- SIDEBAR HEADER --> */}
 
       <div
-        className={`no-scrollbar h-screen relative  -z-10 flex flex-col overflow-y-auto bg-white dark:bg-boxdark lg:pointer-events-auto ${
+        className={`no-scrollbar relative -z-10 flex h-screen flex-col overflow-y-auto bg-white dark:bg-boxdark lg:pointer-events-auto ${
           isDesktop &&
           (SidebarOpened === "open"
             ? "!left-[0] duration-300 ease-linear"
-            // : "left-[-11.5em] duration-300 ease-linear")
-            : "left-[-16em] duration-300 ease-linear")
+            : // : "left-[-11.5em] duration-300 ease-linear")
+              "left-[-16em] duration-300 ease-linear")
         } `}
       >
         {/* <!-- Sidebar Menu --> */}
         <nav className="mt-5 px-4 py-4 pt-0 lg:px-6">
           {/* ! Mogamit rag sidebarExpanded/setSidebarExpanded if mogamit og SidebarLinkGroup nga component */}
 
-          {(user.role === "Admin" || user.role === "SuperAdmin") && (
+          {(HasRole(user.role, "SuperAdmin") ||
+            HasRole(user.role, "Admin")) && (
             <AdminSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}
@@ -147,7 +149,7 @@ const Sidebar = ({
               SidebarOpened={SidebarOpened}
             />
           )}
-          {user.role === "Student" && <StudentSidebar />}
+          {/* {user.role === "Student" && <StudentSidebar />} */}
 
           <HoverCard>
             <HoverCardTrigger

@@ -25,16 +25,21 @@ import {
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
+import { HasRole } from "../reuseable/HasRole";
 
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
 
-  const roles = user.role === "SuperAdmin" ? ["Admin", "Staff", "Teacher"] : ["Staff", "Teacher"];
+  const roles =
+    HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")
+      ? ["Admin", "Registrar", "DataCenter", "Staff", "Teacher"]
+      : ["Staff", "Teacher"];
 
   const { fetchAccounts, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
   const [selectedRole, setSelectedRole] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
 
   const {
     register,
@@ -74,6 +79,13 @@ const AddAccount = () => {
       });
       return;
     }
+    if (!selectedGender) {
+      setError("gender", {
+        type: "manual",
+        message: "You must select a Gender.",
+      });
+      return;
+    }
 
     setLocalLoading(true);
     const transformedData = {
@@ -85,6 +97,7 @@ const AddAccount = () => {
       ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
       role: selectedRole,
+      gender: selectedGender,
       acceptTerms: true,
     };
 
@@ -125,6 +138,8 @@ const AddAccount = () => {
         setSuccess(false);
         reset();
         setSelectedCampus(""); // Reset selected campus
+        setSelectedGender("");
+        setSelectedRole("");
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -143,11 +158,14 @@ const AddAccount = () => {
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
               setSelectedRole("");
+              setSelectedGender("");
+              setSelectedRole("");
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
               clearErrors("campus_id");
               clearErrors("role");
+              clearErrors("gender");
             }
           }}
         >
@@ -155,7 +173,7 @@ const AddAccount = () => {
             <AddDepartmentIcon title={"Add Account"} />
             <span className="max-w-[8em]">Add Account </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white xl:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Account
@@ -164,12 +182,15 @@ const AddAccount = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[12em]">
+                      <div className="w-full xl:w-[13em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="title"
                         >
-                          Title
+                          Title{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="title"
@@ -192,13 +213,15 @@ const AddAccount = () => {
                           <ErrorMessage>*{errors.title.message}</ErrorMessage>
                         )}
                       </div>
-
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="first_name"
                         >
-                          First Name
+                          First Name{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="first_name"
@@ -227,9 +250,31 @@ const AddAccount = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="middle_name"
+                        >
+                          Middle Name{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="*Leave blank if not applicable"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-[1.2rem] text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("middleName")}
+                          disabled={success}
+                        />
+                      </div>
+
+                      <div className="w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
                           htmlFor="last_name"
                         >
-                          Last Name
+                          Last Name{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
                         </label>
                         <input
                           id="last_name"
@@ -256,12 +301,173 @@ const AddAccount = () => {
                       </div>
                     </div>
 
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="mb-4.5 w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="address"
+                        >
+                          Address{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
+                        </label>
+                        <input
+                          id="address"
+                          type="text"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("address", {
+                            required: {
+                              value: true,
+                              message: "Address is required",
+                            },
+                            validate: {
+                              notEmpty: (value) =>
+                                value.trim() !== "" ||
+                                "Address cannot be empty or just spaces",
+                            },
+                          })}
+                          disabled={localLoading || success}
+                        />
+                        {errors.address && (
+                          <ErrorMessage>*{errors.address.message}</ErrorMessage>
+                        )}
+                      </div>
+                      <div className="mb-4.5 w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="role"
+                        >
+                          Gender{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
+                        </label>
+
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedGender(value);
+                            clearErrors("gender");
+                          }}
+                          value={selectedGender}
+                          disabled={localLoading || success}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue
+                              placeholder="Select Gender"
+                              defaultValue={selectedGender}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Gender</SelectLabel>
+                              <SelectItem value={"Male"}>Male</SelectItem>
+                              <SelectItem value={"Female"}>Female</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {errors.gender && (
+                          <ErrorMessage>*{errors.gender.message}</ErrorMessage>
+                        )}
+                      </div>
+                      <div className="w-full">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Contact Number
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="'+63' or '09'"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("contactNumber", {
+                            required: {
+                              value: true,
+                              message: "Contact number is required",
+                            },
+                            pattern: {
+                              value: /^[0-9+]*$/,
+                              message:
+                                "Contact number must only contain numbers and '+'",
+                            },
+                            validate: (value) => {
+                              if (value.startsWith("+63")) {
+                                return (
+                                  value.length === 13 ||
+                                  'Contact number must be 13 digits long when starting with "+63"'
+                                );
+                              } else if (value.startsWith("09")) {
+                                return (
+                                  value.length === 11 ||
+                                  'Contact number must be 11 digits long when starting with "09"'
+                                );
+                              } else {
+                                return 'Contact number must start with "+63" or "09"';
+                              }
+                            },
+                          })}
+                          disabled={success}
+                        />
+                        {errors.contactNumber && (
+                          <ErrorMessage>
+                            *{errors.contactNumber.message}
+                          </ErrorMessage>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="mb-4.5 w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="role"
+                        >
+                          Role{" "}
+                          <span className="inline-block font-bold text-red-700">
+                            *
+                          </span>
+                        </label>
+
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedRole(value);
+                            clearErrors("role");
+                          }}
+                          value={selectedRole}
+                          disabled={localLoading || success}
+                        >
+                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                            <SelectValue
+                              placeholder="Select Role"
+                              defaultValue={selectedRole}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Roles</SelectLabel>
+                              {roles.map((role) => (
+                                <SelectItem key={role} value={role.toString()}>
+                                  {role}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+
+                        {errors.role && (
+                          <ErrorMessage>*{errors.role.message}</ErrorMessage>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="email"
                       >
-                        Email
+                        Email{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="email"
@@ -290,7 +496,10 @@ const AddAccount = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="password"
                       >
-                        Password
+                        Password{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="password"
@@ -319,7 +528,10 @@ const AddAccount = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="confirm_password"
                       >
-                        Confirm Password
+                        Confirm Password{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
                       <input
                         id="confirm_password"
@@ -351,51 +563,15 @@ const AddAccount = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="role"
-                      >
-                        Role
-                      </label>
-
-                      <Select
-                        onValueChange={(value) => {
-                          setSelectedRole(value);
-                          clearErrors("role");
-                        }}
-                        value={selectedRole}
-                        disabled={localLoading || success}
-                      >
-                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                          <SelectValue
-                            placeholder="Select Role"
-                            defaultValue={selectedRole}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Roles</SelectLabel>
-                            {roles.map((role) => (
-                              <SelectItem key={role} value={role.toString()}>
-                                {role}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {errors.role && (
-                        <ErrorMessage>*{errors.role.message}</ErrorMessage>
-                      )}
-                    </div>
-
-                    <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
                         htmlFor="acc_campus"
                       >
-                        Campus
+                        Campus{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
                       </label>
 
-                      {user.role === "SuperAdmin" ? (
+                      {HasRole(user.role, "SuperAdmin") ? (
                         <Select
                           onValueChange={(value) => {
                             setSelectedCampus(value);

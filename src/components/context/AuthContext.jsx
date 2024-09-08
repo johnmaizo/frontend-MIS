@@ -105,6 +105,9 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem("jwtToken", jwtToken);
       setUser(userData);
       startTokenExpiryTimer(jwtToken);
+
+      console.log(userData)
+      console.log(userData)
     } catch (error) {
       console.error("Login error:", error);
       throw error;

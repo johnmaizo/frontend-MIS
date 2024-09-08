@@ -25,6 +25,7 @@ import { AuthContext } from "../../components/context/AuthContext";
 import AccountPage from "./SubPages/AccountPage";
 import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
 import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
+import { HasRole } from "../../components/reuseable/HasRole";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -71,7 +72,7 @@ const AdminRoutes = () => {
         }
       /> */}
 
-      {user.role === "SuperAdmin" && (
+      {HasRole(user.role, "SuperAdmin") && (
         <>
           <Route
             path="/campus"
@@ -85,7 +86,7 @@ const AdminRoutes = () => {
         </>
       )}
 
-      {user.role === "Admin" && (
+      {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
         <Route
           path="/accounts"
           element={

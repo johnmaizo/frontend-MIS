@@ -28,6 +28,8 @@ import EditDepartment from "../api/EditDepartment";
 import { getInitialDepartmentCodeAndCampus } from "./GetInitialNames";
 import EditProgram from "../api/EditProgram";
 import { Link, useParams } from "react-router-dom";
+import { HasRole } from "./HasRole";
+import { Badge } from "../ui/badge";
 
 const useColumns = () => {
   const {
@@ -712,7 +714,7 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
-    ...(user && user.role === "SuperAdmin"
+    ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
             accessorKey: "campus.campusName",
@@ -865,7 +867,7 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
-    ...(user && user.role === "SuperAdmin"
+    ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
             accessorKey: "department.campus.campusName",
@@ -1003,7 +1005,7 @@ const useColumns = () => {
         );
       },
     },
-    ...(user && user.role === "SuperAdmin"
+    ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
             accessorKey: "program.department.campus.campusName",
@@ -1100,6 +1102,115 @@ const useColumns = () => {
   ];
   // ! Column View Program Course END
 
+  // ! Accounts START
+  const columnsAccount = [
+    {
+      accessorKey: "id",
+
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Numeric ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
+      },
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+    },
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Email
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorFn: (row) => {
+        return `${row.firstName} ${row.lastName}`;
+      },
+      id: "fullName",
+      header: "Name",
+    },
+
+    {
+      accessorKey: "campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return cell.getValue() ? cell.getValue() : "N/A";
+      },
+    },
+    {
+      accessorKey: "created",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "updated",
+      header: "Date Updated",
+      cell: ({ cell }) => {
+        return cell.getValue() ? (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        ) : (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            &quot;N/A&quot;
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "id",
+      id: "Actions",
+
+      header: "Action",
+      cell: ({ cell }) => {
+        return <EditDepartment departmentId={cell.getValue()} />;
+      },
+    },
+  ];
+  // ! Accounts End
+
   return {
     columnCampus,
     columnSemester,
@@ -1108,6 +1219,7 @@ const useColumns = () => {
     columnCourse,
     columnProgramCourse,
     columnViewProgramCourse,
+    columnsAccount,
   };
 };
 

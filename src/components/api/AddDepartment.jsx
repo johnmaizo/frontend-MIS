@@ -25,6 +25,7 @@ import {
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
+import { HasRole } from "../reuseable/HasRole";
 
 const AddDepartment = () => {
   const { user } = useContext(AuthContext);
@@ -254,7 +255,7 @@ const AddDepartment = () => {
                         Campus
                       </label>
 
-                      {user.role === "SuperAdmin" ? (
+                      {HasRole(user.role, "SuperAdmin") ? (
                         <Select
                           onValueChange={(value) => {
                             setSelectedCampus(value);

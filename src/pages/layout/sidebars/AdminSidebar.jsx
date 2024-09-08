@@ -16,6 +16,7 @@ import {
 } from "../../../components/Icons";
 
 import { AuthContext } from "../../../components/context/AuthContext";
+import { HasRole } from "../../../components/reuseable/HasRole";
 
 const AdminSidebar = ({
   sidebarExpanded,
@@ -33,7 +34,7 @@ const AdminSidebar = ({
       {/* <!-- Menu Group --> */}
       <div>
         <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-          {user.role === "SuperAdmin" ? "SUPER ADMIN MENU" : "ADMIN MENU"}
+          {HasRole(user.role, "SuperAdmin") ? "SUPER ADMIN MENU" : "ADMIN MENU"}
         </h3>
 
         <ul className="mb-6 flex flex-col gap-1.5">
@@ -55,7 +56,7 @@ const AdminSidebar = ({
             CAMPUS SECTION
           </h3>
 
-          {user.role === "SuperAdmin" && (
+          {HasRole(user.role, "SuperAdmin") && (
             <li>
               <NavLink
                 to="/campus"
@@ -83,7 +84,7 @@ const AdminSidebar = ({
             </NavLink>
           </li>
 
-          {(user.role === "SuperAdmin" || user.role === "Admin") && (
+          {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
             <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 ACCOUNT SECTION

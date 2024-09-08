@@ -6,6 +6,7 @@ import ProfileVons from "../../assets/images/profile-vons.jpg";
 import ProfileMaizo from "../../assets/images/profile-maizo.jpg";
 
 import { AuthContext } from "../context/AuthContext";
+import { HasRole } from "../reuseable/HasRole";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -57,7 +58,8 @@ const DropdownUser = () => {
             <p className="block text-xs">
               Role:{" "}
               <span className="font-semibold">
-                {user.role} {user.campusName && `(${user.campusName})`}
+                {HasRole(user.role, "Admin") ? "Admin" : user.role}{" "}
+                {user.campusName && `(${user.campusName})`}
               </span>
             </p>
           </span>
@@ -71,7 +73,7 @@ const DropdownUser = () => {
                   : ProfileUser
             }
             alt="User"
-            className="aspect-square  w-12 rounded-full"
+            className="aspect-square w-12 rounded-full"
           />
 
           <svg

@@ -37,6 +37,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "../../lib/utils";
 import useFetchProgramById from "../reuseable/useFetchProgramById";
+import { HasRole } from "../reuseable/HasRole";
 
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
@@ -86,7 +87,7 @@ const AddCourseProgram = () => {
 
   useEffect(() => {
     fetchCourseActive();
-    if (user && user.role === "SuperAdmin") {
+    if (user && HasRole(user.role, "SuperAdmin")) {
       setSelectedCampus(program.department.campus.campus_id);
     } else if (user && user.campus_id) {
       // Automatically set the campus if the user has a campus_id

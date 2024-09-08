@@ -24,7 +24,7 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 const Sidebar = ({
   sidebarOpen,
   setSidebarOpen,
-  handleSetSidebarOpened,
+  handleToggleSidebar,
   SidebarOpened,
 }) => {
   const { user } = useContext(AuthContext);
@@ -105,7 +105,9 @@ const Sidebar = ({
           onClick={(e) => {
             e.stopPropagation();
             setSidebarOpen(!sidebarOpen);
-            handleSetSidebarOpened();
+            if (isDesktop) {
+              handleToggleSidebar();
+            }
           }}
           aria-controls="sidebar"
           aria-expanded={sidebarOpen}
@@ -141,7 +143,7 @@ const Sidebar = ({
             <AdminSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}
-              handleSetSidebarOpened={handleSetSidebarOpened}
+              // handleSetSidebarOpened={handleSetSidebarOpened}
               SidebarOpened={SidebarOpened}
             />
           )}

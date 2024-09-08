@@ -11,11 +11,23 @@ const DefaultLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [SidebarOpened, setSidebarOpened] = useOpenMode();
+  const [isToggling, setIsToggling] = useState(false); // Prevent rapid toggling
 
   const handleSetSidebarOpened = () => {
     if (typeof setSidebarOpened === "function") {
       setSidebarOpened((prev) => (prev === "open" ? "close" : "open"));
     }
+  };
+
+  const handleToggleSidebar = () => {
+    if (isToggling) return; // Block changes while toggling
+
+    setIsToggling(true); // Prevent further toggling during the debounce period
+    setTimeout(() => {
+      setSidebarOpen((prev) => !prev);
+      handleSetSidebarOpened();
+      setIsToggling(false); // Allow toggling again after debounce delay
+    }, 300); // Adjust the debounce delay as needed (300ms in this example)
   };
 
   return (
@@ -26,7 +38,7 @@ const DefaultLayout = ({ children }) => {
         <Sidebar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          handleSetSidebarOpened={handleSetSidebarOpened}
+          handleToggleSidebar={handleToggleSidebar}
           SidebarOpened={SidebarOpened}
         />
         {/* <!-- ===== Sidebar End ===== --> */}

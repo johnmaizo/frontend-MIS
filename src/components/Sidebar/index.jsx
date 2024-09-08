@@ -83,7 +83,7 @@ const Sidebar = ({
     <aside
       ref={sidebar}
       // className={`absolute left-0 top-0 z-9999 ${!isDesktop ? "!translate-x-[0%]" : "-translate-x-[70%]"} flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black lg:bg-transparent ${
-      className={`absolute left-0 top-0 z-9999 ${!isDesktop && SidebarOpened === "open" ? "lg:!translate-x-[0%]" : "lg:-translate-x-[70%]"} flex h-screen w-64 flex-col overflow-y-hidden bg-white !text-black lg:pointer-events-none lg:bg-transparent ${
+      className={`absolute left-0 top-0 z-9999 ${!isDesktop && SidebarOpened === "open" ? "lg:!translate-x-[0%]" : ""} flex h-screen w-64 flex-col overflow-y-hidden !text-black lg:pointer-events-none lg:bg-transparent ${
         !isDesktop
           ? sidebarOpen
             ? "!translate-x-[0%] duration-300 ease-linear"
@@ -93,7 +93,7 @@ const Sidebar = ({
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div
-        className={`flex items-center justify-between gap-2 px-6 py-5.5 shadow-2 lg:pointer-events-auto`}
+        className={`flex items-center justify-between gap-2 bg-transparent dark:bg-boxdark bg-white lg:bg-transparent px-6 py-5.5 shadow-2 lg:pointer-events-auto`}
       >
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}
@@ -115,7 +115,7 @@ const Sidebar = ({
             <HamburgerMenuIcon
               width={30}
               height={30}
-              className="rounded-md bg-[#E8EAF6] p-[0.3em] transition-colors duration-300 hover:bg-[#3949AB] hover:text-white dark:bg-boxdark dark:text-white dark:hover:bg-white dark:hover:text-black"
+              className="rounded-md bg-[#E8EAF6] p-[0.3em] hover:bg-[#3949AB] hover:text-white dark:bg-boxdark dark:text-white dark:hover:bg-white dark:hover:text-black"
             />
           ) : (
             <ArrowIcon />
@@ -125,11 +125,12 @@ const Sidebar = ({
       {/* <!-- SIDEBAR HEADER --> */}
 
       <div
-        className={`no-scrollbar relative -z-10 flex flex-col overflow-y-auto bg-white dark:bg-boxdark lg:pointer-events-auto ${
+        className={`no-scrollbar h-screen relative  -z-10 flex flex-col overflow-y-auto bg-white dark:bg-boxdark lg:pointer-events-auto ${
           isDesktop &&
           (SidebarOpened === "open"
             ? "!left-[0] duration-300 ease-linear"
-            : "left-[-11.5em] duration-300 ease-linear")
+            // : "left-[-11.5em] duration-300 ease-linear")
+            : "left-[-16em] duration-300 ease-linear")
         } `}
       >
         {/* <!-- Sidebar Menu --> */}
@@ -149,7 +150,8 @@ const Sidebar = ({
           <HoverCard>
             <HoverCardTrigger
               asChild
-              className={`py-3 dark:bg-boxdark lg:bg-white`}
+              // className={`py-3 dark:bg-boxdark lg:bg-white`}
+              className={`py-3`}
             >
               <Button variant="link">
                 {" "}

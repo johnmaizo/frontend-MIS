@@ -147,7 +147,7 @@ const AdminSidebar = ({
                 <React.Fragment>
                   <NavLink
                     to="/courses/courses-list"
-                    className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                    className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
                       (pathname === "/courses" ||
                         pathname.includes("courses")) &&
                       "bg-gray text-primary dark:bg-meta-4"
@@ -308,12 +308,12 @@ const AdminSidebar = ({
           </SidebarLinkGroup> */}
           {/* <!-- Menu Item Teacher --> */}
 
-          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+          {/* <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             STUDENT SECTION
-          </h3>
+          </h3> */}
 
           {/* <!-- Menu Item Student --> */}
-          <SidebarLinkGroup
+          {/* <SidebarLinkGroup
             activeCondition={
               pathname === "/students" || pathname.includes("students")
             }
@@ -355,7 +355,6 @@ const AdminSidebar = ({
                       />
                     </svg>
                   </NavLink>
-                  {/* <!-- Dropdown Menu Start --> */}
                   <div
                     className={`translate transform overflow-hidden ${
                       !open && "hidden"
@@ -392,11 +391,10 @@ const AdminSidebar = ({
                       </li>
                     </ul>
                   </div>
-                  {/* <!-- Dropdown Menu End --> */}
                 </React.Fragment>
               );
             }}
-          </SidebarLinkGroup>
+          </SidebarLinkGroup> */}
           {/* <!-- Menu Item Student --> */}
 
           {/* <AdminSidebarSample pathname={pathname} /> */}

@@ -47,7 +47,11 @@ export const SchoolProvider = ({ children }) => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("/accounts");
+      const response = await axios.get("/accounts", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
       setAccounts(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {

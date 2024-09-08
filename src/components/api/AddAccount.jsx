@@ -29,7 +29,7 @@ import { AuthContext } from "../context/AuthContext";
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
 
-  const roles = ["Admin", "Staff", "Teacher"];
+  const roles = user.role === "SuperAdmin" ? ["Admin", "Staff", "Teacher"] : ["Staff", "Teacher"];
 
   const { fetchAccounts, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);

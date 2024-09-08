@@ -35,7 +35,7 @@ const StatusFilter = ({ table, option }) => {
           value={status}
         >
           <SelectTrigger
-            className={`h-[3em] max-w-[115px] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary ${option && (option === "campus" || option === "department" || option === "semester") ? "max-w-[85px] !p-1 text-sm !px-2" : ""}`}
+            className={`h-[3em] max-w-[115px] !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black shadow-default !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary ${option && (option === "campus" || option === "department" || option === "semester") ? "max-w-[85px] !p-1 text-sm !px-2" : ""}`}
           >
             <SelectValue placeholder="Status" />
           </SelectTrigger>

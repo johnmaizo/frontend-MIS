@@ -18,7 +18,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow
             key={headerGroup.id}
-            className="border-none bg-gray-2 dark:bg-meta-4"
+            className="border-none bg-gray-2 transition-none dark:bg-meta-4"
           >
             {headerGroup.headers.map((header) => {
               return (
@@ -39,13 +39,13 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         ))}
       </TableHeader>
       <TableBody
-        className={`!divide-x !divide-y !divide-stroke dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
+        className={`!divide-x !divide-y !divide-stroke transition-none dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
       >
         {loading ? (
-          <TableRow className="border-none hover:!bg-transparent">
+          <TableRow className="border-none transition-none hover:!bg-transparent">
             <TableCell
               colSpan={columns.length}
-              className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black dark:text-white"
+              className="absolute inline-flex h-24 w-full items-center justify-center gap-3 text-center text-2xl font-[500] text-black transition-none dark:text-white"
             >
               <SmallLoader /> Loading...
             </TableCell>

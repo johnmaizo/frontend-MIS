@@ -39,7 +39,8 @@ const DefaultLayout = ({ children }) => {
 
           {/* <!-- ===== Main Content Start ===== --> */}
           <main
-            className={`duration-300 ease-linear lg:relative ${SidebarOpened === "open" ? "lg:ml-[16em]" : "lg:ml-[5em]"}`}
+            // className={`duration-300 ease-linear lg:relative ${SidebarOpened === "open" ? "lg:ml-[16em]" : "lg:ml-[5em]"}`}
+            className={`duration-300 ease-linear lg:relative ${SidebarOpened === "open" ? "lg:ml-[16em]" : "lg:ml-[0]"}`}
           >
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <Outlet />

@@ -18,7 +18,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow
             key={headerGroup.id}
-            className="border-none bg-gray-2 transition-none dark:bg-meta-4"
+            className="border-none dark:bg-[#313D4A] bg-gray-2 transition-none"
           >
             {headerGroup.headers.map((header) => {
               return (

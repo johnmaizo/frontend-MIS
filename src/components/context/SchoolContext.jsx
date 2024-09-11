@@ -511,6 +511,77 @@ export const SchoolProvider = ({ children }) => {
   };
   // ! Buildings END
 
+  // ! Floors START
+  const [loadingFloors, setLoadingFloors] = useState(false);
+  const [loadingFloorsActive, setLoadingFloorsActive] = useState(false);
+  const [loadingFloorsDeleted, setLoadingFloorsDeleted] = useState(false);
+  const [floors, setFloors] = useState([]);
+  const [floorsActive, setFloorsActive] = useState([]);
+  const [floorsDeleted, setFloorsDeleted] = useState([]);
+
+  const fetchFloors = async (buildingName) => {
+    setLoadingFloors(true);
+    try {
+      const response = await axios.get("/building-structure", {
+        params: {
+          campus_id: user.campus_id,
+          filterFloor: "true",
+          buildingName: buildingName,
+        },
+      });
+
+      setFloors(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch buildings");
+      }
+    }
+    setLoadingFloors(false);
+  };
+
+  const fetchFloorsActive = async () => {
+    setLoadingFloorsActive(true);
+    try {
+      const response = await axios.get("/building-structure/active", {
+        params: {
+          campus_id: user.campus_id,
+          filterBuilding: "true",
+        },
+      });
+      setFloorsActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Building active: (${err})`);
+      }
+    }
+    setLoadingFloorsActive(false);
+  };
+
+  const fetchFloorsDeleted = async () => {
+    setLoadingFloorsDeleted(true);
+    try {
+      const response = await axios.get("/building-structure/deleted", {
+        params: {
+          campus_id: user.campus_id,
+          filterBuilding: "true",
+        },
+      });
+      setFloorsDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Building deleted: (${err})`);
+      }
+    }
+    setLoadingFloorsDeleted(false);
+  };
+  // ! Buildings END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -582,6 +653,17 @@ export const SchoolProvider = ({ children }) => {
         loadingBuildingsActive,
         buildingsActive,
         fetchBuildingsActive,
+
+        // ! Floors
+        loadingFloors,
+        floors,
+        fetchFloors,
+        loadingFloorsDeleted,
+        floorsDeleted,
+        fetchFloorsDeleted,
+        loadingFloorsActive,
+        floorsActive,
+        fetchFloorsActive,
       }}
     >
       {children}

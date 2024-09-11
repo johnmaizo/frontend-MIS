@@ -1302,7 +1302,10 @@ const useColumns = () => {
           //     Select Program
           //   </Link>
           // </div>
-          <SelectFloor campusName={row.original.campus.campusName} buildingName={row.original.buildingName} />
+          <SelectFloor
+            campusName={row.original.campus.campusName}
+            buildingName={row.original.buildingName}
+          />
         );
       },
     },

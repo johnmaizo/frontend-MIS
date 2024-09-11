@@ -40,7 +40,11 @@ const BuildingStructurePage = () => {
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={`Select Building (${user?.campusName})`}
+        pageName={
+          user && user.campusName
+            ? `Select Building (${user.campusName})`
+            : "Select Building"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
@@ -138,9 +142,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
 
               <Input
                 placeholder="Search by campus..."
-                value={
-                  table.getColumn("campusName")?.getFilterValue() ?? ""
-                }
+                value={table.getColumn("campusName")?.getFilterValue() ?? ""}
                 onChange={(event) =>
                   table
                     .getColumn("campusName")

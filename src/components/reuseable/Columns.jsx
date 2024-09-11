@@ -30,6 +30,7 @@ import EditProgram from "../api/EditProgram";
 import { Link, useParams } from "react-router-dom";
 import { HasRole } from "./HasRole";
 import { Badge } from "../ui/badge";
+import SelectFloor from "../api/SelectFloor";
 
 const useColumns = () => {
   const {
@@ -1211,6 +1212,103 @@ const useColumns = () => {
   ];
   // ! Accounts End
 
+  // ! Buildings START
+  const columnBuildings = [
+    {
+      accessorKey: "structure_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Numeric ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "buildingName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Building Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "campus.campusName",
+      id: "campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-danger"
+            }`}
+          >
+            {cell.getValue() ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
+    {
+      header: () => {
+        return <span className="sr-only">Select Floor</span>;
+      },
+      id: "selectFloor",
+      accessorFn: (row) =>
+        `${row.structure_id} ${row.buildingName} ${row.campus.campusName} ${row.isActive}`,
+      id: "select",
+      cell: ({ row }) => {
+        return (
+          // <div className="flex items-center gap-1">
+          //   <Link
+          //     to={`/courses/program-courses/${row.original.department.campus.campusName}/${row.original.program_id}`}
+          //     className="rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
+          //   >
+          //     Select Program
+          //   </Link>
+          // </div>
+          <SelectFloor campusName={row.original.campus.campusName} buildingName={row.original.buildingName} />
+        );
+      },
+    },
+  ];
+  // ! Buildings END
+
   return {
     columnCampus,
     columnSemester,
@@ -1220,6 +1318,7 @@ const useColumns = () => {
     columnProgramCourse,
     columnViewProgramCourse,
     columnsAccount,
+    columnBuildings,
   };
 };
 

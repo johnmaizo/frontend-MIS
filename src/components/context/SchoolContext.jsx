@@ -435,6 +435,82 @@ export const SchoolProvider = ({ children }) => {
   };
   // ! Program Course END
 
+  // ! Buildings START
+  const [loadingBuildings, setLoadingBuildings] = useState(false);
+  const [loadingBuildingsActive, setLoadingBuildingsActive] = useState(false);
+  const [loadingBuildingsDeleted, setLoadingBuildingsDeleted] = useState(false);
+  const [buildings, setBuildings] = useState([]);
+  const [buildingsActive, setBuildingsActive] = useState([]);
+  const [buildingsDeleted, setBuildingsDeleted] = useState([]);
+
+  const fetchBuildings = async () => {
+    setLoadingBuildings(true);
+    try {
+      const response = await axios.get("/building-structure", {
+        params: {
+          campus_id: user.campus_id,
+          filterBuilding: "true",
+        },
+      });
+
+      // const modifiedBuildings = response.data.map((building) => ({
+      //   ...building,
+      //   departmentNameAndCampus: `${building.departmentName} - ${building.campus.campusName}`,
+      // }));
+
+      // setBuildings(modifiedBuildings);
+      setBuildings(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch buildings");
+      }
+    }
+    setLoadingBuildings(false);
+  };
+
+  const fetchBuildingsActive = async () => {
+    setLoadingBuildingsActive(true);
+    try {
+      const response = await axios.get("/building-structure/active", {
+        params: {
+          campus_id: user.campus_id,
+          filterBuilding: "true",
+        },
+      });
+      setBuildingsActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Building active: (${err})`);
+      }
+    }
+    setLoadingBuildingsActive(false);
+  };
+
+  const fetchBuildingsDeleted = async () => {
+    setLoadingBuildingsDeleted(true);
+    try {
+      const response = await axios.get("/building-structure/deleted", {
+        params: {
+          campus_id: user.campus_id,
+          filterBuilding: "true",
+        },
+      });
+      setBuildingsDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Building deleted: (${err})`);
+      }
+    }
+    setLoadingBuildingsDeleted(false);
+  };
+  // ! Buildings END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -496,6 +572,16 @@ export const SchoolProvider = ({ children }) => {
         programCourseActive,
         fetchProgramCourseActive,
 
+        // ! Buildings
+        loadingBuildings,
+        buildings,
+        fetchBuildings,
+        loadingBuildingsDeleted,
+        buildingsDeleted,
+        fetchBuildingsDeleted,
+        loadingBuildingsActive,
+        buildingsActive,
+        fetchBuildingsActive,
       }}
     >
       {children}

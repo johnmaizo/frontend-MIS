@@ -395,7 +395,7 @@ const SubjectList = ({ handleSetCourses, value, data, clearErrors }) => {
                       handleSetCourses(data.value);
                       clearErrors("courseChoose");
                     }}
-                    className="py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
+                    className="py-4 cursor-pointer !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
                   >
                     <Check
                       className={`${cn(

@@ -26,6 +26,7 @@ import AccountPage from "./SubPages/AccountPage";
 import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
 import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
 import { HasRole } from "../../components/reuseable/HasRole";
+import BuildingStructurePage from "./SubPages/BuildingStructurePage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -154,6 +155,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
             <ViewProgramCoursePage />
+          </>
+        }
+      />
+
+      <Route
+        path="/structure-management"
+        element={
+          <>
+            <PageTitle title="Structure Management | MIS - Benedicto College" />
+            <BuildingStructurePage />
           </>
         }
       />

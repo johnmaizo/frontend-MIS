@@ -3,6 +3,7 @@
 import axios from "axios";
 import { createContext, useState, useContext } from "react";
 import { AuthContext } from "./AuthContext";
+import { HasRole } from "../reuseable/HasRole";
 
 const SchoolContext = createContext();
 
@@ -512,19 +513,18 @@ export const SchoolProvider = ({ children }) => {
   // ! Buildings END
 
   // ! Floors START
-  const [loadingFloors, setLoadingFloors] = useState(false);
-  const [loadingFloorsActive, setLoadingFloorsActive] = useState(false);
-  const [loadingFloorsDeleted, setLoadingFloorsDeleted] = useState(false);
   const [floors, setFloors] = useState([]);
   const [floorsActive, setFloorsActive] = useState([]);
   const [floorsDeleted, setFloorsDeleted] = useState([]);
 
-  const fetchFloors = async (buildingName) => {
-    setLoadingFloors(true);
+  const fetchFloors = async (buildingName, campusId) => {
+    setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
         params: {
-          campus_id: user.campus_id,
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
           filterFloor: "true",
           buildingName: buildingName,
         },
@@ -535,19 +535,22 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError("Failed to fetch buildings");
+        setError("Failed to fetch floors");
       }
     }
-    setLoadingFloors(false);
+    setLoadingBuildings(false);
   };
 
-  const fetchFloorsActive = async () => {
-    setLoadingFloorsActive(true);
+  const fetchFloorsActive = async (buildingName, campusId) => {
+    setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
         params: {
-          campus_id: user.campus_id,
-          filterBuilding: "true",
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
+          filterFloor: "true",
+          buildingName: buildingName,
         },
       });
       setFloorsActive(response.data);
@@ -555,19 +558,22 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Building active: (${err})`);
+        setError(`Failed to fetch Floor active: (${err})`);
       }
     }
-    setLoadingFloorsActive(false);
+    setLoadingBuildingsActive(false);
   };
 
-  const fetchFloorsDeleted = async () => {
-    setLoadingFloorsDeleted(true);
+  const fetchFloorsDeleted = async (buildingName, campusId) => {
+    setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
         params: {
-          campus_id: user.campus_id,
-          filterBuilding: "true",
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
+          filterFloor: "true",
+          buildingName: buildingName,
         },
       });
       setFloorsDeleted(response.data);
@@ -575,12 +581,91 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Building deleted: (${err})`);
+        setError(`Failed to fetch Floor deleted: (${err})`);
       }
     }
-    setLoadingFloorsDeleted(false);
+    setLoadingBuildingsDeleted(false);
   };
-  // ! Buildings END
+  // ! Floors END
+
+  // ! Rooms START
+  const [rooms, setRooms] = useState([]);
+  const [roomsActive, setRoomsActive] = useState([]);
+  const [roomsDeleted, setRoomsDeleted] = useState([]);
+
+  const fetchRooms = async (buildingName, floorName, campusId) => {
+    setLoadingBuildings(true);
+    try {
+      const response = await axios.get("/building-structure", {
+        params: {
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
+          filterRoom: "true",
+          buildingName: buildingName,
+          floorName: floorName,
+        },
+      });
+
+      setRooms(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch rooms");
+      }
+    }
+    setLoadingBuildings(false);
+  };
+
+  const fetchRoomsActive = async (buildingName, floorName, campusId) => {
+    setLoadingBuildingsActive(true);
+    try {
+      const response = await axios.get("/building-structure/active", {
+        params: {
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
+          filterRoom: "true",
+          buildingName: buildingName,
+          floorName: floorName,
+        },
+      });
+      setRoomsActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Room active: (${err})`);
+      }
+    }
+    setLoadingBuildingsActive(false);
+  };
+
+  const fetchRoomsDeleted = async (buildingName, floorName, campusId) => {
+    setLoadingBuildingsDeleted(true);
+    try {
+      const response = await axios.get("/building-structure/deleted", {
+        params: {
+          campus_id: HasRole(user.role, "SuperAdmin")
+            ? campusId
+            : user.campus_id,
+          filterRoom: "true",
+          buildingName: buildingName,
+          floorName: floorName,
+        },
+      });
+      setRoomsDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Room deleted: (${err})`);
+      }
+    }
+    setLoadingBuildingsDeleted(false);
+  };
+  // ! Floors END
 
   return (
     <SchoolContext.Provider
@@ -655,15 +740,20 @@ export const SchoolProvider = ({ children }) => {
         fetchBuildingsActive,
 
         // ! Floors
-        loadingFloors,
         floors,
         fetchFloors,
-        loadingFloorsDeleted,
         floorsDeleted,
         fetchFloorsDeleted,
-        loadingFloorsActive,
         floorsActive,
         fetchFloorsActive,
+
+        // ! Rooms
+        rooms,
+        fetchRooms,
+        roomsDeleted,
+        fetchRoomsDeleted,
+        roomsActive,
+        fetchRoomsActive,
       }}
     >
       {children}

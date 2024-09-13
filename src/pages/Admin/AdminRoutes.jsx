@@ -27,6 +27,8 @@ import ProgramCoursesPage from "./SubPages/ProgramCoursesPage";
 import ViewProgramCoursePage from "./SubPages/ViewProgramCoursePage";
 import { HasRole } from "../../components/reuseable/HasRole";
 import BuildingStructurePage from "./SubPages/BuildingStructurePage";
+import FloorPage from "./SubPages/FloorPage";
+import RoomPage from "./SubPages/RoomPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -160,11 +162,39 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/structure-management"
+        path="/structure-management/buildings"
         element={
           <>
             <PageTitle title="Structure Management | MIS - Benedicto College" />
             <BuildingStructurePage />
+          </>
+        }
+      />
+
+      <Route
+        path={
+          HasRole(user.role, "SuperAdmin")
+            ? "/structure-management/:campusId/buildings/:buildingName/floors"
+            : "/structure-management/buildings/:buildingName/floors"
+        }
+        element={
+          <>
+            <PageTitle title="Floors | MIS - Benedicto College" />
+            <FloorPage />
+          </>
+        }
+      />
+
+      <Route
+        path={
+          HasRole(user.role, "SuperAdmin")
+            ? "/structure-management/:campusId/buildings/:buildingName/floors/:floorName/rooms"
+            : "/structure-management/buildings/:buildingName/floors/:floorName/rooms"
+        }
+        element={
+          <>
+            <PageTitle title="Rooms | MIS - Benedicto College" />
+            <RoomPage />
           </>
         }
       />

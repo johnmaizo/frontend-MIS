@@ -31,7 +31,9 @@ const AdminHome = () => {
 
       <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
         <CardDataStudent />
-        {HasRole(user.role, "SuperAdmin") && <CardDataCampus />}
+        {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
+          <CardDataCampus />
+        )}
         <CardDataDepartment />
         <CardDataPrograms />
         <CardDataCourse />
@@ -39,7 +41,7 @@ const AdminHome = () => {
 
       <div className="mt-8">{/* <UserTables /> */}</div>
 
-      {HasRole(user.role, "SuperAdmin") && (
+      {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           <ChartOne />
           <ChartThree />

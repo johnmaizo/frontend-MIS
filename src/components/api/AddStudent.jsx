@@ -13,9 +13,11 @@ import {
 } from "../ui/dialog";
 import { useSchool } from "../context/SchoolContext";
 
+import { ErrorMessage } from "../reuseable/ErrorMessage";
+
 const AddStudent = () => {
-  const { fetchStudents } = useSchool()
-   
+  const { fetchStudents } = useSchool();
+
   const {
     register,
     handleSubmit,
@@ -546,14 +548,4 @@ const AddStudent = () => {
     </>
   );
 };
-
-// eslint-disable-next-line react/prop-types
-const ErrorMessage = ({ children }) => {
-  return (
-    <span className="mt-2 inline-block text-sm font-medium text-red-600">
-      {children}
-    </span>
-  );
-};
-
 export default AddStudent;

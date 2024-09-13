@@ -87,10 +87,10 @@ const AdminSidebar = ({
 
           <li>
             <NavLink
-              to="/structure-management"
+              to="/structure-management/buildings"
               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                (pathname === "/structure-management" ||
-                  pathname.includes("structure-management")) &&
+                (pathname === "/structure-management/" ||
+                  pathname.includes("structure-management/")) &&
                 "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
               }`}
             >

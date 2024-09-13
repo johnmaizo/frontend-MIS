@@ -27,6 +27,9 @@ import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
 
+import { ErrorMessage } from "../reuseable/ErrorMessage";
+
+
 const AddDepartment = () => {
   const { user } = useContext(AuthContext);
 
@@ -328,15 +331,6 @@ const AddDepartment = () => {
         </Dialog>
       </div>
     </div>
-  );
-};
-
-// eslint-disable-next-line react/prop-types
-const ErrorMessage = ({ children }) => {
-  return (
-    <span className="mt-2 inline-block text-sm font-medium text-red-600">
-      {children}
-    </span>
   );
 };
 

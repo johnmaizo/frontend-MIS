@@ -29,13 +29,11 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
-
-const AddCourse = () => {
+const AddBuilding = () => {
   const { user } = useContext(AuthContext);
 
-  const { fetchCourse, campusActive, fetchCampusActive } = useSchool();
+  const { fetchBuildings, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);
-
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
   const {
@@ -49,7 +47,7 @@ const AddCourse = () => {
 
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
 
   useEffect(() => {
     fetchCampusActive();
@@ -69,8 +67,7 @@ const AddCourse = () => {
       return;
     }
 
-    setLoading(true);
-    // Transform form data to replace empty strings or strings with only spaces with null
+    setLocalLoading(true);
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
@@ -78,19 +75,19 @@ const AddCourse = () => {
           value.trim() === "" ? null : value.trim(),
         ]),
       ),
+
+      isBuilding: true,
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
     };
-
-    console.log(transformedData);
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/course/add-course", transformedData),
+        axios.post("/building-structure/add-structure", transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Adding Building...",
+          success: "Building Added successfully!",
+          error: "Failed to add Building.",
         },
         {
           position: "bottom-right",
@@ -100,17 +97,17 @@ const AddCourse = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchCourse();
+        fetchBuildings();
         setOpen(false); // Close the dialog
       }
-      setLoading(false);
+      setLocalLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setGeneralError(err.response.data.message);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -120,11 +117,11 @@ const AddCourse = () => {
         setSuccess(false);
         reset();
         setSelectedCampus(""); // Reset selected campus
-      }, 2000);
+      }, 5000);
     } else if (error) {
       setTimeout(() => {
         setGeneralError("");
-      }, 5000);
+      }, 6000);
     }
   }, [success, error, reset]);
 
@@ -146,124 +143,47 @@ const AddCourse = () => {
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Course </span>
+            <span className="max-w-[8em]">Add Building </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Course
+                Add new Building
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="course_code"
+                          htmlFor="blg_name"
                         >
-                          Course Code
+                          Building Name
                         </label>
                         <input
-                          id="course_code"
+                          id="blg_name"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("courseCode", {
+                          {...register("buildingName", {
                             required: {
                               value: true,
-                              message: "Course Code is required",
+                              message: "Building Name is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Course Code cannot be empty or just spaces",
-                              noMultipleSpaces: (value) =>
-                                !/\s{2,}/.test(value) ||
-                                "Course Code cannot contain multiple consecutive spaces",
-                              isValidCourseCode: (value) => {
-                                // Replace multiple spaces with a single space
-                                value = value.replace(/\s{2,}/g, " ");
-                                return (
-                                  /^[A-Z0-9\s-]+$/.test(value) ||
-                                  "Course Code must contain only capital letters, numbers, and hyphens"
-                                );
-                              },
+                                "Building Name cannot be empty or just spaces",
                             },
-                            setValueAs: (value) =>
-                              value.replace(/\s{2,}/g, " ").trim(), // Automatically trim and replace multiple spaces
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
-                        {errors.courseCode && (
+                        {errors.buildingName && (
                           <ErrorMessage>
-                            *{errors.courseCode.message}
+                            *{errors.buildingName.message}
                           </ErrorMessage>
                         )}
                       </div>
-
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="unit"
-                        >
-                          Unit
-                        </label>
-
-                        <input
-                          id="unit"
-                          type="number"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("unit", {
-                            required: {
-                              value: true,
-                              message: "Unit is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Unit cannot be empty or just spaces",
-                              validUnit: (value) =>
-                                [1, 2, 3, 6].includes(Number(value)) ||
-                                "Unit must be 1, 2, 3, or 6",
-                            },
-                          })}
-                          disabled={loading || success}
-                        />
-                        {errors.unit && (
-                          <ErrorMessage>*{errors.unit.message}</ErrorMessage>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="course_description"
-                      >
-                        Course Description
-                      </label>
-                      <input
-                        id="course_description"
-                        type="text"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("courseDescription", {
-                          required: {
-                            value: true,
-                            message: "Course Description is required",
-                          },
-                          validate: {
-                            notEmpty: (value) =>
-                              value.trim() !== "" ||
-                              "Course Description cannot be empty or just spaces",
-                          },
-                        })}
-                        disabled={loading || success}
-                      />
-                      {errors.courseDescription && (
-                        <ErrorMessage>
-                          *{errors.courseDescription.message}
-                        </ErrorMessage>
-                      )}
                     </div>
 
                     <div className="mb-4.5 w-full">
@@ -281,7 +201,7 @@ const AddCourse = () => {
                             clearErrors("campus_id");
                           }}
                           value={selectedCampus}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         >
                           <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
                             <SelectValue
@@ -324,28 +244,20 @@ const AddCourse = () => {
                     </div>
 
                     {error && (
-                      <div className="mb-5 text-center text-red-600">
-                        {error}
-                      </div>
+                      <span className="mt-2 inline-block py-3 font-medium text-red-600">
+                        Error: {error}
+                      </span>
                     )}
 
                     <button
                       type="submit"
-                      className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                        loading || success
-                          ? "bg-[#505456] hover:!bg-opacity-100"
-                          : ""
-                      }`}
-                      disabled={loading || success || error}
+                      className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
+                      disabled={localLoading || success}
                     >
-                      {loading && (
-                        <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
+                      {localLoading && (
+                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       )}
-                      {loading
-                        ? "Adding Course..."
-                        : success
-                          ? "Course Added!"
-                          : "Add Course"}
+                      {localLoading ? "Loading..." : "Add Department"}
                     </button>
                   </div>
                 </form>
@@ -358,4 +270,4 @@ const AddCourse = () => {
   );
 };
 
-export default AddCourse;
+export default AddBuilding;

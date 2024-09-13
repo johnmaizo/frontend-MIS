@@ -35,6 +35,9 @@ import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { getInitialDepartmentNameAndCampus } from "../reuseable/GetInitialNames";
 
+import { ErrorMessage } from "../reuseable/ErrorMessage";
+
+
 const AddProgram = () => {
   const { fetchProgram, deparmentsActive, fetchDepartmentsActive, loading } = useSchool();
 
@@ -347,15 +350,6 @@ const AddProgram = () => {
         </Dialog>
       </div>
     </div>
-  );
-};
-
-// eslint-disable-next-line react/prop-types
-const ErrorMessage = ({ children }) => {
-  return (
-    <span className="mt-2 inline-block text-sm font-medium text-red-600">
-      {children}
-    </span>
   );
 };
 

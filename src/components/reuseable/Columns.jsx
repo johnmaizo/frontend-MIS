@@ -30,7 +30,7 @@ import EditProgram from "../api/EditProgram";
 import { Link, useParams } from "react-router-dom";
 import { HasRole } from "./HasRole";
 import { Badge } from "../ui/badge";
-import SelectFloor from "../api/SelectFloor";
+import EditBuilding from "../api/EditBuilding";
 
 const useColumns = () => {
   const {
@@ -1285,32 +1285,346 @@ const useColumns = () => {
       },
     },
     {
+      header: "Actions",
+      id: "actions",
+      accessorFn: (row) =>
+        `${row.structure_id} ${row.buildingName} ${row.campus.campusName} ${row.campus.campus_id} ${row.isActive}`,
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditBuilding structureId={row.original.structure_id} />
+
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Building"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete Building
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this Building?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"department"}
+                      entityId={row.original.structure_id}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchDepartments();
+                        fetchDepartmentsDeleted();
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+    {
       header: () => {
         return <span className="sr-only">Select Floor</span>;
       },
       id: "selectFloor",
       accessorFn: (row) =>
-        `${row.structure_id} ${row.buildingName} ${row.campus.campusName} ${row.isActive}`,
-      id: "select",
+        `${row.structure_id} ${row.buildingName} ${row.campus.campusName} ${row.campus.campus_id} ${row.isActive}`,
       cell: ({ row }) => {
         return (
-          // <div className="flex items-center gap-1">
-          //   <Link
-          //     to={`/courses/program-courses/${row.original.department.campus.campusName}/${row.original.program_id}`}
-          //     className="rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
-          //   >
-          //     Select Program
-          //   </Link>
-          // </div>
-          <SelectFloor
-            campusName={row.original.campus.campusName}
-            buildingName={row.original.buildingName}
-          />
+          <div
+            className={`flex items-center gap-1 ${!row.original.isActive ? "cursor-not-allowed" : ""}`}
+          >
+            <Link
+              to={
+                user && user.campus_id
+                  ? `/structure-management/buildings/${row.original.buildingName}/floors`
+                  : `/structure-management/${row.original.campus.campus_id}/buildings/${row.original.buildingName}/floors`
+              }
+              className={`rounded p-3 text-sm font-medium text-white ${!row.original.isActive ? "pointer-events-none bg-blue-400 hover:no-underline" : "bg-primary hover:underline hover:underline-offset-2"}`}
+            >
+              Select Floor
+            </Link>
+          </div>
         );
       },
     },
   ];
   // ! Buildings END
+
+  // ! Floors START
+  const columnFloors = [
+    {
+      accessorKey: "structure_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Numeric ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "floorName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Floor Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "buildingName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Building Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "campus.campusName",
+      id: "campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-danger"
+            }`}
+          >
+            {cell.getValue() ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
+    {
+      header: () => {
+        return <span className="sr-only">Select Floor</span>;
+      },
+      id: "selectFloor",
+      accessorFn: (row) =>
+        `${row.structure_id} ${row.buildingName} ${row.floorName} ${row.campus.campusName} ${row.isActive}`,
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <Link
+              to={
+                user && user.campus_id
+                  ? `/structure-management/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
+                  : `/structure-management/${row.original.campus.campus_id}/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
+              }
+              className="rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
+            >
+              Select Room
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Fooors END
+
+  // ! Rooms START
+  const columnRoom = [
+    {
+      accessorKey: "structure_id",
+
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Numeric ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span>{info.row.index + 1}</span>; // +1 to start numbering from 1
+      },
+    },
+    {
+      accessorKey: "roomName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Room
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    // {
+    //   accessorKey: "floorName",
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //         className="p-1 hover:underline hover:underline-offset-4"
+    //       >
+    //         Floor
+    //         <ArrowUpDown className="ml-2 h-4 w-4" />
+    //       </Button>
+    //     );
+    //   },
+    // },
+    {
+      accessorKey: "floorName",
+      header: "Floor",
+    },
+    {
+      accessorKey: "campus.campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-danger"
+            }`}
+          >
+            {cell.getValue() ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
+
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.structure_id} ${row.isActive}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditDepartment departmentId={row.getValue("structure_id")} />
+
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Department"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete Department
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this department?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"department"}
+                      entityId={row.getValue("department_id")}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchDepartments();
+                        fetchDepartmentsDeleted();
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Rooms END
 
   return {
     columnCampus,
@@ -1322,6 +1636,8 @@ const useColumns = () => {
     columnViewProgramCourse,
     columnsAccount,
     columnBuildings,
+    columnFloors,
+    columnRoom,
   };
 };
 

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ProfileUser from "../../assets/images/profile-user.jpg";
 import ProfileVons from "../../assets/images/profile-vons.jpg";
 import ProfileMaizo from "../../assets/images/profile-maizo.jpg";
+import ProfileThomas from "../../assets/images/thomas.jfif";
 
 import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
@@ -66,11 +67,13 @@ const DropdownUser = () => {
 
           <img
             src={
-              user.firstName === "Vonsleryl"
-                ? ProfileVons
-                : user.firstName === "John Robert"
-                  ? ProfileMaizo
-                  : ProfileUser
+              HasRole(user.role, "SuperAdmin")
+                ? ProfileThomas
+                : user.firstName === "Vonsleryl"
+                  ? ProfileVons
+                  : user.firstName === "John Robert"
+                    ? ProfileMaizo
+                    : ProfileUser
             }
             alt="User"
             className="aspect-square w-12 rounded-full"

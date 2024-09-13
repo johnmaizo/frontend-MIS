@@ -23,15 +23,25 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import { useParams } from "react-router-dom";
 import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
+import { HasRole } from "../../../components/reuseable/HasRole";
+import AddFloor from "../../../components/api/AddFloor";
+import AddRoom from "../../../components/api/AddRoom";
 
 const RoomPage = () => {
   const { user } = useContext(AuthContext);
 
-  const { buildingName, floorName } = useParams();
+  const { buildingName, floorName, campusId } = useParams();
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
     { to: "/structure-management/buildings", label: "Select Building" },
+    {
+      to:
+        user && HasRole(user.role, "SuperAdmin")
+          ? `/structure-management/${campusId}/buildings/${buildingName}/floors`
+          : `/structure-management/buildings/${buildingName}/floors`,
+      label: "Select Floor",
+    },
     {
       label:
         user && user.campusName
@@ -106,6 +116,8 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
     },
   });
 
+  const { buildingName, campusId, floorName } = useParams();
+
   return (
     <>
       <div className="mb-5 flex w-full items-center justify-between gap-3"></div>
@@ -130,28 +142,34 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
         !loadingBuildings && (
           <>
             <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-              <div className="mb-5 mt-2 gap-5 md:flex">
-                <Input
-                  placeholder="Search by Floor..."
-                  value={table.getColumn("floorName")?.getFilterValue() ?? ""}
-                  onChange={(event) =>
-                    table
-                      .getColumn("floorName")
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
-                />
-
-                <Input
-                  placeholder="Search by campus..."
-                  value={table.getColumn("floorName")?.getFilterValue() ?? ""}
-                  onChange={(event) =>
-                    table
-                      .getColumn("floorName")
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
-                />
+              <div className="mb-5 mt-2 justify-between gap-5 md:flex">
+                <div className="gap-5 md:flex">
+                  <Input
+                    placeholder="Search by Room..."
+                    value={table.getColumn("roomName")?.getFilterValue() ?? ""}
+                    onChange={(event) =>
+                      table
+                        .getColumn("roomName")
+                        ?.setFilterValue(event.target.value)
+                    }
+                    className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
+                  />
+                  <Input
+                    placeholder="Search by campus..."
+                    value={
+                      table.getColumn("campusName")?.getFilterValue() ?? ""
+                    }
+                    onChange={(event) =>
+                      table
+                        .getColumn("campusName")
+                        ?.setFilterValue(event.target.value)
+                    }
+                    className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+                  />
+                </div>
+                <div>
+                  <AddRoom buildingName={buildingName} floorName={floorName} campusId={campusId} />
+                </div>
               </div>
               <div className="max-w-full overflow-x-auto">
                 <ReuseTable

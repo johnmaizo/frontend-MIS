@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -12,61 +13,30 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
-import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
-const AddBuilding = () => {
+const AddFloor = ({ buildingName, campusId }) => {
   const { user } = useContext(AuthContext);
 
-  const { fetchBuildings, campusActive, fetchCampusActive } = useSchool();
+  const { fetchFloors, buildings } = useSchool();
   const [open, setOpen] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-    setError,
-    clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
 
-  useEffect(() => {
-    fetchCampusActive();
-    if (user && user.campus_id) {
-      // Automatically set the campus if the user has a campus_id
-      setSelectedCampus(user.campus_id.toString());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onSubmit = async (data) => {
-    if (!selectedCampus) {
-      setError("campus_id", {
-        type: "manual",
-        message: "You must select a campus.",
-      });
-      return;
-    }
-
     setLocalLoading(true);
     const transformedData = {
       ...Object.fromEntries(
@@ -76,8 +46,10 @@ const AddBuilding = () => {
         ]),
       ),
 
-      isBuilding: true,
-      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      campus_id:
+        user && user.campus_id ? parseInt(user.campus_id) : parseInt(campusId), // Use user.campus_id if available
+      isFloor: true,
+      buildingName: buildingName,
     };
 
     setGeneralError("");
@@ -85,9 +57,9 @@ const AddBuilding = () => {
       const response = await toast.promise(
         axios.post("/building-structure/add-structure", transformedData),
         {
-          loading: "Adding Building...",
-          success: "Building Added successfully!",
-          error: "Failed to add Building.",
+          loading: "Adding Floor...",
+          success: "Floor Added successfully!",
+          error: "Failed to add Floor.",
         },
         {
           position: "bottom-right",
@@ -97,7 +69,7 @@ const AddBuilding = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchBuildings();
+        fetchFloors(buildingName, campusId);
         setOpen(false); // Close the dialog
       }
       setLocalLoading(false);
@@ -116,7 +88,6 @@ const AddBuilding = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCampus(""); // Reset selected campus
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -132,23 +103,16 @@ const AddBuilding = () => {
           open={open}
           onOpenChange={(isOpen) => {
             setOpen(isOpen);
-            if (!isOpen) {
-              reset(); // Reset form fields when the dialog is closed
-              setSelectedCampus(
-                user.campus_id ? user.campus_id.toString() : "",
-              ); // Reset selected campus based on user role
-              clearErrors("campus_id"); // Clear campus selection error when dialog closes
-            }
           }}
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Building </span>
+            <span className="max-w-[8em]">Add Floor </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Building
+                Add new Floor ({buildingName})
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -157,90 +121,51 @@ const AddBuilding = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="blg_name"
+                          htmlFor="floor_name"
                         >
-                          Building Name
+                          Floor Name
                         </label>
                         <input
-                          id="blg_name"
+                          id="floor_name"
                           type="text"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("buildingName", {
+                          {...register("floorName", {
                             required: {
                               value: true,
-                              message: "Building Name is required",
+                              message: "Floor Name is required",
                             },
                             validate: {
                               notEmpty: (value) =>
                                 value.trim() !== "" ||
-                                "Building Name cannot be empty or just spaces",
+                                "Floor Name cannot be empty or just spaces",
                             },
                           })}
                           disabled={localLoading || success}
                         />
-                        {errors.buildingName && (
+                        {errors.floorName && (
                           <ErrorMessage>
-                            *{errors.buildingName.message}
+                            *{errors.floorName.message}
                           </ErrorMessage>
                         )}
                       </div>
                     </div>
 
                     <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="dept_campus"
-                      >
-                        Campus
-                      </label>
-
-                      {HasRole(user.role, "SuperAdmin") ? (
-                        <Select
-                          onValueChange={(value) => {
-                            setSelectedCampus(value);
-                            clearErrors("campus_id");
-                          }}
-                          value={selectedCampus}
-                          disabled={localLoading || success}
-                        >
-                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                            <SelectValue
-                              placeholder="Select Campus"
-                              defaultValue={selectedCampus}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Campuses</SelectLabel>
-                              {campusActive.map((campus) => (
-                                <SelectItem
-                                  key={campus.campus_id}
-                                  value={campus.campus_id.toString()}
-                                >
-                                  {campus.campusName}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <input
-                          id="bldg_campus"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          value={
-                            campusActive.find(
-                              (campus) =>
-                                campus.campus_id.toString() === selectedCampus,
-                            )?.campusName || ""
-                          }
-                          disabled
-                        />
-                      )}
-
-                      {errors.campus_id && (
-                        <ErrorMessage>*{errors.campus_id.message}</ErrorMessage>
-                      )}
+                      <span className="mb-2.5 block text-black dark:text-white">
+                        Building
+                      </span>
+                      <input
+                        id="building_name"
+                        type="text"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={
+                          buildings.find(
+                            (building) =>
+                              building.buildingName.toString() === buildingName,
+                          )?.buildingName || ""
+                        }
+                        disabled
+                      />
                     </div>
 
                     {error && (
@@ -257,7 +182,7 @@ const AddBuilding = () => {
                       {localLoading && (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       )}
-                      {localLoading ? "Loading..." : "Add Building"}
+                      {localLoading ? "Loading..." : "Add Floor"}
                     </button>
                   </div>
                 </form>
@@ -270,4 +195,4 @@ const AddBuilding = () => {
   );
 };
 
-export default AddBuilding;
+export default AddFloor;

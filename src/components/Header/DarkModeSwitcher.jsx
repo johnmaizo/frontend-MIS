@@ -1,30 +1,41 @@
-import useColorMode from '../../hooks/useColorMode';
+import { useState } from "react";
+import useColorMode from "../../hooks/useColorMode";
 
 const DarkModeSwitcher = () => {
   const [colorMode, setColorMode] = useColorMode();
+  const [isSwitching, setIsSwitching] = useState(false); // Prevent rapid toggling
+
+  const handleChange = () => {
+    if (isSwitching) return; // Block changes while switching
+
+    setIsSwitching(true); // Set switching state to true
+    setTimeout(() => {
+      // Toggle color mode after delay
+      setColorMode(colorMode === "light" ? "dark" : "light");
+      setIsSwitching(false); // Allow toggling again after debounce delay
+    }, 300); // Debounce delay in milliseconds
+  };
 
   return (
     <li>
       <label
         className={`relative m-0 block h-7.5 w-14 rounded-full ${
-          colorMode === 'dark' ? 'bg-primary' : 'bg-stroke'
+          colorMode === "dark" ? "bg-primary" : "bg-stroke"
         }`}
       >
         <input
           type="checkbox"
-          onChange={() => {
-            if (typeof setColorMode === 'function') {
-              setColorMode(colorMode === 'light' ? 'dark' : 'light');
-            }
-          }}
+          checked={colorMode === "dark"}
+          onChange={handleChange}
           className="dur absolute top-0 z-50 m-0 h-full w-full cursor-pointer opacity-0"
         />
         <span
-          className={`absolute top-1/2 left-[3px] flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear ${
-            colorMode === 'dark' && '!right-[3px] !translate-x-full'
+          className={`absolute left-[3px] top-1/2 flex h-6 w-6 -translate-y-1/2 translate-x-0 items-center justify-center rounded-full bg-white shadow-switcher duration-75 ease-linear ${
+            colorMode === "dark" && "!right-[3px] !translate-x-full"
           }`}
         >
           <span className="dark:hidden">
+            {/* Light Mode SVG */}
             <svg
               width="16"
               height="16"
@@ -43,6 +54,7 @@ const DarkModeSwitcher = () => {
             </svg>
           </span>
           <span className="hidden dark:inline-block">
+            {/* Dark Mode SVG */}
             <svg
               width="16"
               height="16"

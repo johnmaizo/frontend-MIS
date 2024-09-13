@@ -41,7 +41,6 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
-
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
 
@@ -193,7 +192,7 @@ const AddCourseProgram = () => {
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Assign Course </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Assign new Course
@@ -301,7 +300,7 @@ const AddCourseProgram = () => {
                             data={uniqueCourses}
                             clearErrors={clearErrors}
                           />
-                          {/* {selectedCourses.length > 0 && (
+                          {selectedCourses.length >= 5 && (
                             <div className="!w-full p-4">
                               <Button
                                 variant="destructive"
@@ -311,7 +310,7 @@ const AddCourseProgram = () => {
                                 Clear All
                               </Button>
                             </div>
-                          )} */}
+                          )}
                         </PopoverContent>
                       </Popover>
 
@@ -389,7 +388,7 @@ const SubjectList = ({ handleSetCourses, value, data, clearErrors }) => {
                       handleSetCourses(data.value);
                       clearErrors("courseChoose");
                     }}
-                    className="py-4 cursor-pointer !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
+                    className="cursor-pointer py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
                   >
                     <Check
                       className={`${cn(

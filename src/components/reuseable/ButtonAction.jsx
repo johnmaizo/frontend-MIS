@@ -5,7 +5,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import SmallLoader from "../styles/SmallLoader";
 
-const ButtonAction = ({ entityType, entityId, action, onSuccess }) => {
+const ButtonAction = ({
+  entityType,
+  entityId,
+  action,
+  onSuccess,
+  BuildingType,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const handleAction = async () => {
@@ -19,6 +25,7 @@ const ButtonAction = ({ entityType, entityId, action, onSuccess }) => {
         department: `/departments/${entityId}`,
         program: `/programs/${entityId}`,
         course: `/course/${entityId}`,
+        buildingstructure: `/building-structure/${entityId}`,
       };
 
       const successMessageMap = {
@@ -42,6 +49,22 @@ const ButtonAction = ({ entityType, entityId, action, onSuccess }) => {
           delete: "Course deleted successfully!",
           reactivate: "Course reactivated successfully!",
         },
+        buildingstructure:
+          BuildingType && BuildingType === "building"
+            ? {
+                delete: "Building deleted successfully!",
+                reactivate: "Building reactivated successfully!",
+              }
+            : BuildingType && BuildingType === "floor"
+              ? {
+                  delete: "Floor deleted successfully!",
+                  reactivate: "Floor reactivated successfully!",
+                }
+              : BuildingType &&
+                BuildingType === "room" && {
+                  delete: "Building deleted successfully!",
+                  reactivate: "Building reactivated successfully!",
+                },
       };
 
       const errorMessageMap = {
@@ -65,6 +88,22 @@ const ButtonAction = ({ entityType, entityId, action, onSuccess }) => {
           delete: "Failed to delete course.",
           reactivate: "Failed to reactivate course.",
         },
+        buildingstructure:
+          BuildingType && BuildingType === "building"
+            ? {
+                delete: "Failed to delete building.",
+                reactivate: "Failed to reactivate building.",
+              }
+            : BuildingType && BuildingType === "floor"
+              ? {
+                  delete: "Failed to delete floor.",
+                  reactivate: "Failed to reactivate floor.",
+                }
+              : BuildingType &&
+                BuildingType === "room" && {
+                  delete: "Failed to delete room.",
+                  reactivate: "Failed to reactivate room.",
+                },
       };
 
       await toast.promise(
@@ -72,7 +111,12 @@ const ButtonAction = ({ entityType, entityId, action, onSuccess }) => {
         {
           loading: isDeleted
             ? `Deleting ${entityType}...`
-            : `Reactivating ${entityType}...`,
+            : isDeleted && entityType === "buildingstructure"
+              ? `Deleting Building...`
+              : !isDeleted && entityType === "buildingstructure"
+                ? `Reactivating Building...`
+                : `Reactivating ${entityType}...`,
+          // loading: isDeleted ? "Deleting..." : "Reactivating...",
           success: successMessageMap[entityType][action],
           error: errorMessageMap[entityType][action],
         },

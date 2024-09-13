@@ -31,6 +31,8 @@ import { Link, useParams } from "react-router-dom";
 import { HasRole } from "./HasRole";
 import { Badge } from "../ui/badge";
 import EditBuilding from "../api/EditBuilding";
+import EditFloor from "../api/EditFloor";
+import EditRoom from "../api/EditRoom";
 
 const useColumns = () => {
   const {
@@ -46,6 +48,12 @@ const useColumns = () => {
     fetchCourseDeleted,
     fetchProgramCourse,
     fetchProgramCourseDeleted,
+    fetchBuildings,
+    fetchBuildingsDeleted,
+    fetchFloors,
+    fetchFloorsDeleted,
+    fetchRooms,
+    fetchRoomsDeleted,
   } = useSchool();
 
   const { campusName, program_id } = useParams();
@@ -1223,7 +1231,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -1270,6 +1278,19 @@ const useColumns = () => {
       },
     },
     {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ cell }) => {
@@ -1312,12 +1333,13 @@ const useColumns = () => {
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     <ButtonAction
-                      entityType={"department"}
+                      entityType={"buildingstructure"}
                       entityId={row.original.structure_id}
                       action="delete"
+                      BuildingType={"building"}
                       onSuccess={() => {
-                        fetchDepartments();
-                        fetchDepartmentsDeleted();
+                        fetchBuildings();
+                        fetchBuildingsDeleted();
                       }}
                     />
                     <DialogClose asChild>
@@ -1376,7 +1398,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -1441,6 +1463,19 @@ const useColumns = () => {
       },
     },
     {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ cell }) => {
@@ -1456,6 +1491,69 @@ const useColumns = () => {
       },
     },
     {
+      header: "Actions",
+      id: "actions",
+      accessorFn: (row) =>
+        `${row.structure_id} ${row.buildingName} ${row.campus.campusName} ${row.campus.campus_id} ${row.isActive}`,
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditFloor
+              structureId={row.original.structure_id}
+              campusId={row.original.campus.campus_id}
+              buildingName={row.original.buildingName}
+            />
+
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Floor"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete Floor
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this Floor?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"buildingstructure"}
+                      entityId={row.original.structure_id}
+                      action="delete"
+                      BuildingType={"floor"}
+                      onSuccess={() => {
+                        fetchFloors(
+                          row.original.buildingName,
+                          row.original.campus.campus_id,
+                        );
+                        fetchFloorsDeleted(
+                          row.original.buildingName,
+                          row.original.campus.campus_id,
+                        );
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+    {
       header: () => {
         return <span className="sr-only">Select Floor</span>;
       },
@@ -1464,14 +1562,16 @@ const useColumns = () => {
         `${row.structure_id} ${row.buildingName} ${row.floorName} ${row.campus.campusName} ${row.isActive}`,
       cell: ({ row }) => {
         return (
-          <div className="flex items-center gap-1">
+          <div
+            className={`flex items-center gap-1 ${!row.original.isActive ? "cursor-not-allowed" : ""}`}
+          >
             <Link
               to={
                 user && user.campus_id
                   ? `/structure-management/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
                   : `/structure-management/${row.original.campus.campus_id}/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
               }
-              className="rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
+              className={`rounded p-3 text-sm font-medium text-white ${!row.original.isActive ? "pointer-events-none bg-blue-400 hover:no-underline" : "bg-primary hover:underline hover:underline-offset-2"}`}
             >
               Select Room
             </Link>
@@ -1494,7 +1594,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -1522,21 +1622,6 @@ const useColumns = () => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
       },
     },
-    // {
-    //   accessorKey: "floorName",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //         className="p-1 hover:underline hover:underline-offset-4"
-    //       >
-    //         Floor
-    //         <ArrowUpDown className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "floorName",
       header: "Floor",
@@ -1557,6 +1642,36 @@ const useColumns = () => {
       },
     },
     {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Date Updated",
+      cell: ({ cell }) => {
+        return cell.getValue() ? (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        ) : (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            &quot;N/A&quot;
+          </Badge>
+        );
+      },
+    },
+    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ cell }) => {
@@ -1571,40 +1686,54 @@ const useColumns = () => {
         );
       },
     },
-
     {
       header: "Actions",
-      accessorFn: (row) => `${row.structure_id} ${row.isActive}`,
       id: "actions",
+      accessorFn: (row) =>
+        `${row.structure_id} ${row.buildingName} ${row.floorName} ${row.roomName} ${row.campus.campusName} ${row.campus.campus_id} ${row.isActive}`,
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditDepartment departmentId={row.getValue("structure_id")} />
+            <EditRoom
+              structureId={row.original.structure_id}
+              campusId={row.original.campus.campus_id}
+              buildingName={row.original.buildingName}
+              floorName={row.original.floorName}
+            />
 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Department"} />
+                <DeleteIcon forActions={"Delete Room"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold">
-                    Delete Department
+                    Delete Room
                   </DialogTitle>
                   <DialogDescription asChild className="mt-2">
                     <p className="mb-5">
-                      Are you sure you want to delete this department?
+                      Are you sure you want to delete this Room?
                     </p>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     <ButtonAction
-                      entityType={"department"}
-                      entityId={row.getValue("department_id")}
+                      entityType={"buildingstructure"}
+                      entityId={row.original.structure_id}
                       action="delete"
+                      BuildingType={"room"}
                       onSuccess={() => {
-                        fetchDepartments();
-                        fetchDepartmentsDeleted();
+                        fetchRooms(
+                          row.original.buildingName,
+                          row.original.floorName,
+                          row.original.campus.campus_id,
+                        );
+                        fetchRoomsDeleted(
+                          row.original.buildingName,
+                          row.original.floorName,
+                          row.original.campus.campus_id,
+                        );
                       }}
                     />
                     <DialogClose asChild>

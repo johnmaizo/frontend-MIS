@@ -541,6 +541,12 @@ export const SchoolProvider = ({ children }) => {
     setLoadingBuildings(false);
   };
 
+  /**
+   * Fetches the active floors based on the provided building name and campus ID
+   * @param {string} buildingName The name of the building to fetch the active floors for
+   * @param {number} campusId The id of the campus to fetch the active floors for
+   * @returns {Promise<void>}
+   */
   const fetchFloorsActive = async (buildingName, campusId) => {
     setLoadingBuildingsActive(true);
     try {

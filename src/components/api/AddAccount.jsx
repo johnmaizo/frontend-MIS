@@ -29,6 +29,10 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
+/**
+ * Component to add a new account
+ * @returns The AddAccount component
+ */
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
 

@@ -29,6 +29,14 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
+/**
+ * @function AddBuilding
+ * @description A dialog component for adding a new building structure
+ * @param {boolean} open - Whether the dialog is open or not
+ * @param {(isOpen: boolean) => void} onOpenChange - A function to call when the dialog open state changes
+ * @param {string} selectedCampus - The selected campus ID
+ * @returns {JSX.Element} A dialog component with a form to add a new building structure
+ */
 const AddBuilding = () => {
   const { user } = useContext(AuthContext);
 

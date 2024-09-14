@@ -8,6 +8,14 @@ import { Navigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
+/**
+ * AuthProvider component that wraps the app and provides authentication state and
+ * functions to the app via the AuthContext.
+ *
+ * @param {{ children: React.ReactNode }} props
+ *
+ * @returns {React.ReactElement}
+ */
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

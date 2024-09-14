@@ -11,6 +11,17 @@ import {
 } from "../ui/table";
 import SmallLoader from "../styles/SmallLoader";
 
+/**
+ * A reusable table component that wraps the @tanstack/react-table
+ * functionality.
+ *
+ * @param {Object} table - The table instance from @tanstack/react-table.
+ * @param {Array} columns - The columns to be rendered in the table.
+ * @param {boolean} loading - Whether the table is currently loading.
+ * @param {string} error - The error message if there is an error.
+ *
+ * @returns A JSX element representing the table.
+ */
 const ReuseTable = ({ table, columns, loading, error }) => {
   return (
     <Table className="border border-stroke dark:border-strokedark">

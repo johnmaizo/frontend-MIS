@@ -17,6 +17,15 @@ import { useSchool } from "../context/SchoolContext";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 
+/**
+ * AddCampus is a component that displays a dialog with a form to add a new
+ * campus. The form has two fields: `campusName` and `campusAddress`. When the
+ * form is submitted, it sends a POST request to the `/campus/add-campus` API
+ * endpoint with the form data and displays a success message if the request
+ * is successful. If the request fails, it displays an error message.
+ *
+ * @returns {ReactElement} A dialog component with a form to add a new campus.
+ */
 const AddCampus = () => {
   const { fetchCampus } = useSchool();
   const [open, setOpen] = useState(false);

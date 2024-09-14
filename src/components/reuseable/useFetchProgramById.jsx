@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+/**
+ * Fetches a program by its ID and campus name.
+ *
+ * @param {number} program_id the program ID
+ * @param {string} campusName the campus name
+ * @returns an object with the following properties:
+ *   - `program`: the fetched program, or null if there was an error
+ *   - `programLoading`: a boolean indicating whether the program is currently being fetched
+ *   - `programError`: an error message if there was an error fetching the program, or null if there was no error
+ */
 const useFetchProgramById = (program_id, campusName) => {
   const [program, setProgram] = useState(null);
   const [programLoading, setProgramLoading] = useState(true);

@@ -5,6 +5,16 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import SmallLoader from "../styles/SmallLoader";
 
+/**
+ * @function ButtonAction
+ * @description A reusable button for performing an action on an entity.
+ * @param {string} entityType The type of entity to perform the action on. One of "campus", "semester", "department", "program", "course", or "buildingstructure".
+ * @param {number} entityId The ID of the entity to perform the action on.
+ * @param {"delete" | "reactivate"} action The action to perform on the entity. Either "delete" or "reactivate".
+ * @param {() => void} onSuccess A callback function to call when the action is successful.
+ * @param {string} BuildingType The type of building structure to perform the action on. One of "building", "floor", or "room".
+ * @returns {JSX.Element} A button element with the appropriate action and styling.
+ */
 const ButtonAction = ({
   entityType,
   entityId,

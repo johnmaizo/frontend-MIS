@@ -34,6 +34,14 @@ import {
 import { useState } from "react";
 import { HomeIcon } from "lucide-react";
 
+/**
+ * A responsive breadcrumb component that displays a dropdown menu
+ * or drawer based on the screen size.
+ *
+ * @param {string} pageName - The name of the page
+ * @param {BreadcrumbItem[]} items - The breadcrumb items
+ * @param {number} ITEMS_TO_DISPLAY - The number of items to display
+ */
 export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");

@@ -18,6 +18,16 @@ import {
   SelectValue,
 } from "../ui/selectRowFilter";
 
+/**
+ * @function DataTablePagination
+ * @description A reusable component to display pagination
+ * @param {object} table - The table instance
+ * @param {number} totalStudents - Total number of students
+ * @param {number} totalDepartments - Total number of departments
+ * @param {string} totalName - Total name of the departments
+ * @param {number} rowsPerPage - Number of rows per page
+ * @returns {ReactElement} The pagination component
+ */
 export function DataTablePagination({
   table,
   totalStudents,

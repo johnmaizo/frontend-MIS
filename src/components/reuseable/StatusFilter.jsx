@@ -8,6 +8,15 @@ import {
   SelectValue,
 } from "../ui/select";
 
+/**
+ * StatusFilter is a reusable component to filter the table based on the status.
+ * It accepts two props: `table` and `option`. The `table` prop should be an instance of the `useReactTable` hook.
+ * The `option` prop is optional and can be either "campus", "department", or "semester". If provided, it will display a different label and max-width for the select.
+ * The component renders a select with options for "All", "Active", and "Inactive". When the user selects an option, it will set the global filter for the table.
+ * @param {Object} table - The instance of the `useReactTable` hook.
+ * @param {String} option - The option to display a different label and max-width for the select. Can be either "campus", "department", or "semester".
+ * @returns {ReactElement} - The StatusFilter component.
+ */
 const StatusFilter = ({ table, option }) => {
   const [status, setStatus] = useState("all");
 

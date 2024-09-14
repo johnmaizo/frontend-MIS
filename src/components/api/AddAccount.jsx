@@ -116,9 +116,9 @@ const AddAccount = () => {
   };
 
   // Check if selectedRole contains "Admin" or "Registrar"
-  const showPasswordFields = selectedRole.some(
-    (role) => role === "Admin" || role === "Registrar",
-  );
+  const showPasswordFields =
+    selectedRole.length &&
+    selectedRole.some((role) => role === "Admin" || role === "Registrar");
 
   const {
     register,
@@ -236,9 +236,8 @@ const AddAccount = () => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
-              setSelectedRole("");
+              setSelectedRole([]);
               setSelectedGender("");
-              setSelectedRole("");
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
@@ -589,7 +588,7 @@ const AddAccount = () => {
                       )}
                     </div>
 
-                    {showPasswordFields && (
+                    {showPasswordFields === true && (
                       <>
                         <div className="mb-4.5 w-full">
                           <label

@@ -14,6 +14,7 @@ import {
   AccountsIcon,
   DashboardIcon,
   BuildingStructureIcon,
+  EnrollmentIcon,
 } from "../../../components/Icons";
 
 import { AuthContext } from "../../../components/context/AuthContext";
@@ -121,6 +122,24 @@ const AdminSidebar = ({
               </li>
             </>
           )}
+
+          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+            ENROLLMENT SECTION
+          </h3>
+
+          <li>
+            <NavLink
+              to="/enrollments"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/enrollments" ||
+                  pathname.includes("enrollments")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <EnrollmentIcon />
+              Enrollment Application
+            </NavLink>
+          </li>
 
           <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
             DEPARTMENT SECTION

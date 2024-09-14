@@ -80,7 +80,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
               {row.getVisibleCells().map((cell, i) => (
                 <TableCell
                   key={cell.id}
-                  className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] text-black dark:border-strokedark dark:text-white`}
+                  className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] py-3 text-black dark:border-strokedark dark:text-white`}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>

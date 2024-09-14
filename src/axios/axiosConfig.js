@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-// import { logoutUser } from '../components/context/AuthContext'; // Assuming a global logout function exists
 import { LogoutUser } from './LogoutUser';
 
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -11,6 +12,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "../ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
 
 import {
   Select,
@@ -28,6 +43,7 @@ import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
+import SmallLoader from "../styles/SmallLoader";
 
 /**
  * Component to add a new account
@@ -38,14 +54,56 @@ const AddAccount = () => {
 
   const roles =
     HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")
-      ? ["Admin", "Registrar", "DataCenter", "Staff", "Teacher"]
-      : ["Staff", "Teacher"];
+      ? [
+          {
+            value: "Admin",
+            label: "Admin",
+          },
+          {
+            value: "Registrar",
+            label: "Registrar",
+          },
+          {
+            value: "DataCenter",
+            label: "Data Center",
+          },
+          {
+            value: "Staff",
+            label: "Staff",
+          },
+          {
+            value: "Teacher",
+            label: "Teacher",
+          },
+        ]
+      : [
+          {
+            value: "Staff",
+            label: "Staff",
+          },
+          {
+            value: "Teacher",
+            label: "Teacher",
+          },
+        ];
 
   const { fetchAccounts, campusActive, fetchCampusActive } = useSchool();
   const [open, setOpen] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
+
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
-  const [selectedRole, setSelectedRole] = useState("");
+  // const [selectedRole, setSelectedRole] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
+
+  const [selectedRole, setSelectedRole] = useState([]);
+
+  const handleSetRoles = (val) => {
+    if (selectedRole.includes(val)) {
+      setSelectedRole(selectedRole.filter((item) => item !== val));
+    } else {
+      setSelectedRole((prevValue) => [...prevValue, val]);
+    }
+  };
 
   const {
     register,
@@ -70,6 +128,10 @@ const AddAccount = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    console.log(selectedRole);
+  }, [selectedRole]);
+
   const onSubmit = async (data) => {
     if (!selectedCampus) {
       setError("campus_id", {
@@ -78,7 +140,7 @@ const AddAccount = () => {
       });
       return;
     }
-    if (!selectedRole) {
+    if (!selectedRole.length) {
       setError("role", {
         type: "manual",
         message: "You must select a Role.",
@@ -433,31 +495,50 @@ const AddAccount = () => {
                           </span>
                         </label>
 
-                        <Select
-                          onValueChange={(value) => {
-                            setSelectedRole(value);
-                            clearErrors("role");
-                          }}
-                          value={selectedRole}
-                          disabled={localLoading || success}
+                        <Popover
+                          open={openPopover}
+                          onOpenChange={setOpenPopover}
+                          modal={true}
                         >
-                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                            <SelectValue
-                              placeholder="Select Role"
-                              defaultValue={selectedRole}
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={open}
+                              className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
+                              disabled={localLoading || success}
+                            >
+                              <div className="flex flex-wrap justify-start gap-2">
+                                {selectedRole?.length ? (
+                                  selectedRole.map((val, i) => (
+                                    <div
+                                      key={i}
+                                      className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white"
+                                    >
+                                      {
+                                        roles.find((role) => role.value === val)
+                                          ?.value
+                                      }
+                                    </div>
+                                  ))
+                                ) : (
+                                  <span className="inline-block text-[1.2rem]">
+                                    Select Course..
+                                  </span>
+                                )}
+                              </div>
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <AccountList
+                              handleSetRoles={handleSetRoles}
+                              value={selectedRole}
+                              data={roles}
+                              clearErrors={clearErrors}
                             />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Roles</SelectLabel>
-                              {roles.map((role) => (
-                                <SelectItem key={role} value={role.toString()}>
-                                  {role}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          </PopoverContent>
+                        </Popover>
 
                         {errors.role && (
                           <ErrorMessage>*{errors.role.message}</ErrorMessage>
@@ -637,9 +718,7 @@ const AddAccount = () => {
                       className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                       disabled={localLoading || success}
                     >
-                      {localLoading && (
-                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                      )}
+                      {localLoading && <SmallLoader />}
                       {localLoading ? "Loading..." : "Add Account"}
                     </button>
                   </div>
@@ -650,6 +729,65 @@ const AddAccount = () => {
         </Dialog>
       </div>
     </div>
+  );
+};
+
+const AccountList = ({ handleSetRoles, value, data, clearErrors }) => {
+  return (
+    <Command
+      className="w-[21em]"
+      filter={(itemValue, search) => {
+        // Find the item in the data array based on the value
+        const item = data.find((d) => d.value === itemValue);
+
+        // Combine the value and label for searching
+        const combinedText = `${item?.value} ${item?.label}`.toLowerCase();
+
+        // Check if the search term exists in the combined value and label text
+        return combinedText.includes(search.toLowerCase()) ? 1 : 0;
+      }}
+    >
+      <CommandInput placeholder="Search Course..." />
+      <CommandEmpty>No Course found.</CommandEmpty>
+      <CommandList className="!overflow-hidden">
+        <CommandGroup>
+          <CommandList className="h-[12em]">
+            {data && data.length ? (
+              data.map((data) => (
+                <div key={data.value}>
+                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
+                  <CommandItem
+                    value={data.value}
+                    onSelect={() => {
+                      handleSetRoles(data.value);
+                      clearErrors("role");
+                    }}
+                    className="cursor-pointer py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
+                  >
+                    <Check
+                      className={`${cn(
+                        "mr-2 h-4 w-4",
+                        value.includes(data.value)
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )} flex-none`}
+                    />
+                    {data.label}
+                  </CommandItem>
+                </div>
+              ))
+            ) : (
+              <CommandItem
+                disabled
+                className="text-[1rem] font-medium text-black dark:text-white"
+              >
+                Empty, please add a course.
+              </CommandItem>
+            )}
+          </CommandList>
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 };
 

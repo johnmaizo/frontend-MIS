@@ -32,6 +32,7 @@ import { ErrorMessage } from "../reuseable/ErrorMessage";
 import SmallLoader from "../styles/SmallLoader";
 import CustomPopover from "../reuseable/CustomPopover";
 import CustomList from "../reuseable/CustomList";
+import FormInput from "../reuseable/FormInput";
 
 /**
  * AddAccount component
@@ -258,11 +259,10 @@ const AddAccount = () => {
                             *
                           </span>
                         </label>
-                        <input
+                        <FormInput
                           id="title"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("title", {
+                          register={register}
+                          validationRules={{
                             required: {
                               value: true,
                               message: "Title is required",
@@ -272,7 +272,7 @@ const AddAccount = () => {
                                 value.trim() !== "" ||
                                 "Title cannot be empty or just spaces",
                             },
-                          })}
+                          }}
                           disabled={localLoading || success}
                         />
                         {errors.title && (
@@ -282,18 +282,18 @@ const AddAccount = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="first_name"
+                          htmlFor="firstName"
                         >
                           First Name{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
-                        <input
-                          id="first_name"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("firstName", {
+                        <FormInput
+                          id="firstName"
+                          placeholder="First Name"
+                          register={register}
+                          validationRules={{
                             required: {
                               value: true,
                               message: "First Name is required",
@@ -303,7 +303,7 @@ const AddAccount = () => {
                                 value.trim() !== "" ||
                                 "First Name cannot be empty or just spaces",
                             },
-                          })}
+                          }}
                           disabled={localLoading || success}
                         />
                         {errors.firstName && (
@@ -316,37 +316,37 @@ const AddAccount = () => {
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="middle_name"
+                          htmlFor="middleName"
                         >
                           Middle Name{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
-                        <input
-                          type="text"
+                        <FormInput
+                          id="middleName"
                           placeholder="*Leave blank if not applicable"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-[1.2rem] text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("middleName")}
+                          register={register}
                           disabled={success}
+                          className={"placeholder:text-[1.1rem]"}
                         />
                       </div>
 
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="last_name"
+                          htmlFor="lastName"
                         >
                           Last Name{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
-                        <input
-                          id="last_name"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("lastName", {
+                        <FormInput
+                          id="lastName"
+                          placeholder="Last Name"
+                          register={register}
+                          validationRules={{
                             required: {
                               value: true,
                               message: "Last Name is required",
@@ -356,7 +356,7 @@ const AddAccount = () => {
                                 value.trim() !== "" ||
                                 "Last Name cannot be empty or just spaces",
                             },
-                          })}
+                          }}
                           disabled={localLoading || success}
                         />
                         {errors.lastName && (
@@ -438,14 +438,17 @@ const AddAccount = () => {
                         )}
                       </div>
                       <div className="w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="contactNumber"
+                        >
                           Contact Number
                         </label>
-                        <input
-                          type="text"
+                        <FormInput
+                          id="contactNumber"
                           placeholder="'+63' or '09'"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("contactNumber", {
+                          register={register}
+                          validationRules={{
                             required: {
                               value: true,
                               message: "Contact number is required",
@@ -470,8 +473,8 @@ const AddAccount = () => {
                                 return 'Contact number must start with "+63" or "09"';
                               }
                             },
-                          })}
-                          disabled={success}
+                          }}
+                          disabled={localLoading || success}
                         />
                         {errors.contactNumber && (
                           <ErrorMessage>

@@ -378,11 +378,11 @@ const AddAccount = () => {
                             *
                           </span>
                         </label>
-                        <input
+                        <FormInput
                           id="address"
-                          type="text"
-                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                          {...register("address", {
+                          placeholder="Address"
+                          register={register}
+                          validationRules={{
                             required: {
                               value: true,
                               message: "Address is required",
@@ -392,7 +392,7 @@ const AddAccount = () => {
                                 value.trim() !== "" ||
                                 "Address cannot be empty or just spaces",
                             },
-                          })}
+                          }}
                           disabled={localLoading || success}
                         />
                         {errors.address && (
@@ -402,7 +402,7 @@ const AddAccount = () => {
                       <div className="mb-4.5 w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="role"
+                          htmlFor="gender"
                         >
                           Gender{" "}
                           <span className="inline-block font-bold text-red-700">
@@ -535,11 +535,11 @@ const AddAccount = () => {
                           *
                         </span>
                       </label>
-                      <input
+                      <FormInput
                         id="email"
-                        type="email"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("email", {
+                        placeholder="Email"
+                        register={register}
+                        validationRules={{
                           required: {
                             value: true,
                             message: "Email is required",
@@ -549,7 +549,7 @@ const AddAccount = () => {
                               value.trim() !== "" ||
                               "Email cannot be empty or just spaces",
                           },
-                        })}
+                        }}
                         disabled={localLoading || success}
                       />
                       {errors.email && (
@@ -569,11 +569,11 @@ const AddAccount = () => {
                               *
                             </span>
                           </label>
-                          <input
+                          <FormInput
                             id="password"
-                            type="password"
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                            {...register("password", {
+                            placeholder="Password"
+                            register={register}
+                            validationRules={{
                               required: {
                                 value: true,
                                 message: "Password is required",
@@ -583,7 +583,7 @@ const AddAccount = () => {
                                   value.trim() !== "" ||
                                   "Password cannot be empty or just spaces",
                               },
-                            })}
+                            }}
                             disabled={localLoading || success}
                           />
                           {errors.password && (
@@ -596,18 +596,18 @@ const AddAccount = () => {
                         <div className="mb-4.5 w-full">
                           <label
                             className="mb-2.5 block text-black dark:text-white"
-                            htmlFor="confirm_password"
+                            htmlFor="confirmPassword"
                           >
                             Confirm Password{" "}
                             <span className="inline-block font-bold text-red-700">
                               *
                             </span>
                           </label>
-                          <input
-                            id="confirm_password"
-                            type="password"
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                            {...register("confirmPassword", {
+                          <FormInput
+                            id="confirmPassword"
+                            placeholder="Confirm Password"
+                            register={register}
+                            validationRules={{
                               required: {
                                 value: true,
                                 message: "Confirm Password is required",
@@ -620,7 +620,7 @@ const AddAccount = () => {
                                   value === getValues("password") ||
                                   "Passwords do not match",
                               },
-                            })}
+                            }}
                             disabled={localLoading || success}
                           />
                           {errors.confirmPassword && (

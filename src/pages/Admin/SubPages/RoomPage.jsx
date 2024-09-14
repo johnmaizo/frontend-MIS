@@ -12,8 +12,6 @@ import {
 
 import { useContext, useEffect, useState } from "react";
 
-import { Input } from "../../../components/ui/input";
-
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
 import { useSchool } from "../../../components/context/SchoolContext";
@@ -25,6 +23,7 @@ import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import AddRoom from "../../../components/api/AddRoom";
+import SearchInput from "../../../components/reuseable/SearchInput";
 
 const RoomPage = () => {
   const { user } = useContext(AuthContext);
@@ -143,31 +142,32 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
             <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="mb-5 mt-2 justify-between gap-5 md:flex">
                 <div className="gap-5 md:flex">
-                  <Input
+                  <SearchInput
                     placeholder="Search by Room..."
-                    value={table.getColumn("roomName")?.getFilterValue() ?? ""}
-                    onChange={(event) =>
-                      table
-                        .getColumn("roomName")
-                        ?.setFilterValue(event.target.value)
+                    filterValue={table.getColumn("roomName")?.getFilterValue()}
+                    setFilterValue={(value) =>
+                      table.getColumn("roomName")?.setFilterValue(value)
                     }
-                    className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
+                    className="md:w-[12em]"
                   />
-                  <Input
-                    placeholder="Search by campus..."
-                    value={
-                      table.getColumn("campusName")?.getFilterValue() ?? ""
+
+                  <SearchInput
+                    placeholder="Search by Campus..."
+                    filterValue={table
+                      .getColumn("campusName")
+                      ?.getFilterValue()}
+                    setFilterValue={(value) =>
+                      table.getColumn("campusName")?.setFilterValue(value)
                     }
-                    onChange={(event) =>
-                      table
-                        .getColumn("campusName")
-                        ?.setFilterValue(event.target.value)
-                    }
-                    className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+                    className="md:w-[18em]"
                   />
                 </div>
                 <div>
-                  <AddRoom buildingName={buildingName} floorName={floorName} campusId={campusId} />
+                  <AddRoom
+                    buildingName={buildingName}
+                    floorName={floorName}
+                    campusId={campusId}
+                  />
                 </div>
               </div>
               <div className="max-w-full overflow-x-auto">

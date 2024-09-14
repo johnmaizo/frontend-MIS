@@ -1628,6 +1628,7 @@ const useColumns = () => {
     },
     {
       accessorKey: "campus.campusName",
+      id: "campusName",
       header: ({ column }) => {
         return (
           <Button

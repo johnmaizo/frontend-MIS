@@ -94,7 +94,7 @@ const Sidebar = ({
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div
-        className={`flex items-center justify-between gap-2 bg-transparent bg-white px-6 py-5.5 shadow-2 dark:bg-boxdark lg:pointer-events-auto lg:bg-transparent`}
+        className={`flex items-center justify-between gap-2 bg-transparent bg-white px-6 py-5.5 shadow-2 ${!isDesktop && "dark:bg-boxdark"} lg:pointer-events-auto lg:bg-transparent`}
       >
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}

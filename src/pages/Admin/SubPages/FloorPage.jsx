@@ -23,7 +23,6 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import { useParams } from "react-router-dom";
 import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
-import AddBuilding from "../../../components/api/AddBuilding";
 import AddFloor from "../../../components/api/AddFloor";
 
 const FloorPage = () => {

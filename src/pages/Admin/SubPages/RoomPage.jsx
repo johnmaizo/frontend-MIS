@@ -24,7 +24,6 @@ import { useParams } from "react-router-dom";
 import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
 import { HasRole } from "../../../components/reuseable/HasRole";
-import AddFloor from "../../../components/api/AddFloor";
 import AddRoom from "../../../components/api/AddRoom";
 
 const RoomPage = () => {

@@ -13,29 +13,13 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "../ui/command";
-
-import { Button } from "../ui/button";
-
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
 import { AuthContext } from "../context/AuthContext";
 
 import { useParams } from "react-router-dom";
 import { getUniqueCourseCodes } from "../reuseable/GetUniqueValues";
-import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "../../lib/utils";
 import useFetchProgramById from "../reuseable/useFetchProgramById";
 import { HasRole } from "../reuseable/HasRole";
 
@@ -293,65 +277,6 @@ const AddCourseProgram = () => {
         </Dialog>
       </div>
     </div>
-  );
-};
-
-const SubjectList = ({ handleSetCourses, value, data, clearErrors }) => {
-  return (
-    <Command
-      className="w-[21em] md:w-[45em]"
-      filter={(itemValue, search) => {
-        // Find the item in the data array based on the value
-        const item = data.find((d) => d.value === itemValue);
-
-        // Combine the value and label for searching
-        const combinedText = `${item?.value} ${item?.label}`.toLowerCase();
-
-        // Check if the search term exists in the combined value and label text
-        return combinedText.includes(search.toLowerCase()) ? 1 : 0;
-      }}
-    >
-      <CommandInput placeholder="Search Course..." />
-      <CommandEmpty>No Course found.</CommandEmpty>
-      <CommandList className="!overflow-hidden">
-        <CommandGroup>
-          <CommandList className="h-[12em]">
-            {data && data.length ? (
-              data.map((data) => (
-                <div key={data.value}>
-                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
-                  <CommandItem
-                    value={data.value}
-                    onSelect={() => {
-                      handleSetCourses(data.value);
-                      clearErrors("courseChoose");
-                    }}
-                    className="cursor-pointer py-4 !text-[1.3rem] font-medium text-black dark:text-white md:text-[1.2rem]"
-                  >
-                    <Check
-                      className={`${cn(
-                        "mr-2 h-4 w-4",
-                        value.includes(data.value)
-                          ? "opacity-100"
-                          : "opacity-0",
-                      )} flex-none`}
-                    />
-                    {data.label}
-                  </CommandItem>
-                </div>
-              ))
-            ) : (
-              <CommandItem
-                disabled
-                className="text-[1rem] font-medium text-black dark:text-white"
-              >
-                Empty, please add a course.
-              </CommandItem>
-            )}
-          </CommandList>
-        </CommandGroup>
-      </CommandList>
-    </Command>
   );
 };
 

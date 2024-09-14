@@ -1274,7 +1274,7 @@ const useColumns = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span>{cell.getValue()}</span>;
       },
     },
     {
@@ -1440,7 +1440,7 @@ const useColumns = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span>{cell.getValue()}</span>;
       },
     },
     {
@@ -1459,7 +1459,7 @@ const useColumns = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span>{cell.getValue()}</span>;
       },
     },
     {

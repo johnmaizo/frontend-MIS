@@ -46,8 +46,19 @@ import { ErrorMessage } from "../reuseable/ErrorMessage";
 import SmallLoader from "../styles/SmallLoader";
 
 /**
- * Component to add a new account
- * @returns The AddAccount component
+ * AddAccount component
+ *
+ * @description
+ *   Dialog component for adding a new account. The form is
+ *   validated using react-hook-form. The submit button is
+ *   disabled if the form is invalid or if an account with the
+ *   same email already exists.
+ *
+ * @prop {boolean} open - Whether the dialog is open or not
+ * @prop {boolean} setOpen - Set the open state of the dialog
+ * @prop {boolean} localLoading - Whether the component is loading or not
+ * @prop {boolean} success - Whether the form was submitted successfully or not
+ * @prop {string} error - The error message if the form was not submitted successfully
  */
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
@@ -91,8 +102,7 @@ const AddAccount = () => {
   const [open, setOpen] = useState(false);
   const [openPopover, setOpenPopover] = useState(false);
 
-  const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
-  // const [selectedRole, setSelectedRole] = useState("");
+  const [selectedCampus, setSelectedCampus] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
 
   const [selectedRole, setSelectedRole] = useState([]);
@@ -104,6 +114,11 @@ const AddAccount = () => {
       setSelectedRole((prevValue) => [...prevValue, val]);
     }
   };
+
+  // Check if selectedRole contains "Admin" or "Registrar"
+  const showPasswordFields = selectedRole.some(
+    (role) => role === "Admin" || role === "Registrar",
+  );
 
   const {
     register,
@@ -127,10 +142,6 @@ const AddAccount = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log(selectedRole);
-  }, [selectedRole]);
 
   const onSubmit = async (data) => {
     if (!selectedCampus) {
@@ -523,7 +534,7 @@ const AddAccount = () => {
                                   ))
                                 ) : (
                                   <span className="inline-block text-[1.2rem]">
-                                    Select Course..
+                                    Select Role..
                                   </span>
                                 )}
                               </div>
@@ -578,74 +589,80 @@ const AddAccount = () => {
                       )}
                     </div>
 
-                    <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="password"
-                      >
-                        Password{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
-                      </label>
-                      <input
-                        id="password"
-                        type="password"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("password", {
-                          required: {
-                            value: true,
-                            message: "Password is required",
-                          },
-                          validate: {
-                            notEmpty: (value) =>
-                              value.trim() !== "" ||
-                              "Password cannot be empty or just spaces",
-                          },
-                        })}
-                        disabled={localLoading || success}
-                      />
-                      {errors.password && (
-                        <ErrorMessage>*{errors.password.message}</ErrorMessage>
-                      )}
-                    </div>
+                    {showPasswordFields && (
+                      <>
+                        <div className="mb-4.5 w-full">
+                          <label
+                            className="mb-2.5 block text-black dark:text-white"
+                            htmlFor="password"
+                          >
+                            Password{" "}
+                            <span className="inline-block font-bold text-red-700">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            id="password"
+                            type="password"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            {...register("password", {
+                              required: {
+                                value: true,
+                                message: "Password is required",
+                              },
+                              validate: {
+                                notEmpty: (value) =>
+                                  value.trim() !== "" ||
+                                  "Password cannot be empty or just spaces",
+                              },
+                            })}
+                            disabled={localLoading || success}
+                          />
+                          {errors.password && (
+                            <ErrorMessage>
+                              *{errors.password.message}
+                            </ErrorMessage>
+                          )}
+                        </div>
 
-                    <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="confirm_password"
-                      >
-                        Confirm Password{" "}
-                        <span className="inline-block font-bold text-red-700">
-                          *
-                        </span>
-                      </label>
-                      <input
-                        id="confirm_password"
-                        type="password"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("confirmPassword", {
-                          required: {
-                            value: true,
-                            message: "Confirm Password is required",
-                          },
-                          validate: {
-                            notEmpty: (value) =>
-                              value.trim() !== "" ||
-                              "Confirm Password cannot be empty or just spaces",
-                            matchesPassword: (value) =>
-                              value === getValues("password") ||
-                              "Passwords do not match",
-                          },
-                        })}
-                        disabled={localLoading || success}
-                      />
-                      {errors.confirmPassword && (
-                        <ErrorMessage>
-                          *{errors.confirmPassword.message}
-                        </ErrorMessage>
-                      )}
-                    </div>
+                        <div className="mb-4.5 w-full">
+                          <label
+                            className="mb-2.5 block text-black dark:text-white"
+                            htmlFor="confirm_password"
+                          >
+                            Confirm Password{" "}
+                            <span className="inline-block font-bold text-red-700">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            id="confirm_password"
+                            type="password"
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            {...register("confirmPassword", {
+                              required: {
+                                value: true,
+                                message: "Confirm Password is required",
+                              },
+                              validate: {
+                                notEmpty: (value) =>
+                                  value.trim() !== "" ||
+                                  "Confirm Password cannot be empty or just spaces",
+                                matchesPassword: (value) =>
+                                  value === getValues("password") ||
+                                  "Passwords do not match",
+                              },
+                            })}
+                            disabled={localLoading || success}
+                          />
+                          {errors.confirmPassword && (
+                            <ErrorMessage>
+                              *{errors.confirmPassword.message}
+                            </ErrorMessage>
+                          )}
+                        </div>
+                      </>
+                    )}
 
                     <div className="mb-4.5 w-full">
                       <label
@@ -747,8 +764,8 @@ const AccountList = ({ handleSetRoles, value, data, clearErrors }) => {
         return combinedText.includes(search.toLowerCase()) ? 1 : 0;
       }}
     >
-      <CommandInput placeholder="Search Course..." />
-      <CommandEmpty>No Course found.</CommandEmpty>
+      <CommandInput placeholder="Search Role..." />
+      <CommandEmpty>No Role found.</CommandEmpty>
       <CommandList className="!overflow-hidden">
         <CommandGroup>
           <CommandList className="h-[12em]">

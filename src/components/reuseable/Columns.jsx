@@ -35,6 +35,7 @@ import EditFloor from "../api/EditFloor";
 import EditRoom from "../api/EditRoom";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 import { getUniqueCodes } from "./GetUniqueValues";
+import RoleBadge from "./RoleBadge";
 
 const useColumns = () => {
   const {
@@ -1131,7 +1132,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -1142,8 +1143,28 @@ const useColumns = () => {
       },
     },
     {
+      accessorFn: (row) => {
+        const middleInitial =
+          row.middleName && row.middleName.trim() !== ""
+            ? `${row.middleName.charAt(0)}.`
+            : "";
+        return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
+      },
+      id: "fullName",
+      header: "Names",
+    },
+    {
       accessorKey: "role",
       header: "Role",
+      cell: ({ cell }) => {
+        return (
+          <>
+            <div className="flex flex-wrap gap-2">
+              <RoleBadge rolesString={cell.getValue()} />
+            </div>
+          </>
+        );
+      },
     },
     {
       accessorKey: "email",
@@ -1160,31 +1181,31 @@ const useColumns = () => {
         );
       },
     },
-    {
-      accessorFn: (row) => {
-        return `${row.firstName} ${row.lastName}`;
-      },
-      id: "fullName",
-      header: "Name",
-    },
 
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+          },
+        ]
+      : []),
     {
-      accessorKey: "campusName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return cell.getValue() ? cell.getValue() : "N/A";
-      },
+      accessorKey: "contactNumber",
+      header: "Contact Number",
     },
     {
       accessorKey: "created",

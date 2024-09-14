@@ -41,7 +41,9 @@ const CustomList = ({
       }}
     >
       <CommandInput placeholder={searchPlaceholder} />
-      <CommandEmpty>No {searchPlaceholder.split(" ")[1]} found.</CommandEmpty>
+      <CommandEmpty>
+        No {searchPlaceholder.split(/[. ]+/).at(1).toLocaleLowerCase()} found.
+      </CommandEmpty>
       <CommandList className="!overflow-hidden">
         <CommandGroup>
           <CommandList className="h-[12em]">

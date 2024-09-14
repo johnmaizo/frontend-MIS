@@ -68,6 +68,7 @@ const AuthProvider = ({ children }) => {
     return () => {
       bc.close();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchUser = async (token) => {

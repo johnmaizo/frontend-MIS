@@ -207,7 +207,7 @@ const AddAccount = () => {
         reset();
         setSelectedCampus(""); // Reset selected campus
         setSelectedGender("");
-        setSelectedRole("");
+        setSelectedRole([]);
       }, 5000);
     } else if (error) {
       setTimeout(() => {

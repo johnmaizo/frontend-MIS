@@ -17,10 +17,10 @@ import { useSchool } from "../../../components/context/SchoolContext";
 import AddAccount from "../../../components/api/AddAccount";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 
-// !bruh
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout";
 import { useColumns } from "../../../components/reuseable/Columns";
+import SearchInput from "../../../components/reuseable/SearchInput";
 
 const AccountPage = () => {
   const NavItems = [
@@ -93,31 +93,31 @@ const DataTable = ({ data, columns, loading, error }) => {
     <>
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
-          <Input
+          <SearchInput
             placeholder="Search by Role..."
-            value={table.getColumn("role")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table.getColumn("role")?.setFilterValue(event.target.value)
+            filterValue={table.getColumn("role")?.getFilterValue()}
+            setFilterValue={(value) =>
+              table.getColumn("role")?.setFilterValue(value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[12em]"
+            className="md:max-w-[12em]"
           />
 
-          <Input
+          <SearchInput
             placeholder="Search by Name..."
-            value={table.getColumn("fullName")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table.getColumn("fullName")?.setFilterValue(event.target.value)
+            filterValue={table.getColumn("name")?.getFilterValue()}
+            setFilterValue={(value) =>
+              table.getColumn("name")?.setFilterValue(value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="md:w-[17em]"
           />
 
-          <Input
+          <SearchInput
             placeholder="Search by Email..."
-            value={table.getColumn("email")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+            filterValue={table.getColumn("email")?.getFilterValue()}
+            setFilterValue={(value) =>
+              table.getColumn("email")?.setFilterValue(value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
+            className="md:w-[17em]"
           />
         </div>
 

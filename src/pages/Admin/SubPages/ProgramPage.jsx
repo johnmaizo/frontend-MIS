@@ -17,7 +17,6 @@ import { Input } from "../../../components/ui/input";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
-
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 
 import { useSchool } from "../../../components/context/SchoolContext";
@@ -26,7 +25,7 @@ import AddProgram from "../../../components/api/AddProgram";
 
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import DeletedProgram from "../../../components/api/DeletedProgram";
-import { DataTableFacetedFilter } from "./test/DataTableFacetedFilter";
+import { DataTableFacetedFilter } from "../../../components/reuseable/DataTableFacetedFilter";
 import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { useColumns } from "../../../components/reuseable/Columns";
@@ -59,7 +58,8 @@ const ProgramPage = () => {
 };
 
 const ProgramTables = () => {
-  const { program, fetchProgram, fetchProgramDeleted, loading, error } = useSchool();
+  const { program, fetchProgram, fetchProgramDeleted, loading, error } =
+    useSchool();
 
   useEffect(() => {
     fetchProgram();
@@ -115,7 +115,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             onChange={(event) =>
               table.getColumn("programCode")?.setFilterValue(event.target.value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[10em]"
+            className="mb-5 h-[3.3em] w-full"
           />
 
           <Input

@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 
-import { cn } from "../../../../lib/utils";
-import { Button } from "../../../../components/ui/button";
-import { Badge } from "../../../../components/ui/badge";
+import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 
 import {
   Command,
@@ -13,15 +13,11 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "../../../../components/ui/command";
+} from "../ui/command";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../../../../components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
-import { Separator } from "../../../../components/ui/separator";
+import { Separator } from "../ui/separator";
 
 export function DataTableFacetedFilter({ column, title, options }) {
   const facets = column?.getFacetedUniqueValues();

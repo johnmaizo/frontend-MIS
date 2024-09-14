@@ -33,9 +33,12 @@ import { Badge } from "../ui/badge";
 import EditBuilding from "../api/EditBuilding";
 import EditFloor from "../api/EditFloor";
 import EditRoom from "../api/EditRoom";
+import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
+import { getUniqueCodes } from "./GetUniqueValues";
 
 const useColumns = () => {
   const {
+    program,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -522,6 +525,11 @@ const useColumns = () => {
             Program Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
+          // <DataTableFacetedFilter
+          //   column={column}
+          //   title="Program Codes"
+          //   options={getUniqueCodes(program, "programCode")}
+          // />
         );
       },
       filterFn: (row, id, value) => {

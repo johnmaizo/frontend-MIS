@@ -40,6 +40,8 @@ import useFetchProgramById from "../reuseable/useFetchProgramById";
 import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
+import CustomPopover from "../reuseable/CustomPopover";
+import CustomList from "../reuseable/CustomList";
 
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
@@ -228,91 +230,27 @@ const AddCourseProgram = () => {
                         Select Course
                       </label>
 
-                      {/* <Select
-                        onValueChange={(value) => {
-                          setSelectedCampus(value);
-                          clearErrors("campus_id");
-                        }}
-                        value={selectedCampus}
-                        disabled={loading || success}
+                      <CustomPopover
+                        openPopover={openPopover}
+                        setOpenPopover={setOpenPopover}
+                        loading={loading || programLoading || success}
+                        selectedItems={selectedCourses.map(
+                          (val) =>
+                            uniqueCourses.find((course) => course.value === val)
+                              ?.value,
+                        )}
+                        itemName="Course"
+                        handleClearAll={clearAllSelections}
                       >
-                        <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                          <SelectValue
-                            placeholder="Select Campus"
-                            defaultValue={selectedCampus}
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Campuses</SelectLabel>
-                            {courseActive.map((course) => (
-                              <SelectItem
-                                key={course.course_id}
-                                value={course.course_id.toString()}
-                              >
-                                {course.courseCode} - {course.courseDescription}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select> */}
-
-                      <Popover
-                        open={openPopover}
-                        onOpenChange={setOpenPopover}
-                        modal={true}
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={open}
-                            className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
-                            disabled={loading || programLoading || success}
-                          >
-                            <div className="flex flex-wrap justify-start gap-2">
-                              {selectedCourses?.length ? (
-                                selectedCourses.map((val, i) => (
-                                  <div
-                                    key={i}
-                                    className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white"
-                                  >
-                                    {
-                                      uniqueCourses.find(
-                                        (course) => course.value === val,
-                                      )?.value
-                                    }
-                                  </div>
-                                ))
-                              ) : (
-                                <span className="inline-block text-[1.2rem]">
-                                  Select Course..
-                                </span>
-                              )}
-                            </div>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0">
-                          <SubjectList
-                            handleSetCourses={handleSetCourses}
-                            value={selectedCourses}
-                            data={uniqueCourses}
-                            clearErrors={clearErrors}
-                          />
-                          {selectedCourses.length >= 5 && (
-                            <div className="!w-full p-4">
-                              <Button
-                                variant="destructive"
-                                onClick={clearAllSelections}
-                                className="w-full"
-                              >
-                                Clear All
-                              </Button>
-                            </div>
-                          )}
-                        </PopoverContent>
-                      </Popover>
+                        <CustomList
+                          handleSelect={handleSetCourses}
+                          value={selectedCourses}
+                          data={uniqueCourses}
+                          searchPlaceholder="Search Course..."
+                          clearErrors={clearErrors}
+                          entity="courseChoose"
+                        />
+                      </CustomPopover>
 
                       {errors.courseChoose && (
                         <ErrorMessage>

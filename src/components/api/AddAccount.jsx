@@ -44,6 +44,8 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 import SmallLoader from "../styles/SmallLoader";
+import CustomPopover from "../reuseable/CustomPopover";
+import CustomList from "../reuseable/CustomList";
 
 /**
  * AddAccount component
@@ -505,50 +507,28 @@ const AddAccount = () => {
                           </span>
                         </label>
 
-                        <Popover
-                          open={openPopover}
-                          onOpenChange={setOpenPopover}
-                          modal={true}
+                        <CustomPopover
+                          openPopover={openPopover}
+                          setOpenPopover={setOpenPopover}
+                          loading={localLoading || success}
+                          selectedItems={
+                            selectedRole.length &&
+                            selectedRole.map(
+                              (val) =>
+                                roles.find((role) => role.value === val)?.value,
+                            )
+                          }
+                          itemName="Role"
                         >
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              aria-expanded={open}
-                              className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
-                              disabled={localLoading || success}
-                            >
-                              <div className="flex flex-wrap justify-start gap-2">
-                                {selectedRole?.length ? (
-                                  selectedRole.map((val, i) => (
-                                    <div
-                                      key={i}
-                                      className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white"
-                                    >
-                                      {
-                                        roles.find((role) => role.value === val)
-                                          ?.value
-                                      }
-                                    </div>
-                                  ))
-                                ) : (
-                                  <span className="inline-block text-[1.2rem]">
-                                    Select Role..
-                                  </span>
-                                )}
-                              </div>
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-full p-0">
-                            <AccountList
-                              handleSetRoles={handleSetRoles}
-                              value={selectedRole}
-                              data={roles}
-                              clearErrors={clearErrors}
-                            />
-                          </PopoverContent>
-                        </Popover>
+                          <CustomList
+                            handleSelect={handleSetRoles}
+                            value={selectedRole}
+                            data={roles}
+                            searchPlaceholder="Search Role..."
+                            clearErrors={clearErrors}
+                            entity={"role"}
+                          />
+                        </CustomPopover>
 
                         {errors.role && (
                           <ErrorMessage>*{errors.role.message}</ErrorMessage>

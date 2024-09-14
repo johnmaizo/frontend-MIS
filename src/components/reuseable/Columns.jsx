@@ -1151,7 +1151,7 @@ const useColumns = () => {
         return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
       },
       id: "fullName",
-      header: "Names",
+      header: "Name",
     },
     {
       accessorKey: "role",

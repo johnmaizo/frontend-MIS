@@ -1880,16 +1880,24 @@ const useColumns = () => {
     },
 
     {
-      accessorKey: "accepted",
+      accessorKey: "status",
       header: "Status",
       cell: ({ cell }) => {
         return (
           <span
-            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-              cell.getValue() ? "bg-success" : "bg-orange-500"
+            className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() === "accepted"
+                ? "bg-success"
+                : cell.getValue() === "pending"
+                  ? "bg-orange-500"
+                  : "bg-danger"
             }`}
           >
-            {cell.getValue() ? "Accepted" : "Pending"}
+            {cell.getValue() === "accepted"
+              ? "Accepted"
+              : cell.getValue() === "pending"
+                ? "Pending"
+                : "Rejected"}
           </span>
         );
       },

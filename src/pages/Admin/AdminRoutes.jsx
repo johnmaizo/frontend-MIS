@@ -29,6 +29,7 @@ import { HasRole } from "../../components/reuseable/HasRole";
 import BuildingStructurePage from "./SubPages/BuildingStructurePage";
 import FloorPage from "./SubPages/FloorPage";
 import RoomPage from "./SubPages/RoomPage";
+import EnrollmentApplicationPage from "./SubPages/EnrollmentApplicationPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -195,6 +196,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Rooms | MIS - Benedicto College" />
             <RoomPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/enrollment-application"
+        element={
+          <>
+            <PageTitle title="Enrollment Application | MIS - Benedicto College" />
+            <EnrollmentApplicationPage />
           </>
         }
       />

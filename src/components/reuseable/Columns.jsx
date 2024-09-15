@@ -925,7 +925,7 @@ const useColumns = () => {
           <div className="flex items-center gap-1">
             <Link
               to={`/courses/program-courses/${row.original.department.campus.campusName}/${row.original.program_id}`}
-              className="rounded w-[120.86px] bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
+              className="w-[120.86px] rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
             >
               Select Program
             </Link>
@@ -1785,6 +1785,170 @@ const useColumns = () => {
   ];
   // ! Rooms END
 
+  // ! Column Enrollment Application START
+  const columnEnrollmentApplication = [
+    {
+      accessorKey: "applicant_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Applicant No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorFn: (row) => {
+        const middleInitial =
+          row.middle_name && row.middle_name.trim() !== ""
+            ? `${row.middle_name.charAt(0)}.`
+            : "";
+        return `${row.first_name} ${middleInitial.toUpperCase()} ${row.last_name}`;
+      },
+      id: "fullName",
+      header: "Name",
+    },
+    {
+      accessorKey: "year_level",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Year Level
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "contact_number",
+      header: "Contact No.",
+    },
+    {
+      accessorKey: "program",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Program
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "campus",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+
+    {
+      accessorKey: "accepted",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-orange-500"
+            }`}
+          >
+            {cell.getValue() ? "Accepted" : "Pending"}
+          </span>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.applicant_id} ${row.active}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditCampus campusId={row.getValue("applicant_id")} />
+
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Campus"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this campus?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"campus"}
+                      entityId={row.getValue("applicant_id")}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchCampus();
+                        fetchCampusDeleted();
+                      }}
+                    />
+
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column Enrollment Application END
+
   return {
     columnCampus,
     columnSemester,
@@ -1797,6 +1961,8 @@ const useColumns = () => {
     columnBuildings,
     columnFloors,
     columnRoom,
+
+    columnEnrollmentApplication,
   };
 };
 

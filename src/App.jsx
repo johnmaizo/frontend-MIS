@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import IsLoggingOut from "./pages/Authentication/IsLoggingOut";
 import { SchoolProvider } from "./components/context/SchoolContext";
 import { HasRole } from "./components/reuseable/HasRole";
+import { EnrollmentProvider } from "./components/context/EnrollmentContext";
 
 function App() {
   const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
@@ -35,7 +36,9 @@ function App() {
           (HasRole(user?.role, "Admin") ||
             HasRole(user?.role, "SuperAdmin")) && (
             <SchoolProvider>
-              <AdminRoutes />
+              <EnrollmentProvider>
+                <AdminRoutes />
+              </EnrollmentProvider>
             </SchoolProvider>
           )}
         {/* {user?.role === "Student" && <StudentRoutes />} */}

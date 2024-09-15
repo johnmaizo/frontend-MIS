@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
-import '@github/relative-time-element';
+import "@github/relative-time-element";
 
 import "./css/style.css";
 import "./css/satoshi.css";

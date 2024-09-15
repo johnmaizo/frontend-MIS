@@ -8,6 +8,7 @@ import ProfileThomas from "../../assets/images/thomas.jfif";
 
 import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
+import { Badge } from "../ui/badge";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -58,8 +59,21 @@ const DropdownUser = () => {
             </span>
             <p className="block text-xs">
               Role:{" "}
-              <span className="font-semibold">
-                {HasRole(user.role, "Admin") ? "Admin" : user.role}{" "}
+              {HasRole(user.role, "SuperAdmin") ? (
+                <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
+                  Super Admin
+                </Badge>
+              ) : (
+                HasRole(user.role, "Admin") && (
+                  <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
+                    Admin
+                  </Badge>
+                )
+              )}
+              <span className="ml-1 font-semibold">
+                {HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")
+                  ? ""
+                  : user.role}
                 {user.campusName && `(${user.campusName})`}
               </span>
             </p>

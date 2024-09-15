@@ -63,19 +63,19 @@ const DropdownUser = () => {
                 <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
                   Super Admin
                 </Badge>
+              ) : HasRole(user.role, "Admin") ? (
+                <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
+                  Admin {user.campusName && `(${user.campusName})`}
+                </Badge>
               ) : (
-                HasRole(user.role, "Admin") && (
-                  <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
-                    Admin
-                  </Badge>
-                )
+                <span className="ml-1 font-semibold">
+                  {HasRole(user.role, "SuperAdmin") ||
+                  HasRole(user.role, "Admin")
+                    ? ""
+                    : user.role}
+                  {user.campusName && `(${user.campusName})`}
+                </span>
               )}
-              <span className="ml-1 font-semibold">
-                {HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")
-                  ? ""
-                  : user.role}
-                {user.campusName && `(${user.campusName})`}
-              </span>
             </p>
           </span>
 
@@ -122,7 +122,26 @@ const DropdownUser = () => {
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
             <span className="block text-center text-sm font-medium text-black dark:text-white lg:hidden">
               {user.firstName} {user.lastName}
-              <span className="block text-xs">Role: {user.role}</span>
+              <p className="block text-xs">
+                Role:{" "}
+                {HasRole(user.role, "SuperAdmin") ? (
+                  <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
+                    Super Admin
+                  </Badge>
+                ) : HasRole(user.role, "Admin") ? (
+                  <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
+                    Admin {user.campusName && `(${user.campusName})`}
+                  </Badge>
+                ) : (
+                  <span className="ml-1 font-semibold">
+                    {HasRole(user.role, "SuperAdmin") ||
+                    HasRole(user.role, "Admin")
+                      ? ""
+                      : user.role}
+                    {user.campusName && `(${user.campusName})`}
+                  </span>
+                )}
+              </p>
             </span>
             {/* <li>
               <Link

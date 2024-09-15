@@ -31,17 +31,17 @@ const ProgramCoursesPage = () => {
     { to: "/", label: "Dashboard" },
     {
       to: "/courses/course-list",
-      label: "Course List",
+      label: "Subject List",
     },
     {
-      label: "Assign Courses to Program", // New breadcrumb item
+      label: "Assign Subjects to Program", // New breadcrumb item
     },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={`Select Program to Assign Courses (${user?.campusName})`}
+        pageName={`Select Program to Assign Subjects (${user?.campusName})`}
         items={NavItems}
         ITEMS_TO_DISPLAY={3}
       />

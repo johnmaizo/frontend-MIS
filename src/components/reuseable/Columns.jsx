@@ -680,7 +680,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -698,7 +698,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Code
+            Subject Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -716,7 +716,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Description
+            Subject Description
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -840,7 +840,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -947,7 +947,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Numeric ID
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -966,7 +966,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Code
+            Subject Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -985,7 +985,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Course Description
+            Subject Description
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );

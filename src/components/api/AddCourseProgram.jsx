@@ -115,9 +115,9 @@ const AddCourseProgram = () => {
       const response = await toast.promise(
         axios.post("/program-courses/assign-program-course", transformedData),
         {
-          loading: "Assigning Course...",
-          success: "Assigned Course successfully!",
-          error: "Failed to Assign Course.",
+          loading: "Assigning Subject...",
+          success: "Assigned Subject successfully!",
+          error: "Failed to Assign Subject.",
         },
         {
           position: "bottom-right",
@@ -176,12 +176,12 @@ const AddCourseProgram = () => {
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Assign Course </span>
+            <span className="max-w-[8em]">Assign Subject </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Assign new Course
+                Assign new Subject
               </DialogTitle>
               <DialogDescription className="h-[18em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
@@ -211,7 +211,7 @@ const AddCourseProgram = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="dept_campus"
                       >
-                        Select Course
+                        Select Subject
                       </label>
 
                       <CustomPopover
@@ -223,14 +223,14 @@ const AddCourseProgram = () => {
                             uniqueCourses.find((course) => course.value === val)
                               ?.value,
                         )}
-                        itemName="Course"
+                        itemName="Subject"
                         handleClearAll={clearAllSelections}
                       >
                         <CustomList
                           handleSelect={handleSetCourses}
                           value={selectedCourses}
                           data={uniqueCourses}
-                          searchPlaceholder="Search Course..."
+                          searchPlaceholder="Search Subject..."
                           clearErrors={clearErrors}
                           entity="courseChoose"
                         />
@@ -262,12 +262,12 @@ const AddCourseProgram = () => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Adding Course..."
+                        ? "Adding Subject..."
                         : programLoading
                           ? "Loading..."
                           : success
-                            ? "Course Added!"
-                            : "Add Course"}
+                            ? "Subject Added!"
+                            : "Add Subject"}
                     </button>
                   </div>
                 </form>

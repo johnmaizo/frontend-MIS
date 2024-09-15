@@ -202,7 +202,7 @@ const AdminSidebar = ({
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          Program Courses
+                          Program Subjects
                         </NavLink>
                       </li>
                     </ul>
@@ -268,7 +268,7 @@ const AdminSidebar = ({
                     }}
                   >
                     <CourseIcon />
-                    Courses
+                    Subjects
                     <svg
                       className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                         open && "rotate-180"
@@ -305,7 +305,7 @@ const AdminSidebar = ({
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          Course List
+                          Subject List
                         </NavLink>
                       </li>
                       <li>
@@ -319,7 +319,7 @@ const AdminSidebar = ({
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          Program Courses
+                          Program Subjects
                         </NavLink>
                       </li>
                     </ul>

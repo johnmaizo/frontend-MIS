@@ -88,9 +88,9 @@ const AddCourse = () => {
       const response = await toast.promise(
         axios.post("/course/add-course", transformedData),
         {
-          loading: "Adding Course...",
-          success: "Course Added successfully!",
-          error: "Failed to add Course.",
+          loading: "Adding Subject...",
+          success: "Subject Added successfully!",
+          error: "Failed to add Subject.",
         },
         {
           position: "bottom-right",
@@ -146,12 +146,12 @@ const AddCourse = () => {
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Course </span>
+            <span className="max-w-[8em]">Add Subject </span>
           </DialogTrigger>
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Course
+                Add new Subject
               </DialogTitle>
               <DialogDescription className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -162,7 +162,7 @@ const AddCourse = () => {
                           className="mb-2.5 block text-black dark:text-white"
                           htmlFor="course_code"
                         >
-                          Course Code
+                          Subject Code
                         </label>
                         <input
                           id="course_code"
@@ -240,7 +240,7 @@ const AddCourse = () => {
                         className="mb-2.5 block text-black dark:text-white"
                         htmlFor="course_description"
                       >
-                        Course Description
+                        Subject Description
                       </label>
                       <input
                         id="course_description"
@@ -342,10 +342,10 @@ const AddCourse = () => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Adding Course..."
+                        ? "Adding Subject..."
                         : success
-                          ? "Course Added!"
-                          : "Add Course"}
+                          ? "Subject Added!"
+                          : "Add Subject"}
                     </button>
                   </div>
                 </form>

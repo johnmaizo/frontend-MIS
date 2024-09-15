@@ -43,9 +43,9 @@ const DeletedCourse = () => {
       >
         <DialogTrigger className="flex items-center gap-1 rounded bg-blue-600 p-2 text-xs font-medium text-white hover:bg-blue-700">
           <ArchiveIcon />
-          <span className="max-w-[8em]">Deleted Course </span>
+          <span className="max-w-[8em]">Deleted Subjects </span>
         </DialogTrigger>
-        <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+        <DialogContent className="max-w-[40em] md:max-w-[70em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
           <DialogHeader>
             <DialogTitle className="mb-5 text-2xl font-medium text-black dark:text-white">
               Deleted Course
@@ -67,7 +67,7 @@ const CourseTables = () => {
   const columns = [
     {
       accessorKey: "course_id",
-      header: "Numeric ID",
+      header: "No.",
       cell: (info) => {
         // `info.row.index` gives the zero-based index of the row
         return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
@@ -152,14 +152,6 @@ const CourseTables = () => {
                     </DialogHeader>
                     <DialogFooter>
                       <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                        {/* <ButtonActionCourse
-                          action="reactivate"
-                          courseId={row.getValue("course_id")}
-                          onSuccess={() => {
-                            fetchCourseDeleted();
-                            fetchCourse();
-                          }}
-                        /> */}
                         <ButtonAction
                           entityType={"course"}
                           entityId={row.getValue("course_id")}

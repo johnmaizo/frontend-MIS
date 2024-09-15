@@ -36,8 +36,8 @@ const CoursePage = () => {
     {
       label:
         user && user.campusName
-          ? `Course List (${user.campusName})`
-          : "Course List",
+          ? `Subject List (${user.campusName})`
+          : "Subject List",
     },
   ];
 
@@ -46,8 +46,8 @@ const CoursePage = () => {
       <BreadcrumbResponsive
         pageName={
           user && user.campusName
-            ? `Course List (${user.campusName})`
-            : "Course List"
+            ? `Subject List (${user.campusName})`
+            : "Subject List"
         }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
@@ -123,7 +123,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by Course Description..."
+            placeholder="Search by Subject Description..."
             value={table.getColumn("courseDescription")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table

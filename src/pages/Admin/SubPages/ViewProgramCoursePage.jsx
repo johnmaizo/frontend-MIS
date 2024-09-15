@@ -33,21 +33,21 @@ const ViewProgramCoursePage = () => {
     { to: "/", label: "Dashboard" },
     {
       to: "/courses/course-list",
-      label: "Course List",
+      label: "Subject List",
     },
     {
       to: "/courses/program-courses",
-      label: "Assign Courses to Program",
+      label: "Assign Subjects to Program",
     },
     {
-      label: "Program Courses Offered", // New breadcrumb item
+      label: "Program Subjects Offered", // New breadcrumb item
     },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Program Courses Offered"} // Updated page name
+        pageName={"Program Subjects Offered"} // Updated page name
         items={NavItems}
         ITEMS_TO_DISPLAY={3}
       />
@@ -131,7 +131,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           />
 
           <Input
-            placeholder="Search by Course Description..."
+            placeholder="Search by Subject Description..."
             value={table.getColumn("courseDescription")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table

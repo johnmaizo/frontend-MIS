@@ -30,7 +30,7 @@ export const EnrollmentProvider = ({ children }) => {
         "/api/stdntbasicinfoapplication",
       ); // Use the external Axios instance
 
-      setBuildings(response.data); // Assuming setBuildings is used to handle the response data
+      setBuildings(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);

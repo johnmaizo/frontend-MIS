@@ -1232,7 +1232,7 @@ const useColumns = () => {
           </Badge>
         ) : (
           <Badge variant={"outline"} className={"text-[0.8rem]"}>
-            &quot;N/A&quot;
+            N/A
           </Badge>
         );
       },

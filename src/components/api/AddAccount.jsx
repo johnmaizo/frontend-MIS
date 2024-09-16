@@ -446,7 +446,7 @@ const AddAccount = () => {
                         </label>
                         <FormInput
                           id="contactNumber"
-                          placeholder="'+63' or '09'"
+                          placeholder="'09'"
                           register={register}
                           validationRules={{
                             required: {
@@ -454,23 +454,18 @@ const AddAccount = () => {
                               message: "Contact number is required",
                             },
                             pattern: {
-                              value: /^[0-9+]*$/,
+                              value: /^[0-9]*$/,
                               message:
-                                "Contact number must only contain numbers and '+'",
+                                "Contact number must only contain numbers",
                             },
                             validate: (value) => {
-                              if (value.startsWith("+63")) {
-                                return (
-                                  value.length === 13 ||
-                                  'Contact number must be 13 digits long when starting with "+63"'
-                                );
-                              } else if (value.startsWith("09")) {
+                              if (value.startsWith("09")) {
                                 return (
                                   value.length === 11 ||
                                   'Contact number must be 11 digits long when starting with "09"'
                                 );
                               } else {
-                                return 'Contact number must start with "+63" or "09"';
+                                return 'Contact number must start with "09"';
                               }
                             },
                           }}

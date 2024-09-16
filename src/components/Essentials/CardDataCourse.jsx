@@ -12,7 +12,7 @@ const CardDataCourse = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const title = "Total Course";
+  const title = "Total Subject";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +34,7 @@ const CardDataCourse = () => {
       setLoading(false);
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

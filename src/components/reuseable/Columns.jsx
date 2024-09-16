@@ -1159,7 +1159,7 @@ const useColumns = () => {
       cell: ({ cell }) => {
         return (
           <>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               <RoleBadge rolesString={cell.getValue()} />
             </div>
           </>

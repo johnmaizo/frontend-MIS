@@ -175,7 +175,7 @@ const AdminSidebar = ({
                       !open && "hidden"
                     }`}
                   >
-                    <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
+                    <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-6">
                       <li>
                         <NavLink
                           to="/enrollments/enrollment-application"
@@ -193,16 +193,16 @@ const AdminSidebar = ({
                       </li>
                       <li>
                         <NavLink
-                          to="/courses/program-courses"
+                          to="/enrollments/official-enrolled"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname === "/courses/program-courses" ||
-                                pathname.includes("program-courses")) &&
+                              (pathname === "/courses/official-enrolled" ||
+                                pathname.includes("official-enrolled")) &&
                               "!underline "
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          Program Subjects
+                          Offical Enrolled
                         </NavLink>
                       </li>
                     </ul>

@@ -50,7 +50,8 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         ))}
       </TableHeader>
       <TableBody
-        className={`!divide-x !divide-y !divide-stroke transition-none dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
+        className={`!divide-x !divide-y !divide-stroke dark:!divide-strokedark transition-none ${loading || error ? "relative h-[7.5em]" : ""}`}
+        // className={` transition-none ${loading || error ? "relative h-[7.5em]" : ""}`}
       >
         {loading ? (
           <TableRow className="border-none transition-none hover:!bg-transparent">
@@ -75,7 +76,8 @@ const ReuseTable = ({ table, columns, loading, error }) => {
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
-              className={`${i === 0 ? "border-none" : ""}`}
+              className={`${i === 0 ? "border-none" : ""} !divide-x !divide-y !divide-stroke dark:!divide-strokedark`}
+              // className={`!divide-x !divide-y  !divide-stroke dark:!divide-strokedark`}
             >
               {row.getVisibleCells().map((cell, i) => (
                 <TableCell

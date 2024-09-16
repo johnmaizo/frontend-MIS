@@ -130,19 +130,17 @@ const DataTable = ({ data, columns, loading, error }) => {
             className="md:mb-0 md:w-[18em]"
           />
 
-          <Input
+          <SearchInput
             placeholder="Search by Department..."
-            value={
+            filterValue={table
+              .getColumn("fullDepartmentNameWithCampus")
+              ?.getFilterValue()}
+            setFilterValue={(value) =>
               table
                 .getColumn("fullDepartmentNameWithCampus")
-                ?.getFilterValue() ?? ""
+                ?.setFilterValue(value)
             }
-            onChange={(event) =>
-              table
-                .getColumn("fullDepartmentNameWithCampus")
-                ?.setFilterValue(event.target.value)
-            }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+            className="md:mb-0 md:w-[18em]"
           />
         </div>
 

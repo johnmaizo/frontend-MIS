@@ -924,7 +924,7 @@ const useColumns = () => {
         return (
           <div className="flex items-center gap-1">
             <Link
-              to={`/courses/program-courses/${row.original.department.campus.campusName}/${row.original.program_id}`}
+              to={`/subjects/program-subjects/${row.original.department.campus.campusName}/${row.original.program_id}`}
               className="w-[120.86px] rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
             >
               Select Program

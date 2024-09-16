@@ -133,30 +133,30 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/courses/course-list"
+        path="/subjects/subject-list"
         element={
           <>
-            <PageTitle title="Courses | MIS - Benedicto College" />
+            <PageTitle title="Subjects | MIS - Benedicto College" />
             <CoursePage />
           </>
         }
       />
 
       <Route
-        path="/courses/program-courses"
+        path="/subjects/program-subjects"
         element={
           <>
-            <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
             <ProgramCoursesPage />
           </>
         }
       />
 
       <Route
-        path="/courses/program-courses/:campusName/:program_id"
+        path="/subjects/program-subjects/:campusName/:program_id"
         element={
           <>
-            <PageTitle title="Assign Courses to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
             <ViewProgramCoursePage />
           </>
         }

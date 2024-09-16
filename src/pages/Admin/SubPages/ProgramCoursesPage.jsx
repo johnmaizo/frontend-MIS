@@ -30,7 +30,7 @@ const ProgramCoursesPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      to: "/courses/course-list",
+      to: "/subjects/subject-list",
       label: "Subject List",
     },
     {

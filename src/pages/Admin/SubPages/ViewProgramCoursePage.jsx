@@ -32,11 +32,11 @@ const ViewProgramCoursePage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      to: "/courses/course-list",
+      to: "/subjects/subject-list",
       label: "Subject List",
     },
     {
-      to: "/courses/program-courses",
+      to: "/subjects/program-subjects",
       label: "Assign Subjects to Program",
     },
     {

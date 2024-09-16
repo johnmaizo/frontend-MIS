@@ -247,17 +247,17 @@ const AdminSidebar = ({
           {/* <!-- Menu Item Course --> */}
           <SidebarLinkGroup
             activeCondition={
-              pathname === "/course" || pathname.includes("course")
+              pathname === "/subject" || pathname.includes("subject")
             }
           >
             {(handleClick, open) => {
               return (
                 <React.Fragment>
                   <NavLink
-                    to="/courses/courses-list"
+                    to="/subjects/subject-list"
                     className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                      (pathname === "/courses" ||
-                        pathname.includes("courses")) &&
+                      (pathname === "/subjects" ||
+                        pathname.includes("subjects")) &&
                       "bg-gray text-primary dark:bg-meta-4"
                     }`}
                     onClick={(e) => {
@@ -296,11 +296,11 @@ const AdminSidebar = ({
                     <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
                       <li>
                         <NavLink
-                          to="/courses/course-list"
+                          to="/subjects/subject-list"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname === "/courses/course-list" ||
-                                pathname.includes("course-list")) &&
+                              (pathname === "/subjects/subject-list" ||
+                                pathname.includes("subject-list")) &&
                               "!underline "
                             }` + (isActive && "text-primary dark:!text-white")
                           }
@@ -310,11 +310,11 @@ const AdminSidebar = ({
                       </li>
                       <li>
                         <NavLink
-                          to="/courses/program-courses"
+                          to="/subjects/program-subjects"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname === "/courses/program-courses" ||
-                                pathname.includes("program-courses")) &&
+                              (pathname === "/subjects/program-subjects" ||
+                                pathname.includes("program-subjects")) &&
                               "!underline "
                             }` + (isActive && "text-primary dark:!text-white")
                           }

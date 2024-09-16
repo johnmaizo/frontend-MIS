@@ -153,7 +153,7 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/subjects/program-subjects/:campusName/:program_id"
+        path="/subjects/program-subjects/campus/:campusName/program/:program_id"
         element={
           <>
             <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />

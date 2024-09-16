@@ -12,16 +12,14 @@ import {
 
 import { useContext, useEffect, useState } from "react";
 
-import { Input } from "../../../components/ui/input";
-
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
-import { Link } from "react-router-dom";
-import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
 import { useEnrollment } from "../../../components/context/EnrollmentContext";
+import SearchInput from "../../../components/reuseable/SearchInput";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const EnrollmentApplicationPage = () => {
   const { user } = useContext(AuthContext);
@@ -109,29 +107,25 @@ const DataTable = ({ data, columns, loading, error }) => {
       <>
         <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
           <div className="mb-5 mt-2 gap-5 md:flex">
-            <Input
-              placeholder="Search by Code..."
-              value={table.getColumn("programCode")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("programCode")
-                  ?.setFilterValue(event.target.value)
+            <SearchInput
+              placeholder="Search by Name..."
+              filterValue={table.getColumn("fullName")?.getFilterValue()}
+              setFilterValue={(value) =>
+                table.getColumn("fullName")?.setFilterValue(value)
               }
-              className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
+              className="md:w-[17em]"
             />
 
-            <Input
-              placeholder="Search by Program Description..."
-              value={
-                table.getColumn("programDescription")?.getFilterValue() ?? ""
+            <SearchInput
+              placeholder="Search by Email..."
+              filterValue={table.getColumn("email")?.getFilterValue()}
+              setFilterValue={(value) =>
+                table.getColumn("email")?.setFilterValue(value)
               }
-              onChange={(event) =>
-                table
-                  .getColumn("programDescription")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+              className="md:w-[17em]"
             />
+
+            <ResetFilter table={table} className={"h-[3.3em]"} />
           </div>
           <div className="max-w-full overflow-x-auto">
             <ReuseTable

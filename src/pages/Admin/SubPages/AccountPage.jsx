@@ -9,8 +9,6 @@ import {
 
 import { useEffect, useState } from "react";
 
-import { Input } from "../../../components/ui/input";
-
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
 import { useSchool } from "../../../components/context/SchoolContext";
@@ -21,6 +19,7 @@ import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs"
 import DefaultLayout from "../../layout/DefaultLayout";
 import { useColumns } from "../../../components/reuseable/Columns";
 import SearchInput from "../../../components/reuseable/SearchInput";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const AccountPage = () => {
   const NavItems = [
@@ -104,9 +103,9 @@ const DataTable = ({ data, columns, loading, error }) => {
 
           <SearchInput
             placeholder="Search by Name..."
-            filterValue={table.getColumn("name")?.getFilterValue()}
+            filterValue={table.getColumn("fullName")?.getFilterValue()}
             setFilterValue={(value) =>
-              table.getColumn("name")?.setFilterValue(value)
+              table.getColumn("fullName")?.setFilterValue(value)
             }
             className="md:w-[17em]"
           />
@@ -119,6 +118,8 @@ const DataTable = ({ data, columns, loading, error }) => {
             }
             className="md:w-[17em]"
           />
+
+          <ResetFilter table={table} className={"h-[3.3em]"} />
         </div>
 
         <div className=" ">

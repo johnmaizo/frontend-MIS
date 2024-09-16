@@ -76,7 +76,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
-              className={`${i === 0 ? "border-none" : ""} !divide-x !divide-y !divide-stroke dark:!divide-strokedark`}
+              className={`${i === 0 ? "border-none" : ""} transition-none !divide-x !divide-y !divide-stroke dark:!divide-strokedark`}
               // className={`!divide-x !divide-y  !divide-stroke dark:!divide-strokedark`}
             >
               {row.getVisibleCells().map((cell, i) => (

@@ -34,8 +34,10 @@ import EditBuilding from "../api/EditBuilding";
 import EditFloor from "../api/EditFloor";
 import EditRoom from "../api/EditRoom";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
-import { getUniqueCodes } from "./GetUniqueValues";
+import { getUniqueCodes, getUniqueCodesEnrollment } from "./GetUniqueValues";
 import RoleBadge from "./RoleBadge";
+import { useEnrollment } from "../context/EnrollmentContext";
+import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 
 const useColumns = () => {
   const {
@@ -59,6 +61,8 @@ const useColumns = () => {
     fetchRooms,
     fetchRoomsDeleted,
   } = useSchool();
+
+  const { enrollmentApplicants } = useEnrollment();
 
   const { campusName, program_id } = useParams();
 
@@ -1200,13 +1204,13 @@ const useColumns = () => {
                 </Button>
               );
             },
-            cell: ({cell}) => {
+            cell: ({ cell }) => {
               return (
                 <span className="font-semibold">
                   {cell.getValue() ? cell.getValue() : "N/A"}
                 </span>
-              )
-            }
+              );
+            },
           },
         ]
       : []),
@@ -1813,15 +1817,33 @@ const useColumns = () => {
       },
     },
     {
-      accessorFn: (row) => {
+      accessorFn: (row) =>
+        `${row.first_name} ${row.middle_name} ${row.last_name}`,
+      cell: ({ row }) => {
         const middleInitial =
-          row.middle_name && row.middle_name.trim() !== ""
-            ? `${row.middle_name.charAt(0)}.`
+          row.original.middle_name && row.original.middle_name.trim() !== ""
+            ? `${row.original.middle_name.charAt(0)}.`
             : "";
-        return `${row.first_name} ${middleInitial.toUpperCase()} ${row.last_name}`;
+        return (
+          <span className="text-lg font-semibold">
+            {row.original.last_name}, {row.original.first_name}{" "}
+            {middleInitial.toUpperCase()}
+          </span>
+        );
       },
       id: "fullName",
-      header: "Name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
     },
     {
       accessorKey: "year_level",
@@ -1838,7 +1860,7 @@ const useColumns = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
     {
@@ -1888,7 +1910,15 @@ const useColumns = () => {
 
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Status"
+            options={getUniqueCodesEnrollment(enrollmentApplicants, "status")}
+          />
+        );
+      },
       cell: ({ cell }) => {
         return (
           <span

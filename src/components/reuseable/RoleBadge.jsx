@@ -36,7 +36,7 @@ const RoleBadge = ({ rolesString }) => {
     // Set badge styles for SuperAdmin and Admin
     let badgeStyle = "";
     if (role === "SuperAdmin") {
-      badgeStyle = "!bg-red-500 hover:!bg-red-600 !text-white"; // Red background for SuperAdmin
+      badgeStyle = "!bg-red-600 hover:!bg-red-700 !text-white"; // Red background for SuperAdmin
     } else if (role === "Admin") {
       badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white"; // Blue background for Admin
     } else {

@@ -1200,6 +1200,13 @@ const useColumns = () => {
                 </Button>
               );
             },
+            cell: ({cell}) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() ? cell.getValue() : "N/A"}
+                </span>
+              )
+            }
           },
         ]
       : []),
@@ -1212,7 +1219,7 @@ const useColumns = () => {
       header: "Date Created",
       cell: ({ cell }) => {
         return (
-          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+          <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
             <relative-time datetime={cell.getValue()}>
               {new Date(cell.getValue()).toDateString()}
             </relative-time>
@@ -1231,7 +1238,7 @@ const useColumns = () => {
             </relative-time>
           </Badge>
         ) : (
-          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+          <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
             N/A
           </Badge>
         );

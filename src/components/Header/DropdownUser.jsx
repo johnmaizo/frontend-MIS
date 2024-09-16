@@ -125,7 +125,7 @@ const DropdownUser = () => {
               <p className="block text-xs">
                 Role:{" "}
                 {HasRole(user.role, "SuperAdmin") ? (
-                  <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
+                  <Badge className="!bg-red-600 !text-white hover:!bg-red-700">
                     Super Admin
                   </Badge>
                 ) : HasRole(user.role, "Admin") ? (

@@ -29,6 +29,7 @@ import { DataTableFacetedFilter } from "../../../components/reuseable/DataTableF
 import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { useColumns } from "../../../components/reuseable/Columns";
+import SearchInput from "../../../components/reuseable/SearchInput";
 
 const ProgramPage = () => {
   const { user } = useContext(AuthContext);
@@ -109,26 +110,24 @@ const DataTable = ({ data, columns, loading, error }) => {
     <>
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
-          <Input
+          <SearchInput
             placeholder="Search by Code..."
-            value={table.getColumn("programCode")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table.getColumn("programCode")?.setFilterValue(event.target.value)
+            filterValue={table.getColumn("programCode")?.getFilterValue()}
+            setFilterValue={(value) =>
+              table.getColumn("programCode")?.setFilterValue(value)
             }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[10.5em]"
+            className="md:mb-0 md:w-[10.5em]"
           />
 
-          <Input
+          <SearchInput
             placeholder="Search by Program description..."
-            value={
-              table.getColumn("programDescription")?.getFilterValue() ?? ""
+            filterValue={table
+              .getColumn("programDescription")
+              ?.getFilterValue()}
+            setFilterValue={(value) =>
+              table.getColumn("programDescription")?.setFilterValue(value)
             }
-            onChange={(event) =>
-              table
-                .getColumn("programDescription")
-                ?.setFilterValue(event.target.value)
-            }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
+            className="md:mb-0 md:w-[18em]"
           />
 
           <Input

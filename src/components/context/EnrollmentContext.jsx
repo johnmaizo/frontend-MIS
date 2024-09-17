@@ -26,19 +26,19 @@ export const EnrollmentProvider = ({ children }) => {
 
   const fetchEnrollmentApplicants = async () => {
     setLoadingApplicants(true);
-  
+
     try {
       // Define params conditionally
       const params = user.campusName
         ? { filter: `campus=${user.campusName}` }
         : {}; // If campusName doesn't exist, send empty params or other fallback
-  
+
       // Make the API request with the external Axios instance
       const response = await axiosExternal.get(
         "/api/stdntbasicinfoapplication",
-        { params }
+        { params },
       );
-  
+
       setBuildings(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -47,10 +47,10 @@ export const EnrollmentProvider = ({ children }) => {
         setError(`Failed to fetch enrollment applications: ${err}`);
       }
     }
-  
+
     setLoadingApplicants(false);
   };
-  
+
   // ! Enrollment END
 
   // ! Offically Enrolled START
@@ -58,14 +58,13 @@ export const EnrollmentProvider = ({ children }) => {
 
   const [officalEnrolled, setOfficialEnrolled] = useState([]);
 
-  const fetchOfficialEnrolled = async (campusName) => {
+  const fetchOfficialEnrolled = async () => {
     setLoadingOfficalEnrolled(true);
     try {
-      const response = await axios.get("/enrollment", {
-        params: {
-          campusName: campusName,
-        },
-      });
+      // Define params conditionally
+      const params = user.campusName ? { campusName: user.campusName } : {}; // If campusName doesn't exist, send empty params or other fallback
+
+      const response = await axios.get("/enrollment", { params });
 
       setOfficialEnrolled(response.data);
     } catch (err) {

@@ -20,13 +20,17 @@ import { useColumns } from "../../../components/reuseable/Columns";
 import { useEnrollment } from "../../../components/context/EnrollmentContext";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
+import { HasRole } from "../../../components/reuseable/HasRole";
 
 const OfficialEnrolledPage = () => {
   const { user } = useContext(AuthContext);
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
-    { to: "/enrollments/enrollment-application", label: "Enrollment Applicants" },
+    {
+      to: "/enrollments/enrollment-application",
+      label: "Enrollment Applicants",
+    },
     {
       label: "Officialy Enrolled", // New breadcrumb item
     },
@@ -35,7 +39,11 @@ const OfficialEnrolledPage = () => {
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={`Officialy Enrolled (${user?.campusName})`}
+        pageName={
+          !HasRole(user.role, "SuperAdmin")
+            ? `Officialy Enrolled (${user?.campusName})`
+            : "Officialy Enrolled (All Campuses)"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={3}
       />
@@ -57,7 +65,7 @@ const EnrollmentTables = () => {
   } = useEnrollment();
 
   useEffect(() => {
-    fetchOfficialEnrolled(user.campusName);
+    fetchOfficialEnrolled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -142,7 +150,7 @@ const DataTable = ({ data, columns, loading, error }) => {
               rowsPerPage={10}
               totalName={"Student"}
               table={table}
-              totalDepartments={data.length}
+              totalDepartments={table.getFilteredRowModel().rows.length}
             />
           </div>
         </div>

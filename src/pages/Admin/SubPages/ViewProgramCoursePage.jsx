@@ -170,7 +170,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             rowsPerPage={10}
             totalName={"Course"}
             table={table}
-            totalDepartments={data.length}
+            totalDepartments={table.getFilteredRowModel().rows.length}
           />
         </div>
       </div>

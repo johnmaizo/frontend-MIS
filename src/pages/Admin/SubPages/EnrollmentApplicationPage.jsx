@@ -20,6 +20,7 @@ import { useColumns } from "../../../components/reuseable/Columns";
 import { useEnrollment } from "../../../components/context/EnrollmentContext";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
+import { HasRole } from "../../../components/reuseable/HasRole";
 
 const EnrollmentApplicationPage = () => {
   const { user } = useContext(AuthContext);
@@ -34,7 +35,11 @@ const EnrollmentApplicationPage = () => {
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={`Enrollment Application (${user?.campusName})`}
+        pageName={
+          !HasRole(user.role, "SuperAdmin")
+            ? `Enrollment Application (${user?.campusName})`
+            : "Enrollment Application (All Campuses)"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
@@ -96,7 +101,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 50,
+        pageSize: 5,
       },
     },
   });
@@ -138,10 +143,10 @@ const DataTable = ({ data, columns, loading, error }) => {
 
           <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
             <DataTablePagination
-              rowsPerPage={50}
+              rowsPerPage={5}
               totalName={"Applicant"}
               table={table}
-              totalDepartments={data.length}
+              totalDepartments={table.getFilteredRowModel().rows.length}
             />
           </div>
         </div>

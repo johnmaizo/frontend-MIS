@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 import {
   Dialog,
@@ -19,6 +20,8 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
+
+  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
 
   const handleClick = async () => {
     setGeneralError("");
@@ -42,6 +45,7 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
       if (response.data) {
         setSuccess(true);
         setOpen(false); // Close the dialog
+        navigate(-1); // Navigate to the previous page on success
       }
       setLocalLoading(false); // Set loading to false after the process finishes
     } catch (err) {
@@ -110,9 +114,9 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
                   </p>
 
                   {error && (
-                    <p className="mt-5 font-semibold text-red-500">
+                    <span className="mt-2 inline-block py-3 font-medium text-red-600">
                       Error: {error}
-                    </p>
+                    </span>
                   )}
 
                   <button

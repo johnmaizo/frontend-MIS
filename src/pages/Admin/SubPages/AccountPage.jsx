@@ -142,7 +142,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             totalName={"Account"}
             rowsPerPage={5}
             table={table}
-            totalDepartments={data.length}
+            totalDepartments={table.getFilteredRowModel().rows.length}
           />
         </div>
       </div>

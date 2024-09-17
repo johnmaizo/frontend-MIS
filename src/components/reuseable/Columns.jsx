@@ -234,15 +234,15 @@ const useColumns = () => {
       accessorKey: "semesterName",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Semester
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Semester"
+            options={getUniqueCodes(semesters, "semesterName")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return cell.getValue();
@@ -1894,15 +1894,15 @@ const useColumns = () => {
       accessorKey: "campus",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Campus"
+            options={getUniqueCodes(enrollmentApplicants, "campus")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
@@ -1919,6 +1919,9 @@ const useColumns = () => {
             options={getUniqueCodesEnrollment(enrollmentApplicants, "status")}
           />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return (
@@ -2024,7 +2027,16 @@ const useColumns = () => {
           </span>
         );
       },
+      sortingFn: (rowA, rowB) => {
+        // Split student_id by '-' to extract the third number part
+        const idA = rowA.getValue("student_id").split("-")[2]; // e.g., '0001'
+        const idB = rowB.getValue("student_id").split("-")[2]; // e.g., '0002'
+
+        // Convert to numbers for proper numeric comparison
+        return parseInt(idA, 10) - parseInt(idB, 10);
+      },
     },
+
     {
       accessorFn: (row) => `${row.firstName} ${row.middleName} ${row.lastName}`,
       cell: ({ row }) => {
@@ -2060,7 +2072,7 @@ const useColumns = () => {
           <FacetedFilterEnrollment
             column={column}
             title="Program"
-            options={getUniqueCodes(enrollmentApplicants, "program")}
+            options={getUniqueCodes(officalEnrolled, "program")}
           />
         );
       },
@@ -2078,7 +2090,7 @@ const useColumns = () => {
           <FacetedFilterEnrollment
             column={column}
             title="Year Level"
-            options={getUniqueCodes(enrollmentApplicants, "year_level")}
+            options={getUniqueCodes(officalEnrolled, "yearLevel")}
           />
         );
       },
@@ -2089,6 +2101,28 @@ const useColumns = () => {
         return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <FacetedFilterEnrollment
+                  column={column}
+                  title="Campus"
+                  options={getUniqueCodes(officalEnrolled, "campusName")}
+                />
+              );
+            },
+            filterFn: (row, id, value) => {
+              return value.includes(row.getValue(id));
+            },
+            cell: ({ cell }) => {
+              return <span className="font-semibold">{cell.getValue()}</span>;
+            },
+          },
+        ]
+      : []),
     {
       accessorKey: "email",
       header: "Email",

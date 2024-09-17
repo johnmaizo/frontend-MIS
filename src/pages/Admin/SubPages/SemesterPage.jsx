@@ -25,6 +25,7 @@ import { Input } from "../../../components/ui/input";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { useColumns } from "../../../components/reuseable/Columns";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const SemesterPage = () => {
   const { user } = useContext(AuthContext);
@@ -58,7 +59,8 @@ const SemesterPage = () => {
 };
 
 const SemesterTables = () => {
-  const { semesters, fetchSemesters, fetchSemestersDeleted, loading, error } = useSchool();
+  const { semesters, fetchSemesters, fetchSemestersDeleted, loading, error } =
+    useSchool();
 
   useEffect(() => {
     fetchSemesters();
@@ -118,16 +120,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
-          <Input
-            placeholder="Search by Semester..."
-            value={table.getColumn("semesterName")?.getFilterValue() ?? ""}
-            onChange={(event) =>
-              table
-                .getColumn("semesterName")
-                ?.setFilterValue(event.target.value)
-            }
-            className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:max-w-[15em]"
-          />
+          <ResetFilter table={table} className={"h-[3.3em]"} />
         </div>
 
         <div className="">
@@ -158,7 +151,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             rowsPerPage={10}
             totalName={"Semester"}
             table={table}
-            totalDepartments={data.length}
+            totalDepartments={table.getFilteredRowModel().rows.length}
           />
         </div>
       </div>

@@ -48,7 +48,8 @@ const CampusPage = () => {
 };
 
 const CampusTables = () => {
-  const { campus, fetchCampus, fetchCampusDeleted, loading, error } = useSchool();
+  const { campus, fetchCampus, fetchCampusDeleted, loading, error } =
+    useSchool();
 
   const { columnCampus } = useColumns();
 
@@ -147,7 +148,7 @@ const DataTable = ({ data, columns, loading, error }) => {
           <DataTablePagination
             totalName={"Campus"}
             table={table}
-            totalDepartments={data.length}
+            totalDepartments={table.getFilteredRowModel().rows.length}
           />
         </div>
       </div>

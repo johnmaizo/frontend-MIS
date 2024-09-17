@@ -15,6 +15,7 @@ import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 import { useContext } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
+import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -30,7 +31,8 @@ const AdminHome = () => {
       )}
 
       <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
-        <CardDataStudent />
+        {/* <CardDataStudent /> */}
+        <CardDataOfficialStudent />
         {HasRole(user.role, "SuperAdmin") && <CardDataCampus />}
         <CardDataDepartment />
         <CardDataPrograms />

@@ -30,6 +30,8 @@ import BuildingStructurePage from "./SubPages/BuildingStructurePage";
 import FloorPage from "./SubPages/FloorPage";
 import RoomPage from "./SubPages/RoomPage";
 import EnrollmentApplicationPage from "./SubPages/EnrollmentApplicationPage";
+import ViewEnrollmentApplicantPage from "./SubPages/ViewEnrollmentApplicantPage";
+import OfficialEnrolledPage from "./SubPages/OfficalEnrolledPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -206,6 +208,26 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Enrollment Application | MIS - Benedicto College" />
             <EnrollmentApplicationPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/enrollment-application/applicant/:applicantId"
+        element={
+          <>
+            <PageTitle title="View Enrollment Application | MIS - Benedicto College" />
+            <ViewEnrollmentApplicantPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/official-enrolled"
+        element={
+          <>
+            <PageTitle title="Official Enrolled | MIS - Benedicto College" />
+            <OfficialEnrolledPage />
           </>
         }
       />

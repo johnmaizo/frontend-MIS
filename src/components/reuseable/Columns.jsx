@@ -20,7 +20,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import EditCourse from "../api/EditCourse";
-import { DeleteIcon } from "../Icons";
+import { DeleteIcon, EyeIcon } from "../Icons";
 import ButtonAction from "./ButtonAction";
 import EditCampus from "../api/EditCampus";
 import EditSemester from "../api/EditSemester";
@@ -42,6 +42,7 @@ import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 const useColumns = () => {
   const {
     program,
+    semesters,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -62,7 +63,7 @@ const useColumns = () => {
     fetchRoomsDeleted,
   } = useSchool();
 
-  const { enrollmentApplicants } = useEnrollment();
+  const { enrollmentApplicants, officalEnrolled } = useEnrollment();
 
   const { campusName, program_id } = useParams();
 
@@ -248,18 +249,18 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "campus.campusName",
+      accessorKey: "campusName",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Campus"
+            options={getUniqueCodes(semesters, "campusName")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
     },
     {
@@ -1807,7 +1808,7 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Applicant No.
+            No.
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -1839,25 +1840,43 @@ const useColumns = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="p-1 hover:underline hover:underline-offset-4"
           >
-            Name
+            Applicant Name <br /> (Last, First Middle)
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
     },
     {
+      accessorKey: "program",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(enrollmentApplicants, "program")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
       accessorKey: "year_level",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Year Level
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(enrollmentApplicants, "year_level")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return <span className="font-semibold">{cell.getValue()}</span>;
@@ -1870,24 +1889,6 @@ const useColumns = () => {
     {
       accessorKey: "contact_number",
       header: "Contact No.",
-    },
-    {
-      accessorKey: "program",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
-      },
     },
     {
       accessorKey: "campus",
@@ -1946,8 +1947,14 @@ const useColumns = () => {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
-            <EditCampus campusId={row.getValue("applicant_id")} />
-
+            {/* <EditCampus campusId={row.getValue("applicant_id")} /> */}
+            <Link
+              to={`/enrollments/enrollment-application/applicant/${row.original.applicant_id}`}
+              className="inline-block p-2 hover:text-primary"
+            >
+              <title>View Details</title>
+              <EyeIcon />
+            </Link>
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Campus"} />
@@ -1994,6 +2001,222 @@ const useColumns = () => {
   ];
   // ! Column Enrollment Application END
 
+  // ! Column Officially Enrolled START
+  const columnOfficiallyEnrolled = [
+    {
+      accessorKey: "student_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Student ID
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return (
+          <span className="inline-block w-[9em] font-semibold">
+            {cell.getValue()}
+          </span>
+        );
+      },
+    },
+    {
+      accessorFn: (row) => `${row.firstName} ${row.middleName} ${row.lastName}`,
+      cell: ({ row }) => {
+        const middleInitial =
+          row.original.middleName && row.original.middleName.trim() !== ""
+            ? `${row.original.middleName.charAt(0)}.`
+            : "";
+        return (
+          <span className="text-lg font-semibold">
+            {row.original.lastName}, {row.original.firstName}{" "}
+            {middleInitial.toUpperCase()}
+          </span>
+        );
+      },
+      id: "fullName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Full Name <br /> (Last, First Middle)
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    {
+      accessorKey: "program",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(enrollmentApplicants, "program")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(enrollmentApplicants, "year_level")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "contactNumber",
+      header: "Contact No.",
+    },
+    {
+      accessorKey: "gender",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Gender
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+    },
+    // {
+    //   accessorKey: "campus",
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //         className="p-1 hover:underline hover:underline-offset-4"
+    //       >
+    //         Campus
+    //         <ArrowUpDown className="ml-2 h-4 w-4" />
+    //       </Button>
+    //     );
+    //   },
+    //   cell: ({ cell }) => {
+    //     return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+    //   },
+    // },
+
+    {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Status"
+            options={getUniqueCodesEnrollment(officalEnrolled, "status")}
+          />
+        );
+      },
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() === "accepted"
+                ? "bg-success"
+                : cell.getValue() === "pending"
+                  ? "bg-orange-500"
+                  : "bg-danger"
+            }`}
+          >
+            {cell.getValue() === "accepted"
+              ? "Accepted"
+              : cell.getValue() === "pending"
+                ? "Pending"
+                : "Rejected"}
+          </span>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.applicant_id} ${row.active}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditCampus campusId={row.original.applicant_id} />
+
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Campus"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this campus?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"campus"}
+                      entityId={row.getValue("applicant_id")}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchCampus();
+                        fetchCampusDeleted();
+                      }}
+                    />
+
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column Officially Enrolled END
+
   return {
     columnCampus,
     columnSemester,
@@ -2008,6 +2231,7 @@ const useColumns = () => {
     columnRoom,
 
     columnEnrollmentApplication,
+    columnOfficiallyEnrolled,
   };
 };
 

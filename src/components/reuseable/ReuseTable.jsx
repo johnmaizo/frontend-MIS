@@ -29,7 +29,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow
             key={headerGroup.id}
-            className="border-none dark:bg-[#313D4A] bg-gray-2 transition-none"
+            className="border-none bg-gray-2 transition-none dark:bg-[#313D4A]"
           >
             {headerGroup.headers.map((header) => {
               return (
@@ -50,7 +50,7 @@ const ReuseTable = ({ table, columns, loading, error }) => {
         ))}
       </TableHeader>
       <TableBody
-        className={`!divide-x !divide-y !divide-stroke dark:!divide-strokedark transition-none ${loading || error ? "relative h-[7.5em]" : ""}`}
+        className={`!divide-x !divide-y !divide-stroke transition-none dark:!divide-strokedark ${loading || error ? "relative h-[7.5em]" : ""}`}
         // className={` transition-none ${loading || error ? "relative h-[7.5em]" : ""}`}
       >
         {loading ? (
@@ -76,13 +76,13 @@ const ReuseTable = ({ table, columns, loading, error }) => {
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
-              className={`${i === 0 ? "!border-none" : ""} transition-none !divide-x !divide-y !divide-stroke dark:!divide-strokedark`}
+              className={`${i === 0 ? "" : ""} !divide-x !divide-y !divide-stroke border-t border-[#e2e8f0] transition-none dark:!divide-strokedark dark:border-[#2e3a47]`}
               // className={`!divide-x !divide-y  !divide-stroke dark:!divide-strokedark`}
             >
               {row.getVisibleCells().map((cell, i) => (
                 <TableCell
                   key={cell.id}
-                  className={` ${i === 0 ? "pl-[1em]" : ""} text-[1rem] py-3 text-black dark:border-strokedark dark:text-white`}
+                  className={` ${i === 0 ? "pl-[1em]" : ""} border-t border-[#e2e8f0] py-2 text-[1rem] text-black dark:border-[#2e3a47] dark:text-white`}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>

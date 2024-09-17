@@ -5,6 +5,7 @@ import { AuthContext } from "./AuthContext";
 import { HasRole } from "../reuseable/HasRole";
 
 import axiosExternal from "../../axios/axiosExternal";
+import axios from "axios";
 
 const EnrollmentContext = createContext();
 
@@ -25,11 +26,19 @@ export const EnrollmentProvider = ({ children }) => {
 
   const fetchEnrollmentApplicants = async () => {
     setLoadingApplicants(true);
+  
     try {
+      // Define params conditionally
+      const params = user.campusName
+        ? { filter: `campus=${user.campusName}` }
+        : {}; // If campusName doesn't exist, send empty params or other fallback
+  
+      // Make the API request with the external Axios instance
       const response = await axiosExternal.get(
         "/api/stdntbasicinfoapplication",
-      ); // Use the external Axios instance
-
+        { params }
+      );
+  
       setBuildings(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -38,9 +47,37 @@ export const EnrollmentProvider = ({ children }) => {
         setError(`Failed to fetch enrollment applications: ${err}`);
       }
     }
+  
     setLoadingApplicants(false);
   };
+  
   // ! Enrollment END
+
+  // ! Offically Enrolled START
+  const [loadingOfficalEnrolled, setLoadingOfficalEnrolled] = useState(false);
+
+  const [officalEnrolled, setOfficialEnrolled] = useState([]);
+
+  const fetchOfficialEnrolled = async (campusName) => {
+    setLoadingOfficalEnrolled(true);
+    try {
+      const response = await axios.get("/enrollment", {
+        params: {
+          campusName: campusName,
+        },
+      });
+
+      setOfficialEnrolled(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch enrollment applications: ${err}`);
+      }
+    }
+    setLoadingOfficalEnrolled(false);
+  };
+  // ! Offically Enrolled END
 
   return (
     <EnrollmentContext.Provider
@@ -50,6 +87,10 @@ export const EnrollmentProvider = ({ children }) => {
         enrollmentApplicants,
         fetchEnrollmentApplicants,
         loadingApplicants,
+
+        officalEnrolled,
+        fetchOfficialEnrolled,
+        loadingOfficalEnrolled,
       }}
     >
       {children}

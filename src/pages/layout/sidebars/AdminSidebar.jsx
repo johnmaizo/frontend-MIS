@@ -188,7 +188,7 @@ const AdminSidebar = ({
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
-                          Enrollment Application
+                          Enrollment Applicants
                         </NavLink>
                       </li>
                       <li>

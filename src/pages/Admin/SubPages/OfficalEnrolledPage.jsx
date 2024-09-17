@@ -21,22 +21,23 @@ import { useEnrollment } from "../../../components/context/EnrollmentContext";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 
-const EnrollmentApplicationPage = () => {
+const OfficialEnrolledPage = () => {
   const { user } = useContext(AuthContext);
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
+    { to: "/enrollments/enrollment-application", label: "Enrollment Applicants" },
     {
-      label: "Enrollment Application", // New breadcrumb item
+      label: "Officialy Enrolled", // New breadcrumb item
     },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={`Enrollment Application (${user?.campusName})`}
+        pageName={`Officialy Enrolled (${user?.campusName})`}
         items={NavItems}
-        ITEMS_TO_DISPLAY={2}
+        ITEMS_TO_DISPLAY={3}
       />
 
       <EnrollmentTables />
@@ -50,24 +51,24 @@ const EnrollmentTables = () => {
   //   const { programActive, fetchProgramActive, loading, error } = useSchool();
   const {
     error,
-    enrollmentApplicants,
-    fetchEnrollmentApplicants,
-    loadingApplicants,
+    officalEnrolled,
+    fetchOfficialEnrolled,
+    loadingOfficalEnrolled,
   } = useEnrollment();
 
   useEffect(() => {
-    fetchEnrollmentApplicants();
+    fetchOfficialEnrolled(user.campusName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { columnEnrollmentApplication } = useColumns();
+  const { columnOfficiallyEnrolled } = useColumns();
 
   return (
     <>
       <DataTable
-        columns={columnEnrollmentApplication}
-        data={enrollmentApplicants}
-        loading={loadingApplicants}
+        columns={columnOfficiallyEnrolled}
+        data={officalEnrolled}
+        loading={loadingOfficalEnrolled}
         error={error}
       />
     </>
@@ -96,7 +97,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 50,
+        pageSize: 10,
       },
     },
   });
@@ -138,8 +139,8 @@ const DataTable = ({ data, columns, loading, error }) => {
 
           <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
             <DataTablePagination
-              rowsPerPage={50}
-              totalName={"Applicant"}
+              rowsPerPage={10}
+              totalName={"Student"}
               table={table}
               totalDepartments={data.length}
             />
@@ -150,4 +151,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default EnrollmentApplicationPage;
+export default OfficialEnrolledPage;

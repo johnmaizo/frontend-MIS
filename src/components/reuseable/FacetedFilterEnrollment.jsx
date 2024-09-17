@@ -82,7 +82,7 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                 {selectedValues.size > 1 ? (
                   <Badge
                     variant="secondary"
-                    className="rounded-sm px-1 font-normal"
+                    className="rounded-sm bg-primary px-1 font-normal text-white !no-underline hover:bg-primary hover:!no-underline dark:bg-primary dark:hover:bg-primary"
                   >
                     {selectedValues.size} selected
                   </Badge>
@@ -93,7 +93,7 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                       <Badge
                         variant="secondary"
                         key={option.value}
-                        className={`rounded-sm px-1 font-normal ${option.label === "Pending" ? "!bg-orange-500 hover:!bg-orange-500 dark:bg-orange-500 hover:dark:bg-orange-500" : option.label === "Rejected" ? "!bg-danger hover:!bg-danger dark:!bg-danger hover:dark:!bg-danger" : option.label === "Accepted" && "!bg-success hover:!bg-success dark:!bg-success hover:dark:!bg-success"} text-white hover:!no-underline`}
+                        className={`rounded-sm px-1 font-normal ${option.label === "Pending" ? "!bg-orange-500 hover:!bg-orange-500 dark:bg-orange-500 hover:dark:bg-orange-500" : option.label === "Rejected" ? "!bg-danger hover:!bg-danger dark:!bg-danger hover:dark:!bg-danger" : option.label === "Accepted" && "!bg-success hover:!bg-success dark:!bg-success hover:dark:!bg-success"} bg-primary text-white hover:bg-primary hover:!no-underline dark:bg-primary dark:hover:bg-primary`}
                       >
                         {option.label}
                       </Badge>
@@ -157,7 +157,7 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => column?.setFilterValue(undefined)}
-                    className="justify-center text-center"
+                    className="justify-center !bg-danger text-center !text-white hover:cursor-pointer hover:underline hover:underline-offset-2 dark:bg-danger dark:text-white"
                   >
                     Clear filters
                   </CommandItem>

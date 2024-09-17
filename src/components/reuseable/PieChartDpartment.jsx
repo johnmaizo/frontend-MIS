@@ -1,0 +1,168 @@
+import { useContext, useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import { AuthContext } from "../context/AuthContext";
+import axios from "axios";
+import { HasRole } from "./HasRole";
+import SmallLoader from "../styles/SmallLoader";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+
+let options = {
+  chart: {
+    fontFamily: "Satoshi, sans-serif",
+    type: "donut",
+  },
+  legend: {
+    show: false,
+    position: "bottom",
+    labels: {
+      colors: "#FFFFFF", // Set legend label text color to white
+    },
+  },
+  plotOptions: {
+    pie: {
+      donut: {
+        size: "65%",
+        background: "transparent",
+      },
+    },
+  },
+  dataLabels: {
+    enabled: false,
+    style: {
+      fontSize: "13px",
+      fontFamily: "Helvetica, Arial, sans-serif",
+      fontWeight: "medium",
+      colors: ["#FFFFFF"],
+    },
+  },
+  tooltip: {
+    theme: "dark", // Tooltip text color automatically changes to white in dark mode
+  },
+  responsive: [
+    {
+      breakpoint: 2600,
+      options: {
+        chart: {
+          width: 380,
+        },
+      },
+    },
+    {
+      breakpoint: 640,
+      options: {
+        chart: {
+          width: 200,
+        },
+      },
+    },
+  ],
+};
+
+const PieChartDepartment = () => {
+  const { user } = useContext(AuthContext);
+
+  const [data, setData] = useState({});
+  const [series, setSeries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const params = user.campusName ? { campusName: user.campusName } : {}; // If campusName doesn't exist, send empty
+        const currentResponse = await axios.get("/enrollment/get-chart-data", {
+          params,
+        });
+        const data = currentResponse.data;
+        setData(data);
+
+        options = {
+          ...options,
+          labels: data?.labels.map((label) => label.departmentName), // Corrected line
+          colors: data?.colors,
+        };
+
+        setSeries(data?.series);
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message);
+        } else {
+          setError("Failed to fetch Chart Data");
+        }
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [user.campusName]);
+
+  return loading ? (
+    // <div className="relative col-span-12 grid !h-[461px] !w-[465.34px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+    <div className="relative col-span-12 grid !h-[427.36px] !w-[465.33px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+      <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
+        <SmallLoader width={10} height={10} /> <span>Loading...</span>
+      </div>
+    </div>
+  ) : error ? (
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+      <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
+        <p className="text-2xl font-medium text-red-500">Error: {error}</p>
+      </div>
+    </div>
+  ) : (
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+      <div className="mb-3 justify-between gap-4 sm:flex">
+        <div>
+          <h5 className={`text-xl font-semibold text-black dark:text-white`}>
+            {HasRole(user.role, "SuperAdmin")
+              ? "Department Analytics (All Campuses)"
+              : `Department Analytics (${user.campusName})`}
+          </h5>
+        </div>
+      </div>
+
+      <div className="mb-2">
+        <div id="PieChartDepartment" className="mx-auto flex justify-center">
+          <ReactApexChart options={options} series={series} type="donut" />
+        </div>
+      </div>
+
+      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
+        {Array.isArray(data?.labels) &&
+          data?.labels.map((label, index) => (
+            <div key={index} className="w-full px-8 sm:w-1/2">
+              <div className="flex w-full items-center">
+                <span
+                  className="mr-2 block aspect-square h-3 w-full max-w-3 rounded-full"
+                  style={{ backgroundColor: data?.colors[index] }} // Applying dynamic background color
+                ></span>
+
+                <TooltipProvider delayDuration={75}>
+                  <Tooltip>
+                    <TooltipTrigger
+                      asChild
+                      className="cursor-default hover:underline hover:underline-offset-2"
+                    >
+                      <p className="flex justify-between gap-1 text-sm font-medium text-black dark:text-white">
+                        <span> {label.departmentCode} </span>-
+                        <span> {data?.percentages[index]}%</span>
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                      <p className="text-[1rem]">{label.departmentName}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+export default PieChartDepartment;

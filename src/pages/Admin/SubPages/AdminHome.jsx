@@ -1,5 +1,5 @@
 import ChartOne from "../../../components/Sundoganan/Charts/ChartOne";
-import ChartThree from "../../../components/Sundoganan/Charts/ChartThree";
+// import ChartThree from "../../../components/reuseable/PieChartDpartment";
 import ChartTwo from "../../../components/Sundoganan/Charts/ChartTwo";
 import ChatCard from "../../../components/Sundoganan/Chat/ChatCard";
 import DefaultLayout from "../../layout/DefaultLayout";
@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
+import PieChartDepartment from "../../../components/reuseable/PieChartDpartment";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -42,10 +43,13 @@ const AdminHome = () => {
       <div className="mt-8">{/* <UserTables /> */}</div>
 
       {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
+        // <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-          <ChartOne />
-          <ChartThree />
-          <ChartTwo />
+          {/* <ChartOne /> */}
+          {/* <ChartThree /> */}
+          <PieChartDepartment />
+          {/* <ChartTwo /> */}
+
           {/* <div className="col-span-12 xl:col-span-8">
           <TableOne />
         </div> */}

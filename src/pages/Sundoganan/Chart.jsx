@@ -1,6 +1,6 @@
 import Breadcrumb from '../../components/Sundoganan/Breadcrumbs/Breadcrumb';
 import ChartOne from '../../components/Sundoganan/Charts/ChartOne';
-import ChartThree from '../../components/Sundoganan/Charts/ChartThree';
+import ChartThree from '../../components/reuseable/PieChartDpartment';
 import ChartTwo from '../../components/Sundoganan/Charts/ChartTwo';
 import DefaultLayout from '../layout/DefaultLayout'
 const Chart = () => {

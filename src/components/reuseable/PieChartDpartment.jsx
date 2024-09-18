@@ -126,7 +126,7 @@ const PieChartDepartment = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <h5
-                  className={`cursor-pointer text-xl font-semibold text-black dark:text-white`}
+                  className={`cursor-help text-xl font-semibold text-black dark:text-white`}
                 >
                   {HasRole(user.role, "SuperAdmin")
                     ? "Department Analytics (All Campuses)"

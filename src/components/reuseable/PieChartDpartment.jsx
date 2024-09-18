@@ -82,7 +82,9 @@ const PieChartDepartment = () => {
 
         options = {
           ...options,
-          labels: data?.labels.map((label) => label.departmentName), // Corrected line
+          labels: HasRole(user.role, "SuperAdmin")
+            ? data?.labels.map((label) => label.departmentNameWithCampusName)
+            : data?.labels.map((label) => label.departmentName),
           colors: data?.colors,
         };
 
@@ -102,7 +104,7 @@ const PieChartDepartment = () => {
     };
 
     fetchData();
-  }, [user.campusName]);
+  }, [user.campusName, user.role]);
 
   return loading ? (
     <div className="relative col-span-12 grid !h-[427.36px] !w-[465.33px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
@@ -169,11 +171,18 @@ const PieChartDepartment = () => {
                       className="cursor-default hover:underline hover:underline-offset-2"
                     >
                       <p className="flex justify-between gap-1 text-sm font-medium text-black dark:text-white">
-                        {label.departmentCode} - {data?.percentages[index]}%
+                        {HasRole(user.role, "SuperAdmin")
+                          ? label.departmentCodeWithCampusName
+                          : label.departmentCode}{" "}
+                        - {data?.percentages[index]}%
                       </p>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                      <p className="text-[1rem]">{label.departmentName}</p>
+                      <p className="text-[1rem]">
+                        {HasRole(user.role, "SuperAdmin")
+                          ? label.departmentNameWithCampusName
+                          : label.departmentName}
+                      </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

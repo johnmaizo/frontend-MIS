@@ -2160,7 +2160,7 @@ const useColumns = () => {
       header: "Date Enrolled",
       cell: ({ cell }) => {
         return (
-          <Badge variant={"outline"} className={"text-[0.8rem] !rounded w-[8em] font-medium"}>
+          <Badge variant={"outline"} className={"text-[0.8rem] bg-primary text-white !rounded w-[8em] font-medium"}>
             <relative-time datetime={cell.getValue()}>
               {new Date(cell.getValue()).toDateString()}
             </relative-time>

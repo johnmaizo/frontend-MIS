@@ -95,7 +95,7 @@ const PieChartDepartment = () => {
           setError("Failed to fetch Chart Data");
         }
       }
-      
+
       setTimeout(() => {
         setLoading(false);
       }, 350); // Adjust the timeout value (in milliseconds) as needed
@@ -133,7 +133,7 @@ const PieChartDepartment = () => {
                 </h5>
               </TooltipTrigger>
               <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
-                <p className="text-sm">
+                <p className="text-lg">
                   This pie chart provides a visual breakdown of student <br />
                   enrollment by department in the selected campus. <br /> <br />{" "}
                   Each slice represents the percentage of total enrollment{" "}

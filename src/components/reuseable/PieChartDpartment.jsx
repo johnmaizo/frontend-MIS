@@ -14,13 +14,13 @@ import {
 let options = {
   chart: {
     fontFamily: "Satoshi, sans-serif",
-    type: "donut",
+    type: "pie",
   },
   legend: {
     show: false,
     position: "bottom",
     labels: {
-      colors: "#FFFFFF", // Set legend label text color to white
+      colors: "#FFFFFF",
     },
   },
   plotOptions: {
@@ -32,7 +32,7 @@ let options = {
     },
   },
   dataLabels: {
-    enabled: false,
+    enabled: true,
     style: {
       fontSize: "13px",
       fontFamily: "Helvetica, Arial, sans-serif",
@@ -41,7 +41,7 @@ let options = {
     },
   },
   tooltip: {
-    theme: "dark", // Tooltip text color automatically changes to white in dark mode
+    theme: "dark",
   },
   responsive: [
     {
@@ -79,7 +79,6 @@ const PieChartDepartment = () => {
           params,
         });
         const data = currentResponse.data;
-        setData(data);
 
         options = {
           ...options,
@@ -87,6 +86,7 @@ const PieChartDepartment = () => {
           colors: data?.colors,
         };
 
+        setData(data);
         setSeries(data?.series);
       } catch (err) {
         if (err.response && err.response.data && err.response.data.message) {
@@ -95,8 +95,13 @@ const PieChartDepartment = () => {
           setError("Failed to fetch Chart Data");
         }
       }
-      setLoading(false);
+
+      // Set the loading state to false after the data has been fetched
+      setTimeout(() => {
+        setLoading(false);
+      }, 350); // Adjust the timeout value (in milliseconds) as needed
     };
+
     fetchData();
   }, [user.campusName]);
 
@@ -127,7 +132,7 @@ const PieChartDepartment = () => {
 
       <div className="mb-2">
         <div id="PieChartDepartment" className="mx-auto flex justify-center">
-          <ReactApexChart options={options} series={series} type="donut" />
+          <ReactApexChart options={options} series={series} type="pie" />
         </div>
       </div>
 

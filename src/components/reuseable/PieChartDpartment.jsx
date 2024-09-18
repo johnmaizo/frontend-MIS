@@ -48,7 +48,7 @@ let options = {
       breakpoint: 2600,
       options: {
         chart: {
-          width: 380,
+          width: 400,
         },
       },
     },
@@ -96,7 +96,7 @@ const PieChartDepartment = () => {
         }
       }
 
-      // Set the loading state to false after the data has been fetched
+      // Add a 1-second timeout before setting setLoading to false
       setTimeout(() => {
         setLoading(false);
       }, 350); // Adjust the timeout value (in milliseconds) as needed
@@ -106,7 +106,6 @@ const PieChartDepartment = () => {
   }, [user.campusName]);
 
   return loading ? (
-    // <div className="relative col-span-12 grid !h-[461px] !w-[465.34px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
     <div className="relative col-span-12 grid !h-[427.36px] !w-[465.33px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
       <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
         <SmallLoader width={10} height={10} /> <span>Loading...</span>
@@ -122,11 +121,28 @@ const PieChartDepartment = () => {
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
-          <h5 className={`text-xl font-semibold text-black dark:text-white`}>
-            {HasRole(user.role, "SuperAdmin")
-              ? "Department Analytics (All Campuses)"
-              : `Department Analytics (${user.campusName})`}
-          </h5>
+          {/* Tooltip explanation added here */}
+          <TooltipProvider delayDuration={250}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <h5
+                  className={`cursor-pointer text-xl font-semibold text-black dark:text-white`}
+                >
+                  {HasRole(user.role, "SuperAdmin")
+                    ? "Department Analytics (All Campuses)"
+                    : `Department Analytics (${user.campusName})`}
+                </h5>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-sm">
+                  This pie chart provides a visual breakdown of student <br />
+                  enrollment by department in the selected campus. <br /> <br />{" "}
+                  Each slice represents the percentage of total enrollment{" "}
+                  <br /> attributed to a specific department.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
@@ -139,7 +155,8 @@ const PieChartDepartment = () => {
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
         {Array.isArray(data?.labels) &&
           data?.labels.map((label, index) => (
-            <div key={index} className="w-full px-8 sm:w-1/2">
+            //             <div key={index} className="w-full px-8 sm:w-1/2">
+            <div key={index} className="gap-3 px-3">
               <div className="flex w-full items-center">
                 <span
                   className="mr-2 block aspect-square h-3 w-full max-w-3 rounded-full"
@@ -153,8 +170,7 @@ const PieChartDepartment = () => {
                       className="cursor-default hover:underline hover:underline-offset-2"
                     >
                       <p className="flex justify-between gap-1 text-sm font-medium text-black dark:text-white">
-                        <span> {label.departmentCode} </span>-
-                        <span> {data?.percentages[index]}%</span>
+                        {label.departmentCode} - {data?.percentages[index]}%
                       </p>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">

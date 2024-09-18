@@ -5,6 +5,8 @@
  * @returns {object[]} An array of objects with 'value' and 'label' properties
  */
 
+import { getInitialDepartmentCodeAndCampus } from "./GetInitialNames";
+
 export const getUniqueCodes = (data, uniqueKey) => {
   return [
     ...new Map(
@@ -70,4 +72,19 @@ export const getUniqueCourseCodes = (data, uniqueKey) => {
  */
 export const getUniqueStringsByProperty = (data, uniqueKey) => {
   return [...new Set(data.map((item) => item[uniqueKey]))];
+};
+
+export const getUniqueCodesForProgram = (data, uniqueKey) => {
+  return [
+    ...new Map(
+      data.map((item) => [
+        item[uniqueKey],
+        {
+          value: item[uniqueKey],
+          // label: getInitialDepartmentCodeAndCampus(item[uniqueKey]),
+          label: getInitialDepartmentCodeAndCampus(item[uniqueKey]),
+        },
+      ]),
+    ).values(),
+  ].sort((a, b) => a.value.localeCompare(b.value));
 };

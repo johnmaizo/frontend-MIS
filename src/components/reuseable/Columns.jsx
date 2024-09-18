@@ -34,15 +34,20 @@ import EditBuilding from "../api/EditBuilding";
 import EditFloor from "../api/EditFloor";
 import EditRoom from "../api/EditRoom";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
-import { getUniqueCodes, getUniqueCodesEnrollment } from "./GetUniqueValues";
+import {
+  getUniqueCodes,
+  getUniqueCodesEnrollment,
+  getUniqueCodesForProgram,
+} from "./GetUniqueValues";
 import RoleBadge from "./RoleBadge";
 import { useEnrollment } from "../context/EnrollmentContext";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 
 const useColumns = () => {
   const {
-    program,
     semesters,
+    departments,
+    program,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -405,18 +410,18 @@ const useColumns = () => {
       header: "Dean",
     },
     {
-      accessorKey: "campus.campusName",
+      accessorKey: "campusName",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Campus"
+            options={getUniqueCodes(departments, "campusName")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
     },
     {
@@ -564,16 +569,20 @@ const useColumns = () => {
       accessorKey: "fullDepartmentNameWithCampus",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Department
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForProgram(
+              program,
+              "fullDepartmentNameWithCampus",
+            )}
+          />
         );
       },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      // program
       cell: ({ cell }) => {
         const getDeparmentName = cell.getValue().split(" - ")[1];
 
@@ -2146,56 +2155,50 @@ const useColumns = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "campus",
-    //   header: ({ column }) => {
-    //     return (
-    //       <Button
-    //         variant="ghost"
-    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //         className="p-1 hover:underline hover:underline-offset-4"
-    //       >
-    //         Campus
-    //         <ArrowUpDown className="ml-2 h-4 w-4" />
-    //       </Button>
-    //     );
-    //   },
-    //   cell: ({ cell }) => {
-    //     return <span className="text-lg font-semibold">{cell.getValue()}</span>;
-    //   },
-    // },
-
     {
-      accessorKey: "status",
-      header: ({ column }) => {
-        return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="Status"
-            options={getUniqueCodesEnrollment(officalEnrolled, "status")}
-          />
-        );
-      },
+      accessorKey: "createdAt",
+      header: "Date Enrolled",
       cell: ({ cell }) => {
         return (
-          <span
-            className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
-              cell.getValue() === "accepted"
-                ? "bg-success"
-                : cell.getValue() === "pending"
-                  ? "bg-orange-500"
-                  : "bg-danger"
-            }`}
-          >
-            {cell.getValue() === "accepted"
-              ? "Accepted"
-              : cell.getValue() === "pending"
-                ? "Pending"
-                : "Rejected"}
-          </span>
+          <Badge variant={"outline"} className={"text-[0.8rem] !rounded w-[8em] font-medium"}>
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
         );
       },
     },
+    // {
+    //   accessorKey: "status",
+    //   header: ({ column }) => {
+    //     return (
+    //       <FacetedFilterEnrollment
+    //         column={column}
+    //         title="Status"
+    //         options={getUniqueCodesEnrollment(officalEnrolled, "status")}
+    //       />
+    //     );
+    //   },
+    //   cell: ({ cell }) => {
+    //     return (
+    //       <span
+    //         className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
+    //           cell.getValue() === "accepted"
+    //             ? "bg-success"
+    //             : cell.getValue() === "pending"
+    //               ? "bg-orange-500"
+    //               : "bg-danger"
+    //         }`}
+    //       >
+    //         {cell.getValue() === "accepted"
+    //           ? "Accepted"
+    //           : cell.getValue() === "pending"
+    //             ? "Pending"
+    //             : "Rejected"}
+    //       </span>
+    //     );
+    //   },
+    // },
     {
       header: "Actions",
       accessorFn: (row) => `${row.applicant_id} ${row.active}`,

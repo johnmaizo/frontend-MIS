@@ -30,6 +30,7 @@ import { getUniqueCodes } from "../../../components/reuseable/GetUniqueValues";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { useColumns } from "../../../components/reuseable/Columns";
 import SearchInput from "../../../components/reuseable/SearchInput";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const ProgramPage = () => {
   const { user } = useContext(AuthContext);
@@ -130,18 +131,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             className="md:mb-0 md:w-[18em]"
           />
 
-          <SearchInput
-            placeholder="Search by Department..."
-            filterValue={table
-              .getColumn("fullDepartmentNameWithCampus")
-              ?.getFilterValue()}
-            setFilterValue={(value) =>
-              table
-                .getColumn("fullDepartmentNameWithCampus")
-                ?.setFilterValue(value)
-            }
-            className="md:mb-0 md:w-[18em]"
-          />
+          <ResetFilter table={table} className={"h-[3.3em]"} />
         </div>
 
         <div className=" ">
@@ -154,13 +144,13 @@ const DataTable = ({ data, columns, loading, error }) => {
           <div className="w-[11.5em]">
             <StatusFilter table={table} option={"department"} />
 
-            <div className="mt-5">
+            {/* <div className="mt-5">
               <DataTableFacetedFilter
                 column={table.getColumn("programCode")}
                 title="Program Codes"
                 options={getUniqueCodes(data, "programCode")}
               />
-            </div>
+            </div> */}
           </div>
 
           <DeletedProgram />

@@ -95,8 +95,7 @@ const PieChartDepartment = () => {
           setError("Failed to fetch Chart Data");
         }
       }
-
-      // Add a 1-second timeout before setting setLoading to false
+      
       setTimeout(() => {
         setLoading(false);
       }, 350); // Adjust the timeout value (in milliseconds) as needed

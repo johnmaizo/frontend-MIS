@@ -100,7 +100,7 @@ const PieChartDepartment = () => {
 
       setTimeout(() => {
         setLoading(false);
-      }, 350); // Adjust the timeout value (in milliseconds) as needed
+      }, 450); // Adjust the timeout value (in milliseconds) as needed
     };
 
     fetchData();
@@ -177,11 +177,15 @@ const PieChartDepartment = () => {
                         - {data?.percentages[index]}%
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                    <TooltipContent
+                      className="text-white !shadow-default"
+                      style={{ backgroundColor: data?.colors[index] }} // Applying dynamic background color
+                    >
                       <p className="text-[1rem]">
                         {HasRole(user.role, "SuperAdmin")
                           ? label.departmentNameWithCampusName
                           : label.departmentName}
+                        : <span className="font-bold">{series[index]}</span>
                       </p>
                     </TooltipContent>
                   </Tooltip>

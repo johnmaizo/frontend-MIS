@@ -71,7 +71,7 @@ const CampusTables = () => {
   const columns = [
     {
       accessorKey: "department_id",
-      header: "Numeric ID",
+      header: "No.",
       cell: (info) => {
         // `info.row.index` gives the zero-based index of the row
         return <span>{info.row.index + 1}</span>; // +1 to start numbering from 1

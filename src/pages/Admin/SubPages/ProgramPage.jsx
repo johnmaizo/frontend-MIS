@@ -60,12 +60,13 @@ const ProgramPage = () => {
 };
 
 const ProgramTables = () => {
-  const { program, fetchProgram, fetchProgramDeleted, loading, error } =
+  const { program, fetchProgram, fetchProgramDeleted, fetchProgramActive, loading, error } =
     useSchool();
 
   useEffect(() => {
     fetchProgram();
     fetchProgramDeleted();
+    fetchProgramActive();
   }, []);
 
   const { columnProgram } = useColumns();

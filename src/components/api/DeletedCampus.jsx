@@ -66,7 +66,7 @@ const CampusTables = () => {
   const columns = [
     {
       accessorKey: "campus_id",
-      header: "Numeric ID",
+      header: "No.",
       cell: ({ cell }) => {
         return <span className="font-semibold">{cell.getValue()}</span>;
       },

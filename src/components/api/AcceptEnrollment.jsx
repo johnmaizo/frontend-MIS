@@ -49,8 +49,13 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
       }
       setLocalLoading(false); // Set loading to false after the process finishes
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setGeneralError(err.response.data.message);
+      // if (err.response && err.response.data && err.response.data.message) {
+      //   setGeneralError(err.response.data.message);
+      // } else {
+      //   setGeneralError("An unexpected error occurred. Please try again.");
+      // }
+      if (error.response.data) {
+        setGeneralError(error.response.data);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }

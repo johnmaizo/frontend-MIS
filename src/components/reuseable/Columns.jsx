@@ -2038,8 +2038,8 @@ const useColumns = () => {
       },
       sortingFn: (rowA, rowB) => {
         // Split student_id by '-' to extract the third number part
-        const idA = rowA.getValue("student_id").split("-")[2]; // e.g., '0001'
-        const idB = rowB.getValue("student_id").split("-")[2]; // e.g., '0002'
+        const idA = rowA.getValue("student_id").split("-")[1]; // e.g., '0001'
+        const idB = rowB.getValue("student_id").split("-")[1]; // e.g., '0002'
 
         // Convert to numbers for proper numeric comparison
         return parseInt(idA, 10) - parseInt(idB, 10);

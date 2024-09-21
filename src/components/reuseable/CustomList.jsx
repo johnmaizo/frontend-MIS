@@ -46,11 +46,13 @@ const CustomList = ({
       </CommandEmpty>
       <CommandList className="!overflow-hidden">
         <CommandGroup>
+          {/* Render CommandSeparator at the top */}
+          <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
+
           <CommandList className="h-[12em]">
             {data.length ? (
               data.map((item) => (
                 <div key={item.value}>
-                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                   <CommandItem
                     value={item.value}
                     onSelect={() => {
@@ -69,6 +71,8 @@ const CustomList = ({
                     />
                     {item.label}
                   </CommandItem>
+                  {/* Keep CommandSeparator between the items */}
+                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 </div>
               ))
             ) : (

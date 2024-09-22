@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import { HasRole } from "./HasRole";
+import { HasRole } from "../reuseable/HasRole";
 import SmallLoader from "../styles/SmallLoader";
 import {
   Tooltip,

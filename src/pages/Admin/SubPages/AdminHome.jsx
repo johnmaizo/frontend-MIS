@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
-import PieChartDepartment from "../../../components/reuseable/PieChartDpartment";
+import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);

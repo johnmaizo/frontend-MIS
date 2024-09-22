@@ -74,7 +74,7 @@ const AddCourseProgram = () => {
   };
 
   useEffect(() => {
-    fetchCourseActive();
+    fetchCourseActive(program_id);
     if (user && HasRole(user.role, "SuperAdmin")) {
       setSelectedCampus(program.department.campus.campus_id);
     } else if (user && user.campus_id) {

@@ -27,16 +27,24 @@ import {
 import { useSchool } from "../context/SchoolContext";
 import { Switch } from "../ui/switch";
 import { AuthContext } from "../context/AuthContext";
+import DepartmentSelector from "../reuseable/DepartmentSelector";
+import { useMediaQuery } from "../../hooks/use-media-query";
 
 const EditCourse = ({ courseId }) => {
   const { user } = useContext(AuthContext);
 
-  const { fetchCourse, campusActive } = useSchool();
+  const { fetchCourse, campusActive, deparmentsActive } = useSchool();
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
 
   const [selectedCampus, setSelectedCampus] = useState(""); // State for selected campus
+
+  const [openComboBox, setOpenComboBox] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState(""); // State for selected department ID
+  const [selectedDepartmenName, setSelectedDepartmenName] = useState(""); // State for selected department Name
 
   const {
     register,
@@ -53,7 +61,7 @@ const EditCourse = ({ courseId }) => {
   useEffect(() => {
     if (courseId && open) {
       // Fetch the course data when the modal is opened
-      setLoading(true);
+      setLocalLoading(true);
       axios
         .get(`/course/${courseId}`)
         .then((response) => {
@@ -63,23 +71,41 @@ const EditCourse = ({ courseId }) => {
           setValue("courseDescription", course.courseDescription);
           setValue("unit", course.unit);
           setIsActive(course.isActive); // Set the initial status
-          setSelectedCampus(course.campus_id.toString()); // Set the initial campus
-          setLoading(false);
+          setSelectedCampus(course.campus_id.toString());
+          setSelectedDepartmentID(
+            course.department_id
+              ? course.department_id.toString()
+              : "general-subject",
+          );
+          setSelectedDepartmenName(
+            course.fullDepartmentNameWithCampus
+              ? course.fullDepartmentNameWithCampus
+              : "General Subject",
+          );
+          setLocalLoading(false);
         })
         .catch((err) => {
           setError(`Failed to fetch Course data: (${err})`);
-          setLoading(false);
+          setLocalLoading(false);
         });
     }
   }, [courseId, open, setValue]);
 
   const onSubmit = async (data) => {
+    if (!selectedDepartmentID) {
+      setError("department_id", {
+        type: "manual",
+        message: "You must select a department.",
+      });
+      return;
+    }
+
     if (!selectedCampus) {
       setError("campus_id", "You must select a campus.");
       return;
     }
 
-    setLoading(true);
+    setLocalLoading(true);
     // Add isActive to the form data
     const transformedData = {
       ...Object.fromEntries(
@@ -94,6 +120,10 @@ const EditCourse = ({ courseId }) => {
       ),
       isActive: isActive ? true : false, // Set isActive based on the switch value
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      department_id:
+        selectedDepartmentID === "general-subject"
+          ? null
+          : parseInt(selectedDepartmentID),
     };
 
     setError("");
@@ -101,7 +131,7 @@ const EditCourse = ({ courseId }) => {
       const response = await toast.promise(
         axios.put(`/course/${courseId}`, transformedData),
         {
-          loading: "Updating Course...",
+          localLoading: "Updating Course...",
           success: "Course updated successfully!",
           error: "Failed to update Course.",
         },
@@ -116,14 +146,14 @@ const EditCourse = ({ courseId }) => {
         fetchCourse();
         setOpen(false); // Close the dialog
       }
-      setLoading(false);
+      setLocalLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -163,7 +193,7 @@ const EditCourse = ({ courseId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Course
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="overflow-y-auto max-h-[25em] overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-5 w-full xl:w-[12em]">
@@ -180,7 +210,7 @@ const EditCourse = ({ courseId }) => {
                         id="course_active"
                         checked={isActive}
                         onCheckedChange={setIsActive} // Update the status when the switch is toggled
-                        disabled={success || loading}
+                        disabled={success || localLoading}
                       />
                     </div>
 
@@ -210,7 +240,7 @@ const EditCourse = ({ courseId }) => {
                                 "Course Code must contain only capital letters, numbers, and hyphens",
                             },
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.courseCode && (
                           <ErrorMessage>
@@ -242,7 +272,7 @@ const EditCourse = ({ courseId }) => {
                                 "Unit must be 1, 2, or 3",
                             },
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.unit && (
                           <ErrorMessage>*{errors.unit.message}</ErrorMessage>
@@ -272,11 +302,39 @@ const EditCourse = ({ courseId }) => {
                               "Course Description cannot be empty or just spaces",
                           },
                         })}
-                        disabled={loading || success}
+                        disabled={localLoading || success}
                       />
                       {errors.courseDescription && (
                         <ErrorMessage>
                           *{errors.courseDescription.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="subject_department"
+                      >
+                        Department
+                      </label>
+
+                      <DepartmentSelector
+                        isDesktop={isDesktop}
+                        open={openComboBox}
+                        setOpen={setOpenComboBox}
+                        selectedDepartmentID={selectedDepartmentID}
+                        selectedDepartmenName={selectedDepartmenName}
+                        departmentsActive={deparmentsActive}
+                        setSelectedDepartmentID={setSelectedDepartmentID}
+                        setSelectedDepartmenName={setSelectedDepartmenName}
+                        clearErrors={clearErrors}
+                        loading={localLoading}
+                      />
+
+                      {errors.department_id && (
+                        <ErrorMessage>
+                          *{errors.department_id.message}
                         </ErrorMessage>
                       )}
                     </div>
@@ -309,7 +367,7 @@ const EditCourse = ({ courseId }) => {
                             clearErrors("campus_id");
                           }}
                           value={selectedCampus}
-                          disabled={success || loading}
+                          disabled={success || localLoading}
                         >
                           <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
                             <SelectValue placeholder="Select a campus" />
@@ -344,16 +402,16 @@ const EditCourse = ({ courseId }) => {
                     <button
                       type="submit"
                       className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                        loading || success
+                        localLoading || success
                           ? "bg-[#505456] hover:!bg-opacity-100"
                           : ""
                       }`}
-                      disabled={loading || success}
+                      disabled={localLoading || success}
                     >
-                      {loading && (
+                      {localLoading && (
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
-                      {loading
+                      {localLoading
                         ? "Updating Course..."
                         : success
                           ? "Course Updated!"

@@ -20,50 +20,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { ArrowUpDown } from "lucide-react";
 
-export function FacetedFilterEnrollment({ column, title, options }) {
+export function FacetedFilterSubjectDepartment({ column, title, options }) {
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue());
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {/* <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircledIcon className="mr-2 h-4 w-4" />
-          {title}
-          {selectedValues?.size > 0 && (
-            <>
-              <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
-              >
-                {selectedValues.size}
-              </Badge>
-              <div className="hidden space-x-1 lg:flex">
-                {selectedValues.size > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
-                    {selectedValues.size} selected
-                  </Badge>
-                ) : (
-                  options
-                    .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="rounded-sm px-1 font-normal"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
-            </>
-          )}
-        </Button> */}
         <Button
           variant="ghost"
           className="p-1 hover:underline hover:underline-offset-4"
@@ -95,7 +58,9 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                         key={option.value}
                         className={`rounded-sm px-1 font-normal ${option.label === "Pending" ? "!bg-orange-500 hover:!bg-orange-500 dark:bg-orange-500 hover:dark:bg-orange-500" : option.label === "Rejected" ? "!bg-danger hover:!bg-danger dark:!bg-danger hover:dark:!bg-danger" : option.label === "Accepted" && "!bg-success hover:!bg-success dark:!bg-success hover:dark:!bg-success"} bg-primary text-white hover:bg-primary hover:!no-underline dark:bg-primary dark:hover:bg-primary`}
                       >
-                        {option.label}
+                        {!(option.label === "General Subject")
+                          ? option.label.split(" - ")[0]
+                          : option.label}
                       </Badge>
                     ))
                 )}

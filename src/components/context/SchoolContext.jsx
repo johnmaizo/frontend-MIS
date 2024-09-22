@@ -345,12 +345,13 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  const fetchCourseActive = async () => {
+  const fetchCourseActive = async (program_id) => {
     setLoading(true);
     try {
       const response = await axios.get("/course/active", {
         params: {
           campus_id: user.campus_id,
+          program_id: program_id,
         },
       });
       setCourseActive(response.data);

@@ -33,7 +33,7 @@ const CustomList = ({
 }) => {
   return (
     <Command
-      className="w-[21em] md:w-[45em]"
+      className="w-[21em] md:w-[65em]"
       filter={(itemValue, search) => {
         const item = data.find((d) => d.value === itemValue);
         const combinedText = `${item?.value} ${item?.label}`.toLowerCase();
@@ -45,8 +45,7 @@ const CustomList = ({
         No {searchPlaceholder.split(/[. ]+/).at(1).toLocaleLowerCase()} found.
       </CommandEmpty>
       <CommandList className="!overflow-hidden">
-        <CommandGroup>
-          {/* Render CommandSeparator at the top */}
+        <CommandGroup  heading="Suggestions">
           <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
 
           <CommandList className="h-[12em]">
@@ -71,7 +70,6 @@ const CustomList = ({
                     />
                     {item.label}
                   </CommandItem>
-                  {/* Keep CommandSeparator between the items */}
                   <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 </div>
               ))

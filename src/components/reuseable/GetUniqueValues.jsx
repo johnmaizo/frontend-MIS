@@ -81,10 +81,30 @@ export const getUniqueCodesForProgram = (data, uniqueKey) => {
         item[uniqueKey],
         {
           value: item[uniqueKey],
-          // label: getInitialDepartmentCodeAndCampus(item[uniqueKey]),
           label: getInitialDepartmentCodeAndCampus(item[uniqueKey]),
         },
       ]),
     ).values(),
   ].sort((a, b) => a.value.localeCompare(b.value));
+};
+
+export const getUniqueCodesForSubject = (data, uniqueKey) => {
+  const mappedData = [
+    ...new Map(
+      data.map((item) => [
+        item[uniqueKey] || "General Subject", // Check if value is null/undefined, default to "General Subject"
+        {
+          value: item[uniqueKey] || null, // If null/undefined, value is null
+          label: item[uniqueKey] || "General Subject", // Label is "General Subject" when null/undefined
+        },
+      ]),
+    ).values(),
+  ];
+
+  // Sort the data but ensure "General Subject" is always first
+  return mappedData.sort((a, b) => {
+    if (a.label === "General Subject") return -1; // "General Subject" comes first
+    if (b.label === "General Subject") return 1;
+    return a.label.localeCompare(b.label); // Sort the rest alphabetically by label
+  });
 };

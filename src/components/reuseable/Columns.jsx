@@ -38,16 +38,20 @@ import {
   getUniqueCodes,
   getUniqueCodesEnrollment,
   getUniqueCodesForProgram,
+  getUniqueCodesForSubject,
 } from "./GetUniqueValues";
 import RoleBadge from "./RoleBadge";
 import { useEnrollment } from "../context/EnrollmentContext";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
+import { FacetedFilterSubjectDepartment } from "./FacetedFilterSubjectDepartment";
 
 const useColumns = () => {
   const {
     semesters,
     departments,
     program,
+    programActive,
+    course,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -536,15 +540,7 @@ const useColumns = () => {
             Program Code
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
-          // <DataTableFacetedFilter
-          //   column={column}
-          //   title="Program Codes"
-          //   options={getUniqueCodes(program, "programCode")}
-          // />
         );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
@@ -746,23 +742,72 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
+    {
+      accessorKey: "fullDepartmentNameWithCampus",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterSubjectDepartment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForSubject(
+              course,
+              "fullDepartmentNameWithCampus",
+            )}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        // const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return cell.getValue() ? (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[0]
+                    : "General Subject"}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[1]
+                    : "General Subject"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <p className="text-[1rem] font-[500]">
+            {cell.getValue()
+              ? cell.getValue().split(" - ")[1]
+              : "General Subject"}
+          </p>
+        );
+      },
+    },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
-            accessorKey: "campus.campusName",
+            accessorKey: "campusName",
             header: ({ column }) => {
               return (
-                <Button
-                  variant="ghost"
-                  onClick={() =>
-                    column.toggleSorting(column.getIsSorted() === "asc")
-                  }
-                  className="p-1 hover:underline hover:underline-offset-4"
-                >
-                  Campus
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
+                <FacetedFilterEnrollment
+                  column={column}
+                  title="Campus"
+                  options={getUniqueCodes(course, "campusName")}
+                />
               );
+            },
+            filterFn: (row, id, value) => {
+              return value.includes(row.getValue(id));
             },
           },
         ]
@@ -897,6 +942,46 @@ const useColumns = () => {
       },
       cell: ({ cell }) => {
         return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "fullDepartmentNameWithCampus",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForProgram(
+              programActive,
+              "fullDepartmentNameWithCampus",
+            )}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      // program
+      cell: ({ cell }) => {
+        const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {getInitialDepartmentCodeAndCampus(cell.getValue())}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">{getDeparmentName}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
       },
     },
     ...(user && HasRole(user.role, "SuperAdmin")
@@ -2160,7 +2245,12 @@ const useColumns = () => {
       header: "Date Enrolled",
       cell: ({ cell }) => {
         return (
-          <Badge variant={"outline"} className={"text-[0.8rem] bg-primary text-white !rounded w-[8em] font-medium"}>
+          <Badge
+            variant={"outline"}
+            className={
+              "w-[8em] !rounded bg-primary text-[0.8rem] font-medium text-white"
+            }
+          >
             <relative-time datetime={cell.getValue()}>
               {new Date(cell.getValue()).toDateString()}
             </relative-time>

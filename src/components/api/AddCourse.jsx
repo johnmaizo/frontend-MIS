@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -28,12 +29,20 @@ import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
-
+import { useMediaQuery } from "../../hooks/use-media-query";
+import DepartmentSelector from "../reuseable/DepartmentSelector";
 
 const AddCourse = () => {
   const { user } = useContext(AuthContext);
 
-  const { fetchCourse, campusActive, fetchCampusActive } = useSchool();
+  const {
+    fetchCourse,
+    campusActive,
+    fetchCampusActive,
+    deparmentsActive,
+    fetchDepartmentsActive,
+    loading,
+  } = useSchool();
   const [open, setOpen] = useState(false);
 
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
@@ -49,10 +58,17 @@ const AddCourse = () => {
 
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [openComboBox, setOpenComboBox] = useState(false);
+
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState("");
+  const [selectedDepartmenName, setSelectedDepartmenName] = useState("");
 
   useEffect(() => {
     fetchCampusActive();
+    fetchDepartmentsActive();
     if (user && user.campus_id) {
       // Automatically set the campus if the user has a campus_id
       setSelectedCampus(user.campus_id.toString());
@@ -61,6 +77,13 @@ const AddCourse = () => {
   }, []);
 
   const onSubmit = async (data) => {
+    if (!selectedDepartmentID) {
+      setError("department_id", {
+        type: "manual",
+        message: "You must select a department.",
+      });
+      return;
+    }
     if (!selectedCampus) {
       setError("campus_id", {
         type: "manual",
@@ -69,7 +92,7 @@ const AddCourse = () => {
       return;
     }
 
-    setLoading(true);
+    setLocalLoading(true);
     // Transform form data to replace empty strings or strings with only spaces with null
     const transformedData = {
       ...Object.fromEntries(
@@ -79,6 +102,10 @@ const AddCourse = () => {
         ]),
       ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      department_id:
+        selectedDepartmentID === "general-subject"
+          ? null
+          : parseInt(selectedDepartmentID),
     };
 
     console.log(transformedData);
@@ -88,7 +115,7 @@ const AddCourse = () => {
       const response = await toast.promise(
         axios.post("/course/add-course", transformedData),
         {
-          loading: "Adding Subject...",
+          localLoading: "Adding Subject...",
           success: "Subject Added successfully!",
           error: "Failed to add Subject.",
         },
@@ -103,14 +130,14 @@ const AddCourse = () => {
         fetchCourse();
         setOpen(false); // Close the dialog
       }
-      setLoading(false);
+      setLocalLoading(false);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setGeneralError(err.response.data.message);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -119,7 +146,15 @@ const AddCourse = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCampus(""); // Reset selected campus
+
+        if (user && user.campus_id) {
+          // Automatically set the campus if the user has a campus_id
+          setSelectedCampus(user.campus_id.toString());
+        } else {
+          setSelectedCampus(""); // Reset selected campus
+        }
+        setSelectedDepartmentID(""); // Reset selected department ID
+        setSelectedDepartmenName(""); // Reset selected department Name
       }, 2000);
     } else if (error) {
       setTimeout(() => {
@@ -141,6 +176,9 @@ const AddCourse = () => {
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
               clearErrors("campus_id"); // Clear campus selection error when dialog closes
+              clearErrors("department_id"); // Clear campus selection error when dialog closes
+              setSelectedDepartmentID(""); // Reset selected department ID
+              setSelectedDepartmenName(""); // Reset selected department Name
             }
           }}
         >
@@ -148,12 +186,12 @@ const AddCourse = () => {
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Add Subject </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+          <DialogContent className="max-w-[60em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Add new Subject
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="max-h-[20em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -192,7 +230,7 @@ const AddCourse = () => {
                             setValueAs: (value) =>
                               value.replace(/\s{2,}/g, " ").trim(), // Automatically trim and replace multiple spaces
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.courseCode && (
                           <ErrorMessage>
@@ -227,7 +265,7 @@ const AddCourse = () => {
                                 "Unit must be 1, 2, 3, or 6",
                             },
                           })}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         />
                         {errors.unit && (
                           <ErrorMessage>*{errors.unit.message}</ErrorMessage>
@@ -257,11 +295,39 @@ const AddCourse = () => {
                               "Course Description cannot be empty or just spaces",
                           },
                         })}
-                        disabled={loading || success}
+                        disabled={localLoading || success}
                       />
                       {errors.courseDescription && (
                         <ErrorMessage>
                           *{errors.courseDescription.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="subject_department"
+                      >
+                        Department
+                      </label>
+
+                      <DepartmentSelector
+                        isDesktop={isDesktop}
+                        open={openComboBox}
+                        setOpen={setOpenComboBox}
+                        selectedDepartmentID={selectedDepartmentID}
+                        selectedDepartmenName={selectedDepartmenName}
+                        departmentsActive={deparmentsActive}
+                        setSelectedDepartmentID={setSelectedDepartmentID}
+                        setSelectedDepartmenName={setSelectedDepartmenName}
+                        clearErrors={clearErrors}
+                        loading={loading}
+                      />
+
+                      {errors.department_id && (
+                        <ErrorMessage>
+                          *{errors.department_id.message}
                         </ErrorMessage>
                       )}
                     </div>
@@ -281,7 +347,7 @@ const AddCourse = () => {
                             clearErrors("campus_id");
                           }}
                           value={selectedCampus}
-                          disabled={loading || success}
+                          disabled={localLoading || success}
                         >
                           <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
                             <SelectValue
@@ -332,16 +398,16 @@ const AddCourse = () => {
                     <button
                       type="submit"
                       className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                        loading || success
+                        localLoading || success
                           ? "bg-[#505456] hover:!bg-opacity-100"
                           : ""
                       }`}
-                      disabled={loading || success || error}
+                      disabled={localLoading || success || error}
                     >
-                      {loading && (
+                      {localLoading && (
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
-                      {loading
+                      {localLoading
                         ? "Adding Subject..."
                         : success
                           ? "Subject Added!"

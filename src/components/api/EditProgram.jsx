@@ -36,7 +36,7 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 import { getInitialDepartmentNameAndCampus } from "../reuseable/GetInitialNames";
 
 const EditProgram = ({ programId }) => {
-  const { fetchProgram, departments } = useSchool();
+  const { fetchProgram, deparmentsActive } = useSchool();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isActive, setIsActive] = useState(true); // State for status switch
@@ -321,7 +321,7 @@ const EditProgram = ({ programId }) => {
                               setSelectedDepartmenName={
                                 setSelectedDepartmenName
                               }
-                              data={departments}
+                              data={deparmentsActive}
                               loading={loading}
                               clearErrors={clearErrors}
                             />
@@ -364,7 +364,7 @@ const EditProgram = ({ programId }) => {
                                   setSelectedDepartmenName={
                                     setSelectedDepartmenName
                                   }
-                                  data={departments}
+                                  data={deparmentsActive}
                                   loading={loading}
                                   clearErrors={clearErrors}
                                 />

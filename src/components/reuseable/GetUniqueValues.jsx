@@ -44,20 +44,27 @@ export const getUniqueCodesEnrollment = (data, uniqueKey) => {
   ].sort((a, b) => a.label.localeCompare(b.label)); // Sort labels in ascending order
 };
 
-/**
- * Returns an array of unique course codes with a label containing the course code and description
- * @param {object[]} data - Array of objects containing the course code and description
- * @param {string} uniqueKey - The key that uniquely identifies each course
- * @returns {object[]} An array of objects with 'value' and 'label' properties
- */
 export const getUniqueCourseCodes = (data, uniqueKey) => {
+  // Sort the data so items with null department_id come first
+  const sortedData = data.sort((a, b) => {
+    if (a.department_id === null && b.department_id !== null) {
+      return -1;
+    }
+    if (a.department_id !== null && b.department_id === null) {
+      return 1;
+    }
+    return 0; // Keep original order for items with the same department_id status
+  });
+
+  // Create the unique map and return the results
   return [
     ...new Map(
-      data.map((item) => [
+      sortedData.map((item) => [
         item[uniqueKey],
         {
           value: item[uniqueKey],
           label: `${item.courseCode} - ${item.courseDescription}`,
+          isDepartmentIdNull: item.department_id === null, // New field
         },
       ]),
     ).values(),

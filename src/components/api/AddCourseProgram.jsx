@@ -25,7 +25,7 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 import CustomPopover from "../reuseable/CustomPopover";
-import CustomList from "../reuseable/CustomList";
+import SubjectList from "../reuseable/SubjectList";
 
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
@@ -226,7 +226,7 @@ const AddCourseProgram = () => {
                         itemName="Subject"
                         handleClearAll={clearAllSelections}
                       >
-                        <CustomList
+                        <SubjectList
                           handleSelect={handleSetCourses}
                           value={selectedCourses}
                           data={uniqueCourses}

@@ -99,40 +99,42 @@ const DepartmentList = ({
             </CommandItem>
           )}
 
-          {/* General Subject option */}
-          <CommandItem
-            value="general-subject"
-            onSelect={() => {
-              onSelectDepartment("general-subject", "General Subject");
-              setOpen(false);
-              clearErrors("department_id");
-            }}
-            className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
-          >
-            General Subject
-          </CommandItem>
-
           {/* List departments */}
           {data && data.length ? (
-            data.map((department, index) => (
-              <div key={index}>
-                <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
-                <CommandItem
-                  value={department.department_id.toString()}
-                  onSelect={(value) => {
-                    onSelectDepartment(
-                      value,
-                      department.fullDepartmentNameWithCampus,
-                    );
-                    setOpen(false);
-                    clearErrors("department_id");
-                  }}
-                  className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
-                >
-                  {`${department.fullDepartmentNameWithCampus.split(" - ")[0]} - ${department.fullDepartmentNameWithCampus.split(" - ")[1]}`}
-                </CommandItem>
-              </div>
-            ))
+            <>
+              {/* General Subject option */}
+              <CommandItem
+                value="general-subject"
+                onSelect={() => {
+                  onSelectDepartment("general-subject", "General Subject");
+                  setOpen(false);
+                  clearErrors("department_id");
+                }}
+                className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+              >
+                General Subject
+              </CommandItem>
+
+              {data.map((department, index) => (
+                <div key={index}>
+                  <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
+                  <CommandItem
+                    value={department.department_id.toString()}
+                    onSelect={(value) => {
+                      onSelectDepartment(
+                        value,
+                        department.fullDepartmentNameWithCampus,
+                      );
+                      setOpen(false);
+                      clearErrors("department_id");
+                    }}
+                    className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+                  >
+                    {`${department.fullDepartmentNameWithCampus.split(" - ")[0]} - ${department.fullDepartmentNameWithCampus.split(" - ")[1]}`}
+                  </CommandItem>
+                </div>
+              ))}
+            </>
           ) : (
             <CommandItem
               disabled

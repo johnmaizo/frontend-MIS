@@ -106,7 +106,11 @@ export function FacetedFilterSubjectDepartment({ column, title, options }) {
                     {option.icon && (
                       <option.icon className="text-muted-foreground mr-2 h-4 w-4" />
                     )}
-                    <span>{option.label}</span>
+                    <span>
+                      {option.label === "General Subject"
+                        ? "General Subject"
+                        : `${option.label.split(" - ")[0]} - ${option.label.split(" - ")[1]}`}
+                    </span>
                     {facets?.get(option.value) && (
                       <span className="font-mono ml-auto flex h-4 w-4 items-center justify-center text-xs">
                         {facets.get(option.value)}

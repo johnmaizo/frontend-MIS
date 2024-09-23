@@ -2101,7 +2101,7 @@ const useColumns = () => {
   // ! Column Officially Enrolled START
   const columnOfficiallyEnrolled = [
     {
-      accessorKey: "student_id",
+      accessorKey: "student_id", 
       header: ({ column }) => {
         return (
           <Button

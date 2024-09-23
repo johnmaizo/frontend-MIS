@@ -21,6 +21,7 @@ export const SchoolProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const fetchStudents = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/students");
@@ -46,6 +47,7 @@ export const SchoolProvider = ({ children }) => {
   const [accounts, setAccounts] = useState([]);
 
   const fetchAccounts = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/accounts", {
@@ -71,6 +73,7 @@ export const SchoolProvider = ({ children }) => {
   const [deparmentsDeleted, setDepartmentsDeleted] = useState([]);
 
   const fetchDepartments = async () => {
+    setError("")
     setLoading(true);
     try {
       // Fetch departments based on the user's campus
@@ -97,6 +100,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchDepartmentsActive = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/departments/active", {
@@ -116,6 +120,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchDepartmentsDeleted = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/departments/deleted", {
@@ -142,6 +147,7 @@ export const SchoolProvider = ({ children }) => {
   const [campusActive, setCampusActive] = useState([]);
 
   const fetchCampus = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/campus");
@@ -157,6 +163,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCampusDeleted = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/campus/deleted");
@@ -172,6 +179,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCampusActive = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/campus/active");
@@ -193,6 +201,7 @@ export const SchoolProvider = ({ children }) => {
   const [semestersDeleted, setSemestersDeleted] = useState([]);
 
   const fetchSemesters = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/semesters", {
@@ -212,6 +221,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchSemestersDeleted = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/semesters/deleted", {
@@ -238,6 +248,7 @@ export const SchoolProvider = ({ children }) => {
   const [programActive, setProgramActive] = useState([]);
 
   const fetchProgram = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/programs", {
@@ -264,6 +275,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramDeleted = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/programs/deleted", {
@@ -283,6 +295,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramActive = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/programs/active", {
@@ -308,6 +321,7 @@ export const SchoolProvider = ({ children }) => {
   const [courseActive, setCourseActive] = useState([]);
 
   const fetchCourse = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/course", {
@@ -327,6 +341,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCourseDeleted = async () => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/course/deleted", {
@@ -346,6 +361,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCourseActive = async (program_id) => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/course/active", {
@@ -374,6 +390,7 @@ export const SchoolProvider = ({ children }) => {
   const [programCourseActive, setProgramCourseActive] = useState([]);
 
   const fetchProgramCourse = async (campusName, programId) => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/", {
@@ -395,6 +412,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramCourseDeleted = async (campusName, programId) => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/deleted", {
@@ -416,6 +434,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramCourseActive = async (campusName, programId) => {
+    setError("")
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/active", {
@@ -446,6 +465,7 @@ export const SchoolProvider = ({ children }) => {
   const [buildingsDeleted, setBuildingsDeleted] = useState([]);
 
   const fetchBuildings = async () => {
+    setError("")
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -473,6 +493,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchBuildingsActive = async () => {
+    setError("")
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -493,6 +514,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchBuildingsDeleted = async () => {
+    setError("")
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
@@ -519,6 +541,7 @@ export const SchoolProvider = ({ children }) => {
   const [floorsDeleted, setFloorsDeleted] = useState([]);
 
   const fetchFloors = async (buildingName, campusId) => {
+    setError("")
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -549,6 +572,7 @@ export const SchoolProvider = ({ children }) => {
    * @returns {Promise<void>}
    */
   const fetchFloorsActive = async (buildingName, campusId) => {
+    setError("")
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -572,6 +596,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchFloorsDeleted = async (buildingName, campusId) => {
+    setError("")
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
@@ -601,6 +626,7 @@ export const SchoolProvider = ({ children }) => {
   const [roomsDeleted, setRoomsDeleted] = useState([]);
 
   const fetchRooms = async (buildingName, floorName, campusId) => {
+    setError("")
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -626,6 +652,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchRoomsActive = async (buildingName, floorName, campusId) => {
+    setError("")
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -650,6 +677,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchRoomsDeleted = async (buildingName, floorName, campusId) => {
+    setError("")
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {

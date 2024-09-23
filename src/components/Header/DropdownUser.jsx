@@ -67,6 +67,14 @@ const DropdownUser = () => {
                 <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
                   Admin {user.campusName && `(${user.campusName})`}
                 </Badge>
+              ) : HasRole(user.role, "DataCenter") ? (
+                <Badge>
+                  Data Center {user.campusName && `(${user.campusName})`}
+                </Badge>
+              ) : HasRole(user.role, "Registrar") ? (
+                <Badge>
+                  Registrar {user.campusName && `(${user.campusName})`}
+                </Badge>
               ) : (
                 <span className="ml-1 font-semibold">
                   {HasRole(user.role, "SuperAdmin") ||
@@ -90,6 +98,7 @@ const DropdownUser = () => {
                     : ProfileUser
             }
             alt="User"
+            draggable={false}
             className="aspect-square w-12 rounded-full"
           />
 
@@ -131,6 +140,14 @@ const DropdownUser = () => {
                 ) : HasRole(user.role, "Admin") ? (
                   <Badge className="!bg-blue-500 !text-white hover:!bg-blue-600">
                     Admin {user.campusName && `(${user.campusName})`}
+                  </Badge>
+                ) : HasRole(user.role, "DataCenter") ? (
+                  <Badge>
+                    Data Center {user.campusName && `(${user.campusName})`}
+                  </Badge>
+                ) : HasRole(user.role, "Registrar") ? (
+                  <Badge>
+                    Registrar {user.campusName && `(${user.campusName})`}
                   </Badge>
                 ) : (
                   <span className="ml-1 font-semibold">

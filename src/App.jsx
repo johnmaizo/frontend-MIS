@@ -18,6 +18,8 @@ import IsLoggingOut from "./pages/Authentication/IsLoggingOut";
 import { SchoolProvider } from "./components/context/SchoolContext";
 import { HasRole } from "./components/reuseable/HasRole";
 import { EnrollmentProvider } from "./components/context/EnrollmentContext";
+import DataCenterRoutes from "./pages/DataCenter/DataCenterRoutes";
+import RegistrarRoutes from "./pages/Registrar/RegistrarRoutes";
 
 function App() {
   const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
@@ -32,15 +34,30 @@ function App() {
         {user === null && <DefaultRoutes />}
 
         {/* {(user?.role === "Admin" || user?.role === "SuperAdmin") && ( */}
-        {user &&
-          (HasRole(user?.role, "Admin") ||
-            HasRole(user?.role, "SuperAdmin")) && (
-            <SchoolProvider>
-              <EnrollmentProvider>
+
+        {/* 
+        // <SchoolProvider>
+                //   <EnrollmentProvider>
+                        // <AdminRoutes />
+                //   </EnrollmentProvider>
+                // </SchoolProvider>
+        
+        */}
+        {user && (
+          <SchoolProvider>
+            <EnrollmentProvider>
+              {HasRole(user?.role, "Admin") ||
+              HasRole(user?.role, "SuperAdmin") ? (
                 <AdminRoutes />
-              </EnrollmentProvider>
-            </SchoolProvider>
-          )}
+              ) : HasRole(user?.role, "DataCenter") ? (
+                <DataCenterRoutes />
+              ) : (
+                HasRole(user?.role, "Registrar") && <RegistrarRoutes />
+              )}
+            </EnrollmentProvider>
+          </SchoolProvider>
+        )}
+
         {/* {user?.role === "Student" && <StudentRoutes />} */}
       </Suspense>
     </>

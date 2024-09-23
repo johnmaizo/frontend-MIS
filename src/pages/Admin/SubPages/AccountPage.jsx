@@ -7,7 +7,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
@@ -20,18 +20,26 @@ import DefaultLayout from "../../layout/DefaultLayout";
 import { useColumns } from "../../../components/reuseable/Columns";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
+import { AuthContext } from "../../../components/context/AuthContext";
 
 const AccountPage = () => {
+  const { user } = useContext(AuthContext);
+
   const NavItems = [
     { to: "/", label: "Dashboard" },
     // { to: "/accounts/add-account", label: "Add Account" },
-    { label: "Account" },
+    {
+      label:
+        user && user.campusName ? `Accounts (${user.campusName})` : "Accounts",
+    },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Accounts"}
+        pageName={
+          user && user.campusName ? `Accounts (${user.campusName})` : "Accounts"
+        }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />

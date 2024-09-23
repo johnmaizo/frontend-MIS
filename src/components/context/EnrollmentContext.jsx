@@ -26,6 +26,7 @@ export const EnrollmentProvider = ({ children }) => {
 
   const fetchEnrollmentApplicants = async () => {
     setLoadingApplicants(true);
+    setError("");
 
     try {
       // Define params conditionally
@@ -59,6 +60,7 @@ export const EnrollmentProvider = ({ children }) => {
   const [officalEnrolled, setOfficialEnrolled] = useState([]);
 
   const fetchOfficialEnrolled = async () => {
+    setError("");
     setLoadingOfficalEnrolled(true);
     try {
       // Define params conditionally

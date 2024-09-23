@@ -13,6 +13,7 @@ import {
 import { Check } from "lucide-react";
 
 import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
 
 const SubjectList = ({
   handleSelect,
@@ -21,6 +22,8 @@ const SubjectList = ({
   searchPlaceholder,
   clearErrors,
   entity,
+  handleClearAll,
+  selectedItems,
 }) => {
   // Filter data into two categories: isDepartmentIdNull and others
   const generalSubjects = data.filter((item) => item.isDepartmentIdNull);
@@ -111,7 +114,29 @@ const SubjectList = ({
             </CommandList>
           </CommandGroup>
         )}
+        {selectedItems && selectedItems.length >= 5 && handleClearAll && (
+          <div className="!w-full p-4">
+            <Button
+              variant="destructive"
+              onClick={handleClearAll}
+              className="w-full"
+            >
+              Clear All
+            </Button>
+          </div>
+        )}
       </CommandList>
+      {/* {selectedItems.length >= 5 && handleClearAll && (
+          <div className="!w-full p-4">
+            <Button
+              variant="destructive"
+              onClick={handleClearAll}
+              className="w-full"
+            >
+              Clear All
+            </Button>
+          </div>
+        )} */}
     </Command>
   );
 };

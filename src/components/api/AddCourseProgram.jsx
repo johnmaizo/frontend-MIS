@@ -178,12 +178,13 @@ const AddCourseProgram = () => {
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Assign Subject </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[70em]">
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white md:h-[40em] lg:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Assign new Subject
               </DialogTitle>
-              <DialogDescription className="h-[18em] overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="h-[18em] overflow-y-auto overscroll-none text-xl md:!h-[20em]">
+                {/* // TODO: <DailogDescription /> is a <p> Tag, change it later...*/}
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
                     <div className="mb-4.5 w-full">
@@ -224,7 +225,7 @@ const AddCourseProgram = () => {
                               ?.value,
                         )}
                         itemName="Subject"
-                        handleClearAll={clearAllSelections}
+                        // handleClearAll={clearAllSelections}
                       >
                         <SubjectList
                           handleSelect={handleSetCourses}
@@ -233,6 +234,13 @@ const AddCourseProgram = () => {
                           searchPlaceholder="Search Subject..."
                           clearErrors={clearErrors}
                           entity="courseChoose"
+                          handleClearAll={clearAllSelections}
+                          selectedItems={selectedCourses.map(
+                            (val) =>
+                              uniqueCourses.find(
+                                (course) => course.value === val,
+                              )?.value,
+                          )}
                         />
                       </CustomPopover>
 
@@ -251,7 +259,7 @@ const AddCourseProgram = () => {
 
                     <button
                       type="submit"
-                      className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                      className={`mt-auto inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
                         loading || success
                           ? "bg-[#505456] hover:!bg-opacity-100"
                           : ""

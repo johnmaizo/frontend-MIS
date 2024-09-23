@@ -78,6 +78,14 @@ const AddAccount = () => {
         ]
       : [
           {
+            value: "Registrar",
+            label: "Registrar",
+          },
+          {
+            value: "DataCenter",
+            label: "Data Center",
+          },
+          {
             value: "Staff",
             label: "Staff",
           },
@@ -107,7 +115,10 @@ const AddAccount = () => {
   // Check if selectedRole contains "Admin" or "Registrar"
   const showPasswordFields =
     selectedRole.length &&
-    selectedRole.some((role) => role === "Admin" || role === "Registrar");
+    selectedRole.some(
+      (role) =>
+        role === "Admin" || role === "Registrar" || role === "DataCenter",
+    );
 
   const {
     register,

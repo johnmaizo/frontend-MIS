@@ -38,10 +38,15 @@ const RoleBadge = ({ rolesString }) => {
     // Set badge styles for SuperAdmin and Admin
     let badgeStyle = "";
     if (role === "Super Admin") {
-      badgeStyle = "!bg-red-600 hover:!bg-red-700 !text-white"; // Red background for SuperAdmin
+      badgeStyle = "!bg-red-600 hover:!bg-red-700 !text-white";
     } else if (role === "Admin") {
-      badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white"; // Blue background for Admin
-    } else {
+      badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white";
+    } else if (role === "Data Center") {
+      badgeStyle = "!bg-orange-400 hover:!bg-orange-600 !text-white";
+    } else if (role === "Registrar") {
+      badgeStyle = "!bg-green-400 hover:!bg-green-600 !text-white";
+    } 
+    else {
       badgeStyle = ""; // Default background for other roles
     }
 

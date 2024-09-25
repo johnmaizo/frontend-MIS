@@ -2407,7 +2407,9 @@ const useColumns = () => {
       cell: ({ cell }) => {
         return (
           <span className="font-semibold">
-            {cell.getValue() ? cell.getValue() : "N/A"}
+            {cell.getValue() === "Campus name not found"
+              ? "N/A"
+              : cell.getValue()}
           </span>
         );
       },

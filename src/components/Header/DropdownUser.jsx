@@ -57,7 +57,7 @@ const DropdownUser = () => {
             <span className="block text-sm font-medium text-black dark:text-white">
               {user.firstName} {user.lastName}
             </span>
-            <p className="block text-xs">
+            <div className="block text-xs">
               Role:{" "}
               {HasRole(user.role, "SuperAdmin") ? (
                 <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
@@ -84,7 +84,7 @@ const DropdownUser = () => {
                   {user.campusName && `(${user.campusName})`}
                 </span>
               )}
-            </p>
+            </div>
           </span>
 
           <img
@@ -131,7 +131,7 @@ const DropdownUser = () => {
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
             <span className="block text-center text-sm font-medium text-black dark:text-white lg:hidden">
               {user.firstName} {user.lastName}
-              <p className="block text-xs">
+              <div className="block text-xs">
                 Role:{" "}
                 {HasRole(user.role, "SuperAdmin") ? (
                   <Badge className="!bg-red-600 !text-white hover:!bg-red-700">
@@ -158,7 +158,7 @@ const DropdownUser = () => {
                     {user.campusName && `(${user.campusName})`}
                   </span>
                 )}
-              </p>
+              </div>
             </span>
             {/* <li>
               <Link

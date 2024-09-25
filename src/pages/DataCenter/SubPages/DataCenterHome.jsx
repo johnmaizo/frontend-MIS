@@ -6,20 +6,20 @@ import ThomasProfile from "../../../assets/images/thomas.jfif";
 import { useEffect, useState } from "react";
 
 const DataCenterHome = () => {
-    const [profile, setProfile] = useState(HamsterProfile);
+  const [profile, setProfile] = useState(HamsterProfile);
 
-    useEffect(() => {
-      const profileChange = setTimeout(() => {
-        setProfile(
-          profile === HamsterProfile
-            ? VonsProfile
-            : profile === VonsProfile
-              ? ThomasProfile
-              : HamsterProfile,
-        );
-        return clearInterval(profileChange);
-      }, 1500);
-    }, [profile]);
+  useEffect(() => {
+    const profileChange = setTimeout(() => {
+      setProfile(
+        profile === HamsterProfile
+          ? VonsProfile
+          : profile === VonsProfile
+            ? ThomasProfile
+            : HamsterProfile,
+      );
+      return clearInterval(profileChange);
+    }, 1500);
+  }, [profile]);
 
   return (
     <DefaultLayout>

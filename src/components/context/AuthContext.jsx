@@ -5,25 +5,66 @@ import { jwtDecode } from "jwt-decode";
 
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
+import CryptoJS from "crypto-js"; // For optional encryption
 
 export const AuthContext = createContext();
 
-/**
- * AuthProvider component that wraps the app and provides authentication state and
- * functions to the app via the AuthContext.
- *
- * @param {{ children: React.ReactNode }} props
- *
- * @returns {React.ReactElement}
- */
+const ENCRYPTION_KEY =
+  "y4acp52Q0T8H9QwXwj/Q63gWVY63gEHJtyeKYabFdFXnmc0mRga6AGFr7rTB0OYm"; // Strong unique key for optional encryption
+
+// Encryption Helper
+const encryptData = (data) => {
+  try {
+    return CryptoJS.AES.encrypt(
+      JSON.stringify(data),
+      ENCRYPTION_KEY,
+    ).toString();
+  } catch (error) {
+    console.error("Error encrypting data:", error);
+    return null;
+  }
+};
+
+// Decryption Helper
+const decryptData = (encryptedData) => {
+  try {
+    const bytes = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY);
+    return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  } catch (error) {
+    console.error("Error decrypting data:", error);
+    return null;
+  }
+};
+
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
 
   // BroadcastChannel to sync logout across tabs
   const bc = new BroadcastChannel("auth");
+
+  // Retrieve the user object from localStorage (and decrypt if necessary)
+  const getUserFromStorage = () => {
+    const encryptedUser = localStorage.getItem("user");
+    if (encryptedUser) {
+      return decryptData(encryptedUser); // Optional decryption
+    }
+    return null;
+  };
+
+  const [user, setUser] = useState(getUserFromStorage());
+
+  // Save the user object to localStorage (encrypt if necessary)
+  const saveUserToStorage = (userData) => {
+    const encryptedUser = encryptData(userData); // Optional encryption
+    localStorage.setItem("user", encryptedUser);
+  };
+
+  // Remove the user object from localStorage
+  const clearUserFromStorage = () => {
+    localStorage.removeItem("user");
+  };
 
   // Handle logout (including session expiration scenario)
   const handleLogout = (isSessionExpired = false) => {
@@ -46,6 +87,7 @@ const AuthProvider = ({ children }) => {
       fetchUser(storedToken)
         .then((userData) => {
           setUser(userData);
+          saveUserToStorage(userData); // Save user to localStorage
           startTokenExpiryTimer(storedToken);
           setLoading(false);
         })
@@ -53,9 +95,11 @@ const AuthProvider = ({ children }) => {
           console.error("Failed to fetch user:", error);
           setLoading(false);
           localStorage.removeItem("jwtToken");
+          logout(true);
         });
     } else {
       setLoading(false);
+      logout(true);
     }
 
     // Listen for broadcast logout from other tabs
@@ -68,8 +112,7 @@ const AuthProvider = ({ children }) => {
     return () => {
       bc.close();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // No useState dependency since we're using localStorage
 
   const fetchUser = async (token) => {
     try {
@@ -113,8 +156,8 @@ const AuthProvider = ({ children }) => {
 
       localStorage.setItem("jwtToken", jwtToken);
       setUser(userData);
+      saveUserToStorage(userData); // Save user to localStorage
       startTokenExpiryTimer(jwtToken);
-
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -124,6 +167,7 @@ const AuthProvider = ({ children }) => {
   const logout = (isSessionExpired = false) => {
     clearTimeout(expiryTimer);
     localStorage.removeItem("jwtToken");
+    clearUserFromStorage(); // Clear user from localStorage
     setUser(null);
     document.cookie =
       "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -135,6 +179,7 @@ const AuthProvider = ({ children }) => {
 
       localStorage.setItem("jwtToken", response.data.jwtToken);
       setUser((prevUser) => ({ ...prevUser, ...response.data }));
+      saveUserToStorage({ ...user, ...response.data }); // Save updated user to localStorage
       startTokenExpiryTimer(response.data.jwtToken);
     } catch (error) {
       console.error("Refresh token error:", error);

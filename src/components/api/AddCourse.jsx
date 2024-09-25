@@ -84,12 +84,14 @@ const AddCourse = () => {
       });
       return;
     }
-    if (!selectedCampus) {
-      setError("campus_id", {
-        type: "manual",
-        message: "You must select a campus.",
-      });
-      return;
+    if (HasRole(user.role, "SuperAdmin")) {
+      if (!selectedCampus) {
+        setError("campus_id", {
+          type: "manual",
+          message: "You must select a campus.",
+        });
+        return;
+      }
     }
 
     setLocalLoading(true);
@@ -101,7 +103,9 @@ const AddCourse = () => {
           value.trim() === "" ? null : value.trim(),
         ]),
       ),
-      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      campus_id: HasRole(user.role, "SuperAdmin")
+        ? parseInt(selectedCampus)
+        : user.campus_id, // Add the selected campus to the form data
       department_id:
         selectedDepartmentID === "general-subject"
           ? null

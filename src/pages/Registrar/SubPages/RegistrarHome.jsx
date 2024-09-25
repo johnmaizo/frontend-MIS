@@ -1,6 +1,12 @@
 import DefaultLayout from "../../layout/DefaultLayout";
 
 import HamsterProfile from "../../../assets/images/profile-maizo.jpg";
+import {
+  FloatingInput,
+  FloatingLabel,
+  FloatingLabelInput,
+} from "../../../components/ui/floating-label-input";
+import { Input } from "../../../components/ui/input";
 
 const RegistrarHome = () => {
   return (
@@ -18,7 +24,7 @@ const RegistrarHome = () => {
         </div>
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h3 className="text-center text-3xl mb-2 font-semibold text-red-600">
+          <h3 className="mb-2 text-center text-3xl font-semibold text-red-600">
             😭 MISSING 😭
           </h3>
           <img
@@ -30,6 +36,12 @@ const RegistrarHome = () => {
           <p className="text-center text-xl font-semibold text-red-600">
             Reward: P1000.00
           </p>
+        </div>
+
+        <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div>
+            <FloatingLabelInput id="gwapo" label="testing..."  />
+          </div>
         </div>
       </>
     </DefaultLayout>

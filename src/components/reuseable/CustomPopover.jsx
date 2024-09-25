@@ -37,7 +37,7 @@ const CustomPopover = ({
           variant="outline"
           role="combobox"
           aria-expanded={openPopover}
-          className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input"
+          className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input "
           disabled={loading}
         >
           <div className="flex flex-wrap justify-start gap-2">
@@ -45,7 +45,7 @@ const CustomPopover = ({
               selectedItems.map((val, i) => (
                 <div
                   key={i}
-                  className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white"
+                  className="rounded bg-slate-200 px-2 py-1 text-[1.2rem] font-medium text-black dark:bg-strokedark dark:text-white "
                 >
                   {val}
                 </div>

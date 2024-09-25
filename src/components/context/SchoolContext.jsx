@@ -21,7 +21,7 @@ export const SchoolProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const fetchStudents = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/students");
@@ -47,7 +47,7 @@ export const SchoolProvider = ({ children }) => {
   const [accounts, setAccounts] = useState([]);
 
   const fetchAccounts = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/accounts", {
@@ -73,7 +73,7 @@ export const SchoolProvider = ({ children }) => {
   const [deparmentsDeleted, setDepartmentsDeleted] = useState([]);
 
   const fetchDepartments = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       // Fetch departments based on the user's campus
@@ -100,7 +100,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchDepartmentsActive = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/departments/active", {
@@ -120,7 +120,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchDepartmentsDeleted = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/departments/deleted", {
@@ -147,7 +147,7 @@ export const SchoolProvider = ({ children }) => {
   const [campusActive, setCampusActive] = useState([]);
 
   const fetchCampus = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/campus");
@@ -163,7 +163,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCampusDeleted = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/campus/deleted");
@@ -179,7 +179,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCampusActive = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/campus/active");
@@ -201,7 +201,7 @@ export const SchoolProvider = ({ children }) => {
   const [semestersDeleted, setSemestersDeleted] = useState([]);
 
   const fetchSemesters = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/semesters", {
@@ -221,7 +221,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchSemestersDeleted = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/semesters/deleted", {
@@ -248,7 +248,7 @@ export const SchoolProvider = ({ children }) => {
   const [programActive, setProgramActive] = useState([]);
 
   const fetchProgram = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/programs", {
@@ -275,7 +275,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramDeleted = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/programs/deleted", {
@@ -295,7 +295,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramActive = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/programs/active", {
@@ -321,7 +321,7 @@ export const SchoolProvider = ({ children }) => {
   const [courseActive, setCourseActive] = useState([]);
 
   const fetchCourse = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/course", {
@@ -341,7 +341,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCourseDeleted = async () => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/course/deleted", {
@@ -361,7 +361,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchCourseActive = async (program_id) => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/course/active", {
@@ -390,7 +390,7 @@ export const SchoolProvider = ({ children }) => {
   const [programCourseActive, setProgramCourseActive] = useState([]);
 
   const fetchProgramCourse = async (campusName, programId) => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/", {
@@ -412,7 +412,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramCourseDeleted = async (campusName, programId) => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/deleted", {
@@ -434,7 +434,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchProgramCourseActive = async (campusName, programId) => {
-    setError("")
+    setError("");
     setLoading(true);
     try {
       const response = await axios.get("/program-courses/active", {
@@ -465,7 +465,7 @@ export const SchoolProvider = ({ children }) => {
   const [buildingsDeleted, setBuildingsDeleted] = useState([]);
 
   const fetchBuildings = async () => {
-    setError("")
+    setError("");
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -493,7 +493,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchBuildingsActive = async () => {
-    setError("")
+    setError("");
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -514,7 +514,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchBuildingsDeleted = async () => {
-    setError("")
+    setError("");
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
@@ -541,7 +541,7 @@ export const SchoolProvider = ({ children }) => {
   const [floorsDeleted, setFloorsDeleted] = useState([]);
 
   const fetchFloors = async (buildingName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -572,7 +572,7 @@ export const SchoolProvider = ({ children }) => {
    * @returns {Promise<void>}
    */
   const fetchFloorsActive = async (buildingName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -596,7 +596,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchFloorsDeleted = async (buildingName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
@@ -626,7 +626,7 @@ export const SchoolProvider = ({ children }) => {
   const [roomsDeleted, setRoomsDeleted] = useState([]);
 
   const fetchRooms = async (buildingName, floorName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildings(true);
     try {
       const response = await axios.get("/building-structure", {
@@ -652,7 +652,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchRoomsActive = async (buildingName, floorName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildingsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
@@ -677,7 +677,7 @@ export const SchoolProvider = ({ children }) => {
   };
 
   const fetchRoomsDeleted = async (buildingName, floorName, campusId) => {
-    setError("")
+    setError("");
     setLoadingBuildingsDeleted(true);
     try {
       const response = await axios.get("/building-structure/deleted", {
@@ -701,6 +701,76 @@ export const SchoolProvider = ({ children }) => {
     setLoadingBuildingsDeleted(false);
   };
   // ! Floors END
+
+  // ! Employee START
+  const [employeeLoading, setEmployeeLoading] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [employeesActive, setEmployeesActive] = useState([]);
+  const [employeesDeleted, setEmployeesDeleted] = useState([]);
+
+  const fetchEmployees = async () => {
+    setError("");
+    setEmployeeLoading(true);
+    try {
+      // Fetch departments based on the user's campus
+      const response = await axios.get("/employee", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+
+      setEmployees(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch employee");
+      }
+    }
+    setEmployeeLoading(false);
+  };
+
+  const fetchEmployeesActive = async () => {
+    setError("");
+    setEmployeeLoading(true);
+    try {
+      const response = await axios.get("/employee/active", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setEmployeesActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Employee active: (${err})`);
+      }
+    }
+    setEmployeeLoading(false);
+  };
+
+  const fetchEmployeesDeleted = async () => {
+    setError("");
+    setEmployeeLoading(true);
+    try {
+      const response = await axios.get("/employee/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setEmployeesDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Employee deleted: (${err})`);
+      }
+    }
+    setEmployeeLoading(false);
+  };
+
+  // ! Employee END
 
   return (
     <SchoolContext.Provider
@@ -789,6 +859,15 @@ export const SchoolProvider = ({ children }) => {
         fetchRoomsDeleted,
         roomsActive,
         fetchRoomsActive,
+
+        // ! Employee
+        employees,
+        employeeLoading,
+        fetchEmployees,
+        employeesDeleted,
+        fetchEmployeesDeleted,
+        employeesActive,
+        fetchEmployeesActive,
       }}
     >
       {children}

@@ -25,7 +25,7 @@ const DataCenterRoutes = () => {
 
       {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin") || HasRole(user.role, "DataCenter")) && (
         <Route
-          path="/accounts"
+          path="/employees/accounts"
           element={
             <>
               <PageTitle title="Accounts | MIS - Benedicto College" />

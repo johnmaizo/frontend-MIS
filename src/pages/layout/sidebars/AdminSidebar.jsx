@@ -104,22 +104,93 @@ const AdminSidebar = ({
             HasRole(user.role, "Admin")) && (
             <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
-                ACCOUNT SECTION
+                EMPLOYEE SECTION
               </h3>
 
-              <li>
-                <NavLink
-                  to="/accounts"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
-                    (pathname === "/accounts" ||
-                      pathname.includes("accounts")) &&
-                    "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
-                  }`}
-                >
-                  <AccountsIcon />
-                  Accounts
-                </NavLink>
-              </li>
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === "/employees" || pathname.includes("employees")
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="/employees/"
+                        className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                          (pathname === "/employees" ||
+                            pathname.includes("employees")) &&
+                          "bg-gray text-primary dark:bg-meta-4"
+                        }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <AccountsIcon />
+                        Employees
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && "rotate-180"
+                          }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && "hidden"
+                        }`}
+                      >
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/employees"
+                              className={({ isActive }) =>
+                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                  pathname === "/employees" && "!underline "
+                                }` +
+                                (isActive && "text-primary dark:!text-white")
+                              }
+                            >
+                              Employee List
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/employees/accounts"
+                              className={({ isActive }) =>
+                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                  (pathname === "/employees/accounts" ||
+                                    pathname.includes("/employees/accounts")) &&
+                                  "!underline "
+                                }` +
+                                (isActive && "text-primary dark:!text-white")
+                              }
+                            >
+                              Account List
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
             </>
           )}
 

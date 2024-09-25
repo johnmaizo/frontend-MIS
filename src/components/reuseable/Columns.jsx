@@ -2101,7 +2101,7 @@ const useColumns = () => {
   // ! Column Officially Enrolled START
   const columnOfficiallyEnrolled = [
     {
-      accessorKey: "student_id", 
+      accessorKey: "student_id",
       header: ({ column }) => {
         return (
           <Button
@@ -2344,6 +2344,132 @@ const useColumns = () => {
   ];
   // ! Column Officially Enrolled END
 
+  // ! Employees START
+  const columnsEmployee = [
+    {
+      accessorKey: "employee_id",
+
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        // `info.row.index` gives the zero-based index of the row
+        return <span className="font-semibold">{info.row.index + 1}</span>; // +1 to start numbering from 1
+      },
+    },
+    {
+      accessorFn: (row) => {
+        const middleInitial =
+          row.middleName && row.middleName.trim() !== ""
+            ? `${row.middleName.charAt(0)}.`
+            : "";
+        return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
+      },
+      id: "fullName",
+      header: "Employee Name",
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+      cell: ({ cell }) => {
+        return (
+          <>
+            <div className="flex flex-wrap gap-1">
+              <RoleBadge rolesString={cell.getValue()} />
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      accessorKey: "campusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Campus
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return (
+          <span className="font-semibold">
+            {cell.getValue() ? cell.getValue() : "N/A"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "contactNumber",
+      header: "Contact Number",
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+    },
+    {
+      accessorKey: "gender",
+      header: "Gender",
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ cell }) => {
+        return (
+          <Badge
+            variant={"outline"}
+            className={"w-[8.1em] text-[0.8rem] font-medium"}
+          >
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Date Updated",
+      accessorFn: (row) => `${row.createdAt} ${row.updatedAt}`,
+      cell: ({ row }) => {
+        return row.original.updatedAt !== row.original.createdAt ? (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={row.original.updatedAt}>
+              {new Date(row.original.updatedAt).toDateString()}
+            </relative-time>
+          </Badge>
+        ) : (
+          <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
+            N/A
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "employe_id",
+      id: "Actions",
+
+      header: "Action",
+      cell: ({ cell }) => {
+        return <EditDepartment departmentId={cell.getValue()} />;
+      },
+    },
+  ];
+  // ! Employees End
+
   return {
     columnCampus,
     columnSemester,
@@ -2359,6 +2485,8 @@ const useColumns = () => {
 
     columnEnrollmentApplication,
     columnOfficiallyEnrolled,
+
+    columnsEmployee,
   };
 };
 

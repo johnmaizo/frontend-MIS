@@ -17,6 +17,7 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
+import MultipleSelector from "../../../components/ui/multiple-selector";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -60,6 +61,22 @@ const AdminHome = () => {
       {/* <div className="mt-8 h-[50em]">
         <ComboboxDemo />
       </div> */}
+
+      <div className="mt-6 rounded-sm border h-screen border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <MultipleSelector
+          defaultOptions={[
+            { label: "Test", value: "testing" },
+            { label: "Gwapo", value: "gwapong" },
+          ]}
+          placeholder="Select HAHA"
+          creatable
+          emptyIndicator={
+            <p className="text-gray-600 dark:text-gray-400 text-center text-lg leading-10">
+              no results found.
+            </p>
+          }
+        />
+      </div>
     </DefaultLayout>
   );
 };

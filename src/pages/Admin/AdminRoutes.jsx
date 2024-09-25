@@ -32,6 +32,7 @@ import RoomPage from "./SubPages/RoomPage";
 import EnrollmentApplicationPage from "./SubPages/EnrollmentApplicationPage";
 import ViewEnrollmentApplicantPage from "./SubPages/ViewEnrollmentApplicantPage";
 import OfficialEnrolledPage from "./SubPages/OfficalEnrolledPage";
+import EmployeePage from "./SubPages/EmployeePage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -93,15 +94,27 @@ const AdminRoutes = () => {
       )}
 
       {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
-        <Route
-          path="/accounts"
-          element={
-            <>
-              <PageTitle title="Accounts | MIS - Benedicto College" />
-              <AccountPage />
-            </>
-          }
-        />
+        <>
+          <Route
+            path="/employees"
+            element={
+              <>
+                <PageTitle title="Employees | MIS - Benedicto College" />
+                <EmployeePage />
+              </>
+            }
+          />
+
+          <Route
+            path="/employees/accounts"
+            element={
+              <>
+                <PageTitle title="Accounts | MIS - Benedicto College" />
+                <AccountPage />
+              </>
+            }
+          />
+        </>
       )}
 
       <Route

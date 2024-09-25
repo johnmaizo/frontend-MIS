@@ -29,13 +29,15 @@ const RoleBadge = ({ rolesString }) => {
   // Map each role to a Badge component with conditional styles and special cases
   return rolesArray.map((role, index) => {
     // Modify role if it is "DataCenter" to display as "Data Center"
-    if (role === "DataCenter") {
+    if (role === "SuperAdmin") {
+      role = "Super Admin";
+    } else if (role === "DataCenter") {
       role = "Data Center";
     }
 
     // Set badge styles for SuperAdmin and Admin
     let badgeStyle = "";
-    if (role === "SuperAdmin") {
+    if (role === "Super Admin") {
       badgeStyle = "!bg-red-600 hover:!bg-red-700 !text-white"; // Red background for SuperAdmin
     } else if (role === "Admin") {
       badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white"; // Blue background for Admin

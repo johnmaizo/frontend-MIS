@@ -162,12 +162,14 @@ const AddEmployee = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    if (!selectedCampus) {
-      setError("campus_id", {
-        type: "manual",
-        message: "You must select a campus.",
-      });
-      return;
+    if (HasRole(user.role, "SuperAdmin")) {
+      if (!selectedCampus) {
+        setError("campus_id", {
+          type: "manual",
+          message: "You must select a campus.",
+        });
+        return;
+      }
     }
     if (!selectedRoles.length) {
       setError("role", {
@@ -192,7 +194,7 @@ const AddEmployee = () => {
           value.trim() === "" ? null : value.trim(),
         ]),
       ),
-      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      campus_id: user.campus_id ? user.campus_id : parseInt(selectedCampus), // Add the selected campus to the form data
       role: selectedRoles,
       gender: selectedGender,
     };
@@ -233,7 +235,9 @@ const AddEmployee = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCampus(""); // Reset selected campus
+        if (HasRole(user.role, "SuperAdmin")) {
+          setSelectedCampus(""); // Reset selected campus
+        }
         setSelectedGender("");
         setSelectedRoles([]);
         setSelectedRoleObjects([]);
@@ -243,7 +247,7 @@ const AddEmployee = () => {
         setGeneralError("");
       }, 6000);
     }
-  }, [success, error, reset]);
+  }, [success, error, reset, user.role]);
 
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">

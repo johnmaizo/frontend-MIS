@@ -2391,6 +2391,18 @@ const useColumns = () => {
       },
     },
     {
+      accessorKey: "contactNumber",
+      header: "Contact Number",
+    },
+    {
+      accessorKey: "address",
+      header: "Address",
+    },
+    {
+      accessorKey: "gender",
+      header: "Gender",
+    },
+    {
       accessorKey: "campusName",
       header: ({ column }) => {
         return (
@@ -2413,18 +2425,6 @@ const useColumns = () => {
           </span>
         );
       },
-    },
-    {
-      accessorKey: "contactNumber",
-      header: "Contact Number",
-    },
-    {
-      accessorKey: "address",
-      header: "Address",
-    },
-    {
-      accessorKey: "gender",
-      header: "Gender",
     },
     {
       accessorKey: "createdAt",

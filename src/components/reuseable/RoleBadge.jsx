@@ -42,9 +42,9 @@ const RoleBadge = ({ rolesString }) => {
     } else if (role === "Admin") {
       badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white";
     } else if (role === "Data Center") {
-      badgeStyle = "!bg-orange-400 hover:!bg-orange-600 !text-white";
+      badgeStyle = "!bg-orange-500 hover:!bg-orange-600 !text-white";
     } else if (role === "Registrar") {
-      badgeStyle = "!bg-green-400 hover:!bg-green-600 !text-white";
+      badgeStyle = "!bg-violet-800 hover:!bg-violet-900 !text-white";
     } 
     else {
       badgeStyle = ""; // Default background for other roles
@@ -53,6 +53,7 @@ const RoleBadge = ({ rolesString }) => {
     return (
       <Badge key={index} className={badgeStyle}>
         {role}
+        {/* <p className="bgteal"></p> */}
       </Badge>
     );
   });

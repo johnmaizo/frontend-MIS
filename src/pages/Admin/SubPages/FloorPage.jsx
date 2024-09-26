@@ -24,6 +24,7 @@ import { useParams } from "react-router-dom";
 import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
 import AddFloor from "../../../components/api/AddFloor";
+import PageNotFound from "../../PageNotFound";
 
 const FloorPage = () => {
   const { user } = useContext(AuthContext);
@@ -42,30 +43,39 @@ const FloorPage = () => {
     },
   ];
 
+  const { error } = useSchool();
+
   return (
     <DefaultLayout>
-      <BreadcrumbResponsive
-        pageName={
-          user && user.campusName
-            ? `Floors in ${buildingName} (${user.campusName})`
-            : `Floors in ${buildingName}`
-        }
-        items={NavItems}
-        ITEMS_TO_DISPLAY={3}
-      />
+      {error ? (
+        <PageNotFound />
+      ) : (
+        <>
+          <BreadcrumbResponsive
+            pageName={
+              user && user.campusName
+                ? `Floors in ${buildingName} (${user.campusName})`
+                : `Floors in ${buildingName}`
+            }
+            items={NavItems}
+            ITEMS_TO_DISPLAY={3}
+          />
 
-      <BuildingTables />
+          <BuildingTables />
+        </>
+      )}
     </DefaultLayout>
   );
 };
 
 const BuildingTables = () => {
-  const { buildingName, campusId } = useParams();
+  const { buildingName, campusId, floorName } = useParams();
 
   const { floors, fetchFloors, loadingBuildings, error } = useSchool();
+  
 
   useEffect(() => {
-    fetchFloors(buildingName, campusId);
+    fetchFloors(buildingName, floorName, campusId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

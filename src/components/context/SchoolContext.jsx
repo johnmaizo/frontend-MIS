@@ -389,9 +389,14 @@ export const SchoolProvider = ({ children }) => {
   const [programCourse, setProgramCourse] = useState([]);
   const [programCourseDeleted, setProgramCourseDeleted] = useState([]);
   const [programCourseActive, setProgramCourseActive] = useState([]);
-  
-  const fetchProgramCourse = async (campusId, campusName, programId, programCode) => {
-    setProgramCourse([])
+
+  const fetchProgramCourse = async (
+    campusId,
+    campusName,
+    programId,
+    programCode,
+  ) => {
+    setProgramCourse([]);
     setError("");
     setLoadingProgramCourse(true);
     try {
@@ -400,7 +405,7 @@ export const SchoolProvider = ({ children }) => {
           campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
-          programCode: programCode
+          programCode: programCode,
         },
       });
       setProgramCourse(response.data);
@@ -414,7 +419,12 @@ export const SchoolProvider = ({ children }) => {
     setLoadingProgramCourse(false);
   };
 
-  const fetchProgramCourseDeleted = async (campusId, campusName, programId, programCode) => {
+  const fetchProgramCourseDeleted = async (
+    campusId,
+    campusName,
+    programId,
+    programCode,
+  ) => {
     setError("");
     setLoadingProgramCourse(true);
     try {
@@ -423,7 +433,7 @@ export const SchoolProvider = ({ children }) => {
           campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
-          programCode: programCode
+          programCode: programCode,
         },
       });
       setProgramCourseDeleted(response.data);
@@ -437,7 +447,12 @@ export const SchoolProvider = ({ children }) => {
     setLoadingProgramCourse(false);
   };
 
-  const fetchProgramCourseActive = async (campusId, campusName, programId, programCode) => {
+  const fetchProgramCourseActive = async (
+    campusId,
+    campusName,
+    programId,
+    programCode,
+  ) => {
     setError("");
     setLoadingProgramCourse(true);
     try {
@@ -446,7 +461,7 @@ export const SchoolProvider = ({ children }) => {
           campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
-          programCode: programCode
+          programCode: programCode,
         },
       });
       setProgramCourseActive(response.data);
@@ -480,12 +495,6 @@ export const SchoolProvider = ({ children }) => {
         },
       });
 
-      // const modifiedBuildings = response.data.map((building) => ({
-      //   ...building,
-      //   departmentNameAndCampus: `${building.departmentName} - ${building.campus.campusName}`,
-      // }));
-
-      // setBuildings(modifiedBuildings);
       setBuildings(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -545,7 +554,7 @@ export const SchoolProvider = ({ children }) => {
   const [floorsActive, setFloorsActive] = useState([]);
   const [floorsDeleted, setFloorsDeleted] = useState([]);
 
-  const fetchFloors = async (buildingName, campusId) => {
+  const fetchFloors = async (buildingName, floorName, campusId) => {
     setError("");
     setLoadingBuildings(true);
     try {
@@ -556,6 +565,7 @@ export const SchoolProvider = ({ children }) => {
             : user.campus_id,
           filterFloor: "true",
           buildingName: buildingName,
+          floorName: floorName,
         },
       });
 

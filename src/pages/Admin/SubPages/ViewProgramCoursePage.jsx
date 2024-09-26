@@ -26,6 +26,7 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 import DeletedCourse from "../../../components/api/DeletedCourse";
 import AddCourseProgram from "../../../components/api/AddCourseProgram";
 import { useColumns } from "../../../components/reuseable/Columns";
+import PageNotFound from "../../PageNotFound";
 
 const ViewProgramCoursePage = () => {
   // const { user } = useContext(AuthContext);
@@ -46,15 +47,22 @@ const ViewProgramCoursePage = () => {
     },
   ];
 
+  const { error } = useSchool();
+
   return (
     <DefaultLayout>
-      <BreadcrumbResponsive
-        pageName={`Program Subjects Offered (${programCode})`} // Updated page name
-        items={NavItems}
-        ITEMS_TO_DISPLAY={3}
-      />
-
-      <ProgramCourseTables />
+      {error ? (
+        <PageNotFound />
+      ) : (
+        <>
+          <BreadcrumbResponsive
+            pageName={`Program Subjects Offered (${programCode})`} // Updated page name
+            items={NavItems}
+            ITEMS_TO_DISPLAY={3}
+          />
+          <ProgramCourseTables />
+        </>
+      )}
     </DefaultLayout>
   );
 };
@@ -72,21 +80,29 @@ const ProgramCourseTables = () => {
   } = useSchool();
 
   useEffect(() => {
-    fetchProgramCourse(programCampusId, programCampusName, program_id, programCode);
-    fetchProgramCourseDeleted(programCampusId, programCampusName, program_id, programCode);
-}, [programCampusId, programCampusName, program_id, programCode]);
+    fetchProgramCourse(
+      programCampusId,
+      programCampusName,
+      program_id,
+      programCode,
+    );
+    fetchProgramCourseDeleted(
+      programCampusId,
+      programCampusName,
+      program_id,
+      programCode,
+    );
+  }, [programCampusId, programCampusName, program_id, programCode]);
 
   const { columnViewProgramCourse } = useColumns();
 
   return (
-    <>
-      <DataTable
-        columns={columnViewProgramCourse}
-        data={programCourse}
-        loading={loadingProgramCourse}
-        error={error}
-      />
-    </>
+    <DataTable
+      columns={columnViewProgramCourse}
+      data={programCourse}
+      loading={loadingProgramCourse}
+      error={error}
+    />
   );
 };
 

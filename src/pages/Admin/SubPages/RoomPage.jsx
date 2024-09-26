@@ -24,6 +24,7 @@ import { useColumns } from "../../../components/reuseable/Columns";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import AddRoom from "../../../components/api/AddRoom";
 import SearchInput from "../../../components/reuseable/SearchInput";
+import PageNotFound from "../../PageNotFound";
 
 const RoomPage = () => {
   const { user } = useContext(AuthContext);
@@ -48,19 +49,27 @@ const RoomPage = () => {
     },
   ];
 
+  const { error } = useSchool();
+
   return (
     <DefaultLayout>
-      <BreadcrumbResponsive
-        pageName={
-          user && user.campusName
-            ? `Rooms in ${floorName} (${user.campusName})`
-            : `Rooms in ${floorName}`
-        }
-        items={NavItems}
-        ITEMS_TO_DISPLAY={3}
-      />
+      {error ? (
+        <PageNotFound />
+      ) : (
+        <>
+          <BreadcrumbResponsive
+            pageName={
+              user && user.campusName
+                ? `Rooms in ${floorName} (${user.campusName})`
+                : `Rooms in ${floorName}`
+            }
+            items={NavItems}
+            ITEMS_TO_DISPLAY={3}
+          />
 
-      <RoomTables />
+          <RoomTables />
+        </>
+      )}
     </DefaultLayout>
   );
 };

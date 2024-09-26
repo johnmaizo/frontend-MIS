@@ -44,7 +44,7 @@ export const getUniqueCodesEnrollment = (data, uniqueKey) => {
   ].sort((a, b) => a.label.localeCompare(b.label)); // Sort labels in ascending order
 };
 
-export const getUniqueCourseCodes = (data, uniqueKey) => {
+export const getUniqueCourseCodes = (data, uniqueKey, data2) => {
   // Sort the data so items with null department_id come first
   const sortedData = data.sort((a, b) => {
     if (a.department_id === null && b.department_id !== null) {
@@ -56,19 +56,31 @@ export const getUniqueCourseCodes = (data, uniqueKey) => {
     return 0; // Keep original order for items with the same department_id status
   });
 
-  // Create the unique map and return the results
-  return [
-    ...new Map(
-      sortedData.map((item) => [
-        item[uniqueKey],
-        {
-          value: item[uniqueKey],
-          label: `${item.courseCode} - ${item.courseDescription}`,
-          isDepartmentIdNull: item.department_id === null, // New field
-        },
-      ]),
-    ).values(),
-  ];
+  // Create the unique map and return the sorted results
+  return (
+    [
+      ...new Map(
+        sortedData.map((item) => {
+          // Check if the uniqueKey matches between data and data2
+          const matchingItem = data2.find(
+            (item2) => item2[uniqueKey] === item[uniqueKey],
+          );
+
+          return [
+            item[uniqueKey],
+            {
+              value: item[uniqueKey],
+              label: `${item.courseCode} - ${item.courseDescription}`,
+              isDepartmentIdNull: item.department_id === null, // New field
+              disable: matchingItem ? true : false, // Set disable based on whether a match is found
+            },
+          ];
+        }),
+      ).values(),
+    ]
+      // Sort the results by the value of uniqueKey (or another sorting logic if needed)
+      .sort((a, b) => (a.value > b.value ? 1 : -1))
+  ); // Sort alphabetically by uniqueKey value
 };
 
 /**

@@ -385,19 +385,22 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Program Courses START
 
+  const [loadingProgramCourse, setLoadingProgramCourse] = useState(false);
   const [programCourse, setProgramCourse] = useState([]);
   const [programCourseDeleted, setProgramCourseDeleted] = useState([]);
   const [programCourseActive, setProgramCourseActive] = useState([]);
-
-  const fetchProgramCourse = async (campusName, programId) => {
+  
+  const fetchProgramCourse = async (campusId, campusName, programId, programCode) => {
+    setProgramCourse([])
     setError("");
-    setLoading(true);
+    setLoadingProgramCourse(true);
     try {
       const response = await axios.get("/program-courses/", {
         params: {
-          campus_id: user.campus_id,
+          campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
+          programCode: programCode
         },
       });
       setProgramCourse(response.data);
@@ -408,18 +411,19 @@ export const SchoolProvider = ({ children }) => {
         setError("Failed to fetch Course");
       }
     }
-    setLoading(false);
+    setLoadingProgramCourse(false);
   };
 
-  const fetchProgramCourseDeleted = async (campusName, programId) => {
+  const fetchProgramCourseDeleted = async (campusId, campusName, programId, programCode) => {
     setError("");
-    setLoading(true);
+    setLoadingProgramCourse(true);
     try {
       const response = await axios.get("/program-courses/deleted", {
         params: {
-          campus_id: user.campus_id,
+          campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
+          programCode: programCode
         },
       });
       setProgramCourseDeleted(response.data);
@@ -430,18 +434,19 @@ export const SchoolProvider = ({ children }) => {
         setError(`Failed to fetch Course deleted: (${err})`);
       }
     }
-    setLoading(false);
+    setLoadingProgramCourse(false);
   };
 
-  const fetchProgramCourseActive = async (campusName, programId) => {
+  const fetchProgramCourseActive = async (campusId, campusName, programId, programCode) => {
     setError("");
-    setLoading(true);
+    setLoadingProgramCourse(true);
     try {
       const response = await axios.get("/program-courses/active", {
         params: {
-          campus_id: user.campus_id,
+          campus_id: user.campus_id ? user.campus_id : campusId,
           campusName: campusName,
           program_id: programId,
+          programCode: programCode
         },
       });
       setProgramCourseActive(response.data);
@@ -452,7 +457,7 @@ export const SchoolProvider = ({ children }) => {
         setError(`Failed to fetch Course active: (${err})`);
       }
     }
-    setLoading(false);
+    setLoadingProgramCourse(false);
   };
   // ! Program Course END
 
@@ -826,6 +831,7 @@ export const SchoolProvider = ({ children }) => {
         fetchCourseActive,
 
         // ! Program Courses
+        loadingProgramCourse,
         programCourse,
         fetchProgramCourse,
         programCourseDeleted,

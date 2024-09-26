@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { EditDepartmentIcon } from "../Icons";
 import { useContext, useEffect, useState } from "react";
@@ -193,7 +194,7 @@ const EditCourse = ({ courseId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Course
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto max-h-[25em] overscroll-none text-xl">
+              <DialogDescription className="max-h-[25em] overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-5 w-full xl:w-[12em]">

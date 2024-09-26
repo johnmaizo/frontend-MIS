@@ -44,12 +44,12 @@ const AddEmployee = () => {
             label: "Admin",
           },
           {
-            value: "Registrar",
-            label: "Registrar",
-          },
-          {
             value: "DataCenter",
             label: "DataCenter",
+          },
+          {
+            value: "Registrar",
+            label: "Registrar",
           },
           {
             value: "Staff",
@@ -62,12 +62,12 @@ const AddEmployee = () => {
         ]
       : [
           {
-            value: "Registrar",
-            label: "Registrar",
-          },
-          {
             value: "DataCenter",
             label: "DataCenter",
+          },
+          {
+            value: "Registrar",
+            label: "Registrar",
           },
           {
             value: "Staff",
@@ -100,10 +100,6 @@ const AddEmployee = () => {
 
   // State to store the selected roles as an array of strings (values only)
   const [selectedRoles, setSelectedRoles] = useState([]);
-
-  useEffect(() => {
-    console.log(selectedRoles);
-  }, [selectedRoles]);
 
   // State to store the selected role objects
   const [selectedRoleObjects, setSelectedRoleObjects] = useState([]);

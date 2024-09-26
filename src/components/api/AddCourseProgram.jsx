@@ -30,13 +30,15 @@ import SubjectList from "../reuseable/SubjectList";
 const AddCourseProgram = () => {
   const { user } = useContext(AuthContext);
 
-  const { campusName, program_id } = useParams();
+  const { programCampusId, programCampusName, program_id, programCode } =
+    useParams();
 
-  const { fetchProgramCourse, courseActive, fetchCourseActive } = useSchool();
+  const { programCourse, fetchProgramCourse, courseActive, fetchCourseActive } =
+    useSchool();
 
   const { program, programLoading } = useFetchProgramById(
     program_id,
-    campusName,
+    programCampusName,
   );
 
   const [open, setOpen] = useState(false);
@@ -44,7 +46,11 @@ const AddCourseProgram = () => {
 
   const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
 
-  const uniqueCourses = getUniqueCourseCodes(courseActive, "courseCode");
+  const uniqueCourses = getUniqueCourseCodes(
+    courseActive,
+    "courseCode",
+    programCourse,
+  );
 
   const [selectedCourses, setSelectedCourses] = useState([]);
 
@@ -60,8 +66,10 @@ const AddCourseProgram = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSetCourses = (val) => {
-    if (selectedCourses.includes(val)) {
+  const handleSetCourses = (val, clearAll) => {
+    if (clearAll) {
+      setSelectedCourses([]);
+    } else if (selectedCourses.includes(val)) {
       setSelectedCourses(selectedCourses.filter((item) => item !== val));
     } else {
       setSelectedCourses((prevValue) => [...prevValue, val]);
@@ -76,7 +84,7 @@ const AddCourseProgram = () => {
   useEffect(() => {
     fetchCourseActive(program_id);
     if (user && HasRole(user.role, "SuperAdmin")) {
-      setSelectedCampus(program.department.campus.campus_id);
+      setSelectedCampus(programCampusId.toString());
     } else if (user && user.campus_id) {
       // Automatically set the campus if the user has a campus_id
       setSelectedCampus(user.campus_id.toString());
@@ -89,7 +97,7 @@ const AddCourseProgram = () => {
     if (!selectedCourses.length) {
       setError("courseChoose", {
         type: "manual",
-        message: "You must select a course.",
+        message: "You must select a subject.",
       });
       return;
     }
@@ -108,8 +116,6 @@ const AddCourseProgram = () => {
       courseCode: selectedCourses,
     };
 
-    console.log(transformedData);
-
     setGeneralError("");
     try {
       const response = await toast.promise(
@@ -127,7 +133,13 @@ const AddCourseProgram = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchProgramCourse(campusName, program_id);
+        // fetchProgramCourse(programCampusName, programCampusId);
+        fetchProgramCourse(
+          programCampusId,
+          programCampusName,
+          program_id,
+          programCode,
+        );
         setOpen(false); // Close the dialog
       }
       setLoading(false);
@@ -225,7 +237,6 @@ const AddCourseProgram = () => {
                               ?.value,
                         )}
                         itemName="Subject"
-                        // handleClearAll={clearAllSelections}
                       >
                         <SubjectList
                           handleSelect={handleSetCourses}

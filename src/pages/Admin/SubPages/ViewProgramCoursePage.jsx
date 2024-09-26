@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import DefaultLayout from "../../layout/DefaultLayout";
 
@@ -28,6 +29,7 @@ import { useColumns } from "../../../components/reuseable/Columns";
 
 const ViewProgramCoursePage = () => {
   // const { user } = useContext(AuthContext);
+  const { programCode } = useParams();
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
@@ -40,14 +42,14 @@ const ViewProgramCoursePage = () => {
       label: "Assign Subjects to Program",
     },
     {
-      label: "Program Subjects Offered", // New breadcrumb item
+      label: `Program Subjects Offered (${programCode})`, // New breadcrumb item
     },
   ];
 
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
-        pageName={"Program Subjects Offered"} // Updated page name
+        pageName={`Program Subjects Offered (${programCode})`} // Updated page name
         items={NavItems}
         ITEMS_TO_DISPLAY={3}
       />
@@ -58,23 +60,21 @@ const ViewProgramCoursePage = () => {
 };
 
 const ProgramCourseTables = () => {
-  const { user } = useContext(AuthContext);
-
-  const { campusName, program_id } = useParams();
+  const { programCampusId, programCampusName, program_id, programCode } =
+    useParams();
 
   const {
     programCourse,
     fetchProgramCourse,
     fetchProgramCourseDeleted,
-    loading,
+    loadingProgramCourse,
     error,
   } = useSchool();
 
   useEffect(() => {
-    fetchProgramCourse(campusName, program_id);
-    fetchProgramCourseDeleted(campusName, program_id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchProgramCourse(programCampusId, programCampusName, program_id, programCode);
+    fetchProgramCourseDeleted(programCampusId, programCampusName, program_id, programCode);
+}, [programCampusId, programCampusName, program_id, programCode]);
 
   const { columnViewProgramCourse } = useColumns();
 
@@ -83,7 +83,7 @@ const ProgramCourseTables = () => {
       <DataTable
         columns={columnViewProgramCourse}
         data={programCourse}
-        loading={loading}
+        loading={loadingProgramCourse}
         error={error}
       />
     </>

@@ -52,6 +52,7 @@ const useColumns = () => {
     program,
     programActive,
     course,
+    programCourse,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -1017,13 +1018,13 @@ const useColumns = () => {
         return <span className="sr-only">Select Program</span>;
       },
       accessorFn: (row) =>
-        `${row.program_id} ${row.department.campus.campusName} ${row.isActive}`,
+        `${row.program_id} ${row.programCode} ${row.department.campus.campus_id} ${row.department.campus.campusName} ${row.isActive}`,
       id: "select",
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-1">
             <Link
-              to={`/subjects/program-subjects/campus/${row.original.department.campus.campusName}/program/${row.original.program_id}`}
+              to={`/subjects/program-subjects/campus/${row.original.department.campus.campus_id}/${row.original.department.campus.campusName}/program/${row.original.programCode}/${row.original.program_id}`}
               className="w-[120.86px] rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
             >
               Select Program
@@ -1100,25 +1101,76 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
+    // {
+    //   accessorKey: "program.programCode",
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //         className="p-1 hover:underline hover:underline-offset-4"
+    //       >
+    //         Program Code
+    //         <ArrowUpDown className="ml-2 h-4 w-4" />
+    //       </Button>
+    //     );
+    //   },
+    //   cell: ({ cell }) => {
+    //     return (
+    //       <span className="inline-block w-full text-center text-lg font-semibold">
+    //         {cell.getValue()}
+    //       </span>
+    //     );
+    //   },
+    // },
     {
-      accessorKey: "program.programCode",
+      accessorKey: "fullDepartmentNameWithCampusForSubject",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Program Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterSubjectDepartment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForSubject(
+              programCourse,
+              "fullDepartmentNameWithCampusForSubject",
+            )}
+          />
         );
       },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
       cell: ({ cell }) => {
-        return (
-          <span className="inline-block w-full text-center text-lg font-semibold">
-            {cell.getValue()}
-          </span>
+        // const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return cell.getValue() ? (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[0]
+                    : "General Subject"}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[1]
+                    : "General Subject"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <p className="text-[1rem] font-[500]">
+            {cell.getValue()
+              ? cell.getValue().split(" - ")[1]
+              : "General Subject"}
+          </p>
         );
       },
     },

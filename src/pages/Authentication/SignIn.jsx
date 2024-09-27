@@ -88,8 +88,8 @@ const SignIn = () => {
         !user && (
           <div className="w-full rounded-sm bg-white">
             <div className="flex flex-wrap items-center xl:mx-auto xl:w-[80em]">
-              <div className="hidden w-full xl:block xl:w-1/2">
-                <div className="px-26 py-17.5 text-center">
+              <div className=" w-full block xl:w-1/2">
+                <div className="px-26 py-0 md:py-17.5 text-center">
                   <img
                     src={BenedictoLogo}
                     alt="Benedicto College"
@@ -97,9 +97,9 @@ const SignIn = () => {
                     draggable={false}
                   />
 
-                  <p className="2xl:px-20">{motto}</p>
+                  <p className="2xl:px-20 hidden md:block">{motto}</p>
 
-                  <span className="mt-15 inline-block">
+                  <span className="mt-15 hidden md:inline-block">
                     <LogInImage />
                   </span>
                 </div>

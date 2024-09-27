@@ -111,8 +111,9 @@ const EmployeeList = ({
                     }}
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[62em] md:text-[1.2rem]"
                   >
+                    {employee.fullNameWithRole}
                     {/* {employee.fullNameWithRole.split(" - ")[0]} -{" "} */}
-                    {employee.role}
+                    {/* {employee.role} */}
                     {/* <div>
                       <RoleBadge
                         roleString={employee.role}

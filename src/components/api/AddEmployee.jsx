@@ -52,6 +52,14 @@ const AddEmployee = () => {
             label: "Registrar",
           },
           {
+            value: "Accounting",
+            label: "Accounting",
+          },
+          {
+            value: "Dean",
+            label: "Dean",
+          },
+          {
             value: "Staff",
             label: "Staff",
           },
@@ -68,6 +76,14 @@ const AddEmployee = () => {
           {
             value: "Registrar",
             label: "Registrar",
+          },
+          {
+            value: "Accounting",
+            label: "Accounting",
+          },
+          {
+            value: "Dean",
+            label: "Dean",
           },
           {
             value: "Staff",

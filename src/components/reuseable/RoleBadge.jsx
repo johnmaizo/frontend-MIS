@@ -8,8 +8,11 @@ import { Badge } from "../ui/badge";
  * @returns {JSX.Element[]}
  */
 const RoleBadge = ({ rolesString }) => {
+
+  console.log(rolesString)
+
   // Split the roles string into an array based on commas
-  let rolesArray = rolesString.split(",").map((role) => role.trim());
+  let rolesArray = rolesString?.split(",").map((role) => role.trim());
 
   // Check if SuperAdmin or Admin exists and reorder roles
   const hasSuperAdmin = rolesArray.includes("SuperAdmin");
@@ -45,15 +48,18 @@ const RoleBadge = ({ rolesString }) => {
       badgeStyle = "!bg-orange-500 hover:!bg-orange-600 !text-white";
     } else if (role === "Registrar") {
       badgeStyle = "!bg-violet-800 hover:!bg-violet-900 !text-white";
-    } 
-    else {
+    } else if (role === "Accounting") {
+      badgeStyle = "!bg-green-500 hover:!bg-green-600 !text-white";
+    } else if (role === "Dean") {
+      badgeStyle = "!bg-cyan-700 hover:!bg-cyan-800 !text-white";
+    } else {
       badgeStyle = ""; // Default background for other roles
     }
 
     return (
       <Badge key={index} className={badgeStyle}>
         {role}
-        {/* <p className="bgteal"></p> */}
+        {/* <p className="bg-cyan-900"></p> */}
       </Badge>
     );
   });

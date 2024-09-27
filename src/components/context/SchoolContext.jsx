@@ -765,6 +765,28 @@ export const SchoolProvider = ({ children }) => {
     setEmployeeLoading(false);
   };
 
+  const fetchEmployeesActiveForRoles = async () => {
+    setError("");
+    setEmployeeLoading(true);
+    try {
+      const response = await axios.get("/employee/active", {
+        params: {
+          campus_id: user.campus_id,
+          role: null,
+          forAccounts: true,
+        },
+      });
+      setEmployeesActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Employee active: (${err})`);
+      }
+    }
+    setEmployeeLoading(false);
+  };
+
   const fetchEmployeesDeleted = async () => {
     setError("");
     setEmployeeLoading(true);
@@ -884,6 +906,7 @@ export const SchoolProvider = ({ children }) => {
         fetchEmployeesDeleted,
         employeesActive,
         fetchEmployeesActive,
+        fetchEmployeesActiveForRoles,
       }}
     >
       {children}

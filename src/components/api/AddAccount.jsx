@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -30,95 +31,27 @@ import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 import SmallLoader from "../styles/SmallLoader";
-import CustomPopover from "../reuseable/CustomPopover";
-import CustomList from "../reuseable/CustomList";
 import FormInput from "../reuseable/FormInput";
+import EmployeeSelector from "../reuseable/EmployeeSelector";
+import { useMediaQuery } from "../../hooks/use-media-query";
 
-/**
- * AddAccount component
- *
- * @description
- *   Dialog component for adding a new account. The form is
- *   validated using react-hook-form. The submit button is
- *   disabled if the form is invalid or if an account with the
- *   same email already exists.
- *
- * @prop {boolean} open - Whether the dialog is open or not
- * @prop {boolean} setOpen - Set the open state of the dialog
- * @prop {boolean} localLoading - Whether the component is loading or not
- * @prop {boolean} success - Whether the form was submitted successfully or not
- * @prop {string} error - The error message if the form was not submitted successfully
- */
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
 
-  const roles =
-    HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")
-      ? [
-          {
-            value: "Admin",
-            label: "Admin",
-          },
-          {
-            value: "Registrar",
-            label: "Registrar",
-          },
-          {
-            value: "DataCenter",
-            label: "Data Center",
-          },
-          {
-            value: "Staff",
-            label: "Staff",
-          },
-          {
-            value: "Teacher",
-            label: "Teacher",
-          },
-        ]
-      : [
-          {
-            value: "Registrar",
-            label: "Registrar",
-          },
-          {
-            value: "DataCenter",
-            label: "Data Center",
-          },
-          {
-            value: "Staff",
-            label: "Staff",
-          },
-          {
-            value: "Teacher",
-            label: "Teacher",
-          },
-        ];
-
-  const { fetchAccounts, campusActive, fetchCampusActive } = useSchool();
+  const {
+    fetchAccounts,
+    campusActive,
+    fetchCampusActive,
+    employeesActive,
+    fetchEmployeesActiveForRoles,
+  } = useSchool();
   const [open, setOpen] = useState(false);
-  const [openPopover, setOpenPopover] = useState(false);
 
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [openComboBox, setOpenComboBox] = useState(false);
+  const [selectedEmployeeID, setSelectedEmployeeID] = useState("");
+  const [selectedEmployeeName, setSelectedEmployeeName] = useState("");
   const [selectedCampus, setSelectedCampus] = useState("");
-  const [selectedGender, setSelectedGender] = useState("");
-
-  const [selectedRole, setSelectedRole] = useState([]);
-
-  const handleSetRoles = (val) => {
-    if (selectedRole.includes(val)) {
-      setSelectedRole(selectedRole.filter((item) => item !== val));
-    } else {
-      setSelectedRole((prevValue) => [...prevValue, val]);
-    }
-  };
-
-  // Check if selectedRole contains "Admin" or "Registrar"
-  const showPasswordFields =
-    selectedRole.length &&
-    selectedRole.some(
-      (role) =>
-        role === "Admin" || role === "Registrar" || role === "DataCenter",
-    );
 
   const {
     register,
@@ -126,7 +59,7 @@ const AddAccount = () => {
     reset,
     formState: { errors },
     setError,
-    clearErrors, // Added clearErrors to manually clear errors
+    clearErrors,
     getValues,
   } = useForm();
 
@@ -136,32 +69,27 @@ const AddAccount = () => {
 
   useEffect(() => {
     fetchCampusActive();
+    fetchEmployeesActiveForRoles();
     if (user && user.campus_id) {
-      // Automatically set the campus if the user has a campus_id
       setSelectedCampus(user.campus_id.toString());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (data) => {
-    if (!selectedCampus) {
-      setError("campus_id", {
-        type: "manual",
-        message: "You must select a campus.",
-      });
-      return;
+    if (!user.campus_id) {
+      if (!selectedCampus) {
+        setError("campus_id", {
+          type: "manual",
+          message: "You must select a campus.",
+        });
+        return;
+      }
     }
-    if (!selectedRole.length) {
-      setError("role", {
+
+    if (!selectedEmployeeID) {
+      setError("employee", {
         type: "manual",
-        message: "You must select a Role.",
-      });
-      return;
-    }
-    if (!selectedGender) {
-      setError("gender", {
-        type: "manual",
-        message: "You must select a Gender.",
+        message: "You must select a employee.",
       });
       return;
     }
@@ -175,8 +103,7 @@ const AddAccount = () => {
         ]),
       ),
       campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
-      role: selectedRole,
-      gender: selectedGender,
+      employee_id: parseInt(selectedEmployeeID),
       acceptTerms: true,
     };
 
@@ -216,9 +143,9 @@ const AddAccount = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCampus(""); // Reset selected campus
-        setSelectedGender("");
-        setSelectedRole([]);
+        setSelectedCampus("");
+        setSelectedEmployeeID("");
+        setSelectedEmployeeName("");
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -236,14 +163,13 @@ const AddAccount = () => {
             setOpen(isOpen);
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
-              setSelectedRole([]);
-              setSelectedGender("");
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
+
+              setSelectedEmployeeID("");
+              setSelectedEmployeeName("");
               clearErrors("campus_id");
-              clearErrors("role");
-              clearErrors("gender");
             }
           }}
         >
@@ -260,273 +186,34 @@ const AddAccount = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="w-full xl:w-[13em]">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="title"
-                        >
-                          Title{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-                        <FormInput
-                          id="title"
-                          register={register}
-                          validationRules={{
-                            required: {
-                              value: true,
-                              message: "Title is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Title cannot be empty or just spaces",
-                            },
-                          }}
-                          disabled={localLoading || success}
-                        />
-                        {errors.title && (
-                          <ErrorMessage>*{errors.title.message}</ErrorMessage>
-                        )}
-                      </div>
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="firstName"
-                        >
-                          First Name{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-                        <FormInput
-                          id="firstName"
-                          placeholder="First Name"
-                          register={register}
-                          validationRules={{
-                            required: {
-                              value: true,
-                              message: "First Name is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "First Name cannot be empty or just spaces",
-                            },
-                          }}
-                          disabled={localLoading || success}
-                        />
-                        {errors.firstName && (
-                          <ErrorMessage>
-                            *{errors.firstName.message}
-                          </ErrorMessage>
-                        )}
-                      </div>
-
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="middleName"
-                        >
-                          Middle Name{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-                        <FormInput
-                          id="middleName"
-                          placeholder="*Leave blank if not applicable"
-                          register={register}
-                          disabled={success}
-                          className={"placeholder:text-[1.1rem]"}
-                        />
-                      </div>
-
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="lastName"
-                        >
-                          Last Name{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-                        <FormInput
-                          id="lastName"
-                          placeholder="Last Name"
-                          register={register}
-                          validationRules={{
-                            required: {
-                              value: true,
-                              message: "Last Name is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Last Name cannot be empty or just spaces",
-                            },
-                          }}
-                          disabled={localLoading || success}
-                        />
-                        {errors.lastName && (
-                          <ErrorMessage>
-                            *{errors.lastName.message}
-                          </ErrorMessage>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="mb-4.5 w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="address"
+                          htmlFor="employee"
                         >
-                          Address{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-                        <FormInput
-                          id="address"
-                          placeholder="Address"
-                          register={register}
-                          validationRules={{
-                            required: {
-                              value: true,
-                              message: "Address is required",
-                            },
-                            validate: {
-                              notEmpty: (value) =>
-                                value.trim() !== "" ||
-                                "Address cannot be empty or just spaces",
-                            },
-                          }}
-                          disabled={localLoading || success}
-                        />
-                        {errors.address && (
-                          <ErrorMessage>*{errors.address.message}</ErrorMessage>
-                        )}
-                      </div>
-                      <div className="mb-4.5 w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="gender"
-                        >
-                          Gender{" "}
+                          Employee{" "}
                           <span className="inline-block font-bold text-red-700">
                             *
                           </span>
                         </label>
 
-                        <Select
-                          onValueChange={(value) => {
-                            setSelectedGender(value);
-                            clearErrors("gender");
-                          }}
-                          value={selectedGender}
-                          disabled={localLoading || success}
-                        >
-                          <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
-                            <SelectValue
-                              placeholder="Select Gender"
-                              defaultValue={selectedGender}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Gender</SelectLabel>
-                              <SelectItem value={"Male"}>Male</SelectItem>
-                              <SelectItem value={"Female"}>Female</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-
-                        {errors.gender && (
-                          <ErrorMessage>*{errors.gender.message}</ErrorMessage>
-                        )}
-                      </div>
-                      <div className="w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="contactNumber"
-                        >
-                          Contact Number
-                        </label>
-                        <FormInput
-                          id="contactNumber"
-                          placeholder="'09'"
-                          register={register}
-                          validationRules={{
-                            required: {
-                              value: true,
-                              message: "Contact number is required",
-                            },
-                            pattern: {
-                              value: /^[0-9]*$/,
-                              message:
-                                "Contact number must only contain numbers",
-                            },
-                            validate: (value) => {
-                              if (value.startsWith("09")) {
-                                return (
-                                  value.length === 11 ||
-                                  'Contact number must be 11 digits long when starting with "09"'
-                                );
-                              } else {
-                                return 'Contact number must start with "09"';
-                              }
-                            },
-                          }}
-                          disabled={localLoading || success}
+                        <EmployeeSelector
+                          isDesktop={isDesktop}
+                          open={openComboBox}
+                          setOpen={setOpenComboBox}
+                          selectedEmployeeID={selectedEmployeeID}
+                          selectedEmployeeName={selectedEmployeeName}
+                          employeeActive={employeesActive}
+                          setSelectedEmployeeID={setSelectedEmployeeID}
+                          setSelectedEmployeeName={setSelectedEmployeeName}
+                          clearErrors={clearErrors}
+                          loading={localLoading}
                         />
-                        {errors.contactNumber && (
+
+                        {errors.employee && (
                           <ErrorMessage>
-                            *{errors.contactNumber.message}
+                            *{errors.employee.message}
                           </ErrorMessage>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      <div className="mb-4.5 w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="role"
-                        >
-                          Role{" "}
-                          <span className="inline-block font-bold text-red-700">
-                            *
-                          </span>
-                        </label>
-
-                        <CustomPopover
-                          openPopover={openPopover}
-                          setOpenPopover={setOpenPopover}
-                          loading={localLoading || success}
-                          selectedItems={
-                            selectedRole.length &&
-                            selectedRole.map(
-                              (val) =>
-                                roles.find((role) => role.value === val)?.value,
-                            )
-                          }
-                          itemName="Role"
-                        >
-                          <CustomList
-                            handleSelect={handleSetRoles}
-                            value={selectedRole}
-                            data={roles}
-                            searchPlaceholder="Search Role..."
-                            clearErrors={clearErrors}
-                            entity={"role"}
-                          />
-                        </CustomPopover>
-
-                        {errors.role && (
-                          <ErrorMessage>*{errors.role.message}</ErrorMessage>
                         )}
                       </div>
                     </div>
@@ -563,80 +250,74 @@ const AddAccount = () => {
                       )}
                     </div>
 
-                    {showPasswordFields === true && (
-                      <>
-                        <div className="mb-4.5 w-full">
-                          <label
-                            className="mb-2.5 block text-black dark:text-white"
-                            htmlFor="password"
-                          >
-                            Password{" "}
-                            <span className="inline-block font-bold text-red-700">
-                              *
-                            </span>
-                          </label>
-                          <FormInput
-                            id="password"
-                            placeholder="Password"
-                            register={register}
-                            validationRules={{
-                              required: {
-                                value: true,
-                                message: "Password is required",
-                              },
-                              validate: {
-                                notEmpty: (value) =>
-                                  value.trim() !== "" ||
-                                  "Password cannot be empty or just spaces",
-                              },
-                            }}
-                            disabled={localLoading || success}
-                          />
-                          {errors.password && (
-                            <ErrorMessage>
-                              *{errors.password.message}
-                            </ErrorMessage>
-                          )}
-                        </div>
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="password"
+                      >
+                        Password{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <FormInput
+                        id="password"
+                        placeholder="Password"
+                        register={register}
+                        validationRules={{
+                          required: {
+                            value: true,
+                            message: "Password is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Password cannot be empty or just spaces",
+                          },
+                        }}
+                        disabled={localLoading || success}
+                      />
+                      {errors.password && (
+                        <ErrorMessage>*{errors.password.message}</ErrorMessage>
+                      )}
+                    </div>
 
-                        <div className="mb-4.5 w-full">
-                          <label
-                            className="mb-2.5 block text-black dark:text-white"
-                            htmlFor="confirmPassword"
-                          >
-                            Confirm Password{" "}
-                            <span className="inline-block font-bold text-red-700">
-                              *
-                            </span>
-                          </label>
-                          <FormInput
-                            id="confirmPassword"
-                            placeholder="Confirm Password"
-                            register={register}
-                            validationRules={{
-                              required: {
-                                value: true,
-                                message: "Confirm Password is required",
-                              },
-                              validate: {
-                                notEmpty: (value) =>
-                                  value.trim() !== "" ||
-                                  "Confirm Password cannot be empty or just spaces",
-                                matchesPassword: (value) =>
-                                  value === getValues("password") ||
-                                  "Passwords do not match",
-                              },
-                            }}
-                            disabled={localLoading || success}
-                          />
-                          {errors.confirmPassword && (
-                            <ErrorMessage>
-                              *{errors.confirmPassword.message}
-                            </ErrorMessage>
-                          )}
-                        </div>
-                      </>
-                    )}
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="confirmPassword"
+                      >
+                        Confirm Password{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <FormInput
+                        id="confirmPassword"
+                        placeholder="Confirm Password"
+                        register={register}
+                        validationRules={{
+                          required: {
+                            value: true,
+                            message: "Confirm Password is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Confirm Password cannot be empty or just spaces",
+                            matchesPassword: (value) =>
+                              value === getValues("password") ||
+                              "Passwords do not match",
+                          },
+                        }}
+                        disabled={localLoading || success}
+                      />
+                      {errors.confirmPassword && (
+                        <ErrorMessage>
+                          *{errors.confirmPassword.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
 
                     <div className="mb-4.5 w-full">
                       <label

@@ -62,20 +62,8 @@ const AdminHome = () => {
         <ComboboxDemo />
       </div> */}
 
-      <div className="mt-6 rounded-sm border h-screen border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <MultipleSelector
-          defaultOptions={[
-            { label: "Test", value: "testing" },
-            { label: "Gwapo", value: "gwapong" },
-          ]}
-          placeholder="Select HAHA"
-          creatable
-          emptyIndicator={
-            <p className="text-gray-600 dark:text-gray-400 text-center text-lg leading-10">
-              no results found.
-            </p>
-          }
-        />
+      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        
       </div>
     </DefaultLayout>
   );

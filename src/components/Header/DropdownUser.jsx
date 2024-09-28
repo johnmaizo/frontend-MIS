@@ -71,7 +71,7 @@ const DropdownUser = () => {
             <div className="block text-xs">
               Role:{" "}
               {HasRole(user.role, "SuperAdmin") ? (
-                <Badge className="!bg-red-500 !text-white hover:!bg-red-600">
+                <Badge className="!bg-red-600 !text-white hover:!bg-red-700">
                   Super Admin
                 </Badge>
               ) : HasRole(user.role, "Admin") ? (
@@ -79,12 +79,16 @@ const DropdownUser = () => {
                   Admin {user.campusName && `(${user.campusName})`}
                 </Badge>
               ) : HasRole(user.role, "DataCenter") ? (
-                <Badge>
+                <Badge className="!bg-orange-500 !text-white hover:!bg-orange-600">
                   Data Center {user.campusName && `(${user.campusName})`}
                 </Badge>
               ) : HasRole(user.role, "Registrar") ? (
-                <Badge>
+                <Badge className="!bg-violet-800 !text-white hover:!bg-violet-900">
                   Registrar {user.campusName && `(${user.campusName})`}
+                </Badge>
+              ) : HasRole(user.role, "Dean") ? (
+                <Badge className="!bg-cyan-700 !text-white hover:!bg-cyan-800">
+                  Dean {user.campusName && `(${user.campusName})`}
                 </Badge>
               ) : (
                 <span className="ml-1 font-semibold">

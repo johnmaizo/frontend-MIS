@@ -175,6 +175,7 @@ const AddEmployee = () => {
     // Update the states
     setSelectedRoles(updatedSelectedRoles);
     setSelectedRoleObjects(updatedSelectedRoleObjects);
+    clearErrors("role");
   };
 
   useEffect(() => {
@@ -204,7 +205,7 @@ const AddEmployee = () => {
 
   const handleAddQualification = () => {
     setQualifications([...qualifications, { abbreviation: "", meaning: "" }]);
-    console.log(qualifications);
+    clearErrors("qualifications");
   };
 
   const handleRemoveQualification = (index) => {
@@ -237,12 +238,14 @@ const AddEmployee = () => {
       });
       return;
     }
-    if (!selectedDepartmentID || selectedDepartmentID === "blank") {
-      setError("department_id", {
-        type: "manual",
-        message: "You must select a department.",
-      });
-      return;
+    if (shouldShowDepartment) {
+      if (!selectedDepartmentID || selectedDepartmentID === "blank") {
+        setError("department_id", {
+          type: "manual",
+          message: "You must select a department.",
+        });
+        return;
+      }
     }
 
     // Check qualifications for mismatches between abbreviation and meaning
@@ -274,16 +277,17 @@ const AddEmployee = () => {
       campus_id: user.campus_id ? user.campus_id : parseInt(selectedCampus), // Add the selected campus to the form data
       role: selectedRoles,
       gender: selectedGender,
-      qualifications: qualifications.every(
-        (qual) => qual.abbreviation.trim() === "" && qual.meaning.trim() === "",
-      )
-        ? null
-        : qualifications.map((qual) => ({
-            abbreviation: qual.abbreviation.trim(),
-            meaning: qual.meaning.trim(),
-          })),
+      qualifications: qualifications
+        .filter(
+          (qual) =>
+            qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
+        )
+        .map((qual) => ({
+          abbreviation: qual.abbreviation.trim(),
+          meaning: qual.meaning.trim(),
+        })),
       department_id:
-        selectedDepartmentID === "blank"
+        !shouldShowDepartment && selectedDepartmentID === "blank"
           ? null
           : parseInt(selectedDepartmentID),
     };
@@ -692,7 +696,10 @@ const AddEmployee = () => {
                           {index !== 0 && (
                             <input
                               type="button"
-                              onClick={() => handleRemoveQualification(index)}
+                              onClick={() => {
+                                handleRemoveQualification(index);
+                                clearErrors("qualifications");
+                              }}
                               className="mt-2 cursor-pointer rounded !bg-red-600 p-1 text-sm text-white hover:!bg-red-700"
                               value={"Remove"}
                             />

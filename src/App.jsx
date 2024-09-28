@@ -20,6 +20,7 @@ import { HasRole } from "./components/reuseable/HasRole";
 import { EnrollmentProvider } from "./components/context/EnrollmentContext";
 import DataCenterRoutes from "./pages/DataCenter/DataCenterRoutes";
 import RegistrarRoutes from "./pages/Registrar/RegistrarRoutes";
+import DeanRoutes from "./pages/Employee/DeanRoutes";
 
 function App() {
   const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
@@ -51,8 +52,10 @@ function App() {
                 <AdminRoutes />
               ) : HasRole(user?.role, "DataCenter") ? (
                 <DataCenterRoutes />
+              ) : HasRole(user?.role, "Registrar") ? (
+                <RegistrarRoutes />
               ) : (
-                HasRole(user?.role, "Registrar") && <RegistrarRoutes />
+                HasRole(user?.role, "Dean") && <DeanRoutes />
               )}
             </EnrollmentProvider>
           </SchoolProvider>

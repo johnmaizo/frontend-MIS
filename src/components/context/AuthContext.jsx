@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
@@ -111,7 +112,7 @@ const AuthProvider = ({ children }) => {
     return () => {
       bc.close();
     };
-  }, []); // No useState dependency since we're using localStorage
+  }, []);
 
   const fetchUser = async (token) => {
     try {

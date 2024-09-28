@@ -23,6 +23,7 @@ const DepartmentSelector = ({
   setSelectedDepartmenName,
   clearErrors,
   loading,
+  hideGeneralSubject,
 }) => {
   const renderButton = () => (
     <Button
@@ -32,6 +33,8 @@ const DepartmentSelector = ({
       {selectedDepartmentID ? (
         selectedDepartmentID === "general-subject" ? (
           "General Subject"
+        ) : selectedDepartmentID === "blank" ? (
+          "-Select Department-"
         ) : (
           `${selectedDepartmenName.split(" - ")[0]} - ${selectedDepartmenName.split(" - ")[1]}`
         )
@@ -56,6 +59,7 @@ const DepartmentSelector = ({
           data={departmentsActive}
           loading={loading}
           clearErrors={clearErrors}
+          isHideGeneralSubject={hideGeneralSubject}
         />
       </PopoverContent>
     </Popover>
@@ -70,6 +74,7 @@ const DepartmentSelector = ({
             data={departmentsActive}
             loading={loading}
             clearErrors={clearErrors}
+            isHideGeneralSubject={hideGeneralSubject}
           />
         </div>
       </DrawerContent>
@@ -83,6 +88,7 @@ const DepartmentList = ({
   data,
   loading,
   clearErrors,
+  isHideGeneralSubject,
 }) => {
   return (
     <Command className="md:!w-[34.5em]">
@@ -103,17 +109,33 @@ const DepartmentList = ({
           {data && data.length ? (
             <>
               {/* General Subject option */}
-              <CommandItem
-                value="general-subject"
-                onSelect={() => {
-                  onSelectDepartment("general-subject", "General Subject");
-                  setOpen(false);
-                  clearErrors("department_id");
-                }}
-                className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
-              >
-                General Subject
-              </CommandItem>
+
+              {!isHideGeneralSubject ? (
+                <CommandItem
+                  value="general-subject"
+                  onSelect={() => {
+                    onSelectDepartment("general-subject", "General Subject");
+                    setOpen(false);
+                    clearErrors("department_id");
+                  }}
+                  className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+                >
+                  General Subject
+                </CommandItem>
+              ) : (
+                <CommandItem
+                  value="blank"
+                  onSelect={() => {
+                    onSelectDepartment("blank", "-Select Department-");
+                    setOpen(false);
+                    clearErrors("department_id");
+                  }}
+                  className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
+                  
+                >
+                  -Select Department-
+                </CommandItem>
+              )}
 
               {data.map((department, index) => (
                 <div key={index}>

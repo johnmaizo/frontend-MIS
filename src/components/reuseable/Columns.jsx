@@ -2421,14 +2421,10 @@ const useColumns = () => {
     {
       accessorKey: "fullName",
       header: () => {
-        return (
-          <span className="inline-block w-[10em]">Employee Name</span>
-        )
+        return <span className="inline-block w-[10em]">Employee Name</span>;
       },
       cell: ({ cell }) => {
-        return (
-          <span>{cell.getValue()}</span>
-        );
+        return <span>{cell.getValue()}</span>;
       },
     },
     // {
@@ -2467,30 +2463,36 @@ const useColumns = () => {
       accessorKey: "gender",
       header: "Gender",
     },
-    {
-      accessorKey: "campusName",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Campus
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return (
-          <span className="font-semibold">
-            {cell.getValue() === "Campus name not found"
-              ? "N/A"
-              : cell.getValue()}
-          </span>
-        );
-      },
-    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() === "Campus name not found"
+                    ? "N/A"
+                    : cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
     {
       accessorKey: "createdAt",
       header: "Date Created",

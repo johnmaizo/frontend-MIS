@@ -194,8 +194,11 @@ const AddCourseProgram = () => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Assign new Subject
               </DialogTitle>
-              <DialogDescription className="h-[18em] overflow-y-auto overscroll-none text-xl md:!h-[20em]">
-                {/* // TODO: <DailogDescription /> is a <p> Tag, change it later...*/}
+              <DialogDescription className="sr-only">
+                <span className="inline-block font-bold text-red-700">*</span>{" "}
+                Fill up, Click Add when you&apos;re done.
+              </DialogDescription>
+              <div className="h-[18em] overflow-y-auto overscroll-none text-xl md:!h-[20em]">
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
                     <div className="mb-4.5 w-full">
@@ -289,7 +292,7 @@ const AddCourseProgram = () => {
                     </button>
                   </div>
                 </form>
-              </DialogDescription>
+              </div>
             </DialogHeader>
           </DialogContent>
         </Dialog>

@@ -2419,16 +2419,29 @@ const useColumns = () => {
       },
     },
     {
-      accessorFn: (row) => {
-        const middleInitial =
-          row.middleName && row.middleName.trim() !== ""
-            ? `${row.middleName.charAt(0)}.`
-            : "";
-        return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
+      accessorKey: "fullName",
+      header: () => {
+        return (
+          <span className="inline-block w-[10em]">Employee Name</span>
+        )
       },
-      id: "fullName",
-      header: "Employee Name",
+      cell: ({ cell }) => {
+        return (
+          <span>{cell.getValue()}</span>
+        );
+      },
     },
+    // {
+    //   accessorFn: (row) => {
+    //     const middleInitial =
+    //       row.middleName && row.middleName.trim() !== ""
+    //         ? `${row.middleName.charAt(0)}.`
+    //         : "";
+    //     return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
+    //   },
+    //   id: "fullName",
+    //   header: "Employee Name",
+    // },
     {
       accessorKey: "role",
       header: "Role",
@@ -2494,24 +2507,24 @@ const useColumns = () => {
         );
       },
     },
-    {
-      accessorKey: "updatedAt",
-      header: "Date Updated",
-      accessorFn: (row) => `${row.createdAt} ${row.updatedAt}`,
-      cell: ({ row }) => {
-        return row.original.updatedAt !== row.original.createdAt ? (
-          <Badge variant={"outline"} className={"text-[0.8rem]"}>
-            <relative-time datetime={row.original.updatedAt}>
-              {new Date(row.original.updatedAt).toDateString()}
-            </relative-time>
-          </Badge>
-        ) : (
-          <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
-            N/A
-          </Badge>
-        );
-      },
-    },
+    // {
+    //   accessorKey: "updatedAt",
+    //   header: "Date Updated",
+    //   accessorFn: (row) => `${row.createdAt} ${row.updatedAt}`,
+    //   cell: ({ row }) => {
+    //     return row.original.updatedAt !== row.original.createdAt ? (
+    //       <Badge variant={"outline"} className={"text-[0.8rem]"}>
+    //         <relative-time datetime={row.original.updatedAt}>
+    //           {new Date(row.original.updatedAt).toDateString()}
+    //         </relative-time>
+    //       </Badge>
+    //     ) : (
+    //       <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
+    //         N/A
+    //       </Badge>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "employe_id",
       id: "Actions",

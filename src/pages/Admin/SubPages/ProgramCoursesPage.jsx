@@ -35,7 +35,7 @@ const ProgramCoursesPage = () => {
       label: "Subject List",
     },
     {
-      label: "Assign Subjects to Program", // New breadcrumb item
+      label: "Assign Subjects to Program",
     },
   ];
 

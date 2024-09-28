@@ -8,9 +8,6 @@ import { Badge } from "../ui/badge";
  * @returns {JSX.Element[]}
  */
 const RoleBadge = ({ rolesString }) => {
-
-  console.log(rolesString)
-
   // Split the roles string into an array based on commas
   let rolesArray = rolesString?.split(",").map((role) => role.trim());
 

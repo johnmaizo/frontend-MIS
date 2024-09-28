@@ -88,8 +88,8 @@ const SignIn = () => {
         !user && (
           <div className="w-full rounded-sm bg-white">
             <div className="flex flex-wrap items-center xl:mx-auto xl:w-[80em]">
-              <div className=" w-full block xl:w-1/2">
-                <div className="px-26 py-0 md:py-17.5 text-center">
+              <div className="block w-full xl:w-1/2">
+                <div className="px-26 py-0 text-center md:py-17.5">
                   <img
                     src={BenedictoLogo}
                     alt="Benedicto College"
@@ -97,7 +97,7 @@ const SignIn = () => {
                     draggable={false}
                   />
 
-                  <p className="2xl:px-20 hidden md:block">{motto}</p>
+                  <p className="hidden md:block 2xl:px-20">{motto}</p>
 
                   <span className="mt-15 hidden md:inline-block">
                     <LogInImage />
@@ -204,6 +204,8 @@ const SignIn = () => {
                       </button>
                     </div>
                   </form>
+
+                  <Version />
                 </div>
               </div>
             </div>
@@ -221,6 +223,42 @@ const RedirectPage = () => {
         You&apos;re already logged in. Redirecting...
       </h3>
     </div>
+  );
+};
+
+const Version = () => {
+  const [version, setVersion] = useState("");
+
+  useEffect(() => {
+    const fetchCommits = async () => {
+      try {
+        const response = await fetch(
+          "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch commits");
+        }
+        const data = await response.json();
+
+        const commitCount = data.length;
+        const major = 1; // Set major version manually if needed
+        const minor = Math.floor(commitCount / 2); // Change every 10 commits
+        const patch = commitCount; // Remainder for patch
+
+        setVersion(`v${major}.${minor}.${patch}`);
+      } catch (error) {
+        console.error("Error fetching commits:", error);
+        setVersion(""); // Set version to blank on error
+      }
+    };
+
+    fetchCommits();
+  }, []);
+
+  return version ? (
+    <span className="inline-block text-sm">Current Version: {version}</span>
+  ) : (
+    ""
   );
 };
 

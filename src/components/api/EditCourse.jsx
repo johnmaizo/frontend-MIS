@@ -269,8 +269,8 @@ const EditCourse = ({ courseId }) => {
                             },
                             validate: {
                               validUnit: (value) =>
-                                [1, 2, 3].includes(Number(value)) ||
-                                "Unit must be 1, 2, or 3",
+                                [1, 2, 3, 6].includes(Number(value)) ||
+                                "Unit must be 1, 2, 3, or 6",
                             },
                           })}
                           disabled={localLoading || success}

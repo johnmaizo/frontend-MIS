@@ -7,6 +7,15 @@ import Sidebar from "../../components/Sidebar";
 import { Outlet } from "react-router-dom";
 import useOpenMode from "../../hooks/useOpenMode";
 
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../../components/ui/hover-card";
+import { Button } from "../../components/ui/button";
+import { CalendarDays } from "lucide-react";
+import HiroHoverCard from "../../components/Essentials/HiroHoverCard";
+
 const DefaultLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -57,6 +66,8 @@ const DefaultLayout = ({ children }) => {
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               <Outlet />
               {children}
+
+              <HiroHoverCard />
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}

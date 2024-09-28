@@ -36,7 +36,17 @@ const EmployeeSidebar = ({
       {/* <!-- Menu Group --> */}
       <div>
         <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-          {HasRole(user.role, "SuperAdmin") ? "SUPER ADMIN MENU" : "ADMIN MENU"}
+          {HasRole(user.role, "SuperAdmin")
+            ? "SUPER ADMIN MENU"
+            : HasRole(user.role, "Admin")
+              ? "ADMIN MENU"
+              : HasRole(user.role, "Registrar")
+                ? "REGISTRAR MENU"
+                : HasRole(user.role, "DataCenter")
+                  ? "DATA CENTER MENU"
+                  : HasRole(user.role, "Accounting")
+                    ? "ACCOUNTING MENU"
+                    : HasRole(user.role, "Dean") && "DEAN MENU"}
         </h3>
 
         <ul className="mb-6 flex flex-col gap-1.5">

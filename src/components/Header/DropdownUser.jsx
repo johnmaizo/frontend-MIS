@@ -9,6 +9,7 @@ import ProfileThomas from "../../assets/images/thomas.jfif";
 import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "../reuseable/HasRole";
 import { Badge } from "../ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -97,12 +98,27 @@ const DropdownUser = () => {
             </div>
           </span>
 
-          <img
+          {/* <img
             src={profileImage}
             alt="User"
             draggable={false}
             className="aspect-square w-12 rounded-full"
-          />
+          /> */}
+          <Avatar className="!aspect-square !h-[3em] !w-[3em]">
+            <AvatarImage
+              draggable={false}
+              src={profileImage}
+              alt="User"
+              className=""
+            />
+            <AvatarFallback>
+              {user.firstName[0]}
+              {user.firstName.split(" ")[1]
+                ? user.firstName.split(" ")[1][0]
+                : user.middleName && user.middleName[0]}
+              {user.lastName[0]}
+            </AvatarFallback>
+          </Avatar>
 
           <svg
             className="hidden fill-current sm:block"

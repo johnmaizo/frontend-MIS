@@ -188,7 +188,11 @@ const EditProgram = ({ programId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Program
               </DialogTitle>
-              <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
+              <DialogDescription className="sr-only">
+                <span className="inline-block font-bold text-red-700">*</span>{" "}
+                Edit, Click Add when you&apos;re done.
+              </DialogDescription>
+              <div className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="w-full pb-3 xl:w-[12em]">
@@ -407,7 +411,7 @@ const EditProgram = ({ programId }) => {
                     </button>
                   </div>
                 </form>
-              </DialogDescription>
+              </div>
             </DialogHeader>
           </DialogContent>
         </Dialog>

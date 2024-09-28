@@ -146,7 +146,11 @@ const EditCampus = ({ campusId }) => {
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
                 Edit Campus
               </DialogTitle>
-              <DialogDescription className="overflow-y-auto overscroll-none text-xl">
+              <DialogDescription className="sr-only">
+                <span className="inline-block font-bold text-red-700">*</span>{" "}
+                Edit, Click Add when you&apos;re done.
+              </DialogDescription>
+              <div className="overflow-y-auto overscroll-none text-xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
                     <div className="mb-5 w-full xl:w-[12em]">
@@ -259,7 +263,7 @@ const EditCampus = ({ campusId }) => {
                 {error && (
                   <div className="mb-5 text-center text-red-600">{error}</div>
                 )}
-              </DialogDescription>
+              </div>
             </DialogHeader>
           </DialogContent>
         </Dialog>

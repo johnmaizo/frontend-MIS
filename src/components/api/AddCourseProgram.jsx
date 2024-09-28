@@ -122,14 +122,8 @@ const AddCourseProgram = () => {
         axios.post("/program-courses/assign-program-course", transformedData),
         {
           loading: "Assigning Subject...",
-          success: {
-            render: "Assigned Subject successfully!",
-            duration: 5000, // Duration only for success
-          },
-          error: {
-            render: "Failed to Assign Subject.",
-            duration: 5000, // Duration only for error
-          },
+          success: "Assigned Subject successfully!",
+          error: "Failed to Assign Subject.",
         },
         {
           position: "bottom-right",
@@ -138,6 +132,7 @@ const AddCourseProgram = () => {
 
       if (response.data) {
         setSuccess(true);
+        // fetchProgramCourse(programCampusName, programCampusId);
         fetchProgramCourse(
           programCampusId,
           programCampusName,
@@ -167,7 +162,7 @@ const AddCourseProgram = () => {
     } else if (error) {
       setTimeout(() => {
         setGeneralError("");
-      }, 5000);
+      }, 3000);
     }
   }, [success, error, reset]);
 

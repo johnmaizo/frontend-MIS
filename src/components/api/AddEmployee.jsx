@@ -642,14 +642,16 @@ const AddEmployee = () => {
                     </div>
                   </div>
 
-                  <div className=" flex flex-col gap-6 xl:flex-row">
+                  <div className="flex flex-col gap-6 xl:flex-row">
                     <div className="mb-4.5 w-full dark:bg-transparent md:bg-gray-2 md:p-3">
                       <span className="mb-2.5 block">
                         Qualification{" "}
                         <span className="inline-block font-bold text-red-700">
                           *
                         </span>{" "}
-                        <span className="text-sm">(You can skip this if not applicable)</span>
+                        <span className="text-sm">
+                          (You can skip this if not applicable)
+                        </span>
                       </span>
                       {qualifications.map((qualification, index) => (
                         <div key={index} className="qualification">
@@ -663,9 +665,10 @@ const AddEmployee = () => {
                                 name="abbreviation"
                                 placeholder="Abbreviation"
                                 value={qualification.abbreviation}
-                                onChange={(event) =>
-                                  handleQualificationChange(index, event)
-                                }
+                                onChange={(event) => {
+                                  handleQualificationChange(index, event);
+                                  clearErrors("qualifications");
+                                }}
                                 className="bg-white !p-2"
                               />
                             </div>
@@ -678,9 +681,10 @@ const AddEmployee = () => {
                                 name="meaning"
                                 placeholder="Full Meaning (Leave blank if not applicable)"
                                 value={qualification.meaning}
-                                onChange={(event) =>
-                                  handleQualificationChange(index, event)
-                                }
+                                onChange={(event) => {
+                                  handleQualificationChange(index, event);
+                                  clearErrors("qualifications");
+                                }}
                                 className="bg-white !p-2"
                               />
                             </div>

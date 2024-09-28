@@ -9,8 +9,7 @@ import CryptoJS from "crypto-js"; // For optional encryption
 
 export const AuthContext = createContext();
 
-const ENCRYPTION_KEY =
-  "y4acp52Q0T8H9QwXwj/Q63gWVY63gEHJtyeKYabFdFXnmc0mRga6AGFr7rTB0OYm"; // Strong unique key for optional encryption
+const ENCRYPTION_KEY = import.meta.env.VITE_REACT_APP_SECRET_KEY; // Strong unique key for optional encryption
 
 // Encryption Helper
 const encryptData = (data) => {

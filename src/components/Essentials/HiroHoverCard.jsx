@@ -11,8 +11,29 @@ import { Button } from "../ui/button";
 import Profile from "../../assets/images/john.jfif";
 
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { useEffect, useState } from "react";
 
 const HiroHoverCard = ({ forSidebar }) => {
+  const [version, setVersion] = useState("v0.0.0");
+
+  useEffect(() => {
+    const fetchCommits = async () => {
+      const response = await fetch(
+        "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
+      );
+      const data = await response.json();
+
+      const commitCount = data.length;
+      const major = 1; // Set major version manually if needed
+      const minor = Math.floor(commitCount / 2); // Change every 10 commits
+      const patch = commitCount; // Remainder for patch
+
+      setVersion(`v${major}.${minor}.${patch}`);
+    };
+
+    fetchCommits();
+  }, []);
+
   return (
     <HoverCard>
       <HoverCardTrigger
@@ -22,10 +43,12 @@ const HiroHoverCard = ({ forSidebar }) => {
       >
         <Button variant="link">
           {" "}
-          © {new Date().getFullYear()} - MIS - Hiro
+          © {new Date().getFullYear()} - MIS - Hiro {version}
         </Button>
       </HoverCardTrigger>
-      <HoverCardContent className={`${forSidebar && forSidebar ? "" : "ml-10"}`}>
+      <HoverCardContent
+        className={`${forSidebar && forSidebar ? "" : "ml-10"}`}
+      >
         <div className="space-y-1">
           <h4 className="inline-flex items-center gap-2 text-sm font-semibold">
             <Avatar>

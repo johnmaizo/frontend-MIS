@@ -32,6 +32,11 @@ import { ErrorMessage } from "../reuseable/ErrorMessage";
 import SmallLoader from "../styles/SmallLoader";
 import FormInput from "../reuseable/FormInput";
 import MultipleSelector from "../ui/multiple-selector";
+import { Input } from "../ui/input";
+
+import DepartmentSelector from "../reuseable/DepartmentSelector";
+
+import { useMediaQuery } from "../../hooks/use-media-query";
 
 const AddEmployee = () => {
   const { user } = useContext(AuthContext);
@@ -95,7 +100,14 @@ const AddEmployee = () => {
           },
         ];
 
-  const { fetchEmployees, campusActive, fetchCampusActive } = useSchool();
+  const {
+    fetchEmployees,
+    campusActive,
+    fetchCampusActive,
+    deparmentsActive,
+    fetchDepartmentsActive,
+    loading,
+  } = useSchool();
   const [open, setOpen] = useState(false);
 
   const [selectedCampus, setSelectedCampus] = useState("");
@@ -114,11 +126,12 @@ const AddEmployee = () => {
   const [success, setSuccess] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
 
-  // State to store the selected roles as an array of strings (values only)
   const [selectedRoles, setSelectedRoles] = useState([]);
-
-  // State to store the selected role objects
   const [selectedRoleObjects, setSelectedRoleObjects] = useState([]);
+
+  const shouldShowDepartment = selectedRoles.some((role) =>
+    ["Dean", "Teacher", "Instructor"].includes(role),
+  );
 
   // List of disallowed roles
   const disallowedRoles = HasRole(user.role, "SuperAdmin")
@@ -166,12 +179,39 @@ const AddEmployee = () => {
 
   useEffect(() => {
     fetchCampusActive();
+    fetchDepartmentsActive();
     if (user && user.campus_id) {
       // Automatically set the campus if the user has a campus_id
       setSelectedCampus(user.campus_id.toString());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [openComboBox, setOpenComboBox] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [selectedDepartmentID, setSelectedDepartmentID] = useState("");
+  const [selectedDepartmenName, setSelectedDepartmenName] = useState("");
+
+  const [qualifications, setQualifications] = useState([
+    { abbreviation: "", meaning: "" },
+  ]);
+
+  const handleQualificationChange = (index, event) => {
+    const values = [...qualifications];
+    values[index][event.target.name] = event.target.value;
+    setQualifications(values);
+  };
+
+  const handleAddQualification = () => {
+    setQualifications([...qualifications, { abbreviation: "", meaning: "" }]);
+    console.log(qualifications);
+  };
+
+  const handleRemoveQualification = (index) => {
+    const values = [...qualifications];
+    values.splice(index, 1);
+    setQualifications(values);
+  };
 
   const onSubmit = async (data) => {
     if (HasRole(user.role, "SuperAdmin")) {
@@ -197,18 +237,55 @@ const AddEmployee = () => {
       });
       return;
     }
+    if (!selectedDepartmentID || selectedDepartmentID === "blank") {
+      setError("department_id", {
+        type: "manual",
+        message: "You must select a department.",
+      });
+      return;
+    }
+
+    // Check qualifications for mismatches between abbreviation and meaning
+    const incompleteQualifications = qualifications.some(
+      (qual) =>
+        (qual.abbreviation.trim() && !qual.meaning.trim()) ||
+        (!qual.abbreviation.trim() && qual.meaning.trim()),
+    );
+
+    if (incompleteQualifications) {
+      setError("qualifications", {
+        type: "manual",
+        message:
+          "Each qualification must have both an abbreviation and a meaning.",
+      });
+      return;
+    }
 
     setLocalLoading(true);
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
           key,
-          value.trim() === "" ? null : value.trim(),
+          typeof value === "string" && value.trim() === ""
+            ? null
+            : value.trim(),
         ]),
       ),
       campus_id: user.campus_id ? user.campus_id : parseInt(selectedCampus), // Add the selected campus to the form data
       role: selectedRoles,
       gender: selectedGender,
+      qualifications: qualifications.every(
+        (qual) => qual.abbreviation.trim() === "" && qual.meaning.trim() === "",
+      )
+        ? null
+        : qualifications.map((qual) => ({
+            abbreviation: qual.abbreviation.trim(),
+            meaning: qual.meaning.trim(),
+          })),
+      department_id:
+        selectedDepartmentID === "blank"
+          ? null
+          : parseInt(selectedDepartmentID),
     };
 
     setGeneralError("");
@@ -253,6 +330,9 @@ const AddEmployee = () => {
         setSelectedGender("");
         setSelectedRoles([]);
         setSelectedRoleObjects([]);
+        setQualifications([{ abbreviation: "", meaning: "" }]);
+        setSelectedDepartmentID("");
+        setSelectedDepartmenName("");
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -276,9 +356,14 @@ const AddEmployee = () => {
               setSelectedCampus(
                 user.campus_id ? user.campus_id.toString() : "",
               ); // Reset selected campus based on user role
+              setQualifications([{ abbreviation: "", meaning: "" }]);
+              setSelectedDepartmentID("");
+              setSelectedDepartmenName("");
               clearErrors("campus_id");
               clearErrors("role");
               clearErrors("gender");
+              clearErrors("qualifications");
+              clearErrors("department_id");
             }
           }}
         >
@@ -556,6 +641,102 @@ const AddEmployee = () => {
                       )}
                     </div>
                   </div>
+
+                  <div className=" flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4.5 w-full dark:bg-transparent md:bg-gray-2 md:p-3">
+                      <span className="mb-2.5 block">
+                        Qualification{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>{" "}
+                        <span className="text-sm">(You can skip this if not applicable)</span>
+                      </span>
+                      {qualifications.map((qualification, index) => (
+                        <div key={index} className="qualification">
+                          <div className="mt-5 flex w-full flex-wrap justify-between gap-3 md:flex-nowrap">
+                            <div className="w-full md:w-auto">
+                              <span className="ml-1 block text-sm">
+                                Abbreviation
+                              </span>
+                              <Input
+                                type="text"
+                                name="abbreviation"
+                                placeholder="Abbreviation"
+                                value={qualification.abbreviation}
+                                onChange={(event) =>
+                                  handleQualificationChange(index, event)
+                                }
+                                className="bg-white !p-2"
+                              />
+                            </div>
+                            <div className="w-full">
+                              <span className="ml-1 block text-sm">
+                                Full Meaning
+                              </span>
+                              <Input
+                                type="text"
+                                name="meaning"
+                                placeholder="Full Meaning (Leave blank if not applicable)"
+                                value={qualification.meaning}
+                                onChange={(event) =>
+                                  handleQualificationChange(index, event)
+                                }
+                                className="bg-white !p-2"
+                              />
+                            </div>
+                          </div>
+                          {index !== 0 && (
+                            <input
+                              type="button"
+                              onClick={() => handleRemoveQualification(index)}
+                              className="mt-2 cursor-pointer rounded !bg-red-600 p-1 text-sm text-white hover:!bg-red-700"
+                              value={"Remove"}
+                            />
+                          )}
+                        </div>
+                      ))}
+                      <input
+                        type="button"
+                        onClick={handleAddQualification}
+                        className="mt-4 cursor-pointer text-wrap rounded !bg-blue-600 p-2 text-sm text-white hover:!bg-blue-700 md:text-[1rem]"
+                        value={"Add another Qualification"}
+                      />
+
+                      {errors.qualifications && (
+                        <ErrorMessage>
+                          *{errors.qualifications.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+                  </div>
+
+                  {shouldShowDepartment && (
+                    <div className="mb-4.5 w-full">
+                      <span className="mb-2.5 block text-black dark:text-white">
+                        Department
+                      </span>
+
+                      <DepartmentSelector
+                        isDesktop={isDesktop}
+                        hideGeneralSubject={true}
+                        open={openComboBox}
+                        setOpen={setOpenComboBox}
+                        selectedDepartmentID={selectedDepartmentID}
+                        selectedDepartmenName={selectedDepartmenName}
+                        departmentsActive={deparmentsActive}
+                        setSelectedDepartmentID={setSelectedDepartmentID}
+                        setSelectedDepartmenName={setSelectedDepartmenName}
+                        clearErrors={clearErrors}
+                        loading={loading}
+                      />
+
+                      {errors.department_id && (
+                        <ErrorMessage>
+                          *{errors.department_id.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+                  )}
 
                   <div className="mb-4.5 w-full">
                     <label

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import ProfileUser from "../../assets/images/profile-user.jpg";
@@ -17,6 +17,16 @@ const DropdownUser = () => {
   const dropdown = useRef(null);
 
   const { user, setIsLoggingOut } = useContext(AuthContext);
+
+  const profileImage = useMemo(() => {
+    return HasRole(user.role, "SuperAdmin")
+      ? ProfileThomas
+      : user.firstName === "Vonsleryl"
+        ? ProfileVons
+        : user.firstName === "John Robert"
+          ? ProfileMaizo
+          : ProfileUser;
+  }, [user.role, user.firstName]); // This will recalculate only when user.role or user.firstName changes
 
   // close on click outside
   useEffect(() => {
@@ -88,15 +98,7 @@ const DropdownUser = () => {
           </span>
 
           <img
-            src={
-              HasRole(user.role, "SuperAdmin")
-                ? ProfileThomas
-                : user.firstName === "Vonsleryl"
-                  ? ProfileVons
-                  : user.firstName === "John Robert"
-                    ? ProfileMaizo
-                    : ProfileUser
-            }
+            src={profileImage}
             alt="User"
             draggable={false}
             className="aspect-square w-12 rounded-full"

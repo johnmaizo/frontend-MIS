@@ -14,21 +14,29 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { useEffect, useState } from "react";
 
 const HiroHoverCard = ({ forSidebar }) => {
-  const [version, setVersion] = useState("v0.0.0");
+  const [version, setVersion] = useState("");
 
   useEffect(() => {
     const fetchCommits = async () => {
-      const response = await fetch(
-        "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
-      );
-      const data = await response.json();
+      try {
+        const response = await fetch(
+          "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch commits");
+        }
+        const data = await response.json();
 
-      const commitCount = data.length;
-      const major = 1; // Set major version manually if needed
-      const minor = Math.floor(commitCount / 2); // Change every 10 commits
-      const patch = commitCount; // Remainder for patch
+        const commitCount = data.length;
+        const major = 1; // Set major version manually if needed
+        const minor = Math.floor(commitCount / 2); // Change every 10 commits
+        const patch = commitCount; // Remainder for patch
 
-      setVersion(`v${major}.${minor}.${patch}`);
+        setVersion(`v${major}.${minor}.${patch}`);
+      } catch (error) {
+        console.error("Error fetching commits:", error);
+        setVersion(""); // Set version to blank on error
+      }
     };
 
     fetchCommits();
@@ -43,7 +51,7 @@ const HiroHoverCard = ({ forSidebar }) => {
       >
         <Button variant="link">
           {" "}
-          © {new Date().getFullYear()} - MIS - Hiro {version}
+          © {new Date().getFullYear()} - MIS - Hiro {version && version}
         </Button>
       </HoverCardTrigger>
       <HoverCardContent

@@ -1294,14 +1294,7 @@ const useColumns = () => {
       },
     },
     {
-      accessorFn: (row) => {
-        const middleInitial =
-          row.middleName && row.middleName.trim() !== ""
-            ? `${row.middleName.charAt(0)}.`
-            : "";
-        return `${row.firstName} ${middleInitial.toUpperCase()} ${row.lastName}`;
-      },
-      id: "fullName",
+      accessorKey: "fullName",
       header: "Name",
     },
     {

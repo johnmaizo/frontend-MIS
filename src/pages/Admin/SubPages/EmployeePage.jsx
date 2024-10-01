@@ -102,26 +102,29 @@ const DataTable = ({ data, columns, loading, error }) => {
   return (
     <>
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
-        <div className="gap-5 md:flex">
-          <SearchInput
-            placeholder="Search by Role..."
-            filterValue={table.getColumn("role")?.getFilterValue()}
-            setFilterValue={(value) =>
-              table.getColumn("role")?.setFilterValue(value)
-            }
-            className="md:max-w-[12em]"
-          />
+        <div className="gap-5 md:flex md:flex-col lg:flex-row md:gap-0 lg:gap-5">
+          <div className="gap-5 md:flex ">
+            <SearchInput
+              placeholder="Search by Role..."
+              filterValue={table.getColumn("role")?.getFilterValue()}
+              setFilterValue={(value) =>
+                table.getColumn("role")?.setFilterValue(value)
+              }
+              className="md:max-w-[12em]"
+            />
+            <SearchInput
+              placeholder="Search by Name..."
+              filterValue={table.getColumn("fullName")?.getFilterValue()}
+              setFilterValue={(value) =>
+                table.getColumn("fullName")?.setFilterValue(value)
+              }
+              className="md:w-[17em]"
+            />
+          </div>
 
-          <SearchInput
-            placeholder="Search by Name..."
-            filterValue={table.getColumn("fullName")?.getFilterValue()}
-            setFilterValue={(value) =>
-              table.getColumn("fullName")?.setFilterValue(value)
-            }
-            className="md:w-[17em]"
-          />
-
-          <ResetFilter table={table} className={"h-[3.3em]"} />
+          <div className="mb-5 md:mb-0">
+            <ResetFilter table={table} className={"h-[3.3em]"} />
+          </div>
         </div>
 
         <div className=" ">

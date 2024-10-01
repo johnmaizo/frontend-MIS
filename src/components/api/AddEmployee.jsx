@@ -277,15 +277,28 @@ const AddEmployee = () => {
       campus_id: user.campus_id ? user.campus_id : parseInt(selectedCampus), // Add the selected campus to the form data
       role: selectedRoles,
       gender: selectedGender,
-      qualifications: qualifications
-        .filter(
-          (qual) =>
-            qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
-        )
-        .map((qual) => ({
-          abbreviation: qual.abbreviation.trim(),
-          meaning: qual.meaning.trim(),
-        })),
+      qualifications:
+        qualifications
+          .filter(
+            (qual) =>
+              qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
+          )
+          .map((qual) => ({
+            abbreviation: qual.abbreviation.trim(),
+            meaning: qual.meaning.trim(),
+          }))
+          .filter((qual) => qual.abbreviation !== "" || qual.meaning !== "")
+          .length === 0
+          ? null // return null if no valid qualifications
+          : qualifications
+              .filter(
+                (qual) =>
+                  qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
+              )
+              .map((qual) => ({
+                abbreviation: qual.abbreviation.trim(),
+                meaning: qual.meaning.trim(),
+              })),
       department_id:
         !shouldShowDepartment && selectedDepartmentID === "blank"
           ? null

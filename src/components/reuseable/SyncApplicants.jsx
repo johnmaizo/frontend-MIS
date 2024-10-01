@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -12,18 +12,30 @@ const SyncApplicants = () => {
   let longProcessToastId = null;
   let timer = null;
 
+  // Use a ref to store the AbortController so it persists across renders
+  const abortControllerRef = useRef(null);
+
   const handleAction = async () => {
     setLoading(true);
 
+    // Create a new AbortController before the request
+    abortControllerRef.current = new AbortController();
+    const { signal } = abortControllerRef.current;
+
     // Set a timeout to show the loading toast after 7 seconds if the process is still running
     timer = setTimeout(() => {
-      longProcessToastId = toast.loading("This may take a while... Please wait.", {
-        position: "bottom-right",
-      });
+      longProcessToastId = toast.loading(
+        "This may take a while... Please wait.",
+        {
+          position: "bottom-right",
+        },
+      );
     }, 7000);
 
     try {
-      const response = await axios.get("/enrollment/fetch-applicant-data");
+      const response = await axios.get("/enrollment/fetch-applicant-data", {
+        signal, // Pass the signal to axios to handle the abort
+      });
 
       console.log(response.data);
 
@@ -40,18 +52,22 @@ const SyncApplicants = () => {
 
       setLoading(false);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        toast.error(`Error: ${err.response.data.message}`, {
-          position: "bottom-right",
-          duration: 5000,
-        });
+      if (axios.isCancel(err)) {
+        console.log("Request canceled by user");
       } else {
-        toast.error(`Failed to sync applicants data`, {
-          position: "bottom-right",
-          duration: 5000,
-        });
+        if (err.response && err.response.data && err.response.data.message) {
+          toast.error(`Error: ${err.response.data.message}`, {
+            position: "bottom-right",
+            duration: 5000,
+          });
+        } else {
+          toast.error("Failed to sync applicants data", {
+            position: "bottom-right",
+            duration: 5000,
+          });
+        }
+        setLoading(false);
       }
-      setLoading(false);
     } finally {
       // Clear the timer if the process finishes before 7 seconds
       clearTimeout(timer);
@@ -62,6 +78,15 @@ const SyncApplicants = () => {
       }
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // Abort the request if the component unmounts
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   return (
     <Button

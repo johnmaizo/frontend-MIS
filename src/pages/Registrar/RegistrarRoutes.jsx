@@ -29,7 +29,7 @@ const RegistrarRoutes = () => {
         path="/"
         element={
           <>
-            <PageTitle title="Dashboard | MIS - Benedicto College" />
+            <PageTitle title="Dashboard - MIS Benedicto College" />
             <RegistrarHome />
           </>
         }
@@ -41,7 +41,7 @@ const RegistrarRoutes = () => {
             path="/campus"
             element={
               <>
-                <PageTitle title="Campuses | MIS - Benedicto College" />
+                <PageTitle title="Campuses - MIS Benedicto College" />
                 <CampusPage />
               </>
             }
@@ -53,7 +53,7 @@ const RegistrarRoutes = () => {
         path="/semester"
         element={
           <>
-            <PageTitle title="Semester | MIS - Benedicto College" />
+            <PageTitle title="Semester - MIS Benedicto College" />
             <SemesterPage />
           </>
         }
@@ -63,7 +63,7 @@ const RegistrarRoutes = () => {
         path="/departments"
         element={
           <>
-            <PageTitle title="Departments | MIS - Benedicto College" />
+            <PageTitle title="Departments - MIS Benedicto College" />
             <DepartmentPage />
           </>
         }
@@ -73,7 +73,7 @@ const RegistrarRoutes = () => {
         path="/programs"
         element={
           <>
-            <PageTitle title="Programs | MIS - Benedicto College" />
+            <PageTitle title="Programs - MIS Benedicto College" />
             <ProgramPage />
           </>
         }
@@ -83,7 +83,7 @@ const RegistrarRoutes = () => {
         path="/subjects/subject-list"
         element={
           <>
-            <PageTitle title="Subjects | MIS - Benedicto College" />
+            <PageTitle title="Subjects - MIS Benedicto College" />
             <CoursePage />
           </>
         }
@@ -93,7 +93,7 @@ const RegistrarRoutes = () => {
         path="/subjects/program-subjects"
         element={
           <>
-            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
             <ProgramCoursesPage />
           </>
         }
@@ -103,7 +103,7 @@ const RegistrarRoutes = () => {
         path="/subjects/program-subjects/campus/:campusName/program/:program_id"
         element={
           <>
-            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
             <ViewProgramCoursePage />
           </>
         }
@@ -113,7 +113,7 @@ const RegistrarRoutes = () => {
         path="/structure-management/buildings"
         element={
           <>
-            <PageTitle title="Structure Management | MIS - Benedicto College" />
+            <PageTitle title="Structure Management - MIS Benedicto College" />
             <BuildingStructurePage />
           </>
         }
@@ -127,7 +127,7 @@ const RegistrarRoutes = () => {
         }
         element={
           <>
-            <PageTitle title="Floors | MIS - Benedicto College" />
+            <PageTitle title="Floors - MIS Benedicto College" />
             <FloorPage />
           </>
         }
@@ -141,7 +141,7 @@ const RegistrarRoutes = () => {
         }
         element={
           <>
-            <PageTitle title="Rooms | MIS - Benedicto College" />
+            <PageTitle title="Rooms - MIS Benedicto College" />
             <RoomPage />
           </>
         }
@@ -151,7 +151,7 @@ const RegistrarRoutes = () => {
         path="/enrollments/enrollment-application"
         element={
           <>
-            <PageTitle title="Enrollment Application | MIS - Benedicto College" />
+            <PageTitle title="Enrollment Application - MIS Benedicto College" />
             <EnrollmentApplicationPage />
           </>
         }
@@ -161,7 +161,7 @@ const RegistrarRoutes = () => {
         path="/enrollments/enrollment-application/applicant/:applicantId"
         element={
           <>
-            <PageTitle title="View Enrollment Application | MIS - Benedicto College" />
+            <PageTitle title="View Enrollment Application - MIS Benedicto College" />
             <ViewEnrollmentApplicantPage />
           </>
         }
@@ -171,7 +171,7 @@ const RegistrarRoutes = () => {
         path="/enrollments/official-enrolled"
         element={
           <>
-            <PageTitle title="Official Enrolled | MIS - Benedicto College" />
+            <PageTitle title="Official Enrolled - MIS Benedicto College" />
             <OfficialEnrolledPage />
           </>
         }

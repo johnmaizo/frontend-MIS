@@ -9,7 +9,7 @@ const DeanHomePage = () => {
   return (
     <DefaultLayout>
       <>
-      <h3 className="text-xl font-bold text-[1.1rem] mb-5 text-black dark:text-white">Welcome {user?.fullName}!</h3>
+      <h3 className="text-xl font-bold text-[1.1rem] mb-5 text-black dark:text-white">Welcome {user?.name}!</h3>
 
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h3 className="text-xl font-bold">Dean Home Page</h3>

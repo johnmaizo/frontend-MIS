@@ -43,7 +43,7 @@ const AdminRoutes = () => {
         path="/"
         element={
           <>
-            <PageTitle title="Dashboard | MIS - Benedicto College" />
+            <PageTitle title="Dashboard - MIS Benedicto College" />
             <AdminHome />
           </>
         }
@@ -53,7 +53,7 @@ const AdminRoutes = () => {
         path="/students/add-student"
         element={
           <>
-            <PageTitle title="Add Student | MIS - Benedicto College" />
+            <PageTitle title="Add Student - MIS Benedicto College" />
             <AddStudentPage />
           </>
         }
@@ -63,7 +63,7 @@ const AdminRoutes = () => {
         path="/students/student-list"
         element={
           <>
-            <PageTitle title="Student List | MIS - Benedicto College" />
+            <PageTitle title="Student List - MIS Benedicto College" />
             <StudentTablePage />
           </>
         }
@@ -73,7 +73,7 @@ const AdminRoutes = () => {
         path="/students/student-list/:id"
         element={
           <>
-            <PageTitle title="Student Information | MIS - Benedicto College" />
+            <PageTitle title="Student Information - MIS Benedicto College" />
             <ViewStudentPage />
           </>
         }
@@ -85,7 +85,7 @@ const AdminRoutes = () => {
             path="/campus"
             element={
               <>
-                <PageTitle title="Campuses | MIS - Benedicto College" />
+                <PageTitle title="Campuses - MIS Benedicto College" />
                 <CampusPage />
               </>
             }
@@ -99,7 +99,7 @@ const AdminRoutes = () => {
             path="/employees"
             element={
               <>
-                <PageTitle title="Employees | MIS - Benedicto College" />
+                <PageTitle title="Employees - MIS Benedicto College" />
                 <EmployeePage />
               </>
             }
@@ -109,7 +109,7 @@ const AdminRoutes = () => {
             path="/employees/accounts"
             element={
               <>
-                <PageTitle title="Accounts | MIS - Benedicto College" />
+                <PageTitle title="Accounts - MIS Benedicto College" />
                 <AccountPage />
               </>
             }
@@ -121,7 +121,7 @@ const AdminRoutes = () => {
         path="/semester"
         element={
           <>
-            <PageTitle title="Semester | MIS - Benedicto College" />
+            <PageTitle title="Semester - MIS Benedicto College" />
             <SemesterPage />
           </>
         }
@@ -131,7 +131,7 @@ const AdminRoutes = () => {
         path="/departments"
         element={
           <>
-            <PageTitle title="Departments | MIS - Benedicto College" />
+            <PageTitle title="Departments - MIS Benedicto College" />
             <DepartmentPage />
           </>
         }
@@ -141,7 +141,7 @@ const AdminRoutes = () => {
         path="/programs"
         element={
           <>
-            <PageTitle title="Programs | MIS - Benedicto College" />
+            <PageTitle title="Programs - MIS Benedicto College" />
             <ProgramPage />
           </>
         }
@@ -151,7 +151,7 @@ const AdminRoutes = () => {
         path="/subjects/subject-list"
         element={
           <>
-            <PageTitle title="Subjects | MIS - Benedicto College" />
+            <PageTitle title="Subjects - MIS Benedicto College" />
             <CoursePage />
           </>
         }
@@ -161,7 +161,7 @@ const AdminRoutes = () => {
         path="/subjects/program-subjects"
         element={
           <>
-            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
             <ProgramCoursesPage />
           </>
         }
@@ -171,7 +171,7 @@ const AdminRoutes = () => {
         path="/subjects/program-subjects/campus/:programCampusId/:programCampusName/program/:programCode/:program_id"
         element={
           <>
-            <PageTitle title="Assign Subjects to Program | MIS - Benedicto College" />
+            <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
             <ViewProgramCoursePage />
           </>
         }
@@ -181,7 +181,7 @@ const AdminRoutes = () => {
         path="/structure-management/buildings"
         element={
           <>
-            <PageTitle title="Structure Management | MIS - Benedicto College" />
+            <PageTitle title="Structure Management - MIS Benedicto College" />
             <BuildingStructurePage />
           </>
         }
@@ -195,7 +195,7 @@ const AdminRoutes = () => {
         }
         element={
           <>
-            <PageTitle title="Floors | MIS - Benedicto College" />
+            <PageTitle title="Floors - MIS Benedicto College" />
             <FloorPage />
           </>
         }
@@ -209,7 +209,7 @@ const AdminRoutes = () => {
         }
         element={
           <>
-            <PageTitle title="Rooms | MIS - Benedicto College" />
+            <PageTitle title="Rooms - MIS Benedicto College" />
             <RoomPage />
           </>
         }
@@ -219,7 +219,7 @@ const AdminRoutes = () => {
         path="/enrollments/enrollment-application"
         element={
           <>
-            <PageTitle title="Enrollment Application | MIS - Benedicto College" />
+            <PageTitle title="Enrollment Application - MIS Benedicto College" />
             <EnrollmentApplicationPage />
           </>
         }
@@ -229,7 +229,7 @@ const AdminRoutes = () => {
         path="/enrollments/enrollment-application/applicant/:applicantId"
         element={
           <>
-            <PageTitle title="View Enrollment Application | MIS - Benedicto College" />
+            <PageTitle title="View Enrollment Application - MIS Benedicto College" />
             <ViewEnrollmentApplicantPage />
           </>
         }
@@ -239,7 +239,7 @@ const AdminRoutes = () => {
         path="/enrollments/official-enrolled"
         element={
           <>
-            <PageTitle title="Official Enrolled | MIS - Benedicto College" />
+            <PageTitle title="Official Enrolled - MIS Benedicto College" />
             <OfficialEnrolledPage />
           </>
         }
@@ -264,7 +264,7 @@ const OtherRoutes = () => {
         path="/admin/calendar"
         element={
           <>
-            <PageTitle title="Calendar | MIS - Benedicto College" />
+            <PageTitle title="Calendar - MIS Benedicto College" />
             <Calendar />
           </>
         }
@@ -274,7 +274,7 @@ const OtherRoutes = () => {
         path="/admin/profile"
         element={
           <>
-            <PageTitle title="Profile | MIS - Benedicto College" />
+            <PageTitle title="Profile - MIS Benedicto College" />
             <Profile />
           </>
         }
@@ -284,7 +284,7 @@ const OtherRoutes = () => {
         path="/settings"
         element={
           <>
-            <PageTitle title="Settings | MIS - Benedicto College" />
+            <PageTitle title="Settings - MIS Benedicto College" />
             <Settings />
           </>
         }
@@ -294,7 +294,7 @@ const OtherRoutes = () => {
         path="/chart"
         element={
           <>
-            <PageTitle title="Basic Chart | MIS - Benedicto College" />
+            <PageTitle title="Basic Chart - MIS Benedicto College" />
             <Chart />
           </>
         }
@@ -304,7 +304,7 @@ const OtherRoutes = () => {
         path="/ui/alerts"
         element={
           <>
-            <PageTitle title="Alerts | MIS - Benedicto College" />
+            <PageTitle title="Alerts - MIS Benedicto College" />
             <Alerts />
           </>
         }
@@ -314,7 +314,7 @@ const OtherRoutes = () => {
         path="/ui/buttons"
         element={
           <>
-            <PageTitle title="Buttons | MIS - Benedicto College" />
+            <PageTitle title="Buttons - MIS Benedicto College" />
             <Buttons />
           </>
         }
@@ -324,7 +324,7 @@ const OtherRoutes = () => {
         path="/forms/form-elements"
         element={
           <>
-            <PageTitle title="Form Elements | MIS - Benedicto College" />
+            <PageTitle title="Form Elements - MIS Benedicto College" />
             <FormElements />
           </>
         }
@@ -334,7 +334,7 @@ const OtherRoutes = () => {
         path="/forms/form-layout"
         element={
           <>
-            <PageTitle title="Form Layout | MIS - Benedicto College" />
+            <PageTitle title="Form Layout - MIS Benedicto College" />
             <FormLayout />
           </>
         }

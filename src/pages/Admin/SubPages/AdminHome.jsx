@@ -33,7 +33,7 @@ const AdminHome = () => {
       )} */}
 
       <h3 className="mb-5 text-[1.1rem] font-bold text-black dark:text-white">
-        Welcome {user?.fullName}!
+        Welcome {user?.name}!
       </h3>
 
       <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">

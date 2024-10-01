@@ -17,7 +17,7 @@ const DataCenterRoutes = () => {
         path="/"
         element={
           <>
-            <PageTitle title="Dashboard | MIS - Benedicto College" />
+            <PageTitle title="Dashboard - MIS Benedicto College" />
             <DataCenterHome />
           </>
         }
@@ -28,7 +28,7 @@ const DataCenterRoutes = () => {
           path="/employees/accounts"
           element={
             <>
-              <PageTitle title="Accounts | MIS - Benedicto College" />
+              <PageTitle title="Accounts - MIS Benedicto College" />
               <AccountPage />
             </>
           }

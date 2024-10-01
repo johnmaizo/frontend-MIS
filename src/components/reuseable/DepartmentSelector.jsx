@@ -110,7 +110,7 @@ const DepartmentList = ({
             <>
               {/* General Subject option */}
 
-              {!isHideGeneralSubject ? (
+              {!isHideGeneralSubject && (
                 <CommandItem
                   value="general-subject"
                   onSelect={() => {
@@ -121,19 +121,6 @@ const DepartmentList = ({
                   className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                 >
                   General Subject
-                </CommandItem>
-              ) : (
-                <CommandItem
-                  value="blank"
-                  onSelect={() => {
-                    onSelectDepartment("blank", "-Select Department-");
-                    setOpen(false);
-                    clearErrors("department_id");
-                  }}
-                  className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
-                  
-                >
-                  -Select Department-
                 </CommandItem>
               )}
 

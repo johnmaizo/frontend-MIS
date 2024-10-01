@@ -106,10 +106,9 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <div className="mb-5 flex w-full items-center justify-between gap-3"></div>
       <>
         <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-          <div className="md:flex items-center justify-between">
+          <div className="items-center justify-between md:flex">
             <div className="gap-5 md:flex md:flex-col md:gap-0 lg:flex-row lg:gap-5">
               <div className="gap-5 md:flex">
                 <SearchInput
@@ -133,7 +132,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 <ResetFilter table={table} className={"h-[3.3em]"} />
               </div>
             </div>
-            <div className=" ">
+            <div className="mb-8 md:mb-0">
               <SyncApplicants />
             </div>
           </div>

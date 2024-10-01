@@ -130,7 +130,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
           <>
             <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="mb-5 mt-2 justify-between gap-5 md:flex">
-                <div className="flex gap-5">
+                <div className="md:flex gap-5">
                   <Input
                     placeholder="Search by Building..."
                     value={
@@ -144,7 +144,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
                     className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
                   />
                   <Input
-                    placeholder="Search by campus..."
+                    placeholder="Search by Campus..."
                     value={
                       table.getColumn("campusName")?.getFilterValue() ?? ""
                     }

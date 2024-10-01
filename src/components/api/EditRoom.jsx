@@ -274,10 +274,10 @@ const EditRoom = ({ structureId, campusId, buildingName, floorName }) => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Updating Floor..."
+                        ? "Updating Room..."
                         : success
-                          ? "Floor Updated!"
-                          : "Update Floor"}
+                          ? "Room Updated!"
+                          : "Update Room"}
                     </button>
                   </div>
                 </form>

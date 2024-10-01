@@ -94,7 +94,7 @@ const DefaultRoutes = () => {
         path="/auth/signin"
         element={
           <>
-            <PageTitle title="Signin | MIS - Benedicto College" />
+            <PageTitle title="Signin - MIS Benedicto College" />
             <SignIn />
           </>
         }
@@ -104,7 +104,7 @@ const DefaultRoutes = () => {
         path="/auth/signup"
         element={
           <>
-            <PageTitle title="Signup | MIS - Benedicto College" />
+            <PageTitle title="Signup - MIS Benedicto College" />
             <SignUp />
           </>
         }

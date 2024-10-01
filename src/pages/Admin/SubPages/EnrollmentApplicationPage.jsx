@@ -21,6 +21,8 @@ import { useEnrollment } from "../../../components/context/EnrollmentContext";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
+import AddEmployee from "../../../components/api/AddEmployee";
+import SyncApplicants from "../../../components/reuseable/SyncApplicants";
 
 const EnrollmentApplicationPage = () => {
   const { user } = useContext(AuthContext);
@@ -53,15 +55,11 @@ const EnrollmentTables = () => {
   const { user } = useContext(AuthContext);
 
   //   const { programActive, fetchProgramActive, loading, error } = useSchool();
-  const {
-    error,
-    enrollmentApplicants,
-    fetchEnrollmentApplicants,
-    loadingApplicants,
-  } = useEnrollment();
+  const { error, applicants, fetchApplicants, loadingApplicants } =
+    useEnrollment();
 
   useEffect(() => {
-    fetchEnrollmentApplicants();
+    fetchApplicants();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -71,7 +69,7 @@ const EnrollmentTables = () => {
     <>
       <DataTable
         columns={columnEnrollmentApplication}
-        data={enrollmentApplicants}
+        data={applicants}
         loading={loadingApplicants}
         error={error}
       />
@@ -111,26 +109,33 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-5 flex w-full items-center justify-between gap-3"></div>
       <>
         <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-          <div className="mb-5 mt-2 gap-5 md:flex">
-            <SearchInput
-              placeholder="Search by Name..."
-              filterValue={table.getColumn("fullName")?.getFilterValue()}
-              setFilterValue={(value) =>
-                table.getColumn("fullName")?.setFilterValue(value)
-              }
-              className="md:w-[17em]"
-            />
-
-            <SearchInput
-              placeholder="Search by Email..."
-              filterValue={table.getColumn("email")?.getFilterValue()}
-              setFilterValue={(value) =>
-                table.getColumn("email")?.setFilterValue(value)
-              }
-              className="md:w-[17em]"
-            />
-
-            <ResetFilter table={table} className={"h-[3.3em]"} />
+          <div className="md:flex items-center justify-between">
+            <div className="gap-5 md:flex md:flex-col md:gap-0 lg:flex-row lg:gap-5">
+              <div className="gap-5 md:flex">
+                <SearchInput
+                  placeholder="Search by Name..."
+                  filterValue={table.getColumn("fullName")?.getFilterValue()}
+                  setFilterValue={(value) =>
+                    table.getColumn("fullName")?.setFilterValue(value)
+                  }
+                  className="md:max-w-[12em]"
+                />
+                <SearchInput
+                  placeholder="Search by email..."
+                  filterValue={table.getColumn("email")?.getFilterValue()}
+                  setFilterValue={(value) =>
+                    table.getColumn("email")?.setFilterValue(value)
+                  }
+                  className="md:w-[17em]"
+                />
+              </div>
+              <div className="mb-5 md:mb-0">
+                <ResetFilter table={table} className={"h-[3.3em]"} />
+              </div>
+            </div>
+            <div className=" ">
+              <SyncApplicants />
+            </div>
           </div>
           <div className="max-w-full overflow-x-auto">
             <ReuseTable
@@ -138,6 +143,7 @@ const DataTable = ({ data, columns, loading, error }) => {
               columns={columns}
               loading={loading}
               error={error}
+              forApplicants
             />
           </div>
 

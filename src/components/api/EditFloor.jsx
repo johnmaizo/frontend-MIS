@@ -126,6 +126,10 @@ const EditFloor = ({ structureId, campusId, buildingName }) => {
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
             }
+
+            if (!loading) {
+              setOpen(isOpen); // Prevent closing the dialog if loading
+            }
           }}
         >
           <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">

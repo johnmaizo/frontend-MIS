@@ -106,6 +106,10 @@ const AddCampus = () => {
             if (!isOpen) {
               reset(); // Reset form fields when the dialog is closed
             }
+
+            if (!loading) {
+              setOpen(isOpen); // Prevent closing the dialog if loading
+            }
           }}
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">

@@ -22,7 +22,7 @@ import SmallLoader from "../styles/SmallLoader";
  *
  * @returns A JSX element representing the table.
  */
-const ReuseTable = ({ table, columns, loading, error }) => {
+const ReuseTable = ({ table, columns, loading, error, forApplicants }) => {
   return (
     <Table className="border border-stroke dark:border-strokedark">
       <TableHeader>
@@ -89,6 +89,17 @@ const ReuseTable = ({ table, columns, loading, error }) => {
               ))}
             </TableRow>
           ))
+        ) : table.getRowModel().rows?.length === 0 &&
+          forApplicants &&
+          forApplicants === true ? (
+          <TableRow className="border-none hover:!bg-transparent">
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center text-2xl font-[500]"
+            >
+              No results found. Click &quot;Sync&quot; to fetch applicants.
+            </TableCell>
+          </TableRow>
         ) : (
           <TableRow className="border-none hover:!bg-transparent">
             <TableCell

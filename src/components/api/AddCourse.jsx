@@ -185,6 +185,10 @@ const AddCourse = () => {
               setSelectedDepartmentID(""); // Reset selected department ID
               setSelectedDepartmenName(""); // Reset selected department Name
             }
+
+            if (!localLoading) {
+              setOpen(isOpen); // Prevent closing the dialog if loading
+            }
           }}
         >
           <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">

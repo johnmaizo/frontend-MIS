@@ -133,7 +133,7 @@ const DataTable = ({ data, columns, loading, error }) => {
               </div>
             </div>
             <div className="mb-8 md:mb-0">
-              <SyncApplicants />
+              <SyncApplicants loadingApplicants={loading} />
             </div>
           </div>
           <div className="max-w-full overflow-x-auto">

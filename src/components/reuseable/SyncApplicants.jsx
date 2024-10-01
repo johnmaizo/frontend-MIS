@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { RefreshCcwIcon } from "lucide-react";
 import { useEnrollment } from "../context/EnrollmentContext";
 
-const SyncApplicants = () => {
+const SyncApplicants = ({ loadingApplicants }) => {
   const [loading, setLoading] = useState(false);
   const { fetchApplicants } = useEnrollment();
   let longProcessToastId = null;
@@ -94,7 +94,7 @@ const SyncApplicants = () => {
         loading ? "cursor-not-allowed bg-green-800" : ""
       } bg-green-600 hover:bg-green-700`}
       onClick={handleAction}
-      disabled={loading}
+      disabled={loading || loadingApplicants}
     >
       <RefreshCcwIcon className={`${loading ? "animate-reverse-spin" : ""}`} />
       {loading ? "Syncing Applicants..." : "Sync Applicants"}

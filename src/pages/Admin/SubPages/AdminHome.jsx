@@ -24,13 +24,17 @@ const AdminHome = () => {
 
   return (
     <DefaultLayout>
-      {user && user.campusName && (
+      {/* {user && user.campusName && (
         <div className="mb-8">
-          <h2 className="text-[2rem] mt-5 md:mt-0 font-bold text-black dark:text-white">
+          <h2 className="mt-5 text-[2rem] font-bold text-black dark:text-white md:mt-0">
             {user.campusName}
           </h2>
         </div>
-      )}
+      )} */}
+
+      <h3 className="mb-5 text-[1.1rem] font-bold text-black dark:text-white">
+        Welcome {user?.fullName}!
+      </h3>
 
       <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
         {/* <CardDataStudent /> */}
@@ -62,9 +66,7 @@ const AdminHome = () => {
         <ComboboxDemo />
       </div> */}
 
-      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        
-      </div>
+      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"></div>
     </DefaultLayout>
   );
 };

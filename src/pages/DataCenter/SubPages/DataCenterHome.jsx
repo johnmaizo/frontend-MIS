@@ -3,7 +3,8 @@ import DefaultLayout from "../../layout/DefaultLayout";
 import HamsterProfile from "../../../assets/images/profile-maizo.jpg";
 import VonsProfile from "../../../assets/images/profile-vons.jpg";
 import ThomasProfile from "../../../assets/images/thomas.jfif";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../components/context/AuthContext";
 
 const DataCenterHome = () => {
   const [profile, setProfile] = useState(HamsterProfile);
@@ -21,9 +22,15 @@ const DataCenterHome = () => {
     }, 1500);
   }, [profile]);
 
+  const { user } = useContext(AuthContext);
+
   return (
     <DefaultLayout>
       <>
+        <h3 className="mb-5 mt-2 text-[1.1rem] text-xl font-bold text-black dark:text-white">
+          Welcome {user?.name}!
+        </h3>
+
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h3 className="text-xl font-bold">Data Center Home Page</h3>
         </div>

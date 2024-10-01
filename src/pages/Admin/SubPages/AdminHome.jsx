@@ -32,7 +32,7 @@ const AdminHome = () => {
         </div>
       )} */}
 
-      <h3 className="mb-5 text-[1.1rem] font-bold text-black dark:text-white">
+      <h3 className="mb-5 mt-2 text-[1.1rem] font-bold text-black dark:text-white">
         Welcome {user?.name}!
       </h3>
 

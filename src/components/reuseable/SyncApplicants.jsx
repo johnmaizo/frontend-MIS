@@ -90,9 +90,9 @@ const SyncApplicants = ({ loadingApplicants }) => {
 
   return (
     <Button
-      className={`inline-flex w-full gap-2 ${
-        loading ? "cursor-not-allowed bg-green-800" : ""
-      } bg-green-600 hover:bg-green-700`}
+      className={`inline-flex w-full gap-2 !text-white ${
+        loading ? "cursor-not-allowed !bg-green-800" : ""
+      } !bg-green-600 !hover:bg-green-700`}
       onClick={handleAction}
       disabled={loading || loadingApplicants}
     >

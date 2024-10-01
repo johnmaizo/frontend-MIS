@@ -7,11 +7,18 @@ import {
   FloatingLabelInput,
 } from "../../../components/ui/floating-label-input";
 import { Input } from "../../../components/ui/input";
+import { useContext } from "react";
+import { AuthContext } from "../../../components/context/AuthContext";
 
 const RegistrarHome = () => {
+  const { user } = useContext(AuthContext);
   return (
     <DefaultLayout>
       <>
+        <h3 className="mb-5 mt-2 text-[1.1rem] text-xl font-bold text-black dark:text-white">
+          Welcome {user?.name}!
+        </h3>
+
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h3 className="text-xl font-bold">Registrar Home Page</h3>
         </div>
@@ -40,7 +47,7 @@ const RegistrarHome = () => {
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
           <div>
-            <FloatingLabelInput id="gwapo" label="testing..."  />
+            <FloatingLabelInput id="gwapo" label="testing..." />
           </div>
         </div>
       </>

@@ -1999,7 +1999,7 @@ const useColumns = () => {
         return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return <span className="">{cell.getValue()}</span>;
       },
     },
     {
@@ -2017,7 +2017,7 @@ const useColumns = () => {
         return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
-        return <span className="font-semibold">{cell.getValue()}</span>;
+        return <span className="font-medium">{cell.getValue()}</span>;
       },
     },
     {

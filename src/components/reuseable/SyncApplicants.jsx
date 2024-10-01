@@ -37,8 +37,6 @@ const SyncApplicants = ({ loadingApplicants }) => {
         signal, // Pass the signal to axios to handle the abort
       });
 
-      console.log(response.data);
-
       if (response.data) {
         toast.success(response.data.message, {
           position: "bottom-right",
@@ -92,7 +90,7 @@ const SyncApplicants = ({ loadingApplicants }) => {
     <Button
       className={`inline-flex w-full gap-2 !text-white ${
         loading ? "cursor-not-allowed !bg-green-800" : ""
-      } !bg-green-600 !hover:bg-green-700`}
+      } !hover:bg-green-700 !bg-green-600`}
       onClick={handleAction}
       disabled={loading || loadingApplicants}
     >

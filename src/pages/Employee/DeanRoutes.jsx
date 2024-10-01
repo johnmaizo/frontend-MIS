@@ -20,6 +20,7 @@ import EnrollmentApplicationPage from "../Admin/SubPages/EnrollmentApplicationPa
 import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
 import OfficialEnrolledPage from "../Admin/SubPages/OfficalEnrolledPage";
 import DeanHomePage from "./SubPages/DeanHomePage";
+import EmployeePage from "../Admin/SubPages/EmployeePage";
 
 const DeanRoutes = () => {
   const { user } = useContext(AuthContext);

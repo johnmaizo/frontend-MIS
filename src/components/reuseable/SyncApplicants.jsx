@@ -17,7 +17,7 @@ const SyncApplicants = () => {
 
     // Set a timeout to show the loading toast after 7 seconds if the process is still running
     timer = setTimeout(() => {
-      longProcessToastId = toast.loading("This may take a while...", {
+      longProcessToastId = toast.loading("This may take a while... Please wait.", {
         position: "bottom-right",
       });
     }, 7000);
@@ -30,7 +30,7 @@ const SyncApplicants = () => {
       if (response.data) {
         toast.success(response.data.message, {
           position: "bottom-right",
-          duration: 4500,
+          duration: 5000,
         });
 
         if (response.data.message !== "All applicants are up to date.") {
@@ -43,12 +43,12 @@ const SyncApplicants = () => {
       if (err.response && err.response.data && err.response.data.message) {
         toast.error(`Error: ${err.response.data.message}`, {
           position: "bottom-right",
-          duration: 4500,
+          duration: 5000,
         });
       } else {
         toast.error(`Failed to sync applicants data`, {
           position: "bottom-right",
-          duration: 4500,
+          duration: 5000,
         });
       }
       setLoading(false);

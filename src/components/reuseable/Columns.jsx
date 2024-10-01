@@ -73,7 +73,7 @@ const useColumns = () => {
     fetchRoomsDeleted,
   } = useSchool();
 
-  const { enrollmentApplicants, officalEnrolled } = useEnrollment();
+  const { applicants, officalEnrolled } = useEnrollment();
 
   const { campusName, program_id } = useParams();
 
@@ -1957,16 +1957,15 @@ const useColumns = () => {
       },
     },
     {
-      accessorFn: (row) =>
-        `${row.first_name} ${row.middle_name} ${row.last_name}`,
+      accessorFn: (row) => `${row.firstName} ${row.middleName} ${row.lastName}`,
       cell: ({ row }) => {
         const middleInitial =
-          row.original.middle_name && row.original.middle_name.trim() !== ""
-            ? `${row.original.middle_name.charAt(0)}.`
+          row.original.middleName && row.original.middleName.trim() !== ""
+            ? `${row.original.middleName.charAt(0)}.`
             : "";
         return (
           <span className="text-lg font-semibold">
-            {row.original.last_name}, {row.original.first_name}{" "}
+            {row.original.lastName}, {row.original.firstName}{" "}
             {middleInitial.toUpperCase()}
           </span>
         );
@@ -1986,13 +1985,13 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "program",
+      accessorKey: "programCode",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
             title="Program"
-            options={getUniqueCodes(enrollmentApplicants, "program")}
+            options={getUniqueCodes(applicants, "programCode")}
           />
         );
       },
@@ -2004,13 +2003,13 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "year_level",
+      accessorKey: "yearLevel",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
             title="Year Level"
-            options={getUniqueCodes(enrollmentApplicants, "year_level")}
+            options={getUniqueCodes(applicants, "yearLevel")}
           />
         );
       },
@@ -2025,18 +2024,48 @@ const useColumns = () => {
       accessorKey: "email",
       header: "Email",
     },
+    // {
+    //   accessorKey: "contactNumber",
+    //   header: "Contact No.",
+    // },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() === "Campus name not found"
+                    ? "N/A"
+                    : cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
     {
-      accessorKey: "contact_number",
-      header: "Contact No.",
-    },
-    {
-      accessorKey: "campus",
+      accessorKey: "enrollmentType",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
-            title="Campus"
-            options={getUniqueCodes(enrollmentApplicants, "campus")}
+            title="Enrollment Type"
+            options={getUniqueCodesEnrollment(applicants, "enrollmentType")}
           />
         );
       },
@@ -2044,10 +2073,37 @@ const useColumns = () => {
         return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
-        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+        return (
+          <span
+            className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() === "online"
+                ? "bg-success"
+                : cell.getValue() === "regular" && "bg-green-800"
+            }`}
+          >
+            {cell.getValue() === "online"
+              ? "Online"
+              : cell.getValue() === "regular" && "On-Site"}
+          </span>
+        );
       },
     },
-
+    {
+      accessorKey: "dateEnrolled",
+      header: "Date Enrolled",
+      cell: ({ cell }) => {
+        return (
+          <Badge
+            variant={"outline"}
+            className={"w-[8.1em] text-[0.8rem] font-medium"}
+          >
+            <relative-time datetime={cell.getValue()}>
+              {new Date(cell.getValue()).toDateString()}
+            </relative-time>
+          </Badge>
+        );
+      },
+    },
     {
       accessorKey: "status",
       header: ({ column }) => {
@@ -2055,7 +2111,7 @@ const useColumns = () => {
           <FacetedFilterEnrollment
             column={column}
             title="Status"
-            options={getUniqueCodesEnrollment(enrollmentApplicants, "status")}
+            options={getUniqueCodesEnrollment(applicants, "status")}
           />
         );
       },

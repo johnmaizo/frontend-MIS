@@ -183,6 +183,10 @@ const EditCourse = ({ courseId }) => {
               setSelectedCampus(""); // Reset selected campus
               clearErrors("campus_id"); // Clear campus selection error when dialog closes
             }
+
+            if (!localLoading) {
+              setOpen(isOpen); // Prevent closing the dialog if loading
+            }
           }}
         >
           <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">

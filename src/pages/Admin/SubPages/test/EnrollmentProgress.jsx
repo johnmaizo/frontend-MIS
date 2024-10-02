@@ -1,0 +1,212 @@
+/* eslint-disable react/prop-types */
+import axios from "axios";
+import { CalendarClock } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "../../../../components/ui/hover-card";
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "accepted":
+      return "#38a169"; // Green for accepted steps
+    case "in-progress":
+      return "#4299e1"; // Blue for current step
+    case "upcoming":
+      return "#e2e8f0"; // Gray for upcoming steps
+    case "rejected":
+      return "#e53e3e"; // Red for rejected steps
+    default:
+      return "#e2e8f0"; // Default gray
+  }
+};
+
+const EnrollmentProgress = ({ enrollmentId }) => {
+  const [steps, setSteps] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEnrollmentStatus = async () => {
+      try {
+        const response = await axios.get(
+          `/enrollment/get-enrollment-status/${enrollmentId}`,
+        );
+
+        const data = response.data;
+
+        const mappedSteps = [
+          {
+            id: 1,
+            label: "Registrar Approval",
+            description: "Check by the registrar office",
+            status: mapBackendStatus(data.registrar_status),
+            accepted: data.registrar_status === "accepted",
+            rejected: data.registrar_status === "rejected",
+            date: data.registrar_status_date, // Add date
+          },
+          {
+            id: 2,
+            label: "Dean Approval",
+            description: "Check by the dean's office",
+            status: mapBackendStatus(data.dean_status),
+            accepted: data.dean_status === "accepted",
+            rejected: data.dean_status === "rejected",
+            date: data.dean_status_date, // Add date
+          },
+          {
+            id: 3,
+            label: "Accounting Approval",
+            description: "Check by the accounting department",
+            status: mapBackendStatus(data.accounting_status),
+            accepted: data.accounting_status === "accepted",
+            rejected: data.accounting_status === "rejected",
+            paymentConfirmed: data.payment_confirmed,
+            date: data.accounting_status_date, // Add date
+          },
+          {
+            id: 4,
+            label: "Final Approval",
+            description: "Final approval of the application",
+            status: data.final_approval_status ? "accepted" : "upcoming",
+            accepted: data.final_approval_status,
+            rejected: false,
+            date: null, // No date field for final approval
+          },
+        ];
+
+        setSteps(mappedSteps);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching enrollment status:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchEnrollmentStatus();
+  }, [enrollmentId]);
+
+  const mapBackendStatus = (status) => {
+    switch (status) {
+      case "accepted":
+        return "accepted";
+      case "in-progress":
+        return "in-progress";
+      case "rejected":
+        return "rejected";
+      default:
+        return "upcoming";
+    }
+  };
+
+  if (loading) {
+    return <div>Loading enrollment progress...</div>;
+  }
+
+  return (
+    <div className="text-gray-600 dark:text-gray-400 flex flex-col items-end space-x-4 text-base text-black dark:text-white lg:flex-row lg:items-center lg:justify-center">
+      {steps.map((step, index) => (
+        <div key={step.id} className="flex items-center">
+          <div className="mt-5 flex flex-col items-center gap-y-[1.5em] space-x-4 lg:mt-0 lg:flex-row lg:gap-y-0">
+            <div className="flex flex-none items-center">
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-full text-xl text-black dark:text-white ${
+                  step.accepted || step.status === "in-progress"
+                    ? "text-white"
+                    : step.rejected
+                      ? "text-white"
+                      : "!text-black"
+                }`}
+                style={{ backgroundColor: getStatusColor(step.status) }}
+              >
+                {step.accepted ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="h-6 w-6 !text-white"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                ) : step.rejected ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="h-6 w-6 !text-white"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                ) : (
+                  step.id
+                )}
+              </div>
+              {/* Only show hover card for Accounting Approval */}
+              {step.label === "Accounting Approval" ? (
+                <HoverCard>
+                  <HoverCardTrigger asChild className="cursor-pointer">
+                    <div className="ml-4 w-[9em]">
+                      <span className="font-medium">{step.label}</span>
+                      <p className="text-xs">{step.description}</p>
+
+                      {step.accepted && step.date && (
+                        <p className="text-gray-500 mt-1 inline-flex items-center gap-1 text-[0.6rem] font-medium">
+                          <CalendarClock className="h-[15px] w-[15px]" />{" "}
+                          <relative-time datetime={step.date} />
+                        </p>
+                      )}
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="text-white !shadow-default">
+                    <p>
+                      Payment Status:{" "}
+                      {step.paymentConfirmed ? (
+                        <span className="text-green-500">Confirmed</span>
+                      ) : (
+                        <span className="text-red-500">Pending</span>
+                      )}
+                    </p>
+                  </HoverCardContent>
+                </HoverCard>
+              ) : (
+                <div className="ml-4 w-[9em]">
+                  <span className="font-medium">{step.label}</span>
+                  <p className="text-xs">{step.description}</p>
+
+                  {step.accepted && step.date && (
+                    <p className="text-gray-500 mt-1 inline-flex items-center gap-1 text-[0.6rem] font-medium">
+                      <CalendarClock className="h-[15px] w-[15px]" />{" "}
+                      <relative-time datetime={step.date} />
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+          {index !== steps.length - 1 && (
+            <div
+              className="mb-8 h-1 w-10 flex-none rotate-90 lg:mb-0 lg:rotate-0"
+              style={{ backgroundColor: step.accepted ? "#38a169" : "#e2e8f0" }}
+            ></div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default EnrollmentProgress;

@@ -21,8 +21,6 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 import { ArrowIcon } from "../Icons";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { HasRole } from "../reuseable/HasRole";
-import DataCenterSidebar from "../../pages/layout/sidebars/DataCenterSidebar";
-import RegistrarSidebar from "../../pages/layout/sidebars/RegistrarSidebar";
 import HiroHoverCard from "../Essentials/HiroHoverCard";
 import EmployeeSidebar from "../../pages/layout/sidebars/EmployeeSidebar";
 
@@ -153,22 +151,6 @@ const Sidebar = ({
               SidebarOpened={SidebarOpened}
             />
           )}
-          {/* {HasRole(user.role, "DataCenter") && (
-            <DataCenterSidebar
-              sidebarExpanded={sidebarExpanded}
-              setSidebarExpanded={setSidebarExpanded}
-              // handleSetSidebarOpened={handleSetSidebarOpened}
-              SidebarOpened={SidebarOpened}
-            />
-          )}
-          {HasRole(user.role, "Registrar") && (
-            <RegistrarSidebar
-              sidebarExpanded={sidebarExpanded}
-              setSidebarExpanded={setSidebarExpanded}
-              // handleSetSidebarOpened={handleSetSidebarOpened}
-              SidebarOpened={SidebarOpened}
-            />
-          )} */}
 
           {(HasRole(user.role, "DataCenter") ||
             HasRole(user.role, "Registrar") ||
@@ -183,7 +165,7 @@ const Sidebar = ({
 
           {/* {user.role === "Student" && <StudentSidebar />} */}
 
-          <HiroHoverCard forSidebar />
+          {/* <HiroHoverCard forSidebar /> */}
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

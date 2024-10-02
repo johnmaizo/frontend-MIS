@@ -69,8 +69,8 @@ const AddEmployee = () => {
             label: "Staff",
           },
           {
-            value: "Teacher",
-            label: "Teacher",
+            value: "Instructor",
+            label: "Instructor",
           },
         ]
       : [
@@ -95,8 +95,8 @@ const AddEmployee = () => {
             label: "Staff",
           },
           {
-            value: "Teacher",
-            label: "Teacher",
+            value: "Instructor",
+            label: "Instructor",
           },
         ];
 

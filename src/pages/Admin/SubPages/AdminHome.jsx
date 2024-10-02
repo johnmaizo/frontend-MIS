@@ -18,6 +18,7 @@ import { HasRole } from "../../../components/reuseable/HasRole";
 import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 import MultipleSelector from "../../../components/ui/multiple-selector";
+import EnrollmentProgress from "./test/EnrollmentProgress";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -66,7 +67,9 @@ const AdminHome = () => {
         <ComboboxDemo />
       </div> */}
 
-      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"></div>
+      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <EnrollmentProgress enrollmentId={1} />
+      </div>
     </DefaultLayout>
   );
 };

@@ -284,7 +284,7 @@ const AddEmployee = () => {
               qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
           )
           .map((qual) => ({
-            abbreviation: qual.abbreviation.trim(),
+            abbreviation: qual.abbreviation.trim().toUpperCase(), // Convert abbreviation to uppercase
             meaning: qual.meaning.trim(),
           }))
           .filter((qual) => qual.abbreviation !== "" || qual.meaning !== "")
@@ -296,7 +296,7 @@ const AddEmployee = () => {
                   qual.abbreviation.trim() !== "" || qual.meaning.trim() !== "",
               )
               .map((qual) => ({
-                abbreviation: qual.abbreviation.trim(),
+                abbreviation: qual.abbreviation.trim().toUpperCase(), // Convert abbreviation to uppercase
                 meaning: qual.meaning.trim(),
               })),
       department_id:

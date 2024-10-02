@@ -106,10 +106,10 @@ const EnrollmentProgress = ({ enrollmentId }) => {
   }
 
   return (
-    <div className="text-gray-600 dark:text-gray-400 flex flex-col items-end space-x-4 text-base text-black dark:text-white lg:flex-row lg:items-center lg:justify-center">
+    <div className="text-gray-600 dark:text-gray-400 flex flex-wrap items-center justify-center gap-y-2 space-x-4 text-base text-black dark:text-white">
       {steps.map((step, index) => (
         <div key={step.id} className="flex items-center">
-          <div className="mt-5 flex flex-col items-center gap-y-[1.5em] space-x-4 lg:mt-0 lg:flex-row lg:gap-y-0">
+          <div className="mt-0 flex items-center space-x-4">
             <div className="flex flex-none items-center">
               <div
                 className={`flex h-12 w-12 items-center justify-center rounded-full text-xl text-black dark:text-white ${
@@ -171,7 +171,7 @@ const EnrollmentProgress = ({ enrollmentId }) => {
                       )}
                     </div>
                   </HoverCardTrigger>
-                  <HoverCardContent className="text-white !shadow-default">
+                  <HoverCardContent className="dark:text-white text-black !shadow-default">
                     <p>
                       Payment Status:{" "}
                       {step.paymentConfirmed ? (
@@ -199,7 +199,7 @@ const EnrollmentProgress = ({ enrollmentId }) => {
           </div>
           {index !== steps.length - 1 && (
             <div
-              className="mb-8 h-1 w-10 flex-none rotate-90 lg:mb-0 lg:rotate-0"
+              className="mb-0 h-1 w-10 flex-none"
               style={{ backgroundColor: step.accepted ? "#38a169" : "#e2e8f0" }}
             ></div>
           )}

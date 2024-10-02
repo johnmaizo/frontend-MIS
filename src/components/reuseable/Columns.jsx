@@ -2020,10 +2020,10 @@ const useColumns = () => {
         return <span className="font-medium">{cell.getValue()}</span>;
       },
     },
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
+    // {
+    //   accessorKey: "email",
+    //   header: "Email",
+    // },
     // {
     //   accessorKey: "contactNumber",
     //   header: "Contact No.",
@@ -2064,7 +2064,7 @@ const useColumns = () => {
         return (
           <FacetedFilterEnrollment
             column={column}
-            title="Enrollment Type"
+            title="Registry"
             options={getUniqueCodesEnrollment(applicants, "enrollmentType")}
           />
         );

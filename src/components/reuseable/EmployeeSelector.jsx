@@ -82,7 +82,7 @@ const EmployeeList = ({
 }) => {
   return (
     <Command className="md:!w-[62em]">
-      <CommandInput placeholder="Filter employee..." />
+      {/* <CommandInput placeholder="Filter employee..." /> */}
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>

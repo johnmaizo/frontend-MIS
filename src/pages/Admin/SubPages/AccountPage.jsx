@@ -91,7 +91,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });
@@ -148,7 +148,7 @@ const DataTable = ({ data, columns, loading, error }) => {
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
             totalName={"Account"}
-            rowsPerPage={5}
+            rowsPerPage={10}
             table={table}
             totalDepartments={table.getFilteredRowModel().rows.length}
           />

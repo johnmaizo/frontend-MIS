@@ -37,7 +37,7 @@ const AdminHome = () => {
         Welcome {user?.name}!
       </h3>
 
-      <div className="grid grid-cols-1 gap-4 xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
+      <div className="grid grid-cols-1 gap-4 2xsm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4 xl:grid-cols-5 2xl:gap-4">
         {/* <CardDataStudent /> */}
         <CardDataOfficialStudent />
         {HasRole(user.role, "SuperAdmin") && <CardDataCampus />}

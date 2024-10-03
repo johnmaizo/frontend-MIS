@@ -11,7 +11,6 @@ import {
 } from "../ui/command";
 import { Button } from "../ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
-import RoleBadge from "./RoleBadge";
 
 const EmployeeSelector = ({
   isDesktop,
@@ -31,8 +30,7 @@ const EmployeeSelector = ({
       className="h-[2.5em] w-full justify-start text-xl text-black dark:bg-form-input dark:text-white"
     >
       {selectedEmployeeID ? (
-        // `${selectedEmployeeName.split(" - ")[0]} - ${selectedEmployeeName.split(" - ")[1]}`
-        `${selectedEmployeeName}`
+        `${selectedEmployeeName.split(" - ")[1] === "DataCenter" ? `${selectedEmployeeName.split(" - ")[0]} - Data Center` : selectedEmployeeName}`
       ) : (
         <>Select Employee</>
       )}
@@ -111,15 +109,9 @@ const EmployeeList = ({
                     }}
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[62em] md:text-[1.2rem]"
                   >
-                    {employee.fullNameWithRole}
-                    {/* {employee.fullNameWithRole.split(" - ")[0]} -{" "} */}
-                    {/* {employee.role} */}
-                    {/* <div>
-                      <RoleBadge
-                        roleString={employee.role}
-                      />
-                    </div> */}
-                    {/* {employee.fullNameWithRole.split(" - ")[1]} */}
+                    {employee.fullNameWithRole.split(" - ")[1] === "DataCenter"
+                      ? `${employee.fullNameWithRole.split(" - ")[0]} - Data Center`
+                      : `${employee.fullNameWithRole}`}
                   </CommandItem>
                 </div>
               ))}

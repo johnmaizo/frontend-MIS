@@ -32,7 +32,9 @@ const EmployeeHomePage = () => {
         </h3>
 
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h3 className="text-xl font-bold">{user?.role} Home Page</h3>
+          <h3 className="text-xl font-bold">
+            {user?.role === "DataCenter" ? "Data Center" : user?.role} Home Page
+          </h3>
         </div>
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">

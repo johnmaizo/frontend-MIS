@@ -393,7 +393,7 @@ const MultipleSelector = React.forwardRef(
                   data-fixed={option.fixed}
                   data-disabled={disabled || undefined}
                 >
-                  {option.label}
+                  {option.label === "DataCenter" ? "Data Center" : option.label}
                   <button
                     className={cn(
                       "ring-offset-background focus:ring-ring ml-1 rounded-full outline-none focus:ring-2 focus:ring-offset-2",
@@ -526,7 +526,9 @@ const MultipleSelector = React.forwardRef(
                                   "text-muted-foreground cursor-default",
                               )}
                             >
-                              {option.label}
+                              {option.label === "DataCenter"
+                                ? "Data Center"
+                                : option.label}
                             </CommandItem>
                           );
                         })}

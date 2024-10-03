@@ -33,7 +33,10 @@ const RoleBadge = ({ rolesString }) => {
       role = "Super Admin";
     } else if (role === "DataCenter") {
       role = "Data Center";
-    }
+    } 
+    // else if (role === "MISStaff") {
+    //   role = "MIS Staff";
+    // }
 
     // Set badge styles for SuperAdmin and Admin
     let badgeStyle = "";
@@ -41,6 +44,8 @@ const RoleBadge = ({ rolesString }) => {
       badgeStyle = "!bg-red-600 hover:!bg-red-700 !text-white";
     } else if (role === "Admin") {
       badgeStyle = "!bg-blue-500 hover:!bg-blue-600 !text-white";
+    } else if (role === "MIS") {
+      badgeStyle = "!bg-emerald-700 hover:!bg-emerald-800 !text-white";
     } else if (role === "Data Center") {
       badgeStyle = "!bg-orange-500 hover:!bg-orange-600 !text-white";
     } else if (role === "Registrar") {

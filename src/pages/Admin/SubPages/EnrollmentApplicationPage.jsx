@@ -119,14 +119,14 @@ const DataTable = ({ data, columns, loading, error }) => {
                   }
                   className="md:max-w-[12em]"
                 />
-                <SearchInput
+                {/* <SearchInput
                   placeholder="Search by email..."
                   filterValue={table.getColumn("email")?.getFilterValue()}
                   setFilterValue={(value) =>
                     table.getColumn("email")?.setFilterValue(value)
                   }
                   className="md:w-[17em]"
-                />
+                /> */}
               </div>
               <div className="mb-5 md:mb-0">
                 <ResetFilter table={table} className={"h-[3.3em]"} />

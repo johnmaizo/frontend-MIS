@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import SidebarLinkGroup from "../../../components/Sidebar/SidebarLinkGroup";
@@ -8,9 +8,7 @@ import {
   CampusIcon,
   ProgramIcon,
   DepartmentIcon,
-  TeacherIcon,
   CourseIcon,
-  StudentIcon,
   AccountsIcon,
   DashboardIcon,
   BuildingStructureIcon,
@@ -36,19 +34,15 @@ const EmployeeSidebar = ({
       {/* <!-- Menu Group --> */}
       <div>
         <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-          {HasRole(user.role, "SuperAdmin")
-            ? "SUPER ADMIN MENU"
-            : HasRole(user.role, "Admin")
-              ? "ADMIN MENU"
-              : HasRole(user.role, "MIS")
-                ? "MIS MENU"
-                : HasRole(user.role, "Registrar")
-                  ? "REGISTRAR MENU"
-                  : HasRole(user.role, "DataCenter")
-                    ? "DATA CENTER MENU"
-                    : HasRole(user.role, "Accounting")
-                      ? "ACCOUNTING MENU"
-                      : HasRole(user.role, "Dean") && "DEAN MENU"}
+          {HasRole(user.role, "MIS")
+            ? "MIS MENU"
+            : HasRole(user.role, "Registrar")
+              ? "REGISTRAR MENU"
+              : HasRole(user.role, "DataCenter")
+                ? "DATA CENTER MENU"
+                : HasRole(user.role, "Accounting")
+                  ? "ACCOUNTING MENU"
+                  : HasRole(user.role, "Dean") && "DEAN MENU"}
         </h3>
 
         <ul className="mb-6 flex flex-col gap-1.5">
@@ -66,15 +60,12 @@ const EmployeeSidebar = ({
             </NavLink>
           </li>
 
-          {!(
-            HasRole(user.allRoles, "DataCenter") ||
-            HasRole(user.allRoles, "Registrar")
-          ) && (
-            <div>
+          {HasRole(user.allRoles, "MIS") && (
+            <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 CAMPUS SECTION
               </h3>
-              {HasRole(user.role, "SuperAdmin") && (
+              {HasRole(user.allRoles, "SuperAdmin") && (
                 <li>
                   <NavLink
                     to="/campus"
@@ -116,13 +107,11 @@ const EmployeeSidebar = ({
                   Structure Management
                 </NavLink>
               </li>
-            </div>
+            </>
           )}
 
-          {(HasRole(user.role, "SuperAdmin") ||
-            HasRole(user.role, "Admin") ||
-            HasRole(user.role, "DataCenter") ||
-            HasRole(user.role, "MIS")) && (
+          {(HasRole(user.allRoles, "DataCenter") ||
+            HasRole(user.allRoles, "MIS")) && (
             <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 EMPLOYEE SECTION
@@ -177,7 +166,7 @@ const EmployeeSidebar = ({
                         }`}
                       >
                         <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-6">
-                          {!HasRole(user.role, "DataCenter") && (
+                          {HasRole(user.allRoles, "MIS") && (
                             <li>
                               <NavLink
                                 to="/employees"
@@ -193,7 +182,7 @@ const EmployeeSidebar = ({
                             </li>
                           )}
 
-                          {!HasRole(user.role, "MIS") && (
+                          {HasRole(user.allRoles, "DataCenter") && (
                             <li>
                               <NavLink
                                 to="/employees/accounts"
@@ -222,11 +211,8 @@ const EmployeeSidebar = ({
             </>
           )}
 
-          {!(
-            HasRole(user.allRoles, "DataCenter") ||
-            HasRole(user.allRoles, "MIS")
-          ) && (
-            <div>
+          {HasRole(user.allRoles, "Registrar") && (
+            <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 ENROLLMENT SECTION
               </h3>
@@ -321,14 +307,11 @@ const EmployeeSidebar = ({
                   );
                 }}
               </SidebarLinkGroup>
-            </div>
+            </>
           )}
 
-          {!(
-            HasRole(user.allRoles, "Registrar") ||
-            HasRole(user.allRoles, "DataCenter")
-          ) && (
-            <div>
+          {HasRole(user.allRoles, "MIS") && (
+            <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 DEPARTMENT SECTION
               </h3>
@@ -448,7 +431,7 @@ const EmployeeSidebar = ({
                   );
                 }}
               </SidebarLinkGroup>
-            </div>
+            </>
           )}
         </ul>
       </div>

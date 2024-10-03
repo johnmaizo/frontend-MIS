@@ -14,6 +14,7 @@ import {
 // import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 import BenedictoLogo from "../../assets/small-logo-transparent.png";
+import BenedictoLogoLight from "../../assets/logo_light.png";
 import StudentSidebar from "../../pages/layout/sidebars/StudentSidebar";
 import { Button } from "../ui/button";
 import { CalendarDays } from "lucide-react";
@@ -101,6 +102,7 @@ const Sidebar = ({
         <NavLink to="/">
           {/* <img src={Logo} alt="Logo" /> */}
           <img src={BenedictoLogo} alt="Logo" width={127} />
+          {/* <img src={BenedictoLogoLight} alt="Logo" width={127} /> */}
         </NavLink>
 
         <button
@@ -142,8 +144,8 @@ const Sidebar = ({
         <nav className="mt-5 px-4 py-4 pt-0 lg:px-6">
           {/* ! Mogamit rag sidebarExpanded/setSidebarExpanded if mogamit og SidebarLinkGroup nga component */}
 
-          {(HasRole(user.role, "SuperAdmin") ||
-            HasRole(user.role, "Admin")) && (
+          {(HasRole(user.allRoles, "SuperAdmin") ||
+            HasRole(user.allRoles, "Admin")) && (
             <AdminSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}
@@ -153,9 +155,9 @@ const Sidebar = ({
           )}
 
           {(HasRole(user.allRoles, "MIS") ||
-            HasRole(user.role, "DataCenter") ||
-            HasRole(user.role, "Registrar") ||
-            HasRole(user.role, "Dean")) && (
+            HasRole(user.allRoles, "DataCenter") ||
+            HasRole(user.allRoles, "Registrar") ||
+            HasRole(user.allRoles, "Dean")) && (
             <EmployeeSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}

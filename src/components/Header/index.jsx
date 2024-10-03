@@ -70,7 +70,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
           </h1>
         </div>
 
-        <div className="flex items-center gap-3 2xsm:gap-7 lg:w-full lg:justify-end xl:w-full xl:justify-end">
+        <div className="flex items-center gap-3 2xsm:gap-3 lg:w-full lg:justify-end xl:w-full xl:justify-end">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Toggler --> */}
             <DarkModeSwitcher />

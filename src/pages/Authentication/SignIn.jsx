@@ -87,8 +87,8 @@ const SignIn = () => {
       ) : (
         !user && (
           <div className="w-full rounded-sm bg-white">
-            <div className="flex flex-wrap items-center xl:mx-auto xl:w-[80em]">
-              <div className="block w-full xl:w-1/2">
+            <div className="flex flex-wrap items-center lg:mx-auto lg:w-[60em] xl:w-[80em]">
+              <div className="block w-full lg:w-1/2">
                 <div className="px-26 py-0 text-center md:py-17.5">
                   <img
                     src={BenedictoLogo}
@@ -105,8 +105,8 @@ const SignIn = () => {
                 </div>
               </div>
 
-              <div className="w-full border-stroke xl:w-1/2 xl:border-l-2">
-                <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+              <div className="w-full border-stroke lg:w-1/2 lg:border-l-2">
+                <div className="w-full p-4 sm:p-12.5 lg:p-17.5">
                   <h2 className="text-2xl font-bold text-black sm:text-title-xl2">
                     {loginText}
                   </h2>

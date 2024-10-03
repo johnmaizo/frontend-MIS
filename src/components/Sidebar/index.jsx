@@ -152,7 +152,8 @@ const Sidebar = ({
             />
           )}
 
-          {(HasRole(user.role, "DataCenter") ||
+          {(HasRole(user.allRoles, "MISStaff") ||
+            HasRole(user.role, "DataCenter") ||
             HasRole(user.role, "Registrar") ||
             HasRole(user.role, "Dean")) && (
             <EmployeeSidebar

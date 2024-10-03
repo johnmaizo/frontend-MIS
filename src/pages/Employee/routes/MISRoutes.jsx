@@ -1,28 +1,31 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import PageTitle from "../../components/Essentials/PageTitle";
+import PageTitle from "../../../components/Essentials/PageTitle";
 
-import DepartmentPage from "../Admin/SubPages/DepartmentPage";
-import CampusPage from "../Admin/SubPages/CampusPage";
-import SemesterPage from "../Admin/SubPages/SemesterPage";
-import ProgramPage from "../Admin/SubPages/ProgramPage";
-import CoursePage from "../Admin/SubPages/CoursePage";
+
+import DepartmentPage from "../../Admin/SubPages/DepartmentPage";
+import CampusPage from "../../Admin/SubPages/CampusPage";
+import SemesterPage from "../../Admin/SubPages/SemesterPage";
+import ProgramPage from "../../Admin/SubPages/ProgramPage";
+import CoursePage from "../../Admin/SubPages/CoursePage";
 
 import { useContext } from "react";
-import { AuthContext } from "../../components/context/AuthContext";
-import AccountPage from "../Admin/SubPages/AccountPage";
-import ProgramCoursesPage from "../Admin/SubPages/ProgramCoursesPage";
-import ViewProgramCoursePage from "../Admin/SubPages/ViewProgramCoursePage";
-import { HasRole } from "../../components/reuseable/HasRole";
-import BuildingStructurePage from "../Admin/SubPages/BuildingStructurePage";
-import FloorPage from "../Admin/SubPages/FloorPage";
-import RoomPage from "../Admin/SubPages/RoomPage";
-import EnrollmentApplicationPage from "../Admin/SubPages/EnrollmentApplicationPage";
-import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
-import OfficialEnrolledPage from "../Admin/SubPages/OfficalEnrolledPage";
-import DeanHomePage from "./SubPages/DeanHomePage";
-import EmployeePage from "../Admin/SubPages/EmployeePage";
+import { AuthContext } from "../../../components/context/AuthContext";
+import AccountPage from "../../Admin/SubPages/AccountPage";
+import ProgramCoursesPage from "../../Admin/SubPages/ProgramCoursesPage";
+import ViewProgramCoursePage from "../../Admin/SubPages/ViewProgramCoursePage";
+import { HasRole } from "../../../components/reuseable/HasRole";
+import BuildingStructurePage from "../../Admin/SubPages/BuildingStructurePage";
+import FloorPage from "../../Admin/SubPages/FloorPage";
+import RoomPage from "../../Admin/SubPages/RoomPage";
+import EnrollmentApplicationPage from "../../Admin/SubPages/EnrollmentApplicationPage";
+import ViewEnrollmentApplicantPage from "../../Admin/SubPages/ViewEnrollmentApplicantPage";
+import OfficialEnrolledPage from "../../Admin/SubPages/OfficalEnrolledPage";
+import EmployeePage from "../../Admin/SubPages/EmployeePage";
 
-const DeanRoutes = () => {
+
+import EmployeeHomePage from "../SubPages/EmployeeHomePage";
+
+const MISRoutes = () => {
   const { user } = useContext(AuthContext);
 
   return (
@@ -32,10 +35,40 @@ const DeanRoutes = () => {
         element={
           <>
             <PageTitle title="Dashboard - MIS Benedicto College" />
-            <DeanHomePage />
+            <EmployeeHomePage />
           </>
         }
       />
+
+      {/* <Route
+        path="/students/add-student"
+        element={
+          <>
+            <PageTitle title="Add Student - MIS Benedicto College" />
+            <AddStudentPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/students/student-list"
+        element={
+          <>
+            <PageTitle title="Student List - MIS Benedicto College" />
+            <StudentTablePage />
+          </>
+        }
+      />
+
+      <Route
+        path="/students/student-list/:id"
+        element={
+          <>
+            <PageTitle title="Student Information - MIS Benedicto College" />
+            <ViewStudentPage />
+          </>
+        }
+      /> */}
 
       {HasRole(user.role, "SuperAdmin") && (
         <>
@@ -208,4 +241,4 @@ const DeanRoutes = () => {
   );
 };
 
-export default DeanRoutes;
+export default MISRoutes;

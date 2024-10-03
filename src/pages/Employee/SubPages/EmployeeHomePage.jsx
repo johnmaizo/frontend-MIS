@@ -1,11 +1,29 @@
 import DefaultLayout from "../../layout/DefaultLayout";
 
 import HamsterProfile from "../../../assets/images/profile-maizo.jpg";
-import { useContext } from "react";
+import VonsProfile from "../../../assets/images/profile-vons.jpg";
+import ThomasProfile from "../../../assets/images/thomas.jfif";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
 
-const DeanHomePage = () => {
+const EmployeeHomePage = () => {
+  const [profile, setProfile] = useState(HamsterProfile);
+
+  useEffect(() => {
+    const profileChange = setTimeout(() => {
+      setProfile(
+        profile === HamsterProfile
+          ? VonsProfile
+          : profile === VonsProfile
+            ? ThomasProfile
+            : HamsterProfile,
+      );
+      return clearInterval(profileChange);
+    }, 1500);
+  }, [profile]);
+
   const { user } = useContext(AuthContext);
+
   return (
     <DefaultLayout>
       <>
@@ -14,7 +32,7 @@ const DeanHomePage = () => {
         </h3>
 
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h3 className="text-xl font-bold">Dean Home Page</h3>
+          <h3 className="text-xl font-bold">{user?.role} Home Page</h3>
         </div>
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -32,15 +50,24 @@ const DeanHomePage = () => {
             src={HamsterProfile}
             alt=""
             draggable={false}
-            className="animator mx-auto w-[25%]"
+            className="animator mx-auto w-[35%]"
           />
           <p className="text-center text-xl font-semibold text-red-600">
             Reward: P1000.00
           </p>
+        </div>
+
+        <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+          <img
+            src={profile}
+            alt=""
+            draggable={false}
+            className="mx-auto max-w-full"
+          />
         </div>
       </>
     </DefaultLayout>
   );
 };
 
-export default DeanHomePage;
+export default EmployeeHomePage;

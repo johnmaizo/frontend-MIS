@@ -18,9 +18,11 @@ import IsLoggingOut from "./pages/Authentication/IsLoggingOut";
 import { SchoolProvider } from "./components/context/SchoolContext";
 import { HasRole } from "./components/reuseable/HasRole";
 import { EnrollmentProvider } from "./components/context/EnrollmentContext";
-import DataCenterRoutes from "./pages/DataCenter/DataCenterRoutes";
-import RegistrarRoutes from "./pages/Registrar/RegistrarRoutes";
-import DeanRoutes from "./pages/Employee/DeanRoutes";
+
+import DataCenterRoutes from "./pages/Employee/routes/DataCenterRoutes";
+import RegistrarRoutes from "./pages/Employee/routes/RegistrarRoutes";
+import DeanRoutes from "./pages/Employee/routes/DeanRoutes";
+import MISRoutes from "./pages/Employee/routes/MISRoutes";
 
 function App() {
   const { sessionExpired, user, isLoggingOut } = useContext(AuthContext);
@@ -50,6 +52,8 @@ function App() {
               {HasRole(user?.role, "Admin") ||
               HasRole(user?.role, "SuperAdmin") ? (
                 <AdminRoutes />
+              ) : HasRole(user?.allRoles, "MIS") ? (
+                <MISRoutes />
               ) : HasRole(user?.role, "DataCenter") ? (
                 <DataCenterRoutes />
               ) : HasRole(user?.role, "Registrar") ? (

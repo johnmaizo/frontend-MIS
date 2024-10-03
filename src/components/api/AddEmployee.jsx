@@ -49,12 +49,16 @@ const AddEmployee = () => {
             label: "Admin",
           },
           {
-            value: "DataCenter",
-            label: "DataCenter",
+            value: "MIS",
+            label: "MIS",
           },
           {
             value: "Registrar",
             label: "Registrar",
+          },
+          {
+            value: "DataCenter",
+            label: "DataCenter",
           },
           {
             value: "Accounting",
@@ -75,12 +79,16 @@ const AddEmployee = () => {
         ]
       : [
           {
-            value: "DataCenter",
-            label: "DataCenter",
+            value: "MIS",
+            label: "MIS",
           },
           {
             value: "Registrar",
             label: "Registrar",
+          },
+          {
+            value: "DataCenter",
+            label: "DataCenter",
           },
           {
             value: "Accounting",

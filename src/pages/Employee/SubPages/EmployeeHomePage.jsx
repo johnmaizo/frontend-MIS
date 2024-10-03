@@ -18,8 +18,8 @@ const EmployeeHomePage = () => {
             ? ThomasProfile
             : HamsterProfile,
       );
-      return clearInterval(profileChange);
     }, 1500);
+    return () => clearInterval(profileChange);
   }, [profile]);
 
   const { user } = useContext(AuthContext);

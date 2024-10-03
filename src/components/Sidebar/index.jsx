@@ -152,7 +152,7 @@ const Sidebar = ({
             />
           )}
 
-          {(HasRole(user.allRoles, "MISStaff") ||
+          {(HasRole(user.allRoles, "MIS") ||
             HasRole(user.role, "DataCenter") ||
             HasRole(user.role, "Registrar") ||
             HasRole(user.role, "Dean")) && (

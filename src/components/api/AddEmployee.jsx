@@ -141,12 +141,17 @@ const AddEmployee = () => {
     ["Dean", "Teacher", "Instructor"].includes(role),
   );
 
-  // List of disallowed roles
+  // List of disallowed roles (converted to lowercase for case-insensitive comparison)
   const disallowedRoles = HasRole(user.role, "SuperAdmin")
     ? []
     : HasRole(user.role, "Admin")
       ? ["SuperAdmin", "Oten"]
       : ["SuperAdmin", "Admin", "Oten"];
+
+  // Convert disallowedRoles to lowercase for case-insensitive matching
+  const disallowedRolesLowerCase = disallowedRoles.map((role) =>
+    role.toLowerCase(),
+  );
 
   // Updated handleRoleChange function
   const handleRoleChange = (selectedOptions) => {
@@ -160,9 +165,10 @@ const AddEmployee = () => {
     const updatedSelectedRoles = selectedOptions
       .map((option) => capitalizeFirstLetter(option.value))
       .filter((value, index, self) => {
-        // Ensure uniqueness and check against disallowed roles
+        // Ensure uniqueness and check against disallowed roles (convert value to lowercase for comparison)
         return (
-          self.indexOf(value) === index && !disallowedRoles.includes(value)
+          self.indexOf(value) === index &&
+          !disallowedRolesLowerCase.includes(value.toLowerCase())
         );
       });
 
@@ -173,10 +179,10 @@ const AddEmployee = () => {
         label: capitalizeFirstLetter(option.label),
       }))
       .filter((obj, index, self) => {
-        // Ensure uniqueness based on the value and check against disallowed roles
+        // Ensure uniqueness based on the value and check against disallowed roles (convert value to lowercase for comparison)
         return (
           self.map((o) => o.value).indexOf(obj.value) === index &&
-          !disallowedRoles.includes(obj.value)
+          !disallowedRolesLowerCase.includes(obj.value.toLowerCase())
         );
       });
 

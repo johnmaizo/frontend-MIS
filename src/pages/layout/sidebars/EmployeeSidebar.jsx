@@ -121,7 +121,8 @@ const EmployeeSidebar = ({
 
           {(HasRole(user.role, "SuperAdmin") ||
             HasRole(user.role, "Admin") ||
-            HasRole(user.role, "DataCenter")) && (
+            HasRole(user.role, "DataCenter") ||
+            HasRole(user.role, "MIS")) && (
             <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 EMPLOYEE SECTION
@@ -192,21 +193,25 @@ const EmployeeSidebar = ({
                             </li>
                           )}
 
-                          <li>
-                            <NavLink
-                              to="/employees/accounts"
-                              className={({ isActive }) =>
-                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                                  (pathname === "/employees/accounts" ||
-                                    pathname.includes("/employees/accounts")) &&
-                                  "!underline "
-                                }` +
-                                (isActive && "text-primary dark:!text-white")
-                              }
-                            >
-                              Account List
-                            </NavLink>
-                          </li>
+                          {!HasRole(user.role, "MIS") && (
+                            <li>
+                              <NavLink
+                                to="/employees/accounts"
+                                className={({ isActive }) =>
+                                  `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                    (pathname === "/employees/accounts" ||
+                                      pathname.includes(
+                                        "/employees/accounts",
+                                      )) &&
+                                    "!underline "
+                                  }` +
+                                  (isActive && "text-primary dark:!text-white")
+                                }
+                              >
+                                Account List
+                              </NavLink>
+                            </li>
+                          )}
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
@@ -217,7 +222,10 @@ const EmployeeSidebar = ({
             </>
           )}
 
-          {!HasRole(user.allRoles, "DataCenter") && (
+          {!(
+            HasRole(user.allRoles, "DataCenter") ||
+            HasRole(user.allRoles, "MIS")
+          ) && (
             <div>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 ENROLLMENT SECTION
@@ -316,7 +324,10 @@ const EmployeeSidebar = ({
             </div>
           )}
 
-          {!(HasRole(user.allRoles, "Registrar") || HasRole(user.allRoles, "DataCenter")) && (
+          {!(
+            HasRole(user.allRoles, "Registrar") ||
+            HasRole(user.allRoles, "DataCenter")
+          ) && (
             <div>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
                 DEPARTMENT SECTION

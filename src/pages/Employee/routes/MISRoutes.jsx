@@ -40,36 +40,6 @@ const MISRoutes = () => {
         }
       />
 
-      {/* <Route
-        path="/students/add-student"
-        element={
-          <>
-            <PageTitle title="Add Student - MIS Benedicto College" />
-            <AddStudentPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/students/student-list"
-        element={
-          <>
-            <PageTitle title="Student List - MIS Benedicto College" />
-            <StudentTablePage />
-          </>
-        }
-      />
-
-      <Route
-        path="/students/student-list/:id"
-        element={
-          <>
-            <PageTitle title="Student Information - MIS Benedicto College" />
-            <ViewStudentPage />
-          </>
-        }
-      /> */}
-
       {HasRole(user.role, "SuperAdmin") && (
         <>
           <Route
@@ -84,7 +54,7 @@ const MISRoutes = () => {
         </>
       )}
 
-      {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
+      {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin") || HasRole(user.role, "MIS")) && (
         <>
           <Route
             path="/employees"
@@ -92,16 +62,6 @@ const MISRoutes = () => {
               <>
                 <PageTitle title="Employees - MIS Benedicto College" />
                 <EmployeePage />
-              </>
-            }
-          />
-
-          <Route
-            path="/employees/accounts"
-            element={
-              <>
-                <PageTitle title="Accounts - MIS Benedicto College" />
-                <AccountPage />
               </>
             }
           />
@@ -202,36 +162,6 @@ const MISRoutes = () => {
           <>
             <PageTitle title="Rooms - MIS Benedicto College" />
             <RoomPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/enrollments/enrollment-application"
-        element={
-          <>
-            <PageTitle title="Enrollment Application - MIS Benedicto College" />
-            <EnrollmentApplicationPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/enrollments/enrollment-application/applicant/:applicantId"
-        element={
-          <>
-            <PageTitle title="View Enrollment Application - MIS Benedicto College" />
-            <ViewEnrollmentApplicantPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/enrollments/official-enrolled"
-        element={
-          <>
-            <PageTitle title="Official Enrolled - MIS Benedicto College" />
-            <OfficialEnrolledPage />
           </>
         }
       />

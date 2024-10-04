@@ -37,6 +37,7 @@ import { Input } from "../ui/input";
 import DepartmentSelector from "../reuseable/DepartmentSelector";
 
 import { useMediaQuery } from "../../hooks/use-media-query";
+import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
 
 const AddEmployee = () => {
   const { user } = useContext(AuthContext);
@@ -372,37 +373,47 @@ const AddEmployee = () => {
     }
   }, [success, error, reset, user.role]);
 
+  const [confirmClose, setConfirmClose] = useState(false); // State for confirmation dialog
+
+  // Handle the close button of AddAccount dialog
+  const handleDialogClose = (isOpen) => {
+    if (!isOpen) {
+      // If user is trying to close the dialog, show the confirmation dialog
+      setConfirmClose(true);
+    } else {
+      // If dialog is opening, just open it normally
+      setOpen(true);
+    }
+  };
+
+  // Confirm closing both dialogs
+  const confirmDialogClose = () => {
+    setConfirmClose(false);
+    setOpen(false);
+
+    reset(); // Reset form fields when the dialog is closed
+    setSelectedRoles([]);
+    setSelectedRoleObjects([]);
+    setSelectedGender("");
+    setSelectedCampus(user.campus_id ? user.campus_id.toString() : ""); // Reset selected campus based on user role
+    setQualifications([{ abbreviation: "", meaning: "" }]);
+    setSelectedDepartmentID("");
+    setSelectedDepartmenName("");
+    clearErrors("campus_id");
+    clearErrors("role");
+    clearErrors("gender");
+    clearErrors("qualifications");
+    clearErrors("department_id");
+  };
+
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
-        <Dialog
-          open={open}
-          onOpenChange={(isOpen) => {
-            setOpen(isOpen);
-            if (!isOpen) {
-              reset(); // Reset form fields when the dialog is closed
-              setSelectedRoles([]);
-              setSelectedRoleObjects([]);
-              setSelectedGender("");
-              setSelectedCampus(
-                user.campus_id ? user.campus_id.toString() : "",
-              ); // Reset selected campus based on user role
-              setQualifications([{ abbreviation: "", meaning: "" }]);
-              setSelectedDepartmentID("");
-              setSelectedDepartmenName("");
-              clearErrors("campus_id");
-              clearErrors("role");
-              clearErrors("gender");
-              clearErrors("qualifications");
-              clearErrors("department_id");
-            }
-
-            if (!localLoading) {
-              setOpen(isOpen); // Prevent closing the dialog if loading
-            }
-          }}
-        >
-          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
+        <Dialog open={open} onOpenChange={handleDialogClose}>
+          <DialogTrigger
+            className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal"
+            onClick={() => setOpen(true)}
+          >
             <AddDepartmentIcon title={"Add Employee"} />
             <span className="max-w-[8em]">Add Employee </span>
           </DialogTrigger>
@@ -859,6 +870,12 @@ const AddEmployee = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        <ConfirmCloseDialog
+          isOpen={confirmClose}
+          onConfirmClose={confirmDialogClose} // Confirm and close both dialogs
+          onCancel={() => setConfirmClose(false)} // Cancel closing
+        />
       </div>
     </div>
   );

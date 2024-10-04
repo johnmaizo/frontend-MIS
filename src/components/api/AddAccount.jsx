@@ -34,6 +34,7 @@ import SmallLoader from "../styles/SmallLoader";
 import FormInput from "../reuseable/FormInput";
 import EmployeeSelector from "../reuseable/EmployeeSelector";
 import { useMediaQuery } from "../../hooks/use-media-query";
+import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
 
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
@@ -154,30 +155,39 @@ const AddAccount = () => {
     }
   }, [success, error, reset]);
 
+  const [confirmClose, setConfirmClose] = useState(false); // State for confirmation dialog
+
+  // Handle the close button of AddAccount dialog
+  const handleDialogClose = (isOpen) => {
+    if (!isOpen) {
+      // If user is trying to close the dialog, show the confirmation dialog
+      setConfirmClose(true);
+    } else {
+      // If dialog is opening, just open it normally
+      setOpen(true);
+    }
+  };
+
+  // Confirm closing both dialogs
+  const confirmDialogClose = () => {
+    setConfirmClose(false);
+    setOpen(false); // Close the AddAccount dialog
+
+    reset(); // Reset form fields
+    setSelectedCampus(user.campus_id ? user.campus_id.toString() : "");
+    setSelectedEmployeeID("");
+    setSelectedEmployeeName("");
+    clearErrors("campus_id");
+  };
+
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
-        <Dialog
-          open={open}
-          onOpenChange={(isOpen) => {
-            setOpen(isOpen);
-            if (!isOpen) {
-              reset(); // Reset form fields when the dialog is closed
-              setSelectedCampus(
-                user.campus_id ? user.campus_id.toString() : "",
-              ); // Reset selected campus based on user role
-
-              setSelectedEmployeeID("");
-              setSelectedEmployeeName("");
-              clearErrors("campus_id");
-            }
-
-            if (!localLoading) {
-              setOpen(isOpen); // Prevent closing the dialog if loading
-            }
-          }}
-        >
-          <DialogTrigger className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal">
+        <Dialog open={open} onOpenChange={handleDialogClose}>
+          <DialogTrigger
+            className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal"
+            onClick={() => setOpen(true)} // Ensure the AddAccount dialog opens on click
+          >
             <AddDepartmentIcon title={"Add Account"} />
             <span className="max-w-[8em]">Add Account </span>
           </DialogTrigger>
@@ -407,6 +417,12 @@ const AddAccount = () => {
             </DialogHeader>
           </DialogContent>
         </Dialog>
+
+        <ConfirmCloseDialog
+          isOpen={confirmClose}
+          onConfirmClose={confirmDialogClose} // Confirm and close both dialogs
+          onCancel={() => setConfirmClose(false)} // Cancel closing
+        />
       </div>
     </div>
   );

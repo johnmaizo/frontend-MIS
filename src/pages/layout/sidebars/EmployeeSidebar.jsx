@@ -17,6 +17,7 @@ import {
 
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
+import { ArrowRightIcon } from "lucide-react";
 
 const EmployeeSidebar = ({
   sidebarExpanded,
@@ -165,18 +166,19 @@ const EmployeeSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-6">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
                           {HasRole(user.allRoles, "MIS") && (
                             <li>
                               <NavLink
                                 to="/employees"
                                 className={({ isActive }) =>
-                                  `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                  `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                     pathname === "/employees" && "!underline "
                                   }` +
                                   (isActive && "text-primary dark:!text-white")
                                 }
                               >
+                                <ArrowRightIcon className="h-4 w-4 flex-none" />
                                 Employee List
                               </NavLink>
                             </li>
@@ -187,7 +189,7 @@ const EmployeeSidebar = ({
                               <NavLink
                                 to="/employees/accounts"
                                 className={({ isActive }) =>
-                                  `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                  `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                     (pathname === "/employees/accounts" ||
                                       pathname.includes(
                                         "/employees/accounts",
@@ -197,6 +199,7 @@ const EmployeeSidebar = ({
                                   (isActive && "text-primary dark:!text-white")
                                 }
                               >
+                                <ArrowRightIcon className="h-4 w-4 flex-none" />
                                 Account List
                               </NavLink>
                             </li>
@@ -266,12 +269,12 @@ const EmployeeSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-6">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
                           <li>
                             <NavLink
                               to="/enrollments/enrollment-application"
                               className={({ isActive }) =>
-                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                   (pathname ===
                                     "/enrollments/enrollment-application" ||
                                     pathname.includes(
@@ -282,6 +285,7 @@ const EmployeeSidebar = ({
                                 (isActive && "text-primary dark:!text-white")
                               }
                             >
+                              <ArrowRightIcon className="h-4 w-4 flex-none" />
                               Enrollment Applicants
                             </NavLink>
                           </li>
@@ -289,7 +293,7 @@ const EmployeeSidebar = ({
                             <NavLink
                               to="/enrollments/official-enrolled"
                               className={({ isActive }) =>
-                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                   (pathname === "/courses/official-enrolled" ||
                                     pathname.includes("official-enrolled")) &&
                                   "!underline "
@@ -297,6 +301,7 @@ const EmployeeSidebar = ({
                                 (isActive && "text-primary dark:!text-white")
                               }
                             >
+                              <ArrowRightIcon className="h-4 w-4 flex-none" />
                               Offical Enrolled
                             </NavLink>
                           </li>
@@ -393,12 +398,12 @@ const EmployeeSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-6">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-3">
                           <li>
                             <NavLink
                               to="/subjects/subject-list"
                               className={({ isActive }) =>
-                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                   (pathname === "/subjects/subject-list" ||
                                     pathname.includes("subject-list")) &&
                                   "!underline "
@@ -406,6 +411,7 @@ const EmployeeSidebar = ({
                                 (isActive && "text-primary dark:!text-white")
                               }
                             >
+                              <ArrowRightIcon className="h-4 w-4 flex-none" />
                               Subject List
                             </NavLink>
                           </li>
@@ -413,7 +419,7 @@ const EmployeeSidebar = ({
                             <NavLink
                               to="/subjects/program-subjects"
                               className={({ isActive }) =>
-                                `group relative flex items-center gap-2.5 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
                                   (pathname === "/subjects/program-subjects" ||
                                     pathname.includes("program-subjects")) &&
                                   "!underline "
@@ -421,6 +427,7 @@ const EmployeeSidebar = ({
                                 (isActive && "text-primary dark:!text-white")
                               }
                             >
+                              <ArrowRightIcon className="h-4 w-4 flex-none" />
                               Program Subjects
                             </NavLink>
                           </li>

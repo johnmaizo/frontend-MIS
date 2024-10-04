@@ -166,7 +166,7 @@ const EmployeeSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-3">
                           {HasRole(user.allRoles, "MIS") && (
                             <li>
                               <NavLink
@@ -217,7 +217,7 @@ const EmployeeSidebar = ({
           {HasRole(user.allRoles, "Registrar") && (
             <>
               <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
-                ENROLLMENT SECTION
+                REGISTRAR SECTION
               </h3>
 
               <SidebarLinkGroup
@@ -269,7 +269,7 @@ const EmployeeSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-3.5 pl-3">
                           <li>
                             <NavLink
                               to="/enrollments/enrollment-application"

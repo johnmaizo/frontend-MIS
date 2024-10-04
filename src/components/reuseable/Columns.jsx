@@ -258,21 +258,25 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
-    {
-      accessorKey: "campusName",
-      header: ({ column }) => {
-        return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="Campus"
-            options={getUniqueCodes(semesters, "campusName")}
-          />
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
-    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <FacetedFilterEnrollment
+                  column={column}
+                  title="Campus"
+                  options={getUniqueCodes(semesters, "campusName")}
+                />
+              );
+            },
+            filterFn: (row, id, value) => {
+              return value.includes(row.getValue(id));
+            },
+          },
+        ]
+      : []),
     {
       accessorKey: "isActive",
       header: ({ column }) => {
@@ -294,7 +298,7 @@ const useColumns = () => {
               cell.getValue() ? "bg-success" : "bg-danger"
             }`}
           >
-            {cell.getValue() ? "Active" : "Inactive"}
+            {cell.getValue() ? "Open" : "Closed"}
           </span>
         );
       },

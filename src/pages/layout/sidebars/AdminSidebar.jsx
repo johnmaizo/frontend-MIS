@@ -15,6 +15,7 @@ import {
   DashboardIcon,
   BuildingStructureIcon,
   EnrollmentIcon,
+  ClassIcon,
 } from "../../../components/Icons";
 
 import { AuthContext } from "../../../components/context/AuthContext";
@@ -156,7 +157,7 @@ const AdminSidebar = ({
                           !open && "hidden"
                         }`}
                       >
-                        <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
+                        <ul className="mb-5.5 mt-4 flex flex-col gap-2.5 pl-3">
                           <li>
                             <NavLink
                               to="/employees"
@@ -194,11 +195,25 @@ const AdminSidebar = ({
                   );
                 }}
               </SidebarLinkGroup>
+
+              <li>
+                <NavLink
+                  to="/class-list"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                    (pathname === "/class-list" ||
+                      pathname.includes("class-list")) &&
+                    "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+                  }`}
+                >
+                  <ClassIcon />
+                  Class List
+                </NavLink>
+              </li>
             </>
           )}
 
           <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
-            ENROLLMENT SECTION
+            REGISTRAR SECTION
           </h3>
 
           <SidebarLinkGroup
@@ -249,7 +264,7 @@ const AdminSidebar = ({
                       !open && "hidden"
                     }`}
                   >
-                    <ul className="mb-5.5 mt-4 flex flex-col gap-5 pl-3">
+                    <ul className="mb-5.5 mt-4 flex flex-col gap-3.5 pl-3">
                       <li>
                         <NavLink
                           to="/enrollments/enrollment-application"

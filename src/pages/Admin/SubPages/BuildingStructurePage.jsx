@@ -111,7 +111,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
       {loadingBuildings ? (
         <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
           <div className="grid h-[20em] w-full place-content-center">
-            <p className="inline-flex items-center gap-4 text-[2rem]">
+            <p className="inline-flex items-center gap-4 text-[1.6rem] md:text-[2rem]">
               <SmallLoader width={8} height={8} />
               Loading Buildings...
             </p>
@@ -130,7 +130,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
           <>
             <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="mb-5 mt-2 justify-between gap-5 md:flex">
-                <div className="md:flex gap-5">
+                <div className="gap-5 md:flex">
                   <Input
                     placeholder="Search by Building..."
                     value={

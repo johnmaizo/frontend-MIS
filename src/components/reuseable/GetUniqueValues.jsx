@@ -145,6 +145,16 @@ export const getDataWithDisable = (data1, data2, compareField) => {
   });
 };
 
+/**
+ * Compares data1 and data2 and adds a "disable" field to data1 based on the comparison.
+ * The comparison is done by finding the matching item in data2 based on campus_id
+ * and departmentCodeForClass, and if a match is found, the "disable" field is set to false.
+ * If no match is found, the "disable" field is set to true.
+ * @param {object[]} data1 - Array of objects containing campus_id and departmentCodeForClass
+ * @param {object[]} data2 - Array of objects containing campus_id and departmentCodeForClass
+ * @param {string} departmentCodeForClass - The department code for the class
+ * @returns {object[]} An array of objects with the additional "disable" field
+ */
 export const compareDataAndSetDisable = (
   data1,
   data2,
@@ -158,7 +168,6 @@ export const compareDataAndSetDisable = (
         item2.departmentCodeForClass === departmentCodeForClass,
     );
 
-    // Disable if departmentCodeForClass is "CEA" and there is a match in data2
     const disable =
       item1.departmentCodeForClass === departmentCodeForClass &&
       matchingItemInData2

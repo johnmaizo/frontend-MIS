@@ -275,6 +275,8 @@ const AddCourse = () => {
                         <input
                           id="unit"
                           type="number"
+                          min="1" // Minimum value
+                          max="6" // Maximum value
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                           {...register("unit", {
                             required: {
@@ -286,8 +288,8 @@ const AddCourse = () => {
                                 value.trim() !== "" ||
                                 "Unit cannot be empty or just spaces",
                               validUnit: (value) =>
-                                [1, 2, 3, 6].includes(Number(value)) ||
-                                "Unit must be 1, 2, 3, or 6",
+                                (Number(value) >= 1 && Number(value) <= 6) ||
+                                "Unit must be between 1 and 6",
                             },
                           })}
                           disabled={localLoading || success}

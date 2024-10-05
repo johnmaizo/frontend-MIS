@@ -380,7 +380,6 @@ export const SchoolProvider = ({ children }) => {
     }
     setLoading(false);
   };
-
   // ! Course END
 
   // ! Program Courses START
@@ -745,15 +744,15 @@ export const SchoolProvider = ({ children }) => {
     setEmployeeLoading(false);
   };
 
-  const fetchEmployeesActive = async () => {
+  const fetchEmployeesActive = async (role = null) => {
     setError("");
     setEmployeeLoading(true);
     try {
-      const response = await axios.get("/employee/active", {
-        params: {
-          campus_id: user.campus_id,
-        },
-      });
+      const params = role
+        ? { campus_id: user.campus_id, role: role }
+        : { campus_id: user.campus_id };
+
+      const response = await axios.get("/employee/active", { params });
       setEmployeesActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -808,6 +807,74 @@ export const SchoolProvider = ({ children }) => {
   };
 
   // ! Employee END
+
+  // ! Class START
+  const [loadingClass, setLoadingClass] = useState(false);
+  const [classes, setClass] = useState([]);
+  const [classDeleted, setClassDeleted] = useState([]);
+  const [classActive, setClassActive] = useState([]);
+
+  const fetchClass = async () => {
+    setError("");
+    setLoadingClass(true);
+    try {
+      const response = await axios.get("/class", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setClass(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Class: (${err})`);
+      }
+    }
+    setLoadingClass(false);
+  };
+
+  const fetchClassDeleted = async () => {
+    setError("");
+    setLoadingClass(true);
+    try {
+      const response = await axios.get("/class/deleted", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      setClassDeleted(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Class deleted: (${err})`);
+      }
+    }
+    setLoadingClass(false);
+  };
+
+  const fetchClassActive = async (program_id) => {
+    setError("");
+    setLoadingClass(true);
+    try {
+      const response = await axios.get("/class/active", {
+        params: {
+          campus_id: user.campus_id,
+          program_id: program_id,
+        },
+      });
+      setClassActive(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Class active: (${err})`);
+      }
+    }
+    setLoadingClass(false);
+  };
+  // ! Class END
 
   return (
     <SchoolContext.Provider
@@ -907,6 +974,15 @@ export const SchoolProvider = ({ children }) => {
         employeesActive,
         fetchEmployeesActive,
         fetchEmployeesActiveForRoles,
+
+        // ! Classes
+        classes,
+        loadingClass,
+        fetchClass,
+        classDeleted,
+        fetchClassDeleted,
+        classActive,
+        fetchClassActive,
       }}
     >
       {children}

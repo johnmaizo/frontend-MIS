@@ -91,7 +91,21 @@ const DepartmentList = ({
   isHideGeneralSubject,
 }) => {
   return (
-    <Command className="md:!w-[34.5em]">
+    <Command
+      className="md:!w-[34.5em]"
+      filter={(value, search) => {
+        const deparment = data.find(
+          (item) => item.department_id.toString() === value,
+        );
+        const departmentName = deparment?.fullDepartmentNameWithCampus;
+
+        // Adjusted to filter by deparment name and role
+        if (departmentName?.toLowerCase().includes(search?.toLowerCase())) {
+          return 1;
+        }
+        return 0;
+      }}
+    >
       <CommandInput placeholder="Filter department..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>

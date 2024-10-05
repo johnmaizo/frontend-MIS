@@ -20,9 +20,9 @@ import { useSchool } from "../../../components/context/SchoolContext";
 
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
-import SmallLoader from "../../../components/styles/SmallLoader";
 import { useColumns } from "../../../components/reuseable/Columns";
 import AddBuilding from "../../../components/api/AddBuilding";
+import AddClass from "../../../components/api/AddClass";
 
 const ClassPage = () => {
   const { user } = useContext(AuthContext);
@@ -32,8 +32,8 @@ const ClassPage = () => {
     {
       label:
         user && user.campusName
-          ? `Select Building (${user.campusName})`
-          : "Select Building",
+          ? `Class List (${user.campusName})`
+          : "Class List",
     },
   ];
 
@@ -42,43 +42,43 @@ const ClassPage = () => {
       <BreadcrumbResponsive
         pageName={
           user && user.campusName
-            ? `Select Building (${user.campusName})`
-            : "Select Building"
+            ? `Class List (${user.campusName})`
+            : "Class List"
         }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
 
-      <BuildingsTable />
+      <ClassTable />
     </DefaultLayout>
   );
 };
 
-const BuildingsTable = () => {
+const ClassTable = () => {
   const { user } = useContext(AuthContext);
 
-  const { buildings, fetchBuildings, loadingBuildings, error } = useSchool();
+  const { classes, fetchClass, loadingClass, error } = useSchool();
 
   useEffect(() => {
-    fetchBuildings();
+    fetchClass();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { columnBuildings } = useColumns();
+  const { columnClass } = useColumns();
 
   return (
     <>
       <DataTable
-        columns={columnBuildings}
-        data={buildings}
-        loadingBuildings={loadingBuildings}
+        columns={columnClass}
+        data={classes}
+        loadingClass={loadingClass}
         error={error}
       />
     </>
   );
 };
 
-const DataTable = ({ data, columns, loadingBuildings, error }) => {
+const DataTable = ({ data, columns, loadingClass, error }) => {
   const { user } = useContext(AuthContext);
 
   const [sorting, setSorting] = useState([]);
@@ -100,7 +100,7 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 20,
       },
     },
   });
@@ -112,16 +112,16 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
         <div className="mb-5 mt-2 justify-between gap-5 md:flex">
           <div className="gap-5 md:flex">
             <Input
-              placeholder="Search by Building..."
-              value={table.getColumn("buildingName")?.getFilterValue() ?? ""}
+              placeholder="Search by Class Name..."
+              value={table.getColumn("className")?.getFilterValue() ?? ""}
               onChange={(event) =>
                 table
-                  .getColumn("buildingName")
+                  .getColumn("className")
                   ?.setFilterValue(event.target.value)
               }
-              className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[12em]"
+              className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[14em]"
             />
-            <Input
+            {/* <Input
               placeholder="Search by Campus..."
               value={table.getColumn("campusName")?.getFilterValue() ?? ""}
               onChange={(event) =>
@@ -130,25 +130,25 @@ const DataTable = ({ data, columns, loadingBuildings, error }) => {
                   ?.setFilterValue(event.target.value)
               }
               className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
-            />
+            /> */}
           </div>
           <div>
-            <AddBuilding />
+            <AddClass />
           </div>
         </div>
         <div className="max-w-full overflow-x-auto">
           <ReuseTable
             table={table}
             columns={columns}
-            loading={loadingBuildings}
+            loading={loadingClass}
             error={error}
           />
         </div>
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            rowsPerPage={5}
-            totalName={"Building"}
+            rowsPerPage={20}
+            totalName={"Class"}
             table={table}
             totalDepartments={table.getFilteredRowModel().rows.length}
           />

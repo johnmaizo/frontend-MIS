@@ -52,6 +52,7 @@ const useColumns = () => {
     program,
     programActive,
     course,
+    classes,
     programCourse,
     fetchCampus,
     fetchCampusDeleted,
@@ -234,7 +235,18 @@ const useColumns = () => {
 
     {
       accessorKey: "schoolYear",
-      header: "School Year",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="School Year"
+            options={getUniqueCodes(semesters, "schoolYear")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
       cell: ({ cell }) => {
         return <span className="font-semibold">{cell.getValue()}</span>;
       },
@@ -2516,6 +2528,20 @@ const useColumns = () => {
       accessorKey: "gender",
       header: "Gender",
     },
+    {
+      accessorKey: "department",
+      header: "Department",
+
+      cell: ({ cell }) => {
+        return cell.getValue() ? (
+          <span className="block font-semibold">
+            {cell.getValue().departmentCode}
+          </span>
+        ) : (
+          <span className="sr-only block">None</span>
+        );
+      },
+    },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
@@ -2592,6 +2618,221 @@ const useColumns = () => {
   ];
   // ! Employees End
 
+  // ! Column Class START
+  const columnClass = [
+    {
+      accessorKey: "class_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "className",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Class Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg ">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "subjectCode",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Subject Code
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "subjectDescription",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Subject Description
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "instructureFullName",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Instructor"
+            options={getUniqueCodes(classes, "instructureFullName")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "schoolYear",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="S.Y."
+            options={getUniqueCodes(classes, "schoolYear")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "semesterName",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Semester"
+            options={getUniqueCodes(classes, "semesterName")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <FacetedFilterEnrollment
+                  column={column}
+                  title="Campus"
+                  options={getUniqueCodes(course, "campusName")}
+                />
+              );
+            },
+            filterFn: (row, id, value) => {
+              return value.includes(row.getValue(id));
+            },
+          },
+        ]
+      : []),
+    // {
+    //   accessorKey: "isActive",
+    //   header: "Status",
+    //   cell: ({ cell }) => {
+    //     return (
+    //       <span
+    //         className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+    //           cell.getValue() ? "bg-success" : "bg-danger"
+    //         }`}
+    //       >
+    //         {cell.getValue() ? "Active" : "Inactive"}
+    //       </span>
+    //     );
+    //   },
+    // },
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.class_id} ${row.isActive}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <EditCourse courseId={row.getValue("class_id")} />
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Course"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this Course?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonAction
+                      entityType={"course"}
+                      entityId={row.getValue("class_id")}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchCourse();
+                        fetchCourseDeleted();
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column Class END
+
   return {
     columnCampus,
     columnSemester,
@@ -2609,6 +2850,8 @@ const useColumns = () => {
     columnOfficiallyEnrolled,
 
     columnsEmployee,
+
+    columnClass,
   };
 };
 

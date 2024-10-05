@@ -35,11 +35,13 @@ import FormInput from "../reuseable/FormInput";
 import EmployeeSelector from "../reuseable/EmployeeSelector";
 import { useMediaQuery } from "../../hooks/use-media-query";
 import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
+import { getDataWithDisable } from "../reuseable/GetUniqueValues";
 
 const AddAccount = () => {
   const { user } = useContext(AuthContext);
 
   const {
+    accounts,
     fetchAccounts,
     campusActive,
     fetchCampusActive,
@@ -221,7 +223,7 @@ const AddAccount = () => {
                           setOpen={setOpenComboBox}
                           selectedEmployeeID={selectedEmployeeID}
                           selectedEmployeeName={selectedEmployeeName}
-                          employeeActive={employeesActive}
+                          data={getDataWithDisable(employeesActive, accounts, "fullNameWithRole")}
                           setSelectedEmployeeID={setSelectedEmployeeID}
                           setSelectedEmployeeName={setSelectedEmployeeName}
                           clearErrors={clearErrors}

@@ -151,26 +151,21 @@ export const compareDataAndSetDisable = (
   departmentCodeForClass,
 ) => {
   return data1.map((item1) => {
-    // Find the matching item in data2 based on campus_id
+    // Find the matching item in data2 based on campus_id and departmentCodeForClass
     const matchingItemInData2 = data2.find(
-      (item2) => item1.campus_id === item2.campus_id,
+      (item2) =>
+        item1.campus_id === item2.campus_id &&
+        item2.departmentCodeForClass === departmentCodeForClass,
     );
 
-    let disable = true;
+    // Disable if departmentCodeForClass is "CEA" and there is a match in data2
+    const disable =
+      item1.departmentCodeForClass === departmentCodeForClass &&
+      matchingItemInData2
+        ? false
+        : true;
 
-    // Check if departmentCodeForClass is "CEA" and compare data1 and data2
-    if (item1.departmentCodeForClass === departmentCodeForClass) {
-      // If matching item in data2 exists and departmentCodeForClass does not match, disable is true
-      if (
-        matchingItemInData2 &&
-        matchingItemInData2.departmentCodeForClass !==
-          item1.departmentCodeForClass
-      ) {
-        disable = false;
-      }
-    }
-
-    // Return the item1 with the additional "disable" field
+    // Return item1 with the additional "disable" field
     return {
       ...item1,
       disable: disable,

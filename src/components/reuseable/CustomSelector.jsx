@@ -51,7 +51,9 @@ const CustomSelector = ({
   const handleItemSelectWithCourseCode = (id, name, courseCode) => {
     setSelectedID(id);
     setSelectedName(name);
-    setSelectedCourseCode(courseCode);
+    setSelectedCourseCode((prev) =>
+      prev === courseCode && courseCode === null ? "CEA" : courseCode,
+    );
   };
 
   return isDesktop ? (

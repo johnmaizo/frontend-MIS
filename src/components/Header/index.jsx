@@ -64,7 +64,7 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
 
         <div className="hidden w-full sm:block">
           <h1
-            className={`text-[1.1rem] font-bold text-black duration-300 ease-linear dark:text-white ml-5 lg:ml-[13em]`}
+            className={`text-[1.1rem] lg:truncate xl:w-auto lg:w-[18em] font-bold text-black duration-300 ease-linear dark:text-white ml-5 lg:ml-[13em]`}
           >
             Management Information System - Benedicto College {user?.campusName ? `(${user?.campusName})` : ''} 
           </h1>

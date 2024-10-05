@@ -127,3 +127,53 @@ export const getUniqueCodesForSubject = (data, uniqueKey) => {
     return a.label.localeCompare(b.label); // Sort the rest alphabetically by label
   });
 };
+
+// ! For Accounts
+export const getDataWithDisable = (data1, data2, compareField) => {
+  // Map through data1, compare the specified field with data2, and add "disable" field
+  return data1.map((item) => {
+    // Check if there's a matching value for the specified field in data2
+    const matchingItem = data2.some(
+      (item2) => item2[compareField] === item[compareField],
+    );
+
+    // Return the item from data1 with the additional "disable" field
+    return {
+      ...item,
+      disable: matchingItem ? true : false, // Set disable based on the comparison field match
+    };
+  });
+};
+
+export const compareDataAndSetDisable = (
+  data1,
+  data2,
+  departmentCodeForClass,
+) => {
+  return data1.map((item1) => {
+    // Find the matching item in data2 based on campus_id
+    const matchingItemInData2 = data2.find(
+      (item2) => item1.campus_id === item2.campus_id,
+    );
+
+    let disable = true;
+
+    // Check if departmentCodeForClass is "CEA" and compare data1 and data2
+    if (item1.departmentCodeForClass === departmentCodeForClass) {
+      // If matching item in data2 exists and departmentCodeForClass does not match, disable is true
+      if (
+        matchingItemInData2 &&
+        matchingItemInData2.departmentCodeForClass !==
+          item1.departmentCodeForClass
+      ) {
+        disable = false;
+      }
+    }
+
+    // Return the item1 with the additional "disable" field
+    return {
+      ...item1,
+      disable: disable,
+    };
+  });
+};

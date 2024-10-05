@@ -18,7 +18,7 @@ const EmployeeSelector = ({
   setOpen,
   selectedEmployeeID,
   selectedEmployeeName,
-  employeeActive,
+  data,
   setSelectedEmployeeID,
   setSelectedEmployeeName,
   clearErrors,
@@ -49,7 +49,7 @@ const EmployeeSelector = ({
         <EmployeeList
           setOpen={setOpen}
           onSelectEmployee={handleEmployeeSelect}
-          data={employeeActive}
+          data={data}
           loading={loading}
           clearErrors={clearErrors}
         />
@@ -63,7 +63,7 @@ const EmployeeSelector = ({
           <EmployeeList
             setOpen={setOpen}
             onSelectEmployee={handleEmployeeSelect}
-            data={employeeActive}
+            data={data}
             loading={loading}
             clearErrors={clearErrors}
           />
@@ -81,8 +81,24 @@ const EmployeeList = ({
   clearErrors,
 }) => {
   return (
-    <Command className="md:!w-[62em]">
-      {/* <CommandInput placeholder="Filter employee..." /> */}
+    <Command
+      className="md:!w-[62em]"
+      filter={(value, search) => {
+        const employee = data.find(
+          (item) => item.employee_id.toString() === value,
+        );
+        const employeeNameWithRole = employee?.fullNameWithRole;
+
+        // Adjusted to filter by employee name and role
+        if (
+          employeeNameWithRole?.toLowerCase().includes(search?.toLowerCase())
+        ) {
+          return 1;
+        }
+        return 0;
+      }}
+    >
+      <CommandInput placeholder="Filter employee..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
@@ -107,6 +123,7 @@ const EmployeeList = ({
                       setOpen(false);
                       clearErrors("employee");
                     }}
+                    disabled={employee.disable}
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[62em] md:text-[1.2rem]"
                   >
                     {employee.fullNameWithRole.split(" - ")[1] === "DataCenter"

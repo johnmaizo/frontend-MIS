@@ -111,14 +111,14 @@ const DataTable = ({ data, columns, loading, error }) => {
     <>
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
-          <Input
+          {/* <Input
             placeholder="Search by Shool Year..."
             value={table.getColumn("schoolYear")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table.getColumn("schoolYear")?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
-          />
+          /> */}
 
           <ResetFilter table={table} className={"h-[3.3em]"} />
         </div>

@@ -9,6 +9,9 @@ axios.defaults.baseURL =
     : import.meta.env.VITE_REACT_APP_BASE_URL_LOCAL;
 axios.defaults.withCredentials = true; // Include cookies in requests
 
+// Flag to track if an error toast has been shown
+let isToastShown = false;
+
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("jwtToken");
@@ -41,11 +44,16 @@ axios.interceptors.response.use(
         originalRequest.headers["Authorization"] =
           `Bearer ${refreshResponse.data.jwtToken}`;
 
+        // Reset the toast flag since the token refresh was successful
+        isToastShown = false;
+
         return axios(originalRequest);
       } catch (refreshError) {
         // If token refresh fails, logout globally
-        toast.error("Session expired. Please log in again.");
-        // logoutUser(); // Global logout method (could be imported)
+        if (!isToastShown) {
+          toast.error("Session expired. Please log in again.");
+          isToastShown = true; // Set the flag to true
+        }
         LogoutUser();
         return Promise.reject(refreshError);
       }

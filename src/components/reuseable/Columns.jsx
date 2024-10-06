@@ -2746,6 +2746,10 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
+    {
+      accessorKey: "schedule",
+      header: "Schedule",
+    },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {

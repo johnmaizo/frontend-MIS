@@ -2653,7 +2653,7 @@ const useColumns = () => {
         );
       },
       cell: ({ cell }) => {
-        return <span className="text-lg ">{cell.getValue()}</span>;
+        return <span className="text-lg">{cell.getValue()}</span>;
       },
     },
     {
@@ -2790,7 +2790,7 @@ const useColumns = () => {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className="flex items-center gap-1">
+          <div className="pointer-events-none flex items-center gap-1">
             <EditCourse courseId={row.getValue("class_id")} />
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">

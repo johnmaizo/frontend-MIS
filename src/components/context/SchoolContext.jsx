@@ -754,7 +754,7 @@ export const SchoolProvider = ({ children }) => {
 
       const response = await axios.get("/employee/active", { params });
 
-      // Check if ascend is true, and sort the employees by fullNameWithDepartmentCode (A-Z)
+      // Check if ascend is true, and sort the employees by (A-Z)
       const sortedEmployees = ascend
         ? response.data.sort((a, b) =>
             a.departmentCodeForClass.localeCompare(

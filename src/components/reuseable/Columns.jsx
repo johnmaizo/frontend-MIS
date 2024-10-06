@@ -2612,7 +2612,11 @@ const useColumns = () => {
 
       header: "Action",
       cell: ({ cell }) => {
-        return <EditDepartment departmentId={cell.getValue()} />;
+        return (
+          <div className="pointer-events-none">
+            <EditDepartment departmentId={cell.getValue()} />
+          </div>
+        );
       },
     },
   ];

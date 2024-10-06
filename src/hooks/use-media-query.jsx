@@ -1,5 +1,13 @@
 import * as React from "react"
 
+/**
+ * useMediaQuery
+ *
+ * Hook that returns true or false if the CSS media query matches or not.
+ *
+ * @param {string} query
+ * @returns {boolean}
+ */
 export function useMediaQuery(query) {
   const [value, setValue] = React.useState(false)
 

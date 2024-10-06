@@ -13,6 +13,7 @@ import {
   DashboardIcon,
   BuildingStructureIcon,
   EnrollmentIcon,
+  ClassIcon,
 } from "../../../components/Icons";
 
 import { AuthContext } from "../../../components/context/AuthContext";
@@ -312,6 +313,20 @@ const EmployeeSidebar = ({
                   );
                 }}
               </SidebarLinkGroup>
+
+              <li>
+                <NavLink
+                  to="/class-list"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                    (pathname === "/class-list" ||
+                      pathname.includes("class-list")) &&
+                    "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+                  }`}
+                >
+                  <ClassIcon />
+                  Class List
+                </NavLink>
+              </li>
             </>
           )}
 

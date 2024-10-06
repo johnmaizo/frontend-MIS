@@ -25,6 +25,7 @@ import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplica
 import OfficialEnrolledPage from "../Admin/SubPages/OfficalEnrolledPage";
 import EmployeePage from "../Admin/SubPages/EmployeePage";
 import EmployeeHomePage from "./SubPages/EmployeeHomePage";
+import ClassPage from "../Admin/SubPages/ClassPage";
 
 const EmployeeRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -247,6 +248,16 @@ const EmployeeRoutes = () => {
               <>
                 <PageTitle title="Official Enrolled - MIS Benedicto College" />
                 <OfficialEnrolledPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/class-list"
+            element={
+              <>
+                <PageTitle title="Class List - MIS Benedicto College" />
+                <ClassPage />
               </>
             }
           />

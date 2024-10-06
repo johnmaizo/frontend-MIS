@@ -71,7 +71,7 @@ const AddClass = () => {
   useEffect(() => {
     fetchCourseActive();
     fetchSemesters();
-    fetchEmployeesActive("Instructor");
+    fetchEmployeesActive("Instructor, Dean, Teacher", true);
   }, []);
 
   const onSubmit = async (data) => {
@@ -261,7 +261,7 @@ const AddClass = () => {
                           setSelectedID={setSelectedSubjectID}
                           setSelectedName={setSelectedSubjectName}
                           clearErrors={clearErrors}
-                          loading={loading}
+                          loading={loading || success}
                           idKey="course_id"
                           nameKey="fullCourseName"
                           errorKey="course_id"
@@ -292,7 +292,7 @@ const AddClass = () => {
                         setSelectedID={setSelectedSemesterID}
                         setSelectedName={setSelectedSemesterName}
                         clearErrors={clearErrors}
-                        loading={loading}
+                        loading={loading || success}
                         idKey="semester_id"
                         nameKey="fullSemesterName"
                         errorKey="semester_id"
@@ -327,9 +327,9 @@ const AddClass = () => {
                         setSelectedID={setSelectedInstructorID}
                         setSelectedName={setSelectedInstructorName}
                         clearErrors={clearErrors}
-                        loading={loading || employeeLoading}
+                        loading={loading || employeeLoading || success}
                         idKey="employee_id"
-                        nameKey="fullName"
+                        nameKey="fullNameWithDepartmentCode"
                         errorKey="employee_id"
                       />
 

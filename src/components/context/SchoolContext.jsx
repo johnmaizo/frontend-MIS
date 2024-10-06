@@ -744,7 +744,7 @@ export const SchoolProvider = ({ children }) => {
     setEmployeeLoading(false);
   };
 
-  const fetchEmployeesActive = async (role = null) => {
+  const fetchEmployeesActive = async (role = null, ascend = null) => {
     setError("");
     setEmployeeLoading(true);
     try {
@@ -753,7 +753,19 @@ export const SchoolProvider = ({ children }) => {
         : { campus_id: user.campus_id };
 
       const response = await axios.get("/employee/active", { params });
-      setEmployeesActive(response.data);
+
+      // Check if ascend is true, and sort the employees by fullNameWithDepartmentCode (A-Z)
+      const sortedEmployees = ascend
+        ? response.data.sort((a, b) =>
+            a.departmentCodeForClass.localeCompare(
+              b.departmentCodeForClass,
+            ),
+          )
+        : response.data;
+
+      setEmployeesActive(sortedEmployees);
+
+      // setEmployeesActive(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);

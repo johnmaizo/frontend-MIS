@@ -19,6 +19,7 @@ import CardDataOfficialStudent from "../../../components/Essentials/CardDataOffi
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 import MultipleSelector from "../../../components/ui/multiple-selector";
 import EnrollmentProgress from "./test/EnrollmentProgress";
+import ProspectusForm from "./test/AddProspectus";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -69,6 +70,9 @@ const AdminHome = () => {
 
       <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <EnrollmentProgress enrollmentId={1} />
+
+
+        <ProspectusForm />
       </div>
     </DefaultLayout>
   );

@@ -74,12 +74,13 @@ const SubjectList = ({
             heading={`General Subject${generalSubjects.length > 1 ? "s" : ""}:`}
             className="relative [&_[cmdk-group-heading]]:h-[2.5em] [&_[cmdk-group-heading]]:text-[1.2rem] [&_[cmdk-group-heading]]:!text-black [&_[cmdk-group-heading]]:dark:!text-white"
           >
-            <Button
+            {/* <Button
               className={`absolute right-[1em] !text-white top-0 ${allSelected ? "!bg-red-600 hover:!bg-red-700" : "!bg-blue-600 hover:!bg-blue-700"}`}
               onClick={handleSelectAll}
             >
               {allSelected ? "Unselect All" : "Select All"}
-            </Button>
+            </Button> */}
+
             <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
             <CommandList className="h-[12em]">
               {generalSubjects.map((item) => (

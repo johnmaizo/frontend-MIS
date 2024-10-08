@@ -28,7 +28,7 @@ import CustomPopover from "../reuseable/CustomPopover";
 import SubjectList from "../reuseable/SubjectList";
 import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
 
-const AddCourseProgram = () => {
+const AddProspectus = () => {
   const { user } = useContext(AuthContext);
 
   const { programCampusId, programCampusName, program_id, programCode } =
@@ -324,4 +324,4 @@ const AddCourseProgram = () => {
   );
 };
 
-export default AddCourseProgram;
+export default AddProspectus;

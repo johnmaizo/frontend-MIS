@@ -256,7 +256,6 @@ const AddClass = () => {
                           selectedID={selectedSubjectID}
                           selectedName={selectedSubjectName}
                           data={courseActive}
-                          forCourse={true}
                           setSelectedCourseCode={setSelectedCourseCode}
                           setSelectedID={setSelectedSubjectID}
                           setSelectedName={setSelectedSubjectName}
@@ -265,6 +264,10 @@ const AddClass = () => {
                           idKey="course_id"
                           nameKey="fullCourseName"
                           errorKey="course_id"
+
+                          forCourse={true}
+                          setSelectedInstructorID={setSelectedInstructorID}
+                          setSelectedInstructorName={setSelectedInstructorName}
                         />
 
                         {errors.course_id && (
@@ -288,7 +291,6 @@ const AddClass = () => {
                         selectedID={selectedSemesterID}
                         selectedName={selectedSemesterName}
                         data={semesters}
-                        forSemester={true}
                         setSelectedID={setSelectedSemesterID}
                         setSelectedName={setSelectedSemesterName}
                         clearErrors={clearErrors}
@@ -296,6 +298,8 @@ const AddClass = () => {
                         idKey="semester_id"
                         nameKey="fullSemesterName"
                         errorKey="semester_id"
+
+                        forSemester={true}
                       />
 
                       {errors.semester_id && (

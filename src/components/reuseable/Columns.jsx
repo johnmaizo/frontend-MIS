@@ -54,6 +54,7 @@ const useColumns = () => {
     course,
     classes,
     programCourse,
+    employees,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -2528,15 +2529,41 @@ const useColumns = () => {
       accessorKey: "gender",
       header: "Gender",
     },
-    {
-      accessorKey: "department",
-      header: "Department",
+    // {
+    //   accessorKey: "department",
+    //   header: "Department",
 
+    //   cell: ({ cell }) => {
+    //     return cell.getValue() ? (
+    //       <span className="block font-semibold">
+    //         {cell.getValue().departmentCode}
+    //       </span>
+    //     ) : (
+    //       <span className="sr-only block">None</span>
+    //     );
+    //   },
+    // },
+    {
+      accessorKey: "departmentCodeForClass",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Department"
+            options={getUniqueCodes(employees, "departmentCodeForClass")}
+            forEmployee={true}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      // cell: ({ cell }) => {
+      //   return cell.getValue();
+      // },
       cell: ({ cell }) => {
         return cell.getValue() ? (
-          <span className="block font-semibold">
-            {cell.getValue().departmentCode}
-          </span>
+          <span className="block font-semibold">{cell.getValue()}</span>
         ) : (
           <span className="sr-only block">None</span>
         );

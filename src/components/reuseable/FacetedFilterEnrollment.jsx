@@ -20,7 +20,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { ArrowUpDown } from "lucide-react";
 
-export function FacetedFilterEnrollment({ column, title, options }) {
+export function FacetedFilterEnrollment({
+  column,
+  title,
+  options,
+  forEmployee = null,
+}) {
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue());
 
@@ -95,7 +100,9 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                         key={option.value}
                         className={`rounded-sm px-1 font-normal ${option.label === "Pending" ? "!bg-orange-500 hover:!bg-orange-500 dark:bg-orange-500 hover:dark:bg-orange-500" : option.label === "Rejected" ? "!bg-danger hover:!bg-danger dark:!bg-danger hover:dark:!bg-danger" : option.label === "Accepted" && "!bg-success hover:!bg-success dark:!bg-success hover:dark:!bg-success"} bg-primary text-white hover:bg-primary hover:!no-underline dark:bg-primary dark:hover:bg-primary`}
                       >
-                        {option.label}
+                        {forEmployee && option.label === null
+                          ? "None"
+                          : option.label}
                       </Badge>
                     ))
                 )}
@@ -141,7 +148,11 @@ export function FacetedFilterEnrollment({ column, title, options }) {
                     {option.icon && (
                       <option.icon className="text-muted-foreground mr-2 h-4 w-4" />
                     )}
-                    <span>{option.label}</span>
+                    <span>
+                      {forEmployee && option.label === null
+                        ? "None"
+                        : option.label}
+                    </span>
                     {facets?.get(option.value) && (
                       <span className="font-mono ml-auto flex h-4 w-4 items-center justify-center text-xs">
                         {facets.get(option.value)}

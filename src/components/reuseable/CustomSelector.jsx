@@ -27,6 +27,8 @@ const CustomSelector = ({
   setSelectedCourseCode = null,
   setSelectedID,
   setSelectedName,
+  setSelectedInstructorID, // Added prop for setting instructor ID
+  setSelectedInstructorName, // Added prop for setting instructor name
   clearErrors,
   loading,
   idKey,
@@ -37,7 +39,7 @@ const CustomSelector = ({
     <Button
       variant="outline"
       className="h-[2.5em] w-[11em] justify-start truncate text-xl text-black dark:bg-form-input dark:text-white 2xsm:w-[15em] xsm:w-[17em] md:!w-full"
-      disabled={forDisable && forDisable ? true : false}
+      disabled={forDisable && forDisable ? true : loading ? true : false}
     >
       {selectedID ? selectedName : <>Select {title}</>}
     </Button>
@@ -54,6 +56,10 @@ const CustomSelector = ({
     setSelectedCourseCode((prev) =>
       prev === courseCode && courseCode === null ? "CEA" : courseCode,
     );
+
+    // Clear selected instructor fields
+    setSelectedInstructorID && setSelectedInstructorID("");
+    setSelectedInstructorName && setSelectedInstructorName("");
   };
 
   return isDesktop ? (
@@ -122,7 +128,6 @@ const CustomList = ({
 }) => {
   return (
     <Command
-      //   className="md:!w-[34.5em]"
       className="!w-full"
       filter={(value, search) => {
         const listName = data.find(

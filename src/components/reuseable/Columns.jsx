@@ -2529,20 +2529,6 @@ const useColumns = () => {
       accessorKey: "gender",
       header: "Gender",
     },
-    // {
-    //   accessorKey: "department",
-    //   header: "Department",
-
-    //   cell: ({ cell }) => {
-    //     return cell.getValue() ? (
-    //       <span className="block font-semibold">
-    //         {cell.getValue().departmentCode}
-    //       </span>
-    //     ) : (
-    //       <span className="sr-only block">None</span>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "departmentCodeForClass",
       header: ({ column }) => {
@@ -2558,9 +2544,6 @@ const useColumns = () => {
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },
-      // cell: ({ cell }) => {
-      //   return cell.getValue();
-      // },
       cell: ({ cell }) => {
         return cell.getValue() ? (
           <span className="block font-semibold">{cell.getValue()}</span>

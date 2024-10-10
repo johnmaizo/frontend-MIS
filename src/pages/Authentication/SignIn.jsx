@@ -12,6 +12,7 @@ import {
   LogInImage,
 } from "../../components/Icons";
 import Loader from "../../components/styles/Loader";
+import Version from "../../components/Essentials/Version";
 
 const SignIn = () => {
   const motto = "Your Education... Our Mission.";
@@ -226,40 +227,5 @@ const RedirectPage = () => {
   );
 };
 
-const Version = () => {
-  const [version, setVersion] = useState("");
-
-  useEffect(() => {
-    const fetchCommits = async () => {
-      try {
-        const response = await fetch(
-          "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch commits");
-        }
-        const data = await response.json();
-
-        const commitCount = data.length;
-        const major = 1; // Set major version manually if needed
-        const minor = Math.floor(commitCount / 2); // Change every 10 commits
-        const patch = commitCount; // Remainder for patch
-
-        setVersion(`v${major}.${minor}.${patch}`);
-      } catch (error) {
-        console.error("Error fetching commits:", error);
-        setVersion(""); // Set version to blank on error
-      }
-    };
-
-    fetchCommits();
-  }, []);
-
-  return version ? (
-    <span className="inline-block text-sm">Current Version: {version}</span>
-  ) : (
-    ""
-  );
-};
 
 export default SignIn;

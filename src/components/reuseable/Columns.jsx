@@ -55,6 +55,7 @@ const useColumns = () => {
     classes,
     programCourse,
     employees,
+    prospectus,
     fetchCampus,
     fetchCampusDeleted,
     fetchSemesters,
@@ -2674,15 +2675,15 @@ const useColumns = () => {
       accessorKey: "subjectCode",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Subject Code
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+          <FacetedFilterEnrollment
+            column={column}
+            title="Subject Code"
+            options={getUniqueCodes(classes, "subjectCode")}
+          />
         );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
@@ -2851,6 +2852,360 @@ const useColumns = () => {
   ];
   // ! Column Class END
 
+  // ! Column Prospectus START
+  const columnProspectus = [
+    {
+      accessorKey: "program_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Program Code
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "programDescription",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Program Description
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "fullDepartmentNameWithCampus",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForProgram(
+              programActive,
+              "fullDepartmentNameWithCampus",
+            )}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      // program
+      cell: ({ cell }) => {
+        const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {getInitialDepartmentCodeAndCampus(cell.getValue())}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">{getDeparmentName}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "department.campus.campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="inline-block font-semibold">
+                  {cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
+    {
+      header: () => {
+        return <span className="sr-only">Select Program</span>;
+      },
+      accessorFn: (row) =>
+        `${row.program_id} ${row.programCode} ${row.department.campus.campus_id} ${row.department.campus.campusName} ${row.isActive}`,
+      id: "select",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-1">
+            <Link
+              to={`/subjects/prospectus-subjects/campus/${row.original.department.campus.campus_id}/${row.original.department.campus.campusName}/program/${row.original.programCode}/${row.original.program_id}`}
+              className="w-[120.86px] rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2"
+            >
+              Select Program
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column Prospectus END
+
+  // ! Column View Specific Prospectus START
+  const columnViewSpecificProspectus = [
+    {
+      accessorKey: "prospectus_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "prospectusName",
+      id: "prospectusName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Prospectus Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "prospectusDescription",
+      id: "prospectusDescription",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Prospectus Description
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return cell.getValue();
+      },
+    },
+    {
+      accessorKey: "fullDepartmentNameWithCampusForSubject",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterSubjectDepartment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForSubject(
+              prospectus,
+              "fullDepartmentNameWithCampusForSubject",
+            )}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        // const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return cell.getValue() ? (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[0]
+                    : "General Subject"}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[1]
+                    : "General Subject"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <p className="text-[1rem] font-[500]">
+            {cell.getValue()
+              ? cell.getValue().split(" - ")[1]
+              : "General Subject"}
+          </p>
+        );
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+          },
+        ]
+      : []),
+    // {
+    //   accessorKey: "isActive",
+    //   header: "Status",
+    //   cell: ({ cell }) => {
+    //     return (
+    //       <span
+    //         className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+    //           cell.getValue() ? "bg-success" : "bg-danger"
+    //         }`}
+    //       >
+    //         {cell.getValue() ? "Active" : "Inactive"}
+    //       </span>
+    //     );
+    //   },
+    // },
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.programCourse_id} ${row.isActive}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="pointer-events-none flex items-center gap-1">
+            <EditCourse courseId={row.getValue("programCourse_id")} />
+            <Dialog>
+              <DialogTrigger className="p-2 hover:text-primary">
+                <DeleteIcon forActions={"Delete Course"} />
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Delete
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to delete this Course?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    {/* <ButtonActionCourse
+                      action="delete"
+                      courseId={row.getValue("programCourse_id")}
+                      onSuccess={() => {
+                        fetchProgramCourse(campusName, program_id);
+                        fetchProgramCourseDeleted(campusName, program_id);
+                      }}
+                    /> */}
+                    <ButtonAction
+                      entityType={"course"}
+                      entityId={row.getValue("programCourse_id")}
+                      action="delete"
+                      onSuccess={() => {
+                        fetchProgramCourse(campusName, program_id);
+                        fetchProgramCourseDeleted(campusName, program_id);
+                      }}
+                    />
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column View Specific Prospectus END
+
   return {
     columnCampus,
     columnSemester,
@@ -2870,6 +3225,9 @@ const useColumns = () => {
     columnsEmployee,
 
     columnClass,
+
+    columnProspectus,
+    columnViewSpecificProspectus,
   };
 };
 

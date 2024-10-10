@@ -305,6 +305,21 @@ const AdminSidebar = ({
                           Program Subjects
                         </NavLink>
                       </li>
+                      <li>
+                        <NavLink
+                          to="/subjects/prospectus"
+                          className={({ isActive }) =>
+                            `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                              (pathname === "/subjects/prospectus" ||
+                                pathname.includes("prospectus")) &&
+                              "!underline "
+                            }` + (isActive && "text-primary dark:!text-white")
+                          }
+                        >
+                          <ArrowRightIcon className="h-4 w-4 flex-none" />
+                          Prospectus
+                        </NavLink>
+                      </li>
                     </ul>
                   </div>
                   {/* <!-- Dropdown Menu End --> */}

@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 
 const Version = ({
   repoUrl = "https://api.github.com/repos/johnmaizo/frontend-MIS/commits",
   className = "",
-  cacheKey = "version_commits_cache",
+  cacheKey = "hiro_commits_cache",
   cacheExpirationMs = 60 * 60 * 1000, // 1 hour cache expiration
 }) => {
   const [version, setVersion] = useState("");

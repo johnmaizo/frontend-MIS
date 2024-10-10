@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,27 +16,20 @@ import {
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
-import { AuthContext } from "../context/AuthContext";
-
 import { useParams } from "react-router-dom";
-import { getUniqueCourseCodes } from "../reuseable/GetUniqueValues";
 
 import useFetchProgramById from "../reuseable/useFetchProgramById";
-import { HasRole } from "../reuseable/HasRole";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
-import CustomPopover from "../reuseable/CustomPopover";
-import SubjectList from "../reuseable/SubjectList";
+
 import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
+import FormInput from "../reuseable/FormInput";
 
 const AddProspectus = () => {
-  const { user } = useContext(AuthContext);
-
   const { programCampusId, programCampusName, program_id, programCode } =
     useParams();
 
-  const { programCourse, fetchProgramCourse, courseActive, fetchCourseActive } =
-    useSchool();
+  const { fetchProspectus } = useSchool();
 
   const { program, programLoading } = useFetchProgramById(
     program_id,
@@ -43,27 +37,12 @@ const AddProspectus = () => {
   );
 
   const [open, setOpen] = useState(false);
-  const [openPopover, setOpenPopover] = useState(false);
-
-  const [selectedCampus, setSelectedCampus] = useState(""); // State to hold the selected campus
-
-  const uniqueCourses = getUniqueCourseCodes(
-    courseActive,
-    "courseCode",
-    programCourse,
-  );
-
-  const [selectedCourses, setSelectedCourses] = useState([]);
-
-  useEffect(() => {
-    console.log("Selected Subject Codes: ", selectedCourses);
-  }, [selectedCourses]);
 
   const {
     handleSubmit,
+    register,
     reset,
     formState: { errors },
-    setError,
     clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
@@ -71,42 +50,7 @@ const AddProspectus = () => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSetCourses = (val, clearAll) => {
-    if (clearAll) {
-      setSelectedCourses([]);
-    } else if (selectedCourses.includes(val)) {
-      setSelectedCourses(selectedCourses.filter((item) => item !== val));
-    } else {
-      setSelectedCourses((prevValue) => [...prevValue, val]);
-    }
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const clearAllSelections = () => {
-    setSelectedCourses([]);
-  };
-
-  useEffect(() => {
-    fetchCourseActive(program_id);
-    if (user && HasRole(user.role, "SuperAdmin")) {
-      setSelectedCampus(programCampusId.toString());
-    } else if (user && user.campus_id) {
-      // Automatically set the campus if the user has a campus_id
-      setSelectedCampus(user.campus_id.toString());
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const onSubmit = async (data) => {
-    if (!selectedCourses.length) {
-      setError("courseChoose", {
-        type: "manual",
-        message: "You must select a subject.",
-      });
-      return;
-    }
-
     setLoading(true);
     // Transform form data to replace empty strings or strings with only spaces with null
     const transformedData = {
@@ -116,19 +60,19 @@ const AddProspectus = () => {
           value.trim() === "" ? null : value.trim(),
         ]),
       ),
-      campus_id: parseInt(selectedCampus), // Add the selected campus to the form data
+      campusName: programCampusName,
+      program_id: program_id,
       programCode: program.programCode,
-      courseCode: selectedCourses,
     };
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/program-courses/assign-program-course", transformedData),
+        axios.post("/prospectus/add-prospectus", transformedData),
         {
-          loading: "Assigning Subject...",
-          success: "Assigned Subject successfully!",
-          error: "Failed to Assign Subject.",
+          loading: "Assigning Prospectus...",
+          success: "Assigned Prospectus successfully!",
+          error: "Failed to Assign Prospectus.",
         },
         {
           position: "bottom-right",
@@ -137,8 +81,7 @@ const AddProspectus = () => {
 
       if (response.data) {
         setSuccess(true);
-        // fetchProgramCourse(programCampusName, programCampusId);
-        fetchProgramCourse(
+        fetchProspectus(
           programCampusId,
           programCampusName,
           program_id,
@@ -162,7 +105,6 @@ const AddProspectus = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-        setSelectedCourses([]); // Reset selected courses
       }, 2000);
     } else if (error) {
       setTimeout(() => {
@@ -190,9 +132,7 @@ const AddProspectus = () => {
     setOpen(false); // Close the AddAccount dialog
 
     reset(); // Reset form fields
-    setSelectedCampus(user.campus_id ? user.campus_id.toString() : ""); // Reset selected campus based on user role
     clearErrors("courseChoose"); // Clear campus selection error when dialog closes
-    setSelectedCourses([]); // Reset selected courses
   };
 
   return (
@@ -204,18 +144,18 @@ const AddProspectus = () => {
             onClick={() => setOpen(true)}
           >
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Assign Subject </span>
+            <span className="max-w-[8em]">Add Prospectus </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white md:h-[40em] lg:max-w-[70em]">
+          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[50em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Assign new Subject
+                Add new Prospectus
               </DialogTitle>
               <DialogDescription className="sr-only">
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
                 Fill up, Click Add when you&apos;re done.
               </DialogDescription>
-              <div className="h-[18em] overflow-y-auto overscroll-none text-xl md:!h-[20em]">
+              <div className="overflow-y-auto overscroll-none text-xl md:!h-[21.7em]">
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
                     <div className="mb-4.5 w-full">
@@ -241,42 +181,63 @@ const AddProspectus = () => {
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="dept_campus"
+                        htmlFor="prospectusName"
                       >
-                        Select Subject
+                        Prospectus Name
                       </label>
+                      <FormInput
+                        id="prospectusName"
+                        placeholder="Prospectus Name"
+                        register={register}
+                        validationRules={{
+                          required: {
+                            value: true,
+                            message: "Prospectus Name is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Prospectus Name cannot be empty or just spaces",
+                          },
+                        }}
+                        disabled={loading || success}
+                      />
 
-                      <CustomPopover
-                        openPopover={openPopover}
-                        setOpenPopover={setOpenPopover}
-                        loading={loading || programLoading || success}
-                        selectedItems={selectedCourses.map(
-                          (val) =>
-                            uniqueCourses.find((course) => course.value === val)
-                              ?.value,
-                        )}
-                        itemName="Subject"
-                      >
-                        <SubjectList
-                          handleSelect={handleSetCourses}
-                          value={selectedCourses}
-                          data={uniqueCourses}
-                          searchPlaceholder="Search Subject..."
-                          clearErrors={clearErrors}
-                          entity="courseChoose"
-                          handleClearAll={clearAllSelections}
-                          selectedItems={selectedCourses.map(
-                            (val) =>
-                              uniqueCourses.find(
-                                (course) => course.value === val,
-                              )?.value,
-                          )}
-                        />
-                      </CustomPopover>
-
-                      {errors.courseChoose && (
+                      {errors.prospectusName && (
                         <ErrorMessage>
-                          *{errors.courseChoose.message}
+                          *{errors.prospectusName.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="prospectusDescription"
+                      >
+                        Prospectus Description
+                      </label>
+                      <FormInput
+                        id="prospectusDescription"
+                        placeholder="Prospectus Description"
+                        register={register}
+                        validationRules={{
+                          required: {
+                            value: true,
+                            message: "Prospectus Description is required",
+                          },
+                          validate: {
+                            notEmpty: (value) =>
+                              value.trim() !== "" ||
+                              "Prospectus Description cannot be empty or just spaces",
+                          },
+                        }}
+                        disabled={loading || success}
+                      />
+
+                      {errors.prospectusDescription && (
+                        <ErrorMessage>
+                          *{errors.prospectusDescription.message}
                         </ErrorMessage>
                       )}
                     </div>
@@ -300,12 +261,12 @@ const AddProspectus = () => {
                         <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
                       )}
                       {loading
-                        ? "Adding Subject..."
+                        ? "Adding Prospectus..."
                         : programLoading
                           ? "Loading..."
                           : success
-                            ? "Subject Added!"
-                            : "Add Subject"}
+                            ? "Prospectus Added!"
+                            : "Add Prospectus"}
                     </button>
                   </div>
                 </form>

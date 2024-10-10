@@ -19,7 +19,7 @@ import CardDataOfficialStudent from "../../../components/Essentials/CardDataOffi
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 import MultipleSelector from "../../../components/ui/multiple-selector";
 import EnrollmentProgress from "./test/EnrollmentProgress";
-import ProspectusForm from "./test/AddProspectus";
+import ProspectusForm from "./test/AddProspectusTest";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);

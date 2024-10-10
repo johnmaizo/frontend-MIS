@@ -757,9 +757,7 @@ export const SchoolProvider = ({ children }) => {
       // Check if ascend is true, and sort the employees by (A-Z)
       const sortedEmployees = ascend
         ? response.data.sort((a, b) =>
-            a.departmentCodeForClass.localeCompare(
-              b.departmentCodeForClass,
-            ),
+            a.departmentCodeForClass.localeCompare(b.departmentCodeForClass),
           )
         : response.data;
 
@@ -888,6 +886,41 @@ export const SchoolProvider = ({ children }) => {
   };
   // ! Class END
 
+  // ! Prospectus START
+  const [loadingProspectus, setLoadingProspectus] = useState(false);
+  const [prospectus, setProspectus] = useState([]);
+
+  const fetchProspectus = async (
+    campusId,
+    campusName,
+    programId,
+    programCode,
+  ) => {
+    setProspectus([]);
+    setError("");
+    setLoadingProspectus(true);
+    try {
+      const response = await axios.get("/prospectus/get-all-prospectus/", {
+        params: {
+          campus_id: user.campus_id ? user.campus_id : campusId,
+          campusName: campusName,
+          program_id: programId,
+          programCode: programCode,
+        },
+      });
+      setProspectus(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Prospectus: (${err})`);
+      }
+    }
+    setLoadingProspectus(false);
+  };
+
+  // ! Prospectus END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -995,6 +1028,11 @@ export const SchoolProvider = ({ children }) => {
         fetchClassDeleted,
         classActive,
         fetchClassActive,
+
+        // ! Prospectus
+        prospectus,
+        loadingProspectus,
+        fetchProspectus,
       }}
     >
       {children}

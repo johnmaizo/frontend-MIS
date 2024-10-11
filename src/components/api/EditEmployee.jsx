@@ -460,7 +460,7 @@ const EditEmployee = ({ employeeId }) => {
                       <Switch
                         id="department_active"
                         checked={isActive}
-                        onCheckedChange={setIsActive} // Update the status when the switch is toggled
+                        onCheckedChange={setIsActive}
                         disabled={success || loading}
                       />
                     </div>
@@ -544,7 +544,7 @@ const EditEmployee = ({ employeeId }) => {
                           id="middleName"
                           placeholder="*Leave blank if not applicable"
                           register={register}
-                          disabled={success}
+                          disabled={success || loading}
                           className={"placeholder:text-[1.1rem]"}
                         />
                       </div>
@@ -710,6 +710,7 @@ const EditEmployee = ({ employeeId }) => {
                           name="birthDate"
                           type="date"
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          disabled={success || loading}
                           {...register("birthDate", {
                             required: {
                               value: true,
@@ -721,7 +722,6 @@ const EditEmployee = ({ employeeId }) => {
                                 `Invalid birth date. Please enter a valid year between 1900 and ${new Date().getFullYear() - 10}.`,
                             },
                           })}
-                          disabled={success}
                         />
                         {errors.birthDate && (
                           <span className="mt-2 inline-block text-sm font-medium text-red-600">
@@ -745,7 +745,7 @@ const EditEmployee = ({ employeeId }) => {
 
                         <MultipleSelector
                           defaultOptions={roles}
-                          placeholder="Search Role..."
+                          placeholder={success || loading ? "Loading..." : "Search Role..."}
                           creatable
                           emptyIndicator={
                             <p className="text-gray-600 dark:text-gray-400 bg-white text-center text-lg leading-10 dark:border-form-strokedark dark:bg-form-input">
@@ -755,6 +755,7 @@ const EditEmployee = ({ employeeId }) => {
                           className={"bg-white"}
                           value={selectedRoleObjects} // Use selectedRoleObjects for the value
                           onChange={handleRoleChange} // Attach the onChange handler
+                          disabled={success || loading}
                         />
 
                         {errors.role && (
@@ -791,6 +792,7 @@ const EditEmployee = ({ employeeId }) => {
                                     clearErrors("qualifications");
                                   }}
                                   className="bg-white !p-2"
+                                  disabled={success || loading}
                                 />
                               </div>
                               <div className="w-full">
@@ -807,6 +809,7 @@ const EditEmployee = ({ employeeId }) => {
                                     clearErrors("qualifications");
                                   }}
                                   className="bg-white !p-2"
+                                  disabled={success || loading}
                                 />
                               </div>
                             </div>
@@ -828,6 +831,7 @@ const EditEmployee = ({ employeeId }) => {
                           onClick={handleAddQualification}
                           className="mt-4 cursor-pointer text-wrap rounded !bg-blue-600 p-2 text-sm text-white hover:!bg-blue-700 md:text-[1rem]"
                           value={"Add another Qualification"}
+                          disabled={success || loading}
                         />
 
                         {errors.qualifications && (
@@ -855,7 +859,7 @@ const EditEmployee = ({ employeeId }) => {
                           setSelectedDepartmentID={setSelectedDepartmentID}
                           setSelectedDepartmenName={setSelectedDepartmenName}
                           clearErrors={clearErrors}
-                          loading={loading}
+                          loading={success || loading}
                         />
 
                         {errors.department_id && (

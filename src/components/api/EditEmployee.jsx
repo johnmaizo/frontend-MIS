@@ -773,58 +773,56 @@ const EditEmployee = ({ employeeId }) => {
                             (You can skip this if not applicable)
                           </span>
                         </span>
-                        {(Array.isArray(qualifications)
-                          ? qualifications
-                          : []
-                        ).map((qualification, index) => (
-                          <div key={index} className="qualification">
-                            <div className="mt-5 flex w-full flex-wrap justify-between gap-3 md:flex-nowrap">
-                              <div className="w-full md:w-auto">
-                                <span className="ml-1 block text-sm">
-                                  Abbreviation
-                                </span>
-                                <Input
-                                  type="text"
-                                  name="abbreviation"
-                                  placeholder="Abbreviation"
-                                  value={qualification.abbreviation}
-                                  onChange={(event) => {
-                                    handleQualificationChange(index, event);
+                        {Array.isArray(qualifications) &&
+                          qualifications.map((qualification, index) => (
+                            <div key={index} className="qualification">
+                              <div className="mt-5 flex w-full flex-wrap justify-between gap-3 md:flex-nowrap">
+                                <div className="w-full md:w-auto">
+                                  <span className="ml-1 block text-sm">
+                                    Abbreviation
+                                  </span>
+                                  <Input
+                                    type="text"
+                                    name="abbreviation"
+                                    placeholder="Abbreviation"
+                                    value={qualification.abbreviation}
+                                    onChange={(event) => {
+                                      handleQualificationChange(index, event);
+                                      clearErrors("qualifications");
+                                    }}
+                                    className="bg-white !p-2"
+                                  />
+                                </div>
+                                <div className="w-full">
+                                  <span className="ml-1 block text-sm">
+                                    Full Meaning
+                                  </span>
+                                  <Input
+                                    type="text"
+                                    name="meaning"
+                                    placeholder="Full Meaning (Leave blank if not applicable)"
+                                    value={qualification.meaning}
+                                    onChange={(event) => {
+                                      handleQualificationChange(index, event);
+                                      clearErrors("qualifications");
+                                    }}
+                                    className="bg-white !p-2"
+                                  />
+                                </div>
+                              </div>
+                              {index !== 0 && (
+                                <input
+                                  type="button"
+                                  onClick={() => {
+                                    handleRemoveQualification(index);
                                     clearErrors("qualifications");
                                   }}
-                                  className="bg-white !p-2"
+                                  className="mt-2 cursor-pointer rounded !bg-red-600 p-1 text-sm text-white hover:!bg-red-700"
+                                  value={"Remove"}
                                 />
-                              </div>
-                              <div className="w-full">
-                                <span className="ml-1 block text-sm">
-                                  Full Meaning
-                                </span>
-                                <Input
-                                  type="text"
-                                  name="meaning"
-                                  placeholder="Full Meaning (Leave blank if not applicable)"
-                                  value={qualification.meaning}
-                                  onChange={(event) => {
-                                    handleQualificationChange(index, event);
-                                    clearErrors("qualifications");
-                                  }}
-                                  className="bg-white !p-2"
-                                />
-                              </div>
+                              )}
                             </div>
-                            {index !== 0 && (
-                              <input
-                                type="button"
-                                onClick={() => {
-                                  handleRemoveQualification(index);
-                                  clearErrors("qualifications");
-                                }}
-                                className="mt-2 cursor-pointer rounded !bg-red-600 p-1 text-sm text-white hover:!bg-red-700"
-                                value={"Remove"}
-                              />
-                            )}
-                          </div>
-                        ))}
+                          ))}
                         <input
                           type="button"
                           onClick={handleAddQualification}

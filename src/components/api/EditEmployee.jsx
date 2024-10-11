@@ -260,9 +260,6 @@ const EditEmployee = ({ employeeId }) => {
               : "",
           );
 
-          console.log("employee data: ", employee);
-          console.log("qualifications data: ", parsedQualifications);
-
           setIsActive(employee.isActive); // Set the initial status
           setSelectedCampus(employee.campus_id.toString()); // Set the initial campus
           setLoading(false);
@@ -430,9 +427,19 @@ const EditEmployee = ({ employeeId }) => {
     setConfirmClose(false);
     setOpen(false);
 
-    reset();
-    setSelectedCampus("");
+    reset(); // Reset form fields when the dialog is closed
+    setSelectedRoles([]);
+    setSelectedRoleObjects([]);
+    setSelectedGender("");
+    setSelectedCampus(user.campus_id ? user.campus_id.toString() : ""); // Reset selected campus based on user role
+    setQualifications([{ abbreviation: "", meaning: "" }]);
+    setSelectedDepartmentID("");
+    setSelectedDepartmenName("");
     clearErrors("campus_id");
+    clearErrors("role");
+    clearErrors("gender");
+    clearErrors("qualifications");
+    clearErrors("department_id");
   };
 
   return (

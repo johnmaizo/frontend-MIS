@@ -428,7 +428,7 @@ const EditEmployee = ({ employeeId }) => {
             className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700"
             onClick={() => setOpen(true)}
           >
-            <EditDepartmentIcon />
+            <EditDepartmentIcon forActions={"Edit Employee"} />
           </DialogTrigger>
 
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white xl:max-w-[70em]">

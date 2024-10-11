@@ -2628,22 +2628,20 @@ const useColumns = () => {
           <div className={`${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "hover:cursor-not-allowed" : ""}`}>
             <div
               className={`flex items-center gap-1 ${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "pointer-events-none hover:cursor-not-allowed" : ""}`}
-              // className={`flex items-center gap-1`}
             >
-              {/* <EditDepartment departmentId={row.getValue("employee_id")} /> */}
               <EditEmployee employeeId={row.getValue("employee_id")} />
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
-                  <DeleteIcon forActions={"Delete Department"} />
+                  <DeleteIcon forActions={"Delete Employee"} />
                 </DialogTrigger>
                 <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-bold">
-                      Delete Department
+                      Delete Employee
                     </DialogTitle>
                     <DialogDescription asChild className="mt-2">
                       <p className="mb-5">
-                        Are you sure you want to delete this department?
+                        Are you sure you want to delete this Employee?
                       </p>
                     </DialogDescription>
                   </DialogHeader>

@@ -53,10 +53,11 @@ const EmployeePage = () => {
 };
 
 const AccountTables = () => {
-  const { employees, fetchEmployees, employeeLoading, error } = useSchool();
+  const { employees, fetchEmployees, fetchDepartmentsActive, employeeLoading, error } = useSchool();
 
   useEffect(() => {
     fetchEmployees();
+    fetchDepartmentsActive()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -211,14 +211,14 @@ const EditEmployee = ({ employeeId }) => {
 
   useEffect(() => {
     if (employeeId && open) {
-      // Fetch the department data when the modal is opened
+      // Fetch the employee data when the modal is opened
       setLoading(true);
       axios
         .get(`/employee/${employeeId}`)
         .then((response) => {
           const employee = response.data;
 
-          // Pre-fill the form with department data
+          // Pre-fill the form with employee data
           setValue("title", employee.title);
           setValue("firstName", employee.firstName);
           setValue("middleName", employee.middleName);
@@ -227,6 +227,7 @@ const EditEmployee = ({ employeeId }) => {
           setSelectedGender(employee.gender);
           setValue("contactNumber", employee.contactNumber);
           setValue("birthDate", employee.birthDate);
+
           const rolesArray = employee.role
             ? employee.role.split(",").map((role) => role.trim())
             : [];
@@ -235,8 +236,19 @@ const EditEmployee = ({ employeeId }) => {
             rolesArray.map((role) => ({ value: role, label: role })),
           );
 
+          // Parse qualifications if it is a JSON string
+          let parsedQualifications = [];
+          try {
+            parsedQualifications = JSON.parse(employee.qualifications);
+          } catch (error) {
+            console.error("Failed to parse qualifications:", error);
+          }
+
           setQualifications(
-            employee.qualifications || [{ abbreviation: "", meaning: "" }],
+            Array.isArray(parsedQualifications) &&
+              parsedQualifications.length > 0
+              ? parsedQualifications
+              : [{ abbreviation: "", meaning: "" }],
           );
 
           setSelectedDepartmentID(
@@ -248,8 +260,8 @@ const EditEmployee = ({ employeeId }) => {
               : "",
           );
 
-          console.log("employee data: ", employee)
-          console.log("qualifications data: ", qualifications)
+          console.log("employee data: ", employee);
+          console.log("qualifications data: ", parsedQualifications);
 
           setIsActive(employee.isActive); // Set the initial status
           setSelectedCampus(employee.campus_id.toString()); // Set the initial campus

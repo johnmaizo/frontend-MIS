@@ -741,7 +741,9 @@ const EditEmployee = ({ employeeId }) => {
 
                         <MultipleSelector
                           defaultOptions={roles}
-                          placeholder={success || loading ? "Loading..." : "Search Role..."}
+                          placeholder={
+                            success || loading ? "Loading..." : "Search Role..."
+                          }
                           creatable
                           emptyIndicator={
                             <p className="text-gray-600 dark:text-gray-400 bg-white text-center text-lg leading-10 dark:border-form-strokedark dark:bg-form-input">
@@ -771,7 +773,10 @@ const EditEmployee = ({ employeeId }) => {
                             (You can skip this if not applicable)
                           </span>
                         </span>
-                        {qualifications.map((qualification, index) => (
+                        {(Array.isArray(qualifications)
+                          ? qualifications
+                          : []
+                        ).map((qualification, index) => (
                           <div key={index} className="qualification">
                             <div className="mt-5 flex w-full flex-wrap justify-between gap-3 md:flex-nowrap">
                               <div className="w-full md:w-auto">

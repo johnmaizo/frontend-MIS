@@ -44,6 +44,7 @@ import RoleBadge from "./RoleBadge";
 import { useEnrollment } from "../context/EnrollmentContext";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 import { FacetedFilterSubjectDepartment } from "./FacetedFilterSubjectDepartment";
+import EditEmployee from "../api/EditEmployee";
 
 const useColumns = () => {
   const {
@@ -468,6 +469,7 @@ const useColumns = () => {
       accessorFn: (row) => `${row.department_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
+        console.log(row.getValue("department_id"));
         return (
           <div className="flex items-center gap-1">
             <EditDepartment departmentId={row.getValue("department_id")} />
@@ -2599,33 +2601,76 @@ const useColumns = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "updatedAt",
-    //   header: "Date Updated",
-    //   accessorFn: (row) => `${row.createdAt} ${row.updatedAt}`,
-    //   cell: ({ row }) => {
-    //     return row.original.updatedAt !== row.original.createdAt ? (
-    //       <Badge variant={"outline"} className={"text-[0.8rem]"}>
-    //         <relative-time datetime={row.original.updatedAt}>
-    //           {new Date(row.original.updatedAt).toDateString()}
-    //         </relative-time>
-    //       </Badge>
-    //     ) : (
-    //       <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
-    //         N/A
-    //       </Badge>
-    //     );
-    //   },
-    // },
     {
-      accessorKey: "employe_id",
-      id: "Actions",
-
-      header: "Action",
-      cell: ({ cell }) => {
+      accessorKey: "updatedAt",
+      header: "Date Updated",
+      accessorFn: (row) => `${row.createdAt} ${row.updatedAt}`,
+      cell: ({ row }) => {
+        return row.original.updatedAt !== row.original.createdAt ? (
+          <Badge variant={"outline"} className={"text-[0.8rem]"}>
+            <relative-time datetime={row.original.updatedAt}>
+              {new Date(row.original.updatedAt).toDateString()}
+            </relative-time>
+          </Badge>
+        ) : (
+          <Badge variant={"outline"} className={"text-[0.8rem] font-medium"}>
+            N/A
+          </Badge>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      accessorFn: (row) => `${row.employee_id} ${row.isActive} ${row.role}`,
+      id: "actions",
+      cell: ({ row }) => {
         return (
-          <div className="pointer-events-none">
-            <EditDepartment departmentId={cell.getValue()} />
+          <div className={`${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "hover:cursor-not-allowed" : ""}`}>
+            <div
+              className={`flex items-center gap-1 ${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "pointer-events-none hover:cursor-not-allowed" : ""}`}
+              // className={`flex items-center gap-1`}
+            >
+              {/* <EditDepartment departmentId={row.getValue("employee_id")} /> */}
+              <EditEmployee employeeId={row.getValue("employee_id")} />
+              <Dialog>
+                <DialogTrigger className="p-2 hover:text-primary">
+                  <DeleteIcon forActions={"Delete Department"} />
+                </DialogTrigger>
+                <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold">
+                      Delete Department
+                    </DialogTitle>
+                    <DialogDescription asChild className="mt-2">
+                      <p className="mb-5">
+                        Are you sure you want to delete this department?
+                      </p>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                      <ButtonAction
+                        entityType={"department"}
+                        entityId={row.getValue("employee_id")}
+                        action="delete"
+                        onSuccess={() => {
+                          fetchDepartments();
+                          fetchDepartmentsDeleted();
+                        }}
+                      />
+                      <DialogClose asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full underline-offset-4 hover:underline"
+                        >
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         );
       },
@@ -3199,6 +3244,33 @@ const useColumns = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+          </div>
+        );
+      },
+    },
+
+    {
+      header: () => {
+        return <span className="sr-only">Select Prospectus</span>;
+      },
+      id: "selectProspectus",
+      accessorFn: (row) =>
+        `${row.prospectus_id} ${row.buildingName} ${row.floorName} ${row.campus.campusName} ${row.isActive}`,
+      cell: ({ row }) => {
+        return (
+          <div
+            className={`flex items-center gap-1 ${!row.original.isActive ? "cursor-not-allowed" : ""}`}
+          >
+            <Link
+              to={
+                user && user.campus_id
+                  ? `/structure-management/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
+                  : `/structure-management/${row.original.campus.campus_id}/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
+              }
+              className={`rounded p-3 text-sm font-medium text-white ${!row.original.isActive ? "pointer-events-none bg-blue-400 hover:no-underline" : "bg-primary hover:underline hover:underline-offset-2"}`}
+            >
+              Select Prospectus
+            </Link>
           </div>
         );
       },

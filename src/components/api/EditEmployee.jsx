@@ -793,7 +793,6 @@ const EditEmployee = ({ employeeId }) => {
                                     clearErrors("qualifications");
                                   }}
                                   className="bg-white !p-2"
-                                  disabled={success || loading}
                                 />
                               </div>
                               <div className="w-full">
@@ -810,7 +809,6 @@ const EditEmployee = ({ employeeId }) => {
                                     clearErrors("qualifications");
                                   }}
                                   className="bg-white !p-2"
-                                  disabled={success || loading}
                                 />
                               </div>
                             </div>
@@ -832,7 +830,6 @@ const EditEmployee = ({ employeeId }) => {
                           onClick={handleAddQualification}
                           className="mt-4 cursor-pointer text-wrap rounded !bg-blue-600 p-2 text-sm text-white hover:!bg-blue-700 md:text-[1rem]"
                           value={"Add another Qualification"}
-                          disabled={success || loading}
                         />
 
                         {errors.qualifications && (

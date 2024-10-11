@@ -206,10 +206,6 @@ const EditEmployee = ({ employeeId }) => {
     clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
-  useEffect(() => {
-    console.log("selectedRoles: ", selectedRoles);
-  }, [selectedRoles]);
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 

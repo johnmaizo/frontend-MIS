@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { DepartmentIcon } from "../Icons";
 import { AuthContext } from "../context/AuthContext";
 
@@ -8,34 +8,106 @@ const CardDataDepartment = () => {
   const { user } = useContext(AuthContext);
 
   const [totalDepartment, setTotalDepartment] = useState(null);
-
+  const [nextUpdate, setNextUpdate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState("");
+
+  const previousDepartmentCount = useRef(null);
+  const timeoutId = useRef(null);
 
   const title = "Total Department";
 
+  // Function to fetch data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const currentResponse = await axios.get("/departments/cron-count", {
+        params: {
+          campus_id: user.campus_id,
+        },
+      });
+      const { departmentCount, nextUpdate } = currentResponse.data;
+      const parsedNextUpdate = new Date(nextUpdate);
+
+      // If nextUpdate from the backend is in the past, fetch the data again immediately
+      if (parsedNextUpdate <= new Date()) {
+        setLoading(false);
+        fetchData(); // Fetch data again if the backend's next update time is outdated
+        return;
+      }
+
+      setNextUpdate(parsedNextUpdate);
+      setError(null);
+
+      // Update the department count if it has changed
+      if (departmentCount !== previousDepartmentCount.current) {
+        setTotalDepartment(departmentCount);
+        previousDepartmentCount.current = departmentCount;
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch department");
+      }
+    }
+    setLoading(false);
+  };
+
+  // Function to set up the next data fetch based on the provided nextUpdate time
+  const setupNextFetch = () => {
+    if (nextUpdate) {
+      const timeDiff = nextUpdate - new Date();
+      if (timeDiff > 0) {
+        // Schedule the next data fetch based on the nextUpdate time
+        timeoutId.current = setTimeout(fetchData, timeDiff);
+      } else {
+        // If nextUpdate is in the past, fetch data immediately
+        fetchData();
+      }
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentResponse = await axios.get("/departments/count", {
-          params: {
-            campus_id: user.campus_id,
-          },
-        });
-        const total = currentResponse.data;
-        setTotalDepartment(total);
-      } catch (err) {
-        if (err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
+    // Fetch the data immediately on component mount
+    fetchData();
+
+    // Clean up the timeout on component unmount
+    return () => clearTimeout(timeoutId.current);
+  }, [user.campus_id]);
+
+  // Set up the next data fetch whenever nextUpdate changes
+  useEffect(() => {
+    // Clear any existing timeout to avoid duplicate fetches
+    clearTimeout(timeoutId.current);
+    setupNextFetch();
+
+    // Cleanup the timeout when component unmounts or nextUpdate changes
+    return () => clearTimeout(timeoutId.current);
+  }, [nextUpdate]);
+
+  // Update the time remaining for the next update
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (nextUpdate) {
+        const timeDiff = nextUpdate - new Date();
+        if (timeDiff > 0) {
+          const minutes = Math.floor(
+            (timeDiff % (1000 * 60 * 60)) / (1000 * 60),
+          );
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+          setTimeRemaining(`${minutes}m ${seconds}s`);
         } else {
-          setError("Failed to fetch department");
+          // When the countdown reaches zero, indicate that data is updating now
+          setTimeRemaining("Updating now...");
         }
       }
-      setLoading(false);
-    };
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(timer);
+  }, [nextUpdate]);
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -54,6 +126,9 @@ const CardDataDepartment = () => {
             {title}
             {totalDepartment > 1 && "s"}
           </span>
+          <div className="text-gray-500 mt-1 text-xs">
+            {`Next update in: ${timeRemaining}`}
+          </div>
         </div>
       </div>
     </div>

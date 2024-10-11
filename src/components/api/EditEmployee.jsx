@@ -248,6 +248,9 @@ const EditEmployee = ({ employeeId }) => {
               : "",
           );
 
+          console.log("employee data: ", employee)
+          console.log("qualifications data: ", qualifications)
+
           setIsActive(employee.isActive); // Set the initial status
           setSelectedCampus(employee.campus_id.toString()); // Set the initial campus
           setLoading(false);

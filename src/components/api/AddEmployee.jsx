@@ -615,6 +615,9 @@ const AddEmployee = () => {
                         <ErrorMessage>*{errors.gender.message}</ErrorMessage>
                       )}
                     </div>
+                  </div>
+
+                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
@@ -652,6 +655,38 @@ const AddEmployee = () => {
                         <ErrorMessage>
                           *{errors.contactNumber.message}
                         </ErrorMessage>
+                      )}
+                    </div>
+
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="birthDate"
+                      >
+                        Birth Date:
+                      </label>
+                      <input
+                        id="birthDate"
+                        name="birthDate"
+                        type="date"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("birthDate", {
+                          required: {
+                            value: true,
+                            message: "Birth date is required",
+                          },
+                          validate: {
+                            validYear: (value) =>
+                              validateBirthDate(value) ||
+                              `Invalid birth date. Please enter a valid year between 1900 and ${new Date().getFullYear() - 10}.`,
+                          },
+                        })}
+                        disabled={success}
+                      />
+                      {errors.birthDate && (
+                        <span className="mt-2 inline-block text-sm font-medium text-red-600">
+                          *{errors.birthDate.message}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -879,6 +914,16 @@ const AddEmployee = () => {
       </div>
     </div>
   );
+};
+
+const validateBirthDate = (value) => {
+  const birthYear = new Date(value).getFullYear();
+  const currentYear = new Date().getFullYear();
+  return (
+    birthYear >= 1900 &&
+    birthYear < currentYear &&
+    birthYear <= currentYear - 10
+  ); // which is 13 years old
 };
 
 export default AddEmployee;

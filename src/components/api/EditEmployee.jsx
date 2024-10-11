@@ -206,6 +206,10 @@ const EditEmployee = ({ employeeId }) => {
     clearErrors, // Added clearErrors to manually clear errors
   } = useForm();
 
+  useEffect(() => {
+    console.log("selectedRoles: ", selectedRoles);
+  }, [selectedRoles]);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
@@ -226,6 +230,7 @@ const EditEmployee = ({ employeeId }) => {
           setValue("address", employee.address);
           setSelectedGender(employee.gender);
           setValue("contactNumber", employee.contactNumber);
+          setValue("birthDate", employee.birthDate);
           const rolesArray = employee.role
             ? employee.role.split(",").map((role) => role.trim())
             : [];
@@ -238,8 +243,14 @@ const EditEmployee = ({ employeeId }) => {
             employee.qualifications || [{ abbreviation: "", meaning: "" }],
           );
 
-          setSelectedDepartmentID(employee.department_id?.toString() || "");
-          setSelectedDepartmenName(employee.fullDepartmentNameWithCampus);
+          setSelectedDepartmentID(
+            employee.department_id ? employee.department_id : "",
+          );
+          setSelectedDepartmenName(
+            employee.fullDepartmentNameWithCampus
+              ? employee.fullDepartmentNameWithCampus
+              : "",
+          );
 
           setIsActive(employee.isActive); // Set the initial status
           setSelectedCampus(employee.campus_id.toString()); // Set the initial campus
@@ -253,8 +264,52 @@ const EditEmployee = ({ employeeId }) => {
   }, [employeeId, open, setValue]);
 
   const onSubmit = async (data) => {
-    if (!selectedCampus) {
-      setError("campus_id", "You must select a campus.");
+    if (HasRole(user.role, "SuperAdmin")) {
+      if (!selectedCampus) {
+        setError("campus_id", {
+          type: "manual",
+          message: "You must select a campus.",
+        });
+        return;
+      }
+    }
+    if (!selectedRoles.length) {
+      setError("role", {
+        type: "manual",
+        message: "You must select a Role.",
+      });
+      return;
+    }
+    if (!selectedGender) {
+      setError("gender", {
+        type: "manual",
+        message: "You must select a Gender.",
+      });
+      return;
+    }
+    if (shouldShowDepartment) {
+      if (!selectedDepartmentID || selectedDepartmentID === "blank") {
+        setError("department_id", {
+          type: "manual",
+          message: "You must select a department.",
+        });
+        return;
+      }
+    }
+
+    // Check qualifications for mismatches between abbreviation and meaning
+    const incompleteQualifications = qualifications.some(
+      (qual) =>
+        (qual.abbreviation.trim() && !qual.meaning.trim()) ||
+        (!qual.abbreviation.trim() && qual.meaning.trim()),
+    );
+
+    if (incompleteQualifications) {
+      setError("qualifications", {
+        type: "manual",
+        message:
+          "Each qualification must have both an abbreviation and a meaning.",
+      });
       return;
     }
 
@@ -302,6 +357,8 @@ const EditEmployee = ({ employeeId }) => {
       isActive: isActive ? true : false,
       campus_id: user.campus_id ? user.campus_id : parseInt(selectedCampus),
     };
+
+    console.log(transformedData);
 
     setError("");
     try {
@@ -597,6 +654,9 @@ const EditEmployee = ({ employeeId }) => {
                           <ErrorMessage>*{errors.gender.message}</ErrorMessage>
                         )}
                       </div>
+                    </div>
+
+                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
@@ -635,6 +695,38 @@ const EditEmployee = ({ employeeId }) => {
                           <ErrorMessage>
                             *{errors.contactNumber.message}
                           </ErrorMessage>
+                        )}
+                      </div>
+
+                      <div className="mb-4.5 w-full">
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="birthDate"
+                        >
+                          Birth Date:
+                        </label>
+                        <input
+                          id="birthDate"
+                          name="birthDate"
+                          type="date"
+                          className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                          {...register("birthDate", {
+                            required: {
+                              value: true,
+                              message: "Birth date is required",
+                            },
+                            validate: {
+                              validYear: (value) =>
+                                validateBirthDate(value) ||
+                                `Invalid birth date. Please enter a valid year between 1900 and ${new Date().getFullYear() - 10}.`,
+                            },
+                          })}
+                          disabled={success}
+                        />
+                        {errors.birthDate && (
+                          <span className="mt-2 inline-block text-sm font-medium text-red-600">
+                            *{errors.birthDate.message}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -876,6 +968,16 @@ const ErrorMessage = ({ children }) => {
       {children}
     </span>
   );
+};
+
+const validateBirthDate = (value) => {
+  const birthYear = new Date(value).getFullYear();
+  const currentYear = new Date().getFullYear();
+  return (
+    birthYear >= 1900 &&
+    birthYear < currentYear &&
+    birthYear <= currentYear - 10
+  ); // which is 13 years old
 };
 
 export default EditEmployee;

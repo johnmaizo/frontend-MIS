@@ -15,6 +15,8 @@ const CardDataDepartment = () => {
 
   const previousDepartmentCount = useRef(null);
   const timeoutId = useRef(null);
+  const retryCount = useRef(0);
+  const maxRetries = 5;
 
   const title = "Total Department";
 
@@ -26,6 +28,7 @@ const CardDataDepartment = () => {
         params: {
           campus_id: user.campus_id,
         },
+        timeout: 10000, // 10-second timeout for the request
       });
       const { departmentCount, nextUpdate } = currentResponse.data;
       const parsedNextUpdate = new Date(nextUpdate);
@@ -39,6 +42,7 @@ const CardDataDepartment = () => {
 
       setNextUpdate(parsedNextUpdate);
       setError(null);
+      retryCount.current = 0; // Reset retry count on a successful fetch
 
       // Update the department count if it has changed
       if (departmentCount !== previousDepartmentCount.current) {
@@ -46,10 +50,15 @@ const CardDataDepartment = () => {
         previousDepartmentCount.current = departmentCount;
       }
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
+      if (retryCount.current < maxRetries) {
+        // Implement exponential backoff
+        const retryDelay = Math.pow(2, retryCount.current) * 1000; // 2^retryCount * 1000ms
+        retryCount.current += 1;
+        console.warn(`Retrying in ${retryDelay / 1000} seconds...`);
+        setTimeout(fetchData, retryDelay);
       } else {
-        setError("Failed to fetch department");
+        setError("Failed to fetch department data. Please try again later.");
+        retryCount.current = 0; // Reset retry count after max retries
       }
     }
     setLoading(false);

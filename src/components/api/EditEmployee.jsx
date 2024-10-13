@@ -483,7 +483,7 @@ const EditEmployee = ({ employeeId }) => {
                       />
                     </div>
 
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="mb-4.5 flex w-full flex-col gap-6 xl:flex-row">
                       <div className="w-full xl:w-[13em]">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
@@ -864,7 +864,7 @@ const EditEmployee = ({ employeeId }) => {
                     </div>
 
                     {shouldShowDepartment && (
-                      <div className="mb-4.5 w-full">
+                      <div className="mb-4.5 w-[13em] overflow-x-hidden 2xsm:w-[15.6em] sm:w-full sm:overflow-x-auto">
                         <span className="mb-2.5 block text-black dark:text-white">
                           Department
                         </span>

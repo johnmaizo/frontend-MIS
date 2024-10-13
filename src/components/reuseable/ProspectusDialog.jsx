@@ -150,7 +150,7 @@ const ProspectusDialog = () => {
               {loadingProspectusSubjects ? (
                 <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">
                   <DotSpinner size="3.8rem" />
-                  <p className="mt-4 font-bold text-lg">Loading Prospectus...</p>
+                  <p className="mt-4 font-bold text-lg block w-[15em]">Loading Prospectus...</p>
                 </div>
               ) : prospectusSubjects.length > 0 ? (
                 // Iterate over the grouped subjects by combined year level and semester and render a table for each

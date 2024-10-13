@@ -135,7 +135,7 @@ const ProspectusDialog = () => {
             Generate Prospectus
           </button>
         </DialogTrigger>
-        <DialogContent className="max-h-screen w-full max-w-4xl overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white md:h-[42em]">
+        <DialogContent className="h-[32em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white max-xl:max-h-screen">
           <DialogTitle className="mt-10 text-center uppercase !text-black dark:!text-white">
             {departmentName || "Loading Department..."}
           </DialogTitle>
@@ -160,7 +160,7 @@ const ProspectusDialog = () => {
                   return (
                     <div
                       key={index}
-                      className="mb-10 !text-black dark:!text-white"
+                      className="mb-10 lg:px-[8em] !text-black dark:!text-white"
                     >
                       <div className="overflow-x-auto">
                         <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
@@ -169,7 +169,7 @@ const ProspectusDialog = () => {
                             <tr>
                               <th
                                 colSpan="6"
-                                className="bg-gray-200 dark:bg-gray-700 border p-2 text-lg text-center font-bold"
+                                className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
                               >
                                 {yearSemesterKey}
                               </th>

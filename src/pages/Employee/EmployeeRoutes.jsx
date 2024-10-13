@@ -26,6 +26,9 @@ import OfficialEnrolledPage from "../Admin/SubPages/OfficalEnrolledPage";
 import EmployeePage from "../Admin/SubPages/EmployeePage";
 import EmployeeHomePage from "./SubPages/EmployeeHomePage";
 import ClassPage from "../Admin/SubPages/ClassPage";
+import ProspectusPage from "../Admin/SubPages/ProspectusPage";
+import ViewProspectusPage from "../Admin/SubPages/ViewProspectusPage";
+import ViewProspectusSubjectPage from "../Admin/SubPages/ViewProspectusSubjectPage";
 
 const EmployeeRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -174,6 +177,38 @@ const EmployeeRoutes = () => {
               </>
             }
           />
+
+          {/* ! Prospectus */}
+          <Route
+            path="/subjects/prospectus"
+            element={
+              <>
+                <PageTitle title="Prospectus - MIS Benedicto College" />
+                <ProspectusPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/subjects/prospectus-subjects/campus/:programCampusId/:programCampusName/program/:programCode/:program_id"
+            element={
+              <>
+                <PageTitle title="View Prospectus - MIS Benedicto College" />
+                <ViewProspectusPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/subjects/prospectus-subjects/campus/:prospectusCampusId/:prospectusCampusName/program/:prospectusProgramCode/prospectus/:prospectus_id"
+            element={
+              <>
+                <PageTitle title="Assign Subjects to Program Prospectus - MIS Benedicto College" />
+                <ViewProspectusSubjectPage />
+              </>
+            }
+          />
+          {/* ! End Prospectus */}
 
           <Route
             path="/structure-management/buildings"

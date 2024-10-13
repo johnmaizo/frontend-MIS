@@ -9,6 +9,7 @@ import {
 } from "../ui/dialog";
 import { useSchool } from "../context/SchoolContext"; // Assuming SchoolContext is correctly set up
 import { useParams } from "react-router-dom";
+import DotSpinner from "../styles/DotSpinner";
 
 const ProspectusDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -137,17 +138,20 @@ const ProspectusDialog = () => {
         </DialogTrigger>
         <DialogContent className="h-[40em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white max-xl:max-h-screen">
           <DialogTitle className="mt-10 text-center uppercase !text-black dark:!text-white">
-            {departmentName || "Loading Department..."}
+            {loadingProspectusSubjects ? "" : departmentName && departmentName}
           </DialogTitle>
           <DialogDescription>
             <div className="mb-4 !text-black dark:!text-white">
               <p className="text-center text-xl font-semibold uppercase">
-                {program}
+                {loadingProspectusSubjects ? "" : program}
               </p>
             </div>
             <div className="mt-10">
               {loadingProspectusSubjects ? (
-                <p>Loading...</p>
+                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">
+                  <DotSpinner size="3.8rem" />
+                  <p className="mt-4 font-bold text-lg">Loading...</p>
+                </div>
               ) : prospectusSubjects.length > 0 ? (
                 // Iterate over the grouped subjects by combined year level and semester and render a table for each
                 Object.keys(groupedSubjects).map((yearSemesterKey, index) => {
@@ -160,7 +164,7 @@ const ProspectusDialog = () => {
                   return (
                     <div
                       key={index}
-                      className="mb-10 lg:px-[8em] !text-black dark:!text-white"
+                      className="mb-10 !text-black dark:!text-white lg:px-[8em]"
                     >
                       <div className="overflow-x-auto">
                         <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
@@ -247,7 +251,9 @@ const ProspectusDialog = () => {
                   );
                 })
               ) : (
-                <p>No subjects available for this prospectus.</p>
+                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%] w-[20em] font-bold text-lg">
+                  <p>No subjects available for this prospectus.</p>
+                </div>
               )}
             </div>
           </DialogDescription>

@@ -12,13 +12,11 @@ import { useParams } from "react-router-dom";
 
 const ProspectusDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const {
     prospectusSubjects,
     fetchProspectusSubjects,
     loadingProspectusSubjects,
   } = useSchool();
-  
   const {
     prospectusCampusId,
     prospectusCampusName,
@@ -43,19 +41,16 @@ const ProspectusDialog = () => {
     return subjects.reduce((acc, subject) => {
       const yearLevel = subject.yearLevel;
       const semesterName = subject.semesterName;
+      const yearSemesterKey = `${yearLevel} - ${semesterName}`; // Combine year level and semester
 
-      if (!acc[yearLevel]) {
-        acc[yearLevel] = {};
+      if (!acc[yearSemesterKey]) {
+        acc[yearSemesterKey] = [];
       }
 
-      if (!acc[yearLevel][semesterName]) {
-        acc[yearLevel][semesterName] = [];
-      }
-
-      acc[yearLevel][semesterName].push(subject);
+      acc[yearSemesterKey].push(subject);
 
       // Sort subjects within each semester by course_department_id (non-null first) and then by courseCode (A to Z)
-      acc[yearLevel][semesterName].sort((a, b) => {
+      acc[yearSemesterKey].sort((a, b) => {
         if (a.course_department_id && !b.course_department_id) return -1;
         if (!a.course_department_id && b.course_department_id) return 1;
         return a.courseCode.localeCompare(b.courseCode);
@@ -105,8 +100,8 @@ const ProspectusDialog = () => {
   };
 
   // Calculate total units for a semester
-  const calculateTotalUnits = (subjects) => {
-    return subjects.reduce(
+  const calculateTotalUnits = (consolidatedSubjects) => {
+    return consolidatedSubjects.reduce(
       (totals, subject) => {
         totals.totalUnits += subject.totalUnits;
         return totals;
@@ -154,108 +149,103 @@ const ProspectusDialog = () => {
               {loadingProspectusSubjects ? (
                 <p>Loading...</p>
               ) : prospectusSubjects.length > 0 ? (
-                // Iterate over the grouped subjects by year level and semester and render a table for each semester
-                Object.keys(groupedSubjects).map((yearLevel, index) => (
-                  <div
-                    key={index}
-                    className="mb-10 !text-black dark:!text-white"
-                  >
-                    <h2 className="mb-4 text-center text-2xl font-semibold">
-                      {yearLevel}
-                    </h2>
-                    {Object.keys(groupedSubjects[yearLevel]).map(
-                      (semesterName, idx) => {
-                        const semesterSubjects = consolidateSubjects(
-                          groupedSubjects[yearLevel][semesterName],
-                        );
-                        const totalUnits =
-                          calculateTotalUnits(semesterSubjects);
-                        return (
-                          <div key={idx} className="mb-6">
-                            <h3 className="mb-2 text-center text-xl font-semibold">
-                              {semesterName}
-                            </h3>
-                            <div className="overflow-x-auto">
-                              <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
-                                <thead>
-                                  <tr>
-                                    <th className="border p-2" rowSpan="2">
-                                      Subject Code
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Description Title
-                                    </th>
-                                    <th className="border p-2" colSpan="3">
-                                      Units
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Pre-requisites
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <th className="border p-2">Lec</th>
-                                    <th className="border p-2">Lab</th>
-                                    <th className="border p-2">Total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {semesterSubjects.map((subject) => (
-                                    <tr key={subject.prospectus_subject_id}>
-                                      <td className="border p-2">
-                                        {subject.courseCode}
-                                      </td>
-                                      <td className="border p-2">
-                                        {subject.courseDescription}
-                                      </td>
-                                      <td className="border p-2">
-                                        {subject.lecUnits}
-                                      </td>
-                                      <td className="border p-2">
-                                        {subject.labUnits}
-                                      </td>
-                                      <td className="border p-2">
-                                        {subject.totalUnits}
-                                      </td>
-                                      <td className="border p-2">
-                                        {subject.prerequisites.length > 0
-                                          ? subject.prerequisites.map(
-                                              (prerequisite) => (
-                                                <span
-                                                  key={
-                                                    prerequisite.pre_requisite_id
-                                                  }
-                                                >
-                                                  {prerequisite.courseCode}
-                                                  <br />
-                                                </span>
-                                              ),
-                                            )
-                                          : ""}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                  {/* Add Total Units row */}
-                                  <tr>
-                                    <td className="border p-2"></td>
+                // Iterate over the grouped subjects by combined year level and semester and render a table for each
+                Object.keys(groupedSubjects).map((yearSemesterKey, index) => {
+                  const consolidatedSubjects = consolidateSubjects(
+                    groupedSubjects[yearSemesterKey],
+                  );
+                  const totalUnits =
+                    calculateTotalUnits(consolidatedSubjects).totalUnits;
 
-                                    <td className="border p-2 text-center font-bold">
-                                      Total Units
-                                    </td>
-                                    <td className="border-none p-2"></td>
-                                    <td className="border-none p-2 text-center font-bold">
-                                      {totalUnits.totalUnits}
-                                    </td>
-                                    <td className="border-r p-2 font-bold"></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                ))
+                  return (
+                    <div
+                      key={index}
+                      className="mb-10 !text-black dark:!text-white"
+                    >
+                      <div className="overflow-x-auto">
+                        <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
+                          {/* Insert the row with Year - Semester across the whole table */}
+                          <thead>
+                            <tr>
+                              <th
+                                colSpan="6"
+                                className="bg-gray-200 dark:bg-gray-700 border p-2 text-lg text-center font-bold"
+                              >
+                                {yearSemesterKey}
+                              </th>
+                            </tr>
+                            <tr>
+                              <th className="border p-2" rowSpan="2">
+                                Subject Code
+                              </th>
+                              <th className="border p-2" rowSpan="2">
+                                Description Title
+                              </th>
+                              <th className="border p-2" colSpan="3">
+                                Units
+                              </th>
+                              <th className="border p-2" rowSpan="2">
+                                Pre-requisites
+                              </th>
+                            </tr>
+                            <tr>
+                              <th className="border p-2">Lec</th>
+                              <th className="border p-2">Lab</th>
+                              <th className="border p-2">Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {consolidatedSubjects.map((subject) => (
+                              <tr key={subject.prospectus_subject_id}>
+                                <td className="border p-2">
+                                  {subject.courseCode}
+                                </td>
+                                <td className="border p-2">
+                                  {subject.courseDescription}
+                                </td>
+                                <td className="border p-2">
+                                  {subject.lecUnits}
+                                </td>
+                                <td className="border p-2">
+                                  {subject.labUnits}
+                                </td>
+                                <td className="border p-2">
+                                  {subject.totalUnits}
+                                </td>
+                                <td className="border p-2">
+                                  {subject.prerequisites.length > 0
+                                    ? subject.prerequisites.map(
+                                        (prerequisite) => (
+                                          <span
+                                            key={prerequisite.pre_requisite_id}
+                                          >
+                                            {prerequisite.courseCode}
+                                          </span>
+                                        ),
+                                      )
+                                    : ""}
+                                </td>
+                              </tr>
+                            ))}
+                            {/* Add Total Units row */}
+                            <tr>
+                              <td className="border p-2"></td>
+
+                              <td className="border p-2 text-center font-bold">
+                                Total Units
+                              </td>
+                              <td className="border-none p-2"></td>
+                              <td className="border-none p-2 text-center font-bold">
+                                {totalUnits}
+                              </td>
+                              <td className="border-r p-2 font-bold"></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
                 <p>No subjects available for this prospectus.</p>
               )}

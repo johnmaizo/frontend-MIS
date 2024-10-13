@@ -25,9 +25,8 @@ import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { useParams } from "react-router-dom";
 import StatusFilter from "../../../components/reuseable/StatusFilter";
 import AddProspectus from "../../../components/api/AddProspectus";
-import { useColumns } from "../../../components/reuseable/Columns";
-import PageNotFound from "../../PageNotFound";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
+import PageNotFound from "../../PageNotFound";
 import ProspectusDialog from "../../../components/reuseable/ProspectusDialog";
 
 const ViewProspectusSubjectPage = () => {

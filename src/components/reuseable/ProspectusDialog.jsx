@@ -135,7 +135,7 @@ const ProspectusDialog = () => {
             Generate Prospectus
           </button>
         </DialogTrigger>
-        <DialogContent className="h-[32em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white max-xl:max-h-screen">
+        <DialogContent className="h-[35em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white max-xl:max-h-screen">
           <DialogTitle className="mt-10 text-center uppercase !text-black dark:!text-white">
             {departmentName || "Loading Department..."}
           </DialogTitle>

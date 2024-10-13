@@ -290,7 +290,7 @@ const AdminSidebar = ({
                           Subject List
                         </NavLink>
                       </li>
-                      <li>
+                      {/* <li>
                         <NavLink
                           to="/subjects/program-subjects"
                           className={({ isActive }) =>
@@ -304,7 +304,7 @@ const AdminSidebar = ({
                           <ArrowRightIcon className="h-4 w-4 flex-none" />
                           Program Subjects
                         </NavLink>
-                      </li>
+                      </li> */}
                       <li>
                         <NavLink
                           to="/subjects/prospectus"

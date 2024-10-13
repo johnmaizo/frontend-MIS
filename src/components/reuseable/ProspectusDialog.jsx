@@ -12,11 +12,13 @@ import { useParams } from "react-router-dom";
 
 const ProspectusDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const {
     prospectusSubjects,
     fetchProspectusSubjects,
     loadingProspectusSubjects,
   } = useSchool();
+  
   const {
     prospectusCampusId,
     prospectusCampusName,

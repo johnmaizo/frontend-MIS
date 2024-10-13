@@ -921,6 +921,41 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Prospectus END
 
+  // ! Prospectus Subjects START
+  const [loadingProspectusSubjects, setLoadingProspectusSubjects] = useState(false);
+  const [prospectusSubjects, setProspectusSubjects] = useState([]);
+
+  const fetchProspectusSubjects = async (
+    campusId,
+    campusName,
+    programCode,
+    prospectusId,
+  ) => {
+    setProspectusSubjects([]);
+    setError("");
+    setLoadingProspectusSubjects(true);
+    try {
+      const response = await axios.get("/prospectus/get-all-prospectus-subjects/", {
+        params: {
+          campus_id: user.campus_id ? user.campus_id : campusId,
+          campusName: campusName,
+          prospectus_id: prospectusId,
+          programCode: programCode,
+        },
+      });
+      setProspectusSubjects(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch Prospectus: (${err})`);
+      }
+    }
+    setLoadingProspectusSubjects(false);
+  };
+
+  // ! Prospectus Subjects END
+
   return (
     <SchoolContext.Provider
       value={{
@@ -1033,6 +1068,11 @@ export const SchoolProvider = ({ children }) => {
         prospectus,
         loadingProspectus,
         fetchProspectus,
+
+        // ! Prospectus Subjects
+        prospectusSubjects,
+        loadingProspectusSubjects,
+        fetchProspectusSubjects,
       }}
     >
       {children}

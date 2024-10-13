@@ -27,10 +27,12 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 import AddProspectus from "../../../components/api/AddProspectus";
 import { useColumns } from "../../../components/reuseable/Columns";
 import PageNotFound from "../../PageNotFound";
+import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
+import ProspectusDialog from "../../../components/reuseable/ProspectusDialog";
 
-const ViewProspectusPage = () => {
+const ViewProspectusSubjectPage = () => {
   // const { user } = useContext(AuthContext);
-  const { programCode } = useParams();
+  const { prospectusProgramCode } = useParams();
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
@@ -43,7 +45,7 @@ const ViewProspectusPage = () => {
       label: "Assign Prospectus to Program",
     },
     {
-      label: `Prospectus for (${programCode})`,
+      label: `Prospectus Subjects for (${prospectusProgramCode})`,
     },
   ];
 
@@ -56,7 +58,7 @@ const ViewProspectusPage = () => {
       ) : (
         <>
           <BreadcrumbResponsive
-            pageName={`Prospectus for (${programCode})`}
+            pageName={`Prospectus Subjects for (${prospectusProgramCode})`}
             items={NavItems}
             ITEMS_TO_DISPLAY={3}
           />
@@ -68,47 +70,38 @@ const ViewProspectusPage = () => {
 };
 
 const ProgramCourseTables = () => {
-  const { programCampusId, programCampusName, program_id, programCode } =
+  const { prospectusCampusId, prospectusCampusName, prospectusProgramCode, prospectus_id } =
     useParams();
 
   const {
-    prospectus,
-    fetchProspectus,
-    // fetchProgramCourseDeleted,
-    loadingProspectus,
+    prospectusSubjects,
+    fetchProspectusSubjects,
+    loadingProspectusSubjects,
     error,
   } = useSchool();
 
   useEffect(() => {
-    fetchProspectus(
-      programCampusId,
-      programCampusName,
-      program_id,
-      programCode,
+    fetchProspectusSubjects(
+      prospectusCampusId,
+      prospectusCampusName,
+      prospectusProgramCode,
+      prospectus_id,
     );
-    // fetchProgramCourseDeleted(
-    //   programCampusId,
-    //   programCampusName,
-    //   program_id,
-    //   programCode,
-    // );
-  }, [programCampusId, programCampusName, program_id, programCode]);
+  }, [prospectusCampusId, prospectusCampusName, prospectus_id, prospectusProgramCode]);
 
-  const { columnViewSpecificProspectus } = useColumns();
+  const { columnViewSubjectProspectus } = useColumnsSecond();
 
   return (
     <DataTable
-      columns={columnViewSpecificProspectus}
-      data={prospectus}
-      loading={loadingProspectus}
+      columns={columnViewSubjectProspectus}
+      data={prospectusSubjects}
+      loading={loadingProspectusSubjects}
       error={error}
     />
   );
 };
 
 const DataTable = ({ data, columns, loading, error }) => {
-  //   const { user } = useContext(AuthContext);
-
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
 
@@ -128,7 +121,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 50,
       },
     },
   });
@@ -138,20 +131,20 @@ const DataTable = ({ data, columns, loading, error }) => {
       <div className="mb-3 mt-2 w-full items-start justify-between md:flex">
         <div className="gap-5 md:flex">
           <Input
-            placeholder="Search by Prospectus Name..."
-            value={table.getColumn("prospectusName")?.getFilterValue() ?? ""}
+            placeholder="Search by Subject Code..."
+            value={table.getColumn("courseCode")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("prospectusName")?.setFilterValue(event.target.value)
+              table.getColumn("courseCode")?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
           <Input
-            placeholder="Search by Prospectus Description..."
-            value={table.getColumn("prospectusDescription")?.getFilterValue() ?? ""}
+            placeholder="Search by Subject Description..."
+            value={table.getColumn("courseDescription")?.getFilterValue() ?? ""}
             onChange={(event) =>
               table
-                .getColumn("prospectusDescription")
+                .getColumn("courseDescription")
                 ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[19em]"
@@ -165,8 +158,13 @@ const DataTable = ({ data, columns, loading, error }) => {
 
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="mb-5 flex w-full items-center justify-between gap-3">
-          <div className="w-[11.5em]">
+          {/* <div className="w-[11.5em]">
             <StatusFilter table={table} option={"campus"} />
+          </div> */}
+
+          <div className="w-[11.5em]">
+            {/* <StatusFilter table={table} option={"prospectus"} /> */}
+            <ProspectusDialog />
           </div>
 
         </div>
@@ -182,8 +180,8 @@ const DataTable = ({ data, columns, loading, error }) => {
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            rowsPerPage={10}
-            totalName={"Prospectus"}
+            rowsPerPage={50}
+            totalName={"Subject"}
             table={table}
             totalDepartments={table.getFilteredRowModel().rows.length}
           />
@@ -193,4 +191,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default ViewProspectusPage;
+export default ViewProspectusSubjectPage;

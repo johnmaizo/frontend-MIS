@@ -36,6 +36,7 @@ import EmployeePage from "./SubPages/EmployeePage";
 import ClassPage from "./SubPages/ClassPage";
 import ProspectusPage from "./SubPages/ProspectusPage";
 import ViewProspectusPage from "./SubPages/ViewProspectusPage";
+import ViewProspectusSubjectPage from "./SubPages/ViewProspectusSubjectPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -194,8 +195,18 @@ const AdminRoutes = () => {
         path="/subjects/prospectus-subjects/campus/:programCampusId/:programCampusName/program/:programCode/:program_id"
         element={
           <>
-            <PageTitle title="Assign Subjects to Prospectus - MIS Benedicto College" />
+            <PageTitle title="View Prospectus - MIS Benedicto College" />
             <ViewProspectusPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/subjects/prospectus-subjects/campus/:prospectusCampusId/:prospectusCampusName/program/:prospectusProgramCode/prospectus/:prospectus_id"
+        element={
+          <>
+            <PageTitle title="Assign Subjects to Program Prospectus - MIS Benedicto College" />
+            <ViewProspectusSubjectPage />
           </>
         }
       />

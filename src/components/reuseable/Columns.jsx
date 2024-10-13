@@ -2625,7 +2625,9 @@ const useColumns = () => {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className={`${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "hover:cursor-not-allowed" : ""}`}>
+          <div
+            className={`${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "hover:cursor-not-allowed" : ""}`}
+          >
             <div
               className={`flex items-center gap-1 ${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "pointer-events-none hover:cursor-not-allowed" : ""}`}
             >
@@ -2991,34 +2993,6 @@ const useColumns = () => {
         );
       },
     },
-    ...(user && HasRole(user.role, "SuperAdmin")
-      ? [
-          {
-            accessorKey: "department.campus.campusName",
-            header: ({ column }) => {
-              return (
-                <Button
-                  variant="ghost"
-                  onClick={() =>
-                    column.toggleSorting(column.getIsSorted() === "asc")
-                  }
-                  className="p-1 hover:underline hover:underline-offset-4"
-                >
-                  Campus
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              );
-            },
-            cell: ({ cell }) => {
-              return (
-                <span className="inline-block font-semibold">
-                  {cell.getValue()}
-                </span>
-              );
-            },
-          },
-        ]
-      : []),
     {
       header: () => {
         return <span className="sr-only">Select Program</span>;
@@ -3253,18 +3227,14 @@ const useColumns = () => {
       },
       id: "selectProspectus",
       accessorFn: (row) =>
-        `${row.prospectus_id} ${row.buildingName} ${row.floorName} ${row.campus.campusName} ${row.isActive}`,
+        `${row.prospectus_id} ${row.campus_id} ${row.campusName} ${row.programCode} ${row.isActive}`,
       cell: ({ row }) => {
         return (
           <div
             className={`flex items-center gap-1 ${!row.original.isActive ? "cursor-not-allowed" : ""}`}
           >
             <Link
-              to={
-                user && user.campus_id
-                  ? `/structure-management/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
-                  : `/structure-management/${row.original.campus.campus_id}/buildings/${row.original.buildingName}/floors/${row.original.floorName}/rooms`
-              }
+              to={`/subjects/prospectus-subjects/campus/${row.original.campus_id}/${row.original.campusName}/program/${row.original.programCode}/prospectus/${row.original.prospectus_id}`}
               className={`rounded p-3 text-sm font-medium text-white ${!row.original.isActive ? "pointer-events-none bg-blue-400 hover:no-underline" : "bg-primary hover:underline hover:underline-offset-2"}`}
             >
               Select Prospectus
@@ -3275,6 +3245,8 @@ const useColumns = () => {
     },
   ];
   // ! Column View Specific Prospectus END
+
+  
 
   return {
     columnCampus,

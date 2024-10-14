@@ -62,7 +62,7 @@ const ProspectusDialog = () => {
   };
 
   // Consolidate lecture and lab into one row by removing redundancy
-  const consolidateSubjects = (subjects) => {
+  const consolidateSubjects = (subjects, yearSemesterKey) => {
     const consolidated = {};
 
     subjects.forEach((subject) => {
@@ -79,8 +79,17 @@ const ProspectusDialog = () => {
         };
       }
 
-      // Assign lec or lab units based on the course code
-      if (subject.courseCode.endsWith("L")) {
+      // Check if we are in "Fourth Year - 2nd Semester" and the course has "(Lab)" in its description
+      if (
+        yearSemesterKey === "Fourth Year - 2nd Semester" &&
+        subject.courseDescription.includes("(Lab)")
+      ) {
+        // Remove "(Lab)" from the description and move the units to lab
+        consolidated[baseCourseCode].labUnits = subject.unit;
+        consolidated[baseCourseCode].lecUnits = 0;
+        consolidated[baseCourseCode].courseDescription =
+          subject.courseDescription.replace(" (Lab)", ""); // Remove "(Lab)"
+      } else if (subject.courseCode.endsWith("L")) {
         consolidated[baseCourseCode].labUnits = subject.unit;
       } else {
         consolidated[baseCourseCode].lecUnits = subject.unit;
@@ -150,13 +159,16 @@ const ProspectusDialog = () => {
               {loadingProspectusSubjects ? (
                 <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">
                   <DotSpinner size="3.8rem" />
-                  <p className="mt-4 font-bold text-lg block w-[15em]">Loading Prospectus...</p>
+                  <p className="mt-4 block w-[15em] text-lg font-bold">
+                    Loading Prospectus...
+                  </p>
                 </div>
               ) : prospectusSubjects.length > 0 ? (
                 // Iterate over the grouped subjects by combined year level and semester and render a table for each
                 Object.keys(groupedSubjects).map((yearSemesterKey, index) => {
                   const consolidatedSubjects = consolidateSubjects(
                     groupedSubjects[yearSemesterKey],
+                    yearSemesterKey, // Pass the yearSemesterKey for conditional logic
                   );
                   const totalUnits =
                     calculateTotalUnits(consolidatedSubjects).totalUnits;
@@ -251,7 +263,7 @@ const ProspectusDialog = () => {
                   );
                 })
               ) : (
-                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%] w-[20em] font-bold text-lg">
+                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] text-lg font-bold md:left-[49%]">
                   <p>No subjects available for this prospectus.</p>
                 </div>
               )}

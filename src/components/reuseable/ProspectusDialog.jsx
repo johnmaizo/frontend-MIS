@@ -11,6 +11,19 @@ import { useSchool } from "../context/SchoolContext"; // Assuming SchoolContext 
 import { useParams } from "react-router-dom";
 import DotSpinner from "../styles/DotSpinner";
 
+/**
+ * A reusable dialog component to display the prospectus for a given program.
+ * The dialog will fetch the prospectus data when opened and render it in a tabular format.
+ * The data is grouped by year level and semester.
+ * The component also calculates the total units for each semester.
+ * The total units are displayed as a separate row at the bottom of the table.
+ * If there are no subjects available for the prospectus, the dialog will display a message.
+ * @param {number} prospectusCampusId - The campus ID for the prospectus
+ * @param {string} prospectusCampusName - The campus name for the prospectus
+ * @param {string} prospectusProgramCode - The program code for the prospectus
+ * @param {number} prospectus_id - The prospectus ID
+ * @returns {JSX.Element} The ProspectusDialog component
+ */
 const ProspectusDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {

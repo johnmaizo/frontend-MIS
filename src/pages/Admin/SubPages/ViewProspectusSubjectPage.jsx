@@ -28,6 +28,7 @@ import AddProspectus from "../../../components/api/AddProspectus";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
 import PageNotFound from "../../PageNotFound";
 import ProspectusDialog from "../../../components/reuseable/ProspectusDialog";
+import AddProspectusSubject from "../../../components/api/AddProspectusSubject";
 
 const ViewProspectusSubjectPage = () => {
   // const { user } = useContext(AuthContext);
@@ -151,7 +152,8 @@ const DataTable = ({ data, columns, loading, error }) => {
         </div>
 
         <div className=" ">
-          <AddProspectus />
+          {/* <AddProspectus /> */}
+          <AddProspectusSubject />
         </div>
       </div>
 

@@ -3164,12 +3164,12 @@ const useColumns = () => {
     // },
     {
       header: "Actions",
-      accessorFn: (row) => `${row.programCourse_id} ${row.isActive}`,
+      accessorFn: (row) => `${row.prospectus_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
           <div className="pointer-events-none flex items-center gap-1">
-            <EditCourse courseId={row.getValue("programCourse_id")} />
+            <EditCourse courseId={row.getValue("prospectus_id")} />
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Course"} />
@@ -3189,7 +3189,7 @@ const useColumns = () => {
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     {/* <ButtonActionCourse
                       action="delete"
-                      courseId={row.getValue("programCourse_id")}
+                      courseId={row.getValue("prospectus_id")}
                       onSuccess={() => {
                         fetchProgramCourse(campusName, program_id);
                         fetchProgramCourseDeleted(campusName, program_id);
@@ -3197,7 +3197,7 @@ const useColumns = () => {
                     /> */}
                     <ButtonAction
                       entityType={"course"}
-                      entityId={row.getValue("programCourse_id")}
+                      entityId={row.getValue("prospectus_id")}
                       action="delete"
                       onSuccess={() => {
                         fetchProgramCourse(campusName, program_id);

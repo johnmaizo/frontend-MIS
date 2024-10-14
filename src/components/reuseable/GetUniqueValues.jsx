@@ -44,6 +44,15 @@ export const getUniqueCodesEnrollment = (data, uniqueKey) => {
   ].sort((a, b) => a.label.localeCompare(b.label)); // Sort labels in ascending order
 };
 
+/**
+ * Returns an array of unique values with a label containing the value, sorted in ascending order by label.
+ * Items with null department_id come first in the sorted order.
+ * The array includes an additional 'disable' property that is set to true if a matching item is found in data2.
+ * @param {object[]} data - Array of objects containing the value
+ * @param {string} uniqueKey - The key that uniquely identifies each value
+ * @param {object[]} data2 - Array of objects to compare with data
+ * @returns {object[]} An array of objects with 'value', 'label', 'isDepartmentIdNull', and 'disable' properties
+ */
 export const getUniqueCourseCodes = (data, uniqueKey, data2) => {
   // Sort the data so items with null department_id come first
   const sortedData = data.sort((a, b) => {

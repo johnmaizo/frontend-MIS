@@ -31,17 +31,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useState } from "react";
+import React, { useState } from "react";
 import { HomeIcon } from "lucide-react";
 
 /**
- * A responsive breadcrumb component that displays a dropdown menu
- * or drawer based on the screen size.
+ * A responsive breadcrumb component that will use a dropdown menu on desktop
+ * and a drawer on mobile devices to handle long breadcrumb lists.
  *
- * @param {string} pageName - The name of the page
- * @param {BreadcrumbItem[]} items - The breadcrumb items
- * @param {number} ITEMS_TO_DISPLAY - The number of items to display
+ * @param {string} pageName - The name of the page to display in the title.
+ * @param {Array<{ to: string, label: string }>} items - An array of breadcrumb
+ *   items. Each item should have a `to` property with the link to the page and
+ *   a `label` property with the text to display.
+ * @param {number} ITEMS_TO_DISPLAY - The number of items to display before
+ *   showing the dropdown menu or drawer.
  */
+
 export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
   const [open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -61,18 +65,15 @@ export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
               <BreadcrumbLink asChild>
                 <Link
                   to={items[0].to}
-                  className="inline-flex text-[#5E6B7E] dark:text-[#94A3B8] items-center gap-1"
+                  className="inline-flex items-center gap-1 text-[#5E6B7E] dark:text-[#94A3B8]"
                 >
-                  <HomeIcon
-                    width={15}
-                    height={15}
-                    className="flex-none"
-                  />{" "}
+                  <HomeIcon width={15} height={15} className="flex-none" />{" "}
                   {items[0].label}
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
+            <BreadcrumbSeparator />{" "}
+            {/* Place separator between BreadcrumbItems */}
             {items.length > ITEMS_TO_DISPLAY ? (
               <>
                 <BreadcrumbItem>
@@ -132,28 +133,28 @@ export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
                     </Drawer>
                   )}
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
+                <BreadcrumbSeparator />{" "}
+                {/* Place separator between BreadcrumbItems */}
               </>
             ) : null}
             {items.slice(-ITEMS_TO_DISPLAY + 1).map((item, index) => (
-              <BreadcrumbItem key={index}>
-                {item.to ? (
-                  <>
+              <React.Fragment key={index}>
+                <BreadcrumbItem>
+                  {item.to ? (
                     <BreadcrumbLink
                       asChild
                       className="max-w-20 truncate text-[1rem] font-medium md:max-w-none"
-                      // className="text-[2rem] bg-red-600"
                     >
                       <Link to={item.to}>{item.label}</Link>
                     </BreadcrumbLink>
-                    <BreadcrumbSeparator />
-                  </>
-                ) : (
-                  <BreadcrumbPage className="max-w-20 truncate text-[1rem] font-medium text-primary dark:text-[#83aaff] md:max-w-none">
-                    {item.label}
-                  </BreadcrumbPage>
-                )}
-              </BreadcrumbItem>
+                  ) : (
+                    <BreadcrumbPage className="max-w-20 truncate text-[1rem] font-medium text-primary dark:text-[#83aaff] md:max-w-none">
+                      {item.label}
+                    </BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+                {index < items.length - 1 && <BreadcrumbSeparator />}
+              </React.Fragment>
             ))}
           </BreadcrumbList>
         </Breadcrumb>

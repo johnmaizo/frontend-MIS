@@ -360,7 +360,7 @@ export const SchoolProvider = ({ children }) => {
     setLoading(false);
   };
 
-  const fetchCourseActive = async (program_id) => {
+  const fetchCourseActive = async (program_id = null, programCode = null) => {
     setError("");
     setLoading(true);
     try {
@@ -368,6 +368,7 @@ export const SchoolProvider = ({ children }) => {
         params: {
           campus_id: user.campus_id,
           program_id: program_id,
+          programCode: programCode
         },
       });
       setCourseActive(response.data);

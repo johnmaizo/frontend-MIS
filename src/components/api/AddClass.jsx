@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -15,7 +15,6 @@ import {
 
 import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
-import { AuthContext } from "../context/AuthContext";
 
 import { ErrorMessage } from "../reuseable/ErrorMessage";
 import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
@@ -24,8 +23,6 @@ import { useMediaQuery } from "../../hooks/use-media-query";
 import { compareDataAndSetDisable } from "../reuseable/GetUniqueValues";
 
 const AddClass = () => {
-  const { user } = useContext(AuthContext);
-
   const {
     fetchClass,
     courseActive,
@@ -264,7 +261,6 @@ const AddClass = () => {
                           idKey="course_id"
                           nameKey="fullCourseName"
                           errorKey="course_id"
-
                           forCourse={true}
                           setSelectedInstructorID={setSelectedInstructorID}
                           setSelectedInstructorName={setSelectedInstructorName}
@@ -298,7 +294,6 @@ const AddClass = () => {
                         idKey="semester_id"
                         nameKey="fullSemesterName"
                         errorKey="semester_id"
-
                         forSemester={true}
                       />
 

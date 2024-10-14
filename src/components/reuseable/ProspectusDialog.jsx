@@ -161,13 +161,15 @@ const ProspectusDialog = () => {
         <DialogContent className="h-[40em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white max-xl:max-h-screen">
           <DialogTitle className="mt-10 text-center uppercase !text-black dark:!text-white">
             {loadingProspectusSubjects ? "" : departmentName && departmentName}
+            <br /> <br />
+            {loadingProspectusSubjects ? "" : program}
           </DialogTitle>
           <DialogDescription>
-            <div className="mb-4 !text-black dark:!text-white">
+            {/* <div className="mb-4 !text-black dark:!text-white">
               <p className="text-center text-xl font-semibold uppercase">
                 {loadingProspectusSubjects ? "" : program}
               </p>
-            </div>
+            </div> */}
             <div className="mt-10">
               {loadingProspectusSubjects ? (
                 <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">

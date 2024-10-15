@@ -52,7 +52,15 @@ const ProspectusDialog = () => {
 
   // Group subjects by year level and then by semester, and sort by courseCode and course_department_id
   const groupSubjectsByYearAndSemester = (subjects) => {
-    return subjects.reduce((acc, subject) => {
+    // Define the sorting order for semesters
+    const semesterOrder = {
+      "1st Semester": 1,
+      "2nd Semester": 2,
+      Summer: 3,
+    };
+
+    // Group subjects by year level and semester
+    const grouped = subjects.reduce((acc, subject) => {
       const yearLevel = subject.yearLevel;
       const semesterName = subject.semesterName;
       const yearSemesterKey = `${yearLevel} - ${semesterName}`; // Combine year level and semester
@@ -72,6 +80,28 @@ const ProspectusDialog = () => {
 
       return acc;
     }, {});
+
+    // Sort the grouped keys by year and then by the predefined semester order
+    const sortedKeys = Object.keys(grouped).sort((a, b) => {
+      const [yearA, semesterA] = a.split(" - ");
+      const [yearB, semesterB] = b.split(" - ");
+
+      // Compare year levels numerically
+      if (yearA !== yearB) {
+        return yearA.localeCompare(yearB);
+      }
+
+      // Compare semester order
+      return semesterOrder[semesterA] - semesterOrder[semesterB];
+    });
+
+    // Return a sorted object based on the sorted keys
+    const sortedGrouped = sortedKeys.reduce((acc, key) => {
+      acc[key] = grouped[key];
+      return acc;
+    }, {});
+
+    return sortedGrouped;
   };
 
   // Consolidate lecture and lab into one row by removing redundancy
@@ -164,126 +194,118 @@ const ProspectusDialog = () => {
             <br /> <br />
             {loadingProspectusSubjects ? "" : program}
           </DialogTitle>
-          <DialogDescription>
-            {/* <div className="mb-4 !text-black dark:!text-white">
-              <p className="text-center text-xl font-semibold uppercase">
-                {loadingProspectusSubjects ? "" : program}
-              </p>
-            </div> */}
-            <div className="mt-10">
-              {loadingProspectusSubjects ? (
-                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">
-                  <DotSpinner size="3.8rem" />
-                  <p className="mt-4 block w-[15em] text-lg font-bold">
-                    Loading Prospectus...
-                  </p>
-                </div>
-              ) : prospectusSubjects.length > 0 ? (
-                // Iterate over the grouped subjects by combined year level and semester and render a table for each
-                Object.keys(groupedSubjects).map((yearSemesterKey, index) => {
-                  const consolidatedSubjects = consolidateSubjects(
-                    groupedSubjects[yearSemesterKey],
-                    yearSemesterKey, // Pass the yearSemesterKey for conditional logic
-                  );
-                  const totalUnits =
-                    calculateTotalUnits(consolidatedSubjects).totalUnits;
-
-                  return (
-                    <div
-                      key={index}
-                      className="mb-10 !text-black dark:!text-white lg:px-[8em]"
-                    >
-                      <div className="overflow-x-auto">
-                        <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
-                          {/* Insert the row with Year - Semester across the whole table */}
-                          <thead>
-                            <tr>
-                              <th
-                                colSpan="6"
-                                className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
-                              >
-                                {yearSemesterKey}
-                              </th>
-                            </tr>
-                            <tr>
-                              <th className="border p-2" rowSpan="2">
-                                Subject Code
-                              </th>
-                              <th className="border p-2" rowSpan="2">
-                                Description Title
-                              </th>
-                              <th className="border p-2" colSpan="3">
-                                Units
-                              </th>
-                              <th className="border p-2" rowSpan="2">
-                                Pre-requisites
-                              </th>
-                            </tr>
-                            <tr>
-                              <th className="border p-2">Lec</th>
-                              <th className="border p-2">Lab</th>
-                              <th className="border p-2">Total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {consolidatedSubjects.map((subject) => (
-                              <tr key={subject.prospectus_subject_id}>
-                                <td className="border p-2">
-                                  {subject.courseCode}
-                                </td>
-                                <td className="border p-2">
-                                  {subject.courseDescription}
-                                </td>
-                                <td className="border p-2">
-                                  {subject.lecUnits}
-                                </td>
-                                <td className="border p-2">
-                                  {subject.labUnits}
-                                </td>
-                                <td className="border p-2">
-                                  {subject.totalUnits}
-                                </td>
-                                <td className="border p-2">
-                                  {subject.prerequisites.length > 0
-                                    ? subject.prerequisites.map(
-                                        (prerequisite) => (
-                                          <span
-                                            key={prerequisite.pre_requisite_id}
-                                          >
-                                            {prerequisite.courseCode}
-                                          </span>
-                                        ),
-                                      )
-                                    : ""}
-                                </td>
-                              </tr>
-                            ))}
-                            {/* Add Total Units row */}
-                            <tr>
-                              <td className="border p-2"></td>
-
-                              <td className="border p-2 text-center font-bold">
-                                Total Units
-                              </td>
-                              <td className="border-none p-2"></td>
-                              <td className="border-none p-2 text-center font-bold">
-                                {totalUnits}
-                              </td>
-                              <td className="border-r p-2 font-bold"></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] text-lg font-bold md:left-[49%]">
-                  <p>No subjects available for this prospectus.</p>
-                </div>
-              )}
-            </div>
+          <DialogDescription className="sr-only">
+            This is the prospectus for{" "}
+            {loadingProspectusSubjects ? "" : departmentName}
           </DialogDescription>
+          <div className="mt-10">
+            {loadingProspectusSubjects ? (
+              <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] md:left-[49%]">
+                <DotSpinner size="3.8rem" />
+                <span className="mt-4 inline-block w-[15em] text-lg font-bold">
+                  Loading Prospectus...
+                </span>
+              </div>
+            ) : prospectusSubjects.length > 0 ? (
+              // Iterate over the grouped subjects by combined year level and semester and render a table for each
+              Object.keys(groupedSubjects).map((yearSemesterKey, index) => {
+                const consolidatedSubjects = consolidateSubjects(
+                  groupedSubjects[yearSemesterKey],
+                  yearSemesterKey, // Pass the yearSemesterKey for conditional logic
+                );
+                const totalUnits =
+                  calculateTotalUnits(consolidatedSubjects).totalUnits;
+
+                return (
+                  <div
+                    key={index}
+                    className="mb-10 !text-black dark:!text-white lg:px-[8em]"
+                  >
+                    <div className="overflow-x-auto">
+                      <table className="mb-4 min-w-full border-collapse border !text-black dark:!text-white">
+                        {/* Insert the row with Year - Semester across the whole table */}
+                        <thead>
+                          <tr>
+                            <th
+                              colSpan="6"
+                              className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
+                            >
+                              {yearSemesterKey}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th className="border p-2" rowSpan="2">
+                              Subject Code
+                            </th>
+                            <th className="border p-2" rowSpan="2">
+                              Description Title
+                            </th>
+                            <th className="border p-2" colSpan="3">
+                              Units
+                            </th>
+                            <th className="border p-2" rowSpan="2">
+                              Pre-requisites
+                            </th>
+                          </tr>
+                          <tr>
+                            <th className="border p-2">Lec</th>
+                            <th className="border p-2">Lab</th>
+                            <th className="border p-2">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {consolidatedSubjects.map((subject) => (
+                            <tr key={subject.prospectus_subject_id}>
+                              <td className="border p-2">
+                                {subject.courseCode}
+                              </td>
+                              <td className="border p-2">
+                                {subject.courseDescription}
+                              </td>
+                              <td className="border p-2">{subject.lecUnits}</td>
+                              <td className="border p-2">{subject.labUnits}</td>
+                              <td className="border p-2">
+                                {subject.totalUnits}
+                              </td>
+                              <td className="border p-2">
+                                {subject.prerequisites.length > 0
+                                  ? subject.prerequisites
+                                      .map(
+                                        (prerequisite) =>
+                                          prerequisite.courseCode,
+                                      )
+                                      .join(", ")
+                                  : ""}
+                              </td>
+                            </tr>
+                          ))}
+                          {/* Add Total Units row */}
+                          <tr>
+                            <td className="border p-2"></td>
+
+                            <td className="border p-2 text-center font-bold">
+                              Total Units
+                            </td>
+                            <td className="border-none p-2"></td>
+                            <td className="border-none p-2 text-center font-bold">
+                              {totalUnits}
+                            </td>
+                            <td className="border-r p-2 font-bold"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="absolute bottom-[50%] left-[45%] right-[50%] top-[50%] w-[20em] translate-x-[-50%] translate-y-[-50%] text-lg font-bold md:left-[49%]">
+                <span className="inline-block">
+                  No subjects available for this prospectus.
+                </span>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

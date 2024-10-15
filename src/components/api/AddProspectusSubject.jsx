@@ -152,34 +152,88 @@ const AddProspectusSubject = () => {
   };
 
   const handleAddPreRequisite = () => {
-    // Add a new empty pre-requisite
+    // Add a new empty pre-requisite with subjectCode as an empty array
     setPreRequisites((prev) => [
       ...prev,
-      { prospectus_subject_code: "", subjectCode: [] }, // Initialize subjectCode as an array
+      { prospectus_subject_code: "", subjectCode: [] },
     ]);
   };
 
   const handlePreRequisiteChange = (index, field, value) => {
-    // Update the pre-requisite data at the given index
     setPreRequisites((prev) => {
       const newPreReqs = [...prev];
-      // Check if the new value is different before updating state
-      if (newPreReqs[index][field] !== value) {
-        if (field === "subjectCode") {
-          // Ensure subjectCode is stored as an array
-          newPreReqs[index][field] = Array.isArray(value) ? value : [value];
-        } else {
-          newPreReqs[index][field] = value;
+
+      if (field === "courseCode") {
+        // Ensure that subjectCode is updated as an array
+        if (!Array.isArray(newPreReqs[index].subjectCode)) {
+          newPreReqs[index].subjectCode = []; // Initialize as array if not already
         }
-        return newPreReqs;
+        newPreReqs[index].subjectCode = [
+          ...newPreReqs[index].subjectCode,
+          value,
+        ]; // Push the value into the array
+      } else {
+        newPreReqs[index][field] = value;
       }
-      return prev;
+
+      return newPreReqs;
     });
   };
 
-  const handleRemovePreRequisite = (index) => {
-    // Remove the pre-requisite at the given index
-    setPreRequisites((prev) => prev.filter((_, i) => i !== index));
+  // State to store the previous values before the user tries to change them
+  const [previousSemester, setPreviousSemester] = useState("");
+  const [previousYear, setPreviousYear] = useState("");
+
+  // State to control the confirmation dialog
+  const [showClearPreReqDialog, setShowClearPreReqDialog] = useState(false);
+
+  // Function to handle clearing the pre-requisites
+  const clearPreRequisites = () => {
+    setPreRequisites([]); // Clear pre-requisites
+    setShowClearPreReqDialog(false); // Close the dialog
+  };
+
+  useEffect(() => {
+    // Show confirmation dialog if there are existing pre-requisites and "First Year" and "1st Semester" are selected
+    if (
+      selectedYear === "First Year" &&
+      selectedSemester === "1st Semester" &&
+      preRequisites.length > 0
+    ) {
+      setShowClearPreReqDialog(true); // Show dialog if pre-requisites exist
+    }
+  }, [selectedYear, selectedSemester]);
+
+  // Handle the change in semester and store the previous semester if it changes
+  const handleSemesterChange = (newSemester) => {
+    if (newSemester !== selectedSemester) {
+      setPreviousSemester(selectedSemester); // Only store the previous semester if it's actually changing
+    }
+    setSelectedSemester(newSemester);
+  };
+
+  // Handle the change in year and store the previous year if it changes
+  const handleYearChange = (newYear) => {
+    if (newYear !== selectedYear) {
+      setPreviousYear(selectedYear); // Only store the previous year if it's actually changing
+    }
+    if (newYear === "First Year" && selectedSemester === "1st Semester") {
+      setShowClearPreReqDialog(true); // Trigger the dialog if First Year, 1st Semester is selected
+    } else {
+      setSelectedYear(newYear);
+    }
+  };
+
+  // Handle the cancelation of the dialog (user doesn't want to clear pre-requisites)
+  const handleCancelClearPreReq = () => {
+    // Revert only the year or semester that changed, leave the other one unchanged
+    if (previousYear) {
+      setSelectedYear(previousYear); // Restore previous year
+    }
+    if (previousSemester) {
+      setSelectedSemester(previousSemester); // Restore previous semester
+    }
+    setShowClearPreReqDialog(false); // Close the dialog
   };
 
   const isAddPreReqButtonDisabled = () => {
@@ -361,20 +415,19 @@ const AddProspectusSubject = () => {
                     </div>
 
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      {/* Year Selection */}
                       <div className="mb-4.5 w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="year_select"
-                        >
+                        <label className="mb-2.5 block text-black dark:text-white">
                           Select Year
                         </label>
                         <Select
                           value={selectedYear}
+                          //   onValueChange={(val) => handleYearChange(val)}
                           onValueChange={(val) => {
                             if (val === "add_year") {
                               addNewYear(); // Call addNewYear if Add Year is clicked
                             } else {
-                              setSelectedYear(val); // Set selected year
+                              handleYearChange(val); // Set selected year
                             }
                             clearErrors("yearLevel");
                           }}
@@ -400,24 +453,17 @@ const AddProspectusSubject = () => {
                             </button>
                           </SelectContent>
                         </Select>
-                        {errors.yearLevel && (
-                          <ErrorMessage>
-                            *{errors.yearLevel.message}
-                          </ErrorMessage>
-                        )}
                       </div>
-                      {/* Select Semester */}
+
+                      {/* Semester Selection */}
                       <div className="mb-4.5 w-full">
-                        <label
-                          className="mb-2.5 block text-black dark:text-white"
-                          htmlFor="semester_select"
-                        >
+                        <label className="mb-2.5 block text-black dark:text-white">
                           Select Semester
                         </label>
                         <Select
                           value={selectedSemester}
                           onValueChange={(val) => {
-                            setSelectedSemester(val);
+                            handleSemesterChange(val);
                             clearErrors("semesterName");
                           }}
                         >
@@ -437,11 +483,6 @@ const AddProspectusSubject = () => {
                             </SelectGroup>
                           </SelectContent>
                         </Select>
-                        {errors.semesterName && (
-                          <ErrorMessage>
-                            *{errors.semesterName.message}
-                          </ErrorMessage>
-                        )}
                       </div>
                     </div>
 
@@ -454,14 +495,18 @@ const AddProspectusSubject = () => {
                         openPopover={openPopover}
                         setOpenPopover={setOpenPopover}
                         loading={
-                          loading || loadingProspectusSubjects || success
+                          loading ||
+                          loadingProspectusSubjects ||
+                          success ||
+                          !selectedYear ||
+                          !selectedSemester
                         }
                         selectedItems={selectedCourses.map(
                           (val) =>
                             uniqueCourses.find((course) => course.value === val)
                               ?.value,
                         )}
-                        itemName="Subject"
+                        itemName={`${!selectedYear || !selectedSemester ? "Subject (Select year and semester first)" : "Subject"}`}
                       >
                         <SubjectList
                           handleSelect={handleSetCourses}
@@ -493,10 +538,7 @@ const AddProspectusSubject = () => {
                         Pre-requisites
                       </label>
                       {preRequisites.map((preReq, index) => (
-                        <div
-                          key={index}
-                          className="mb-4 flex items-center gap-2"
-                        >
+                        <div key={index} className="mb-4">
                           {/* Select for prospectus_subject_code */}
                           <Select
                             value={preReq.prospectus_subject_code}
@@ -523,19 +565,21 @@ const AddProspectusSubject = () => {
                             </SelectContent>
                           </Select>
 
-                          {/* Multi-select for subjectCode (pre-requisite) */}
+                          {/* Select for courseCode (pre-requisite) */}
                           <Select
                             value={preReq.courseCode}
                             onValueChange={(val) =>
-                              handlePreRequisiteChange(
-                                index,
-                                "courseCode",
-                                Array.isArray(val) ? val : [val], // Ensure courseCode is stored as an array
-                              )
+                              handlePreRequisiteChange(index, "courseCode", val)
                             }
-                            multiple // Allows multiple selections
+                            disabled={!preReq.prospectus_subject_code}
                           >
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger
+                              className={`w-[180px] ${
+                                !preReq.prospectus_subject_code
+                                  ? "cursor-not-allowed"
+                                  : ""
+                              }`}
+                            >
                               <SelectValue placeholder="Select Pre-requisite" />
                             </SelectTrigger>
                             <SelectContent>
@@ -552,22 +596,13 @@ const AddProspectusSubject = () => {
                               </SelectGroup>
                             </SelectContent>
                           </Select>
-
-                          {/* Remove button */}
-                          <button
-                            type="button"
-                            onClick={() => handleRemovePreRequisite(index)}
-                            className="ml-2 text-red-600 hover:text-red-800"
-                          >
-                            Remove
-                          </button>
                         </div>
                       ))}
 
                       <button
                         type="button"
                         onClick={handleAddPreRequisite}
-                        disabled={isAddPreReqButtonDisabled()} // Disable button based on conditions
+                        disabled={isAddPreReqButtonDisabled()}
                         className={`mt-2 inline-flex justify-center gap-2 rounded ${
                           isAddPreReqButtonDisabled()
                             ? "cursor-not-allowed bg-slate-400"
@@ -576,10 +611,10 @@ const AddProspectusSubject = () => {
                       >
                         + Add Pre-requisite
                       </button>
-                      {!selectedYear ? (
+                      {!selectedYear || !selectedSemester ? (
                         <span className="ml-3 inline-block text-sm font-semibold text-red-600">
-                          * You must select a year in order to add a
-                          pre-requisite
+                          * You must select a year and semester in order to add
+                          a pre-requisite
                         </span>
                       ) : selectedYear === "First Year" &&
                         selectedSemester === "1st Semester" ? (
@@ -594,6 +629,37 @@ const AddProspectusSubject = () => {
                             a pre-requisite
                           </span>
                         )
+                      )}
+
+                      {/* Confirmation Dialog for Clearing Pre-requisites */}
+                      {showClearPreReqDialog && (
+                        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+                          <div className="rounded-md bg-white p-6 shadow-lg">
+                            <h2 className="text-lg font-bold">
+                              Clear Pre-requisites
+                            </h2>
+                            <p>
+                              You&apos;re about to clear all pre-requisites
+                              because you selected &quot;First Year&quot; and
+                              &quot;1st Semester&quot;, which cannot have
+                              pre-requisites. Do you want to proceed?
+                            </p>
+                            <div className="mt-4 flex justify-end">
+                              <button
+                                onClick={handleCancelClearPreReq}
+                                className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={clearPreRequisites}
+                                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                              >
+                                Clear Pre-requisites
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       )}
                     </div>
 

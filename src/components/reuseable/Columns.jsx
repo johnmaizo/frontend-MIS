@@ -469,7 +469,6 @@ const useColumns = () => {
       accessorFn: (row) => `${row.department_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
-        console.log(row.getValue("department_id"));
         return (
           <div className="flex items-center gap-1">
             <EditDepartment departmentId={row.getValue("department_id")} />
@@ -3245,8 +3244,6 @@ const useColumns = () => {
     },
   ];
   // ! Column View Specific Prospectus END
-
-  
 
   return {
     columnCampus,

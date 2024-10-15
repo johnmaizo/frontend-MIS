@@ -12,17 +12,19 @@ import { useParams } from "react-router-dom";
 import DotSpinner from "../styles/DotSpinner";
 
 /**
- * A reusable dialog component to display the prospectus for a given program.
- * The dialog will fetch the prospectus data when opened and render it in a tabular format.
- * The data is grouped by year level and semester.
- * The component also calculates the total units for each semester.
- * The total units are displayed as a separate row at the bottom of the table.
- * If there are no subjects available for the prospectus, the dialog will display a message.
- * @param {number} prospectusCampusId - The campus ID for the prospectus
- * @param {string} prospectusCampusName - The campus name for the prospectus
- * @param {string} prospectusProgramCode - The program code for the prospectus
- * @param {number} prospectus_id - The prospectus ID
- * @returns {JSX.Element} The ProspectusDialog component
+ * ProspectusDialog is a React component that displays a dialog to generate a prospectus based on
+ * the selected campus and program. It fetches the prospectus data when the dialog opens and
+ * displays a table for each year level and semester with the subject code, description title,
+ * units, and pre-requisites. If there are no subjects available for the prospectus, it displays
+ * a message indicating this.
+ * 
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isOpen - Whether the dialog is open or not.
+ * @param {string} props.prospectusCampusId - The ID of the campus.
+ * @param {string} props.prospectusCampusName - The name of the campus.
+ * @param {string} props.prospectusProgramCode - The program code.
+ * @param {string} props.prospectus_id - The ID of the prospectus.
+ * @returns {JSX.Element} A React component that displays a dialog to generate a prospectus.
  */
 const ProspectusDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +61,35 @@ const ProspectusDialog = () => {
       Summer: 3,
     };
 
+    // Map for converting written numbers to numeric equivalents
+    const numberWordMap = {
+      First: 1,
+      Second: 2,
+      Third: 3,
+      Fourth: 4,
+      Fifth: 5,
+      Sixth: 6,
+      Seventh: 7,
+      Eighth: 8,
+      Ninth: 9,
+      Tenth: 10,
+    };
+
+    // Helper function to convert year string into a numerical value
+    const yearLevelToNumber = (yearLevel) => {
+      // Check if the yearLevel contains one of the words like "First", "Second", etc.
+      const wordMatch = Object.keys(numberWordMap).find((word) =>
+        yearLevel.includes(word),
+      );
+      if (wordMatch) {
+        return numberWordMap[wordMatch];
+      }
+
+      // If no word match, try to extract a number from the year level string (e.g., "5th Year")
+      const numericMatch = yearLevel.match(/\d+/);
+      return numericMatch ? parseInt(numericMatch[0]) : 0; // Default to 0 if no match
+    };
+
     // Group subjects by year level and semester
     const grouped = subjects.reduce((acc, subject) => {
       const yearLevel = subject.yearLevel;
@@ -87,8 +118,10 @@ const ProspectusDialog = () => {
       const [yearB, semesterB] = b.split(" - ");
 
       // Compare year levels numerically
-      if (yearA !== yearB) {
-        return yearA.localeCompare(yearB);
+      const yearComparison =
+        yearLevelToNumber(yearA) - yearLevelToNumber(yearB);
+      if (yearComparison !== 0) {
+        return yearComparison;
       }
 
       // Compare semester order

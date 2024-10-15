@@ -37,7 +37,7 @@ const CustomPopover = ({
           variant="outline"
           role="combobox"
           aria-expanded={openPopover}
-          className="h-auto w-full justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input "
+          className="h-auto w-full truncate justify-between bg-white px-3 py-4 transition dark:border-form-strokedark dark:bg-form-input "
           disabled={loading}
         >
           <div className="flex flex-wrap justify-start gap-2">

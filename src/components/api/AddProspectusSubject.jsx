@@ -180,24 +180,24 @@ const AddProspectusSubject = () => {
     });
   };
 
-  // State to store the previous values before the user tries to change them
-  const [previousSemester, setPreviousSemester] = useState("");
-  const [previousYear, setPreviousYear] = useState("");
+  // State to store the pending changes when the dialog is triggered
+  const [pendingYear, setPendingYear] = useState(null);
+  const [pendingSemester, setPendingSemester] = useState(null);
 
   // State to control the confirmation dialog
   const [showClearPreReqDialog, setShowClearPreReqDialog] = useState(false);
 
-  // Function to handle clearing the pre-requisites
   const clearPreRequisites = () => {
-    // Clear the pre-requisites
-    setPreRequisites([]);
-
-    // Explicitly set the selected year to "First Year" and semester to "1st Semester"
-    setSelectedYear("First Year");
-    setSelectedSemester("1st Semester");
-
-    // Close the dialog
-    setShowClearPreReqDialog(false);
+    setPreRequisites([]); // Clear pre-requisites
+    if (pendingSemester) {
+      setSelectedSemester(pendingSemester); // Apply the pending semester change
+    }
+    if (pendingYear) {
+      setSelectedYear(pendingYear); // Apply the pending year change
+    }
+    setPendingSemester(null); // Clear the pending semester
+    setPendingYear(null); // Clear the pending year
+    setShowClearPreReqDialog(false); // Close the dialog
   };
 
   useEffect(() => {
@@ -219,38 +219,37 @@ const AddProspectusSubject = () => {
   }, [selectedYear, selectedSemester, preRequisites]);
 
   const handleYearChange = (newYear) => {
-    // Store the previous year if it's changing
-    if (newYear !== selectedYear) {
-      setPreviousYear(selectedYear); // Only store the previous year if it's actually changing
-    }
     if (
       newYear === "First Year" &&
       selectedSemester === "1st Semester" &&
       preRequisites.length > 0
     ) {
-      setShowClearPreReqDialog(true); // Show dialog if there are pre-requisites and "First Year" + "1st Semester" is selected
+      setShowClearPreReqDialog(true); // Show dialog if pre-requisites exist
+      setPendingYear(newYear); // Store the pending year change
     } else {
-      setSelectedYear(newYear); // Set the new year directly
+      setSelectedYear(newYear); // Update year
     }
   };
 
-  // Handle the change in semester and store the previous semester if it changes
   const handleSemesterChange = (newSemester) => {
-    if (newSemester !== selectedSemester) {
-      setPreviousSemester(selectedSemester); // Only store the previous semester if it's actually changing
+    // Check if the new semester is "1st Semester" and pre-requisites exist
+    if (
+      selectedYear === "First Year" &&
+      newSemester === "1st Semester" &&
+      preRequisites.length > 0
+    ) {
+      setShowClearPreReqDialog(true); // Show the dialog if pre-requisites exist
+      setPendingSemester(newSemester); // Store the pending semester change
+    } else {
+      setSelectedSemester(newSemester); // If no dialog is needed, apply the change immediately
     }
-    setSelectedSemester(newSemester);
   };
 
-  // Handle the cancelation of the dialog (user doesn't want to clear pre-requisites)
   const handleCancelClearPreReq = () => {
-    // Only revert to previous values if the user cancels clearing pre-requisites
-    if (previousYear) {
-      setSelectedYear(previousYear); // Restore previous year
-    }
-    if (previousSemester) {
-      setSelectedSemester(previousSemester); // Restore previous semester
-    }
+    // Discard the pending year and semester changes if the user cancels
+    setPendingYear(null); // Discard the pending year change
+    setPendingSemester(null); // Discard the pending semester change
+
     setShowClearPreReqDialog(false); // Close the dialog
   };
 
@@ -506,7 +505,12 @@ const AddProspectusSubject = () => {
 
                     <div className="mb-4.5 w-full">
                       <span className="mb-2.5 block text-black dark:text-white">
-                        Select Subject
+                        Select Subject{" "}
+                        {(!selectedYear || !selectedSemester) && (
+                          <span className="inline-block text-start text-sm font-bold text-red-600">
+                            *Select year and semester first
+                          </span>
+                        )}
                       </span>
 
                       <CustomPopover
@@ -524,7 +528,7 @@ const AddProspectusSubject = () => {
                             uniqueCourses.find((course) => course.value === val)
                               ?.value,
                         )}
-                        itemName={`${!selectedYear || !selectedSemester ? "Subject (Select year and semester first)" : "Subject"}`}
+                        itemName="Subject"
                       >
                         <SubjectList
                           handleSelect={handleSetCourses}
@@ -630,19 +634,19 @@ const AddProspectusSubject = () => {
                         + Add Pre-requisite
                       </button>
                       {!selectedYear || !selectedSemester ? (
-                        <span className="ml-3 inline-block text-sm font-semibold text-red-600">
+                        <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
                           * You must select a year and semester in order to add
                           a pre-requisite
                         </span>
                       ) : selectedYear === "First Year" &&
                         selectedSemester === "1st Semester" ? (
-                        <span className="ml-3 inline-block text-sm font-semibold text-red-600">
+                        <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
                           * First Years cannot have pre-requisites
                         </span>
                       ) : (
                         selectedYear &&
                         isAddPreReqButtonDisabled() && (
-                          <span className="ml-3 inline-block text-sm font-semibold text-red-600">
+                          <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
                             * You must select at least 1 subject in order to add
                             a pre-requisite
                           </span>
@@ -652,7 +656,7 @@ const AddProspectusSubject = () => {
                       {/* Confirmation Dialog for Clearing Pre-requisites */}
                       {showClearPreReqDialog && (
                         <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-                          <div className="rounded-md bg-white p-6 shadow-lg">
+                          <div className="max-w-[35em] rounded-md bg-white p-6 shadow-lg">
                             <h2 className="text-lg font-bold">
                               Clear Pre-requisites
                             </h2>
@@ -660,18 +664,19 @@ const AddProspectusSubject = () => {
                               You&apos;re about to clear all pre-requisites
                               because you selected &quot;First Year&quot; and
                               &quot;1st Semester&quot;, which cannot have
-                              pre-requisites. Do you want to proceed?
+                              pre-requisites. <br />
+                              <br /> Do you want to proceed?
                             </p>
                             <div className="mt-4 flex justify-end">
                               <button
                                 onClick={handleCancelClearPreReq}
-                                className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2"
+                                className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2 hover:underline hover:underline-offset-4"
                               >
                                 Cancel
                               </button>
                               <button
                                 onClick={clearPreRequisites}
-                                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 hover:underline hover:underline-offset-4"
                               >
                                 Clear Pre-requisites
                               </button>

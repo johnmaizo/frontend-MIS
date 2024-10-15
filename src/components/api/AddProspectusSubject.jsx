@@ -271,7 +271,11 @@ const AddProspectusSubject = () => {
     }
   }, []);
 
-  const onSubmit = async (data) => {
+  // New state variables for confirmation dialog
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [confirmedData, setConfirmedData] = useState(null);
+
+  const onSubmit = (data) => {
     if (!selectedYear) {
       setError("yearLevel", {
         type: "manual",
@@ -296,7 +300,6 @@ const AddProspectusSubject = () => {
       return;
     }
 
-    setLoading(true);
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
@@ -314,19 +317,23 @@ const AddProspectusSubject = () => {
       preRequisite: preRequisites,
     };
 
+    setConfirmedData(transformedData);
+    setConfirmationOpen(true);
+  };
+
+  const handleConfirmAdd = async () => {
+    setLoading(true);
     setGeneralError("");
+
     try {
-      const response = await toast.promise(
-        axios.post("/prospectus/assign-prospectus-subject", transformedData),
-        {
-          loading: "Assigning Subject...",
-          success: "Assigned Subject successfully!",
-          error: "Failed to Assign Subject.",
-        },
-        {
-          position: "bottom-right",
-        },
+      const response = await axios.post(
+        "/prospectus/assign-prospectus-subject",
+        confirmedData
       );
+
+      toast.success("Assigned Subject successfully!", {
+        position: "bottom-right",
+      });
 
       if (response.data) {
         setSuccess(true);
@@ -337,15 +344,19 @@ const AddProspectusSubject = () => {
           prospectus_id,
         );
         setOpen(false); // Close the dialog
+        setConfirmationOpen(false); // Close the confirmation dialog
       }
-      setLoading(false);
     } catch (err) {
+      toast.error("Failed to Assign Subject.", {
+        position: "bottom-right",
+      });
       if (err.response && err.response.data && err.response.data.message) {
         setGeneralError(err.response.data.message);
       } else {
         setGeneralError("An unexpected error occurred. Please try again.");
       }
-      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading is false regardless of success or error
     }
   };
 
@@ -403,319 +414,397 @@ const AddProspectusSubject = () => {
           <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Assign new Subject
+                {confirmationOpen
+                  ? "Confirm Assigning Subject"
+                  : "Assign new Subject"}
               </DialogTitle>
               <DialogDescription className="sr-only">
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
                 Fill up, Click Add when you&apos;re done.
               </DialogDescription>
               <div className="!h-[24em] overflow-y-auto overscroll-none text-xl md:!h-[28em]">
-                <form onSubmit={handleSubmit(onSubmit)} className="h-full">
-                  <div className="p-6.5">
-                    <div className="mb-4.5 w-full">
-                      <label
-                        className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="program_code"
-                      >
-                        Program
-                      </label>
-                      <Input
-                        id="program_code"
-                        type="text"
-                        value={
-                          loadingProspectusSubjects
-                            ? "Loading..."
-                            : `${prospectusProgramCode} (${prospectusCampusName})`
-                        }
-                        disabled
-                      />
-                    </div>
-
-                    <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                      {/* Year Selection */}
+                {!confirmationOpen ? (
+                  <form onSubmit={handleSubmit(onSubmit)} className="h-full">
+                    <div className="p-6.5">
                       <div className="mb-4.5 w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Select Year
-                        </label>
-                        <Select
-                          value={selectedYear}
-                          //   onValueChange={(val) => handleYearChange(val)}
-                          onValueChange={(val) => {
-                            if (val === "add_year") {
-                              addNewYear(); // Call addNewYear if Add Year is clicked
-                            } else {
-                              handleYearChange(val); // Set selected year
-                            }
-                            clearErrors("yearLevel");
-                          }}
+                        <label
+                          className="mb-2.5 block text-black dark:text-white"
+                          htmlFor="program_code"
                         >
-                          <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
-                            <SelectValue placeholder="Select Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Years</SelectLabel>
-                              {years.map((year) => (
-                                <SelectItem key={year} value={year}>
-                                  {year}
+                          Program
+                        </label>
+                        <Input
+                          id="program_code"
+                          type="text"
+                          value={
+                            loadingProspectusSubjects
+                              ? "Loading..."
+                              : `${prospectusProgramCode} (${prospectusCampusName})`
+                          }
+                          disabled
+                        />
+                      </div>
+
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                        {/* Year Selection */}
+                        <div className="mb-4.5 w-full">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Select Year
+                          </label>
+                          <Select
+                            value={selectedYear}
+                            onValueChange={(val) => {
+                              if (val === "add_year") {
+                                addNewYear(); // Call addNewYear if Add Year is clicked
+                              } else {
+                                handleYearChange(val); // Set selected year
+                              }
+                              clearErrors("yearLevel");
+                            }}
+                          >
+                            <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
+                              <SelectValue placeholder="Select Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Years</SelectLabel>
+                                {years.map((year) => (
+                                  <SelectItem key={year} value={year}>
+                                    {year}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                              {/* Add Year trigger button */}
+                              <button
+                                className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer p-2"
+                                onClick={addNewYear}
+                              >
+                                + Add Year
+                              </button>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {/* Semester Selection */}
+                        <div className="mb-4.5 w-full">
+                          <label className="mb-2.5 block text-black dark:text-white">
+                            Select Semester
+                          </label>
+                          <Select
+                            value={selectedSemester}
+                            onValueChange={(val) => {
+                              handleSemesterChange(val);
+                              clearErrors("semesterName");
+                            }}
+                          >
+                            <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
+                              <SelectValue placeholder="Select Semester" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Semesters</SelectLabel>
+                                <SelectItem value="1st Semester">
+                                  1st Semester
                                 </SelectItem>
-                              ))}
-                            </SelectGroup>
-                            {/* Add Year trigger button */}
-                            <button
-                              className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer p-2"
-                              onClick={addNewYear}
-                            >
-                              + Add Year
-                            </button>
-                          </SelectContent>
-                        </Select>
+                                <SelectItem value="2nd Semester">
+                                  2nd Semester
+                                </SelectItem>
+                                <SelectItem value="Summer">Summer</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
 
-                      {/* Semester Selection */}
                       <div className="mb-4.5 w-full">
-                        <label className="mb-2.5 block text-black dark:text-white">
-                          Select Semester
-                        </label>
-                        <Select
-                          value={selectedSemester}
-                          onValueChange={(val) => {
-                            handleSemesterChange(val);
-                            clearErrors("semesterName");
-                          }}
-                        >
-                          <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
-                            <SelectValue placeholder="Select Semester" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Semesters</SelectLabel>
-                              <SelectItem value="1st Semester">
-                                1st Semester
-                              </SelectItem>
-                              <SelectItem value="2nd Semester">
-                                2nd Semester
-                              </SelectItem>
-                              <SelectItem value="Summer">Summer</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                        <span className="mb-2.5 block text-black dark:text-white">
+                          Select Subject{" "}
+                          {(!selectedYear || !selectedSemester) && (
+                            <span className="inline-block text-start text-sm font-bold text-red-600">
+                              *Select year and semester first
+                            </span>
+                          )}
+                        </span>
 
-                    <div className="mb-4.5 w-full">
-                      <span className="mb-2.5 block text-black dark:text-white">
-                        Select Subject{" "}
-                        {(!selectedYear || !selectedSemester) && (
-                          <span className="inline-block text-start text-sm font-bold text-red-600">
-                            *Select year and semester first
-                          </span>
-                        )}
-                      </span>
-
-                      <CustomPopover
-                        openPopover={openPopover}
-                        setOpenPopover={setOpenPopover}
-                        loading={
-                          loading ||
-                          loadingProspectusSubjects ||
-                          success ||
-                          !selectedYear ||
-                          !selectedSemester
-                        }
-                        selectedItems={selectedCourses.map(
-                          (val) =>
-                            uniqueCourses.find((course) => course.value === val)
-                              ?.value,
-                        )}
-                        itemName="Subject"
-                      >
-                        <SubjectList
-                          handleSelect={handleSetCourses}
-                          value={selectedCourses}
-                          data={uniqueCourses}
-                          searchPlaceholder="Search Subject..."
-                          clearErrors={clearErrors}
-                          entity="courseChoose"
-                          handleClearAll={clearAllSelections}
+                        <CustomPopover
+                          openPopover={openPopover}
+                          setOpenPopover={setOpenPopover}
+                          loading={
+                            loading ||
+                            loadingProspectusSubjects ||
+                            success ||
+                            !selectedYear ||
+                            !selectedSemester
+                          }
                           selectedItems={selectedCourses.map(
                             (val) =>
                               uniqueCourses.find(
                                 (course) => course.value === val,
                               )?.value,
                           )}
-                        />
-                      </CustomPopover>
+                          itemName="Subject"
+                        >
+                          <SubjectList
+                            handleSelect={handleSetCourses}
+                            value={selectedCourses}
+                            data={uniqueCourses}
+                            searchPlaceholder="Search Subject..."
+                            clearErrors={clearErrors}
+                            entity="courseChoose"
+                            handleClearAll={clearAllSelections}
+                            selectedItems={selectedCourses.map(
+                              (val) =>
+                                uniqueCourses.find(
+                                  (course) => course.value === val,
+                                )?.value,
+                            )}
+                          />
+                        </CustomPopover>
 
-                      {errors.courseChoose && (
-                        <ErrorMessage>
-                          *{errors.courseChoose.message}
-                        </ErrorMessage>
-                      )}
-                    </div>
+                        {errors.courseChoose && (
+                          <ErrorMessage>
+                            *{errors.courseChoose.message}
+                          </ErrorMessage>
+                        )}
+                      </div>
 
-                    {/* Pre-requisite Section */}
-                    <div className="mb-4.5 w-full">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Pre-requisites
-                      </label>
-                      {preRequisites.map((preReq, index) => (
-                        <div key={index} className="mb-4">
-                          {/* Select for prospectus_subject_code */}
-                          <Select
-                            value={preReq.prospectus_subject_code}
-                            onValueChange={(val) =>
-                              handlePreRequisiteChange(
-                                index,
-                                "prospectus_subject_code",
-                                val,
-                              )
-                            }
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="Select Subject" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Subjects</SelectLabel>
-                                {selectedCourses.map((course) => (
-                                  <SelectItem key={course} value={course}>
-                                    {course}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                          {/* Select for courseCode (pre-requisite) */}
-                          <Select
-                            value={preReq.courseCode}
-                            onValueChange={(val) =>
-                              handlePreRequisiteChange(index, "courseCode", val)
-                            }
-                            disabled={!preReq.prospectus_subject_code}
-                          >
-                            <SelectTrigger
-                              className={`mt-3 w-[180px] ${
-                                !preReq.prospectus_subject_code
-                                  ? "cursor-not-allowed"
-                                  : ""
-                              }`}
+                      {/* Pre-requisite Section */}
+                      <div className="mb-4.5 w-full">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                          Pre-requisites
+                        </label>
+                        {preRequisites.map((preReq, index) => (
+                          <div key={index} className="mb-4">
+                            {/* Select for prospectus_subject_code */}
+                            <Select
+                              value={preReq.prospectus_subject_code}
+                              onValueChange={(val) =>
+                                handlePreRequisiteChange(
+                                  index,
+                                  "prospectus_subject_code",
+                                  val,
+                                )
+                              }
                             >
-                              <SelectValue placeholder="Select Pre-requisite" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Pre-requisites</SelectLabel>
-                                {prospectusSubjects.map((subject) => (
-                                  <SelectItem
-                                    key={subject.courseCode}
-                                    value={subject.courseCode}
-                                  >
-                                    {subject.courseCode}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      ))}
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select Subject" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Subjects</SelectLabel>
+                                  {selectedCourses.map((course) => (
+                                    <SelectItem key={course} value={course}>
+                                      {course}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
 
-                      <button
-                        type="button"
-                        onClick={handleAddPreRequisite}
-                        disabled={isAddPreReqButtonDisabled()}
-                        className={`mt-2 inline-flex justify-center gap-2 rounded ${
-                          isAddPreReqButtonDisabled()
-                            ? "cursor-not-allowed bg-slate-400"
-                            : "bg-green-500 hover:bg-green-600"
-                        } p-2 text-white`}
-                      >
-                        + Add Pre-requisite
-                      </button>
-                      {!selectedYear || !selectedSemester ? (
-                        <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
-                          * You must select a year and semester in order to add
-                          a pre-requisite
-                        </span>
-                      ) : selectedYear === "First Year" &&
-                        selectedSemester === "1st Semester" ? (
-                        <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
-                          * First Years cannot have pre-requisites
-                        </span>
-                      ) : (
-                        selectedYear &&
-                        isAddPreReqButtonDisabled() && (
+                            {/* Select for courseCode (pre-requisite) */}
+                            <Select
+                              value={preReq.courseCode}
+                              onValueChange={(val) =>
+                                handlePreRequisiteChange(
+                                  index,
+                                  "courseCode",
+                                  val,
+                                )
+                              }
+                              disabled={!preReq.prospectus_subject_code}
+                            >
+                              <SelectTrigger
+                                className={`mt-3 w-[180px] ${
+                                  !preReq.prospectus_subject_code
+                                    ? "cursor-not-allowed"
+                                    : ""
+                                }`}
+                              >
+                                <SelectValue placeholder="Select Pre-requisite" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectLabel>Pre-requisites</SelectLabel>
+                                  {prospectusSubjects.map((subject) => (
+                                    <SelectItem
+                                      key={subject.courseCode}
+                                      value={subject.courseCode}
+                                    >
+                                      {subject.courseCode}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={handleAddPreRequisite}
+                          disabled={isAddPreReqButtonDisabled()}
+                          className={`mt-2 inline-flex justify-center gap-2 rounded ${
+                            isAddPreReqButtonDisabled()
+                              ? "cursor-not-allowed bg-slate-400"
+                              : "bg-green-500 hover:bg-green-600"
+                          } p-2 text-white`}
+                        >
+                          + Add Pre-requisite
+                        </button>
+                        {!selectedYear || !selectedSemester ? (
                           <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
-                            * You must select at least 1 subject in order to add
-                            a pre-requisite
+                            * You must select a year and semester in order to
+                            add a pre-requisite
                           </span>
-                        )
-                      )}
+                        ) : selectedYear === "First Year" &&
+                          selectedSemester === "1st Semester" ? (
+                          <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
+                            * First Years cannot have pre-requisites
+                          </span>
+                        ) : (
+                          selectedYear &&
+                          isAddPreReqButtonDisabled() && (
+                            <span className="ml-3 mt-3 inline-block text-sm font-semibold text-red-600">
+                              * You must select at least 1 subject in order to
+                              add a pre-requisite
+                            </span>
+                          )
+                        )}
 
-                      {/* Confirmation Dialog for Clearing Pre-requisites */}
-                      {showClearPreReqDialog && (
-                        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-                          <div className="max-w-[35em] rounded-md bg-white p-6 shadow-lg">
-                            <h2 className="text-lg font-bold">
-                              Clear Pre-requisites
-                            </h2>
-                            <p>
-                              You&apos;re about to clear all pre-requisites
-                              because you selected &quot;First Year&quot; and
-                              &quot;1st Semester&quot;, which cannot have
-                              pre-requisites. <br />
-                              <br /> Do you want to proceed?
-                            </p>
-                            <div className="mt-4 flex justify-end">
-                              <button
-                                onClick={handleCancelClearPreReq}
-                                className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2 hover:underline hover:underline-offset-4"
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={clearPreRequisites}
-                                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 hover:underline hover:underline-offset-4"
-                              >
+                        {/* Confirmation Dialog for Clearing Pre-requisites */}
+                        {showClearPreReqDialog && (
+                          <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="max-w-[35em] rounded-md bg-white p-6 shadow-lg">
+                              <h2 className="text-lg font-bold">
                                 Clear Pre-requisites
-                              </button>
+                              </h2>
+                              <p>
+                                You&apos;re about to clear all pre-requisites
+                                because you selected &quot;First Year&quot; and
+                                &quot;1st Semester&quot;, which cannot have
+                                pre-requisites. <br />
+                                <br /> Do you want to proceed?
+                              </p>
+                              <div className="mt-4 flex justify-end">
+                                <button
+                                  onClick={handleCancelClearPreReq}
+                                  className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2 hover:underline hover:underline-offset-4"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={clearPreRequisites}
+                                  className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 hover:underline hover:underline-offset-4"
+                                >
+                                  Clear Pre-requisites
+                                </button>
+                              </div>
                             </div>
                           </div>
+                        )}
+                      </div>
+
+                      {error && (
+                        <div className="mb-5 mt-10 text-center font-bold text-red-600">
+                          <p>Error: {error}</p>
                         </div>
                       )}
-                    </div>
 
+                      <button
+                        type="submit"
+                        className={`mt-auto inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                          loading || success
+                            ? "bg-[#505456] hover:!bg-opacity-100"
+                            : ""
+                        }`}
+                        disabled={
+                          loading ||
+                          loadingProspectusSubjects ||
+                          success ||
+                          error
+                        }
+                      >
+                        {loading && (
+                          <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
+                        )}
+                        {loading
+                          ? "Assigning Subject..."
+                          : loadingProspectusSubjects
+                            ? "Loading..."
+                            : success
+                              ? "Subject Assigned!"
+                              : "Assign Subject"}
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  // Confirmation Dialog Content
+                  <div className="h-full">
+                    <p className="mb-4">
+                      Please confirm the following details before proceeding:
+                    </p>
+                    <table className="mb-4 w-full table-auto border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="border px-2 py-1">Subject Code</th>
+                          <th className="border px-2 py-1">Subject Name</th>
+                          <th className="border px-2 py-1">Pre-requisites</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {confirmedData &&
+                          confirmedData.subjectCode.map((subjectCode) => {
+                            const subject = uniqueCourses.find(
+                              (course) => course.value === subjectCode,
+                            );
+                            const preReq = confirmedData.preRequisite.find(
+                              (pr) =>
+                                pr.prospectus_subject_code === subjectCode,
+                            );
+                            const preReqCodes = preReq
+                              ? preReq.subjectCode.join(", ")
+                              : "None";
+
+                            return (
+                              <tr key={subjectCode}>
+                                <td className="border px-2 py-1">
+                                  {subjectCode}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {subject ? subject.label : "N/A"}
+                                </td>
+                                <td className="border px-2 py-1">
+                                  {preReqCodes}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => setConfirmationOpen(false)}
+                        className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2 hover:underline hover:underline-offset-4"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleConfirmAdd}
+                        className={`rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 hover:underline hover:underline-offset-4 ${
+                          loading ? "cursor-not-allowed opacity-50" : ""
+                        }`}
+                        disabled={loading}
+                      >
+                        {loading ? "Assigning Subject..." : "Confirm"}
+                      </button>
+                    </div>
                     {error && (
-                      <div className="mb-5 mt-10 text-center font-bold text-red-600">
+                      <div className="mt-4 text-center font-bold text-red-600">
                         <p>Error: {error}</p>
                       </div>
                     )}
-
-                    <button
-                      type="submit"
-                      className={`mt-auto inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                        loading || success
-                          ? "bg-[#505456] hover:!bg-opacity-100"
-                          : ""
-                      }`}
-                      disabled={
-                        loading || loadingProspectusSubjects || success || error
-                      }
-                    >
-                      {loading && (
-                        <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
-                      )}
-                      {loading
-                        ? "Assigning Subject..."
-                        : loadingProspectusSubjects
-                          ? "Loading..."
-                          : success
-                            ? "Subject Assigned!"
-                            : "Assign Subject"}
-                    </button>
                   </div>
-                </form>
+                )}
               </div>
             </DialogHeader>
           </DialogContent>

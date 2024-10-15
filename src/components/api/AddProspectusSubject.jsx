@@ -328,7 +328,7 @@ const AddProspectusSubject = () => {
     try {
       const response = await axios.post(
         "/prospectus/assign-prospectus-subject",
-        confirmedData
+        confirmedData,
       );
 
       toast.success("Assigned Subject successfully!", {
@@ -411,9 +411,12 @@ const AddProspectusSubject = () => {
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Assign Prospect Subject </span>
           </DialogTrigger>
-          <DialogContent className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white lg:max-w-[70em]">
+          <DialogContent
+            className="max-w-[90%] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white md:max-w-[70em]"
+            // Adjusted max-width for mobile responsiveness
+          >
             <DialogHeader>
-              <DialogTitle className="text-2xl font-medium text-black dark:text-white">
+              <DialogTitle className="text-xl font-medium text-black dark:text-white md:text-2xl">
                 {confirmationOpen
                   ? "Confirm Assigning Subject"
                   : "Assign new Subject"}
@@ -422,10 +425,10 @@ const AddProspectusSubject = () => {
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
                 Fill up, Click Add when you&apos;re done.
               </DialogDescription>
-              <div className="!h-[24em] overflow-y-auto overscroll-none text-xl md:!h-[28em]">
+              <div className="!h-[24em] overflow-y-auto overscroll-none text-base md:!h-[28em] md:text-xl">
                 {!confirmationOpen ? (
                   <form onSubmit={handleSubmit(onSubmit)} className="h-full">
-                    <div className="p-6.5">
+                    <div className="p-4 md:p-6.5">
                       <div className="mb-4.5 w-full">
                         <label
                           className="mb-2.5 block text-black dark:text-white"
@@ -445,7 +448,7 @@ const AddProspectusSubject = () => {
                         />
                       </div>
 
-                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                      <div className="mb-4.5 flex flex-col gap-6 md:flex-row">
                         {/* Year Selection */}
                         <div className="mb-4.5 w-full">
                           <label className="mb-2.5 block text-black dark:text-white">
@@ -462,7 +465,7 @@ const AddProspectusSubject = () => {
                               clearErrors("yearLevel");
                             }}
                           >
-                            <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
+                            <SelectTrigger className="w-full py-4 pl-5 text-lg font-medium md:py-7">
                               <SelectValue placeholder="Select Year" />
                             </SelectTrigger>
                             <SelectContent>
@@ -476,6 +479,7 @@ const AddProspectusSubject = () => {
                               </SelectGroup>
                               {/* Add Year trigger button */}
                               <button
+                                type="button"
                                 className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer p-2"
                                 onClick={addNewYear}
                               >
@@ -497,7 +501,7 @@ const AddProspectusSubject = () => {
                               clearErrors("semesterName");
                             }}
                           >
-                            <SelectTrigger className="w-full py-7 pl-5 text-lg font-medium">
+                            <SelectTrigger className="w-full py-4 pl-5 text-lg font-medium md:py-7">
                               <SelectValue placeholder="Select Semester" />
                             </SelectTrigger>
                             <SelectContent>
@@ -574,7 +578,10 @@ const AddProspectusSubject = () => {
                           Pre-requisites
                         </label>
                         {preRequisites.map((preReq, index) => (
-                          <div key={index} className="mb-4">
+                          <div
+                            key={index}
+                            className="mb-4 flex flex-col md:flex-row md:items-center md:gap-4"
+                          >
                             {/* Select for prospectus_subject_code */}
                             <Select
                               value={preReq.prospectus_subject_code}
@@ -586,7 +593,7 @@ const AddProspectusSubject = () => {
                                 )
                               }
                             >
-                              <SelectTrigger className="w-[180px]">
+                              <SelectTrigger className="w-full md:w-[180px]">
                                 <SelectValue placeholder="Select Subject" />
                               </SelectTrigger>
                               <SelectContent>
@@ -614,7 +621,7 @@ const AddProspectusSubject = () => {
                               disabled={!preReq.prospectus_subject_code}
                             >
                               <SelectTrigger
-                                className={`mt-3 w-[180px] ${
+                                className={`mt-3 w-full md:mt-0 md:w-[180px] ${
                                   !preReq.prospectus_subject_code
                                     ? "cursor-not-allowed"
                                     : ""
@@ -643,7 +650,7 @@ const AddProspectusSubject = () => {
                           type="button"
                           onClick={handleAddPreRequisite}
                           disabled={isAddPreReqButtonDisabled()}
-                          className={`mt-2 inline-flex justify-center gap-2 rounded ${
+                          className={`mt-2 inline-flex w-full justify-center gap-2 rounded md:w-auto ${
                             isAddPreReqButtonDisabled()
                               ? "cursor-not-allowed bg-slate-400"
                               : "bg-green-500 hover:bg-green-600"
@@ -739,52 +746,64 @@ const AddProspectusSubject = () => {
                   </form>
                 ) : (
                   // Confirmation Dialog Content
-                  <div className="h-full">
-                    <p className="mb-4">
+                  <div className="h-full p-4 md:p-6.5">
+                    <p className="mb-4 text-base md:text-lg">
                       Please confirm the following details before proceeding:
                     </p>
-                    <table className="mb-4 w-full table-auto border-collapse">
-                      <thead>
-                        <tr>
-                          <th className="border px-2 py-1">Subject Code</th>
-                          <th className="border px-2 py-1">Subject Name</th>
-                          <th className="border px-2 py-1">Pre-requisites</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {confirmedData &&
-                          confirmedData.subjectCode.map((subjectCode) => {
-                            const subject = uniqueCourses.find(
-                              (course) => course.value === subjectCode,
-                            );
-                            const preReq = confirmedData.preRequisite.find(
-                              (pr) =>
-                                pr.prospectus_subject_code === subjectCode,
-                            );
-                            const preReqCodes = preReq
-                              ? preReq.subjectCode.join(", ")
-                              : "None";
+                    {/* Display selected Year Level and Semester */}
+                    <p className="mb-2 text-base md:text-lg">
+                      <strong>Year Level:</strong>{" "}
+                      {confirmedData?.yearLevel || "N/A"}
+                    </p>
+                    <p className="mb-4 text-base md:text-lg">
+                      <strong>Semester:</strong>{" "}
+                      {confirmedData?.semesterName || "N/A"}
+                    </p>
+                    {/* Responsive Table */}
+                    <div className="overflow-x-auto">
+                      <table className="mb-4 w-full table-auto border-collapse text-sm md:text-base">
+                        <thead>
+                          <tr>
+                            <th className="border px-2 py-1">Subject Code</th>
+                            <th className="border px-2 py-1">Subject Name</th>
+                            <th className="border px-2 py-1">Pre-requisites</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {confirmedData &&
+                            confirmedData.subjectCode.map((subjectCode) => {
+                              const subject = uniqueCourses.find(
+                                (course) => course.value === subjectCode,
+                              );
+                              const preReq = confirmedData.preRequisite.find(
+                                (pr) =>
+                                  pr.prospectus_subject_code === subjectCode,
+                              );
+                              const preReqCodes = preReq
+                                ? preReq.subjectCode.join(", ")
+                                : "";
 
-                            return (
-                              <tr key={subjectCode}>
-                                <td className="border px-2 py-1">
-                                  {subjectCode}
-                                </td>
-                                <td className="border px-2 py-1">
-                                  {subject ? subject.label : "N/A"}
-                                </td>
-                                <td className="border px-2 py-1">
-                                  {preReqCodes}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                    <div className="flex justify-end">
+                              return (
+                                <tr key={subjectCode}>
+                                  <td className="border px-2 py-1">
+                                    {subjectCode}
+                                  </td>
+                                  <td className="border px-2 py-1">
+                                    {subject ? subject.label : "N/A"}
+                                  </td>
+                                  <td className="border px-2 py-1">
+                                    {preReqCodes}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="mt-4 flex flex-col-reverse justify-end md:flex-row">
                       <button
                         onClick={() => setConfirmationOpen(false)}
-                        className="bg-gray-200 hover:bg-gray-300 mr-2 rounded px-4 py-2 hover:underline hover:underline-offset-4"
+                        className="bg-gray-200 hover:bg-gray-300 mt-2 rounded px-4 py-2 hover:underline hover:underline-offset-4 md:mr-2 md:mt-0"
                       >
                         Cancel
                       </button>

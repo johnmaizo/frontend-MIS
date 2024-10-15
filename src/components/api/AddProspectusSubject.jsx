@@ -409,7 +409,7 @@ const AddProspectusSubject = () => {
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
                 Fill up, Click Add when you&apos;re done.
               </DialogDescription>
-              <div className="overflow-y-auto !h-[24em] overscroll-none text-xl md:!h-[28em]">
+              <div className="!h-[24em] overflow-y-auto overscroll-none text-xl md:!h-[28em]">
                 <form onSubmit={handleSubmit(onSubmit)} className="h-full">
                   <div className="p-6.5">
                     <div className="mb-4.5 w-full">

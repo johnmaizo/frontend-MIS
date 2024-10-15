@@ -408,7 +408,7 @@ const AddProspectusSubject = () => {
                         value={
                           loadingProspectusSubjects
                             ? "Loading..."
-                            : `(${prospectusProgramCode}) ${prospectusCampusName}`
+                            : `${prospectusProgramCode} (${prospectusCampusName})`
                         }
                         disabled
                       />

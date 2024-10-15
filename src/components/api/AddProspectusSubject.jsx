@@ -189,20 +189,50 @@ const AddProspectusSubject = () => {
 
   // Function to handle clearing the pre-requisites
   const clearPreRequisites = () => {
-    setPreRequisites([]); // Clear pre-requisites
-    setShowClearPreReqDialog(false); // Close the dialog
+    // Clear the pre-requisites
+    setPreRequisites([]);
+
+    // Explicitly set the selected year to "First Year" and semester to "1st Semester"
+    setSelectedYear("First Year");
+    setSelectedSemester("1st Semester");
+
+    // Close the dialog
+    setShowClearPreReqDialog(false);
   };
 
   useEffect(() => {
-    // Show confirmation dialog if there are existing pre-requisites and "First Year" and "1st Semester" are selected
+    // Check if pre-requisites exist (and are non-empty) and the selected year is "First Year" and semester is "1st Semester"
     if (
+      preRequisites.length > 0 &&
+      preRequisites.some(
+        (prereq) =>
+          prereq.prospectus_subject_code !== "" ||
+          prereq.subjectCode.length > 0,
+      ) &&
       selectedYear === "First Year" &&
+      selectedSemester === "1st Semester"
+    ) {
+      setShowClearPreReqDialog(true); // Show dialog if valid pre-requisites exist
+    } else {
+      setShowClearPreReqDialog(false); // Don't show dialog if no valid pre-requisites
+    }
+  }, [selectedYear, selectedSemester, preRequisites]);
+
+  const handleYearChange = (newYear) => {
+    // Store the previous year if it's changing
+    if (newYear !== selectedYear) {
+      setPreviousYear(selectedYear); // Only store the previous year if it's actually changing
+    }
+    if (
+      newYear === "First Year" &&
       selectedSemester === "1st Semester" &&
       preRequisites.length > 0
     ) {
-      setShowClearPreReqDialog(true); // Show dialog if pre-requisites exist
+      setShowClearPreReqDialog(true); // Show dialog if there are pre-requisites and "First Year" + "1st Semester" is selected
+    } else {
+      setSelectedYear(newYear); // Set the new year directly
     }
-  }, [selectedYear, selectedSemester]);
+  };
 
   // Handle the change in semester and store the previous semester if it changes
   const handleSemesterChange = (newSemester) => {
@@ -212,21 +242,9 @@ const AddProspectusSubject = () => {
     setSelectedSemester(newSemester);
   };
 
-  // Handle the change in year and store the previous year if it changes
-  const handleYearChange = (newYear) => {
-    if (newYear !== selectedYear) {
-      setPreviousYear(selectedYear); // Only store the previous year if it's actually changing
-    }
-    if (newYear === "First Year" && selectedSemester === "1st Semester") {
-      setShowClearPreReqDialog(true); // Trigger the dialog if First Year, 1st Semester is selected
-    } else {
-      setSelectedYear(newYear);
-    }
-  };
-
   // Handle the cancelation of the dialog (user doesn't want to clear pre-requisites)
   const handleCancelClearPreReq = () => {
-    // Revert only the year or semester that changed, leave the other one unchanged
+    // Only revert to previous values if the user cancels clearing pre-requisites
     if (previousYear) {
       setSelectedYear(previousYear); // Restore previous year
     }
@@ -574,7 +592,7 @@ const AddProspectusSubject = () => {
                             disabled={!preReq.prospectus_subject_code}
                           >
                             <SelectTrigger
-                              className={`w-[180px] ${
+                              className={`mt-3 w-[180px] ${
                                 !preReq.prospectus_subject_code
                                   ? "cursor-not-allowed"
                                   : ""

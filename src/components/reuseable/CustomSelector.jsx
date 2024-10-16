@@ -35,6 +35,7 @@ const CustomSelector = ({
   nameKey,
   errorKey,
   displayItem = null, // Accept displayItem prop
+  disabledItems = [], // Accept disabledItems prop
 }) => {
   const renderButton = () => (
     <Button
@@ -84,6 +85,7 @@ const CustomSelector = ({
           title={title}
           forCourse={forCourse}
           displayItem={displayItem} // Pass displayItem to CustomList
+          disabledItems={disabledItems} // Pass disabledItems to CustomList
         />
       </PopoverContent>
     </Popover>
@@ -107,6 +109,7 @@ const CustomSelector = ({
             title={title}
             forCourse={forCourse}
             displayItem={displayItem} // Pass displayItem to CustomList
+            disabledItems={disabledItems} // Pass disabledItems to CustomList
           />
         </div>
       </DrawerContent>
@@ -129,6 +132,7 @@ const CustomList = ({
   errorKey,
   title,
   displayItem = null, // Accept displayItem prop
+  disabledItems = [], // Accept disabledItems prop
 }) => {
   return (
     <Command
@@ -175,15 +179,13 @@ const CustomList = ({
                       clearErrors(errorKey);
                     }}
                     disabled={
-                      forSemester &&
-                      forSemester === true &&
-                      list.isActive === false
-                        ? true
-                        : forInstructor &&
-                            forInstructor === true &&
-                            list.disable === true
-                          ? true
-                          : false
+                      disabledItems.includes(list[idKey]) ||
+                      (forSemester &&
+                        forSemester === true &&
+                        list.isActive === false) ||
+                      (forInstructor &&
+                        forInstructor === true &&
+                        list.disable === true)
                     }
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                   >

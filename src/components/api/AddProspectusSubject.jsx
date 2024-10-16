@@ -428,6 +428,13 @@ const AddProspectusSubject = () => {
   // Declare isDesktop for CustomSelector
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  // ** Adjusted code starts here **
+
+  // Extract selected prospectus_subject_codes from preRequisites
+  const selectedPreReqSubjects = preRequisites
+    .map((preReq) => preReq.prospectus_subject_code)
+    .filter((code) => code !== "");
+
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
@@ -610,111 +617,146 @@ const AddProspectusSubject = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                           Pre-requisites
                         </label>
-                        {preRequisites.map((preReq, index) => (
-                          <div
-                            key={index}
-                            className="mb-4 flex flex-col md:flex-row md:items-center md:gap-4"
-                          >
-                            {/* CustomSelector for prospectus_subject_code */}
-                            <CustomSelector
-                              title={"Subject"}
-                              isDesktop={isDesktop}
-                              open={preReq.subjectOpen || false}
-                              setOpen={(isOpen) => {
-                                setPreRequisites((prev) => {
-                                  const newPreReqs = [...prev];
-                                  newPreReqs[index].subjectOpen = isOpen;
-                                  return newPreReqs;
-                                });
-                              }}
-                              selectedID={preReq.prospectus_subject_code}
-                              // Display only subject code on button
-                              selectedName={
-                                preReq.prospectus_subject_code ||
-                                "Select Subject"
-                              }
-                              data={selectedCourses.map((courseCode) => {
-                                const course = uniqueCourses.find(
-                                  (c) => c.value === courseCode,
-                                );
-                                return {
-                                  courseCode: course.value,
-                                  courseDescription: course.label,
-                                };
-                              })}
-                              setSelectedID={(id) =>
-                                handlePreRequisiteChange(
-                                  index,
-                                  "prospectus_subject_code",
-                                  id,
-                                )
-                              }
-                              setSelectedName={(name) =>
-                                handlePreRequisiteChange(
-                                  index,
-                                  "prospectus_subject_name",
-                                  name,
-                                )
-                              }
-                              clearErrors={clearErrors}
-                              loading={false}
-                              idKey="courseCode"
-                              nameKey="courseDescription"
-                              errorKey="prospectus_subject_code"
-                              // Show both code and description during selection
-                              displayItem={(item) =>
-                                `${item.courseDescription}`
-                              }
-                            />
+                        {preRequisites.map((preReq, index) => {
+                          // Get the current subject code
+                          const currentSubjectCode =
+                            preReq.prospectus_subject_code;
 
-                            {/* CustomSelector for courseCode (pre-requisite) */}
-                            <CustomSelector
-                              title={"Pre-requisite"}
-                              isDesktop={isDesktop}
-                              open={preReq.preReqOpen || false}
-                              setOpen={(isOpen) => {
-                                setPreRequisites((prev) => {
-                                  const newPreReqs = [...prev];
-                                  newPreReqs[index].preReqOpen = isOpen;
-                                  return newPreReqs;
-                                });
-                              }}
-                              selectedID={preReq.subjectCode[0] || ""}
-                              // Display only subject code on button
-                              selectedName={
-                                preReq.subjectCode[0] || "Select Pre-requisite"
-                              }
-                              data={prospectusSubjects.map((subject) => ({
-                                courseCode: subject.courseCode,
-                                courseDescription: subject.courseDescription,
-                              }))}
-                              setSelectedID={(id) =>
-                                handlePreRequisiteChange(
-                                  index,
-                                  "courseCode",
-                                  id,
-                                )
-                              }
-                              setSelectedName={(name) =>
-                                handlePreRequisiteChange(
-                                  index,
-                                  "subjectName",
-                                  name,
-                                )
-                              }
-                              clearErrors={clearErrors}
-                              loading={false}
-                              idKey="courseCode"
-                              nameKey="courseDescription"
-                              errorKey="courseCode"
-                              forDisable={!preReq.prospectus_subject_code}
-                              // Show both code and description during selection
-                              displayItem={(item) =>
-                                `${item.courseCode} - ${item.courseDescription}`
-                              }
-                            />
-                          </div>
-                        ))}
+                          // Collect pre-requisites selected for the same subject code, excluding the current entry
+                          const selectedPreRequisitesForSubject = preRequisites
+                            .filter(
+                              (pr, idx) =>
+                                idx !== index &&
+                                pr.prospectus_subject_code ===
+                                  currentSubjectCode,
+                            )
+                            .map((pr) => pr.subjectCode[0])
+                            .filter(
+                              (code) => code !== undefined && code !== "",
+                            );
+
+                          return (
+                            <div
+                              key={index}
+                              className="mb-4 flex flex-col md:flex-row md:items-center md:gap-4"
+                            >
+                              {/* CustomSelector for prospectus_subject_code */}
+                              <CustomSelector
+                                title={"Subject"}
+                                isDesktop={isDesktop}
+                                open={preReq.subjectOpen || false}
+                                setOpen={(isOpen) => {
+                                  setPreRequisites((prev) => {
+                                    const newPreReqs = [...prev];
+                                    newPreReqs[index].subjectOpen = isOpen;
+                                    return newPreReqs;
+                                  });
+                                }}
+                                selectedID={preReq.prospectus_subject_code}
+                                // Display only subject code on button
+                                selectedName={
+                                  preReq.prospectus_subject_code ||
+                                  "Select Subject"
+                                }
+                                data={selectedCourses.map((courseCode) => {
+                                  const course = uniqueCourses.find(
+                                    (c) => c.value === courseCode,
+                                  );
+                                  return {
+                                    courseCode: course.value,
+                                    courseDescription: course.label,
+                                  };
+                                })}
+                                setSelectedID={(id) =>
+                                  handlePreRequisiteChange(
+                                    index,
+                                    "prospectus_subject_code",
+                                    id,
+                                  )
+                                }
+                                setSelectedName={(name) =>
+                                  handlePreRequisiteChange(
+                                    index,
+                                    "prospectus_subject_name",
+                                    name,
+                                  )
+                                }
+                                clearErrors={clearErrors}
+                                loading={false}
+                                idKey="courseCode"
+                                nameKey="courseDescription"
+                                errorKey="prospectus_subject_code"
+                                // Show both code and description during selection
+                                displayItem={(item) =>
+                                  `${item.courseDescription}`
+                                }
+                                // Disable already selected subjects globally
+                                disabledItems={selectedPreReqSubjects.filter(
+                                  (code, idx) => code !== "" && idx !== index, // Exclude the current index
+                                )}
+                              />
+
+                              {/* CustomSelector for courseCode (pre-requisite) */}
+                              <CustomSelector
+                                title={"Pre-requisite"}
+                                isDesktop={isDesktop}
+                                open={preReq.preReqOpen || false}
+                                setOpen={(isOpen) => {
+                                  setPreRequisites((prev) => {
+                                    const newPreReqs = [...prev];
+                                    newPreReqs[index].preReqOpen = isOpen;
+                                    return newPreReqs;
+                                  });
+                                }}
+                                selectedID={preReq.subjectCode[0] || ""}
+                                // Display only subject code on button
+                                selectedName={
+                                  preReq.subjectCode[0] ||
+                                  "Select Pre-requisite"
+                                }
+                                data={prospectusSubjects.map((subject) => ({
+                                  courseCode: subject.courseCode,
+                                  courseDescription: subject.courseDescription,
+                                }))}
+                                setSelectedID={(id) =>
+                                  handlePreRequisiteChange(
+                                    index,
+                                    "courseCode",
+                                    id,
+                                  )
+                                }
+                                setSelectedName={(name) =>
+                                  handlePreRequisiteChange(
+                                    index,
+                                    "subjectName",
+                                    name,
+                                  )
+                                }
+                                clearErrors={clearErrors}
+                                loading={false}
+                                idKey="courseCode"
+                                nameKey="courseDescription"
+                                errorKey="courseCode"
+                                forDisable={!preReq.prospectus_subject_code}
+                                // Show both code and description during selection
+                                displayItem={(item) => {
+                                  // If courseDescription already includes courseCode, return courseDescription
+                                  if (
+                                    item.courseDescription.startsWith(
+                                      item.courseCode,
+                                    )
+                                  ) {
+                                    return item.courseDescription;
+                                  } else {
+                                    return `${item.courseCode} - ${item.courseDescription}`;
+                                  }
+                                }}
+                                // Disable pre-requisites selected for the same subject code
+                                disabledItems={selectedPreRequisitesForSubject}
+                              />
+                            </div>
+                          );
+                        })}
 
                         <button
                           type="button"

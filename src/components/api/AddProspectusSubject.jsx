@@ -39,6 +39,10 @@ import {
   SelectValue,
 } from "../ui/select";
 
+// Import CustomSelector and useMediaQuery
+import CustomSelector from "../reuseable/CustomSelector";
+import { useMediaQuery } from "../../hooks/use-media-query";
+
 const AddProspectusSubject = () => {
   const { user } = useContext(AuthContext);
 
@@ -156,20 +160,36 @@ const AddProspectusSubject = () => {
     // Add a new empty pre-requisite with subjectCode as an empty array
     setPreRequisites((prev) => [
       ...prev,
-      { prospectus_subject_code: "", subjectCode: [] },
+      {
+        prospectus_subject_code: "",
+        subjectCode: [],
+        prospectus_subject_name: "",
+        subjectName: "",
+        subjectOpen: false,
+        preReqOpen: false,
+      },
     ]);
   };
 
+  // Adjusted handlePreRequisiteChange function
   const handlePreRequisiteChange = (index, field, value) => {
     setPreRequisites((prev) => {
       const newPreReqs = [...prev];
-
       if (field === "courseCode") {
         newPreReqs[index]["subjectCode"] = [value]; // Store as array
+      } else if (field === "subjectName") {
+        newPreReqs[index]["subjectName"] = value;
+      } else if (field === "prospectus_subject_code") {
+        newPreReqs[index][field] = value;
+        // Reset subjectCode and names when prospectus_subject_code changes
+        newPreReqs[index]["subjectCode"] = [];
+        newPreReqs[index]["subjectName"] = "";
+        newPreReqs[index]["prospectus_subject_name"] = "";
+      } else if (field === "prospectus_subject_name") {
+        newPreReqs[index]["prospectus_subject_name"] = value;
       } else {
         newPreReqs[index][field] = value;
       }
-
       return newPreReqs;
     });
   };
@@ -405,6 +425,9 @@ const AddProspectusSubject = () => {
     setTotalUnits(0); // Reset total units
   };
 
+  // Declare isDesktop for CustomSelector
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   return (
     <div className="w-full items-center justify-end gap-2 md:flex">
       <div>
@@ -592,67 +615,104 @@ const AddProspectusSubject = () => {
                             key={index}
                             className="mb-4 flex flex-col md:flex-row md:items-center md:gap-4"
                           >
-                            {/* Select for prospectus_subject_code */}
-                            <Select
-                              value={preReq.prospectus_subject_code}
-                              onValueChange={(val) =>
+                            {/* CustomSelector for prospectus_subject_code */}
+                            <CustomSelector
+                              title={"Subject"}
+                              isDesktop={isDesktop}
+                              open={preReq.subjectOpen || false}
+                              setOpen={(isOpen) => {
+                                setPreRequisites((prev) => {
+                                  const newPreReqs = [...prev];
+                                  newPreReqs[index].subjectOpen = isOpen;
+                                  return newPreReqs;
+                                });
+                              }}
+                              selectedID={preReq.prospectus_subject_code}
+                              // Display only subject code on button
+                              selectedName={
+                                preReq.prospectus_subject_code ||
+                                "Select Subject"
+                              }
+                              data={selectedCourses.map((courseCode) => {
+                                const course = uniqueCourses.find(
+                                  (c) => c.value === courseCode,
+                                );
+                                return {
+                                  courseCode: course.value,
+                                  courseDescription: course.label,
+                                };
+                              })}
+                              setSelectedID={(id) =>
                                 handlePreRequisiteChange(
                                   index,
                                   "prospectus_subject_code",
-                                  val,
+                                  id,
                                 )
                               }
-                            >
-                              <SelectTrigger className="w-full md:w-[180px]">
-                                <SelectValue placeholder="Select Subject" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Subjects</SelectLabel>
-                                  {selectedCourses.map((course) => (
-                                    <SelectItem key={course} value={course}>
-                                      {course}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                              setSelectedName={(name) =>
+                                handlePreRequisiteChange(
+                                  index,
+                                  "prospectus_subject_name",
+                                  name,
+                                )
+                              }
+                              clearErrors={clearErrors}
+                              loading={false}
+                              idKey="courseCode"
+                              nameKey="courseDescription"
+                              errorKey="prospectus_subject_code"
+                              // Show both code and description during selection
+                              displayItem={(item) =>
+                                `${item.courseDescription}`
+                              }
+                            />
 
-                            {/* Select for courseCode (pre-requisite) */}
-                            <Select
-                              value={preReq.subjectCode[0] || ""}
-                              onValueChange={(val) =>
+                            {/* CustomSelector for courseCode (pre-requisite) */}
+                            <CustomSelector
+                              title={"Pre-requisite"}
+                              isDesktop={isDesktop}
+                              open={preReq.preReqOpen || false}
+                              setOpen={(isOpen) => {
+                                setPreRequisites((prev) => {
+                                  const newPreReqs = [...prev];
+                                  newPreReqs[index].preReqOpen = isOpen;
+                                  return newPreReqs;
+                                });
+                              }}
+                              selectedID={preReq.subjectCode[0] || ""}
+                              // Display only subject code on button
+                              selectedName={
+                                preReq.subjectCode[0] || "Select Pre-requisite"
+                              }
+                              data={prospectusSubjects.map((subject) => ({
+                                courseCode: subject.courseCode,
+                                courseDescription: subject.courseDescription,
+                              }))}
+                              setSelectedID={(id) =>
                                 handlePreRequisiteChange(
                                   index,
                                   "courseCode",
-                                  val,
+                                  id,
                                 )
                               }
-                              disabled={!preReq.prospectus_subject_code}
-                            >
-                              <SelectTrigger
-                                className={`mt-3 w-full md:mt-0 md:w-[180px] ${
-                                  !preReq.prospectus_subject_code
-                                    ? "cursor-not-allowed"
-                                    : ""
-                                }`}
-                              >
-                                <SelectValue placeholder="Select Pre-requisite" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Pre-requisites</SelectLabel>
-                                  {prospectusSubjects.map((subject) => (
-                                    <SelectItem
-                                      key={subject.courseCode}
-                                      value={subject.courseCode}
-                                    >
-                                      {subject.courseCode}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                              setSelectedName={(name) =>
+                                handlePreRequisiteChange(
+                                  index,
+                                  "subjectName",
+                                  name,
+                                )
+                              }
+                              clearErrors={clearErrors}
+                              loading={false}
+                              idKey="courseCode"
+                              nameKey="courseDescription"
+                              errorKey="courseCode"
+                              forDisable={!preReq.prospectus_subject_code}
+                              // Show both code and description during selection
+                              displayItem={(item) =>
+                                `${item.courseCode} - ${item.courseDescription}`
+                              }
+                            />
                           </div>
                         ))}
 

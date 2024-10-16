@@ -27,13 +27,14 @@ const CustomSelector = ({
   setSelectedCourseCode = null,
   setSelectedID,
   setSelectedName,
-  setSelectedInstructorID, // Added prop for setting instructor ID
-  setSelectedInstructorName, // Added prop for setting instructor name
+  setSelectedInstructorID,
+  setSelectedInstructorName,
   clearErrors,
   loading,
   idKey,
   nameKey,
   errorKey,
+  displayItem = null, // Accept displayItem prop
 }) => {
   const renderButton = () => (
     <Button
@@ -82,6 +83,7 @@ const CustomSelector = ({
           errorKey={errorKey}
           title={title}
           forCourse={forCourse}
+          displayItem={displayItem} // Pass displayItem to CustomList
         />
       </PopoverContent>
     </Popover>
@@ -104,6 +106,7 @@ const CustomSelector = ({
             errorKey={errorKey}
             title={title}
             forCourse={forCourse}
+            displayItem={displayItem} // Pass displayItem to CustomList
           />
         </div>
       </DrawerContent>
@@ -125,14 +128,16 @@ const CustomList = ({
   nameKey,
   errorKey,
   title,
+  displayItem = null, // Accept displayItem prop
 }) => {
   return (
     <Command
       className="!w-full"
       filter={(value, search) => {
-        const listName = data.find(
-          (item) => item[idKey].toString() === value,
-        )?.[nameKey];
+        const listItem = data.find((item) => item[idKey].toString() === value);
+        const listName = displayItem
+          ? displayItem(listItem)
+          : listItem[nameKey];
         if (listName?.toLowerCase().includes(search?.toLowerCase())) return 1;
         return 0;
       }}
@@ -182,7 +187,8 @@ const CustomList = ({
                     }
                     className="text-[1rem] font-medium text-black dark:text-white md:!w-[34.5em] md:text-[1.2rem]"
                   >
-                    {list[nameKey]} {/* Use dynamic name field */}
+                    {displayItem ? displayItem(list) : list[nameKey]}{" "}
+                    {/* Use displayItem if provided */}
                   </CommandItem>
                 </div>
               ))}

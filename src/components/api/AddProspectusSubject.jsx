@@ -165,14 +165,7 @@ const AddProspectusSubject = () => {
       const newPreReqs = [...prev];
 
       if (field === "courseCode") {
-        // Ensure that subjectCode is updated as an array
-        if (!Array.isArray(newPreReqs[index].subjectCode)) {
-          newPreReqs[index].subjectCode = []; // Initialize as array if not already
-        }
-        newPreReqs[index].subjectCode = [
-          ...newPreReqs[index].subjectCode,
-          value,
-        ]; // Push the value into the array
+        newPreReqs[index]["subjectCode"] = [value]; // Store as array
       } else {
         newPreReqs[index][field] = value;
       }
@@ -571,7 +564,6 @@ const AddProspectusSubject = () => {
                                   (course) => course.value === val,
                                 )?.value,
                             )}
-                            // Passing unit data to SubjectList
                             showUnits={true} // New prop to indicate units should be displayed
                           />
                         </CustomPopover>
@@ -628,7 +620,7 @@ const AddProspectusSubject = () => {
 
                             {/* Select for courseCode (pre-requisite) */}
                             <Select
-                              value={preReq.courseCode}
+                              value={preReq.subjectCode[0] || ""}
                               onValueChange={(val) =>
                                 handlePreRequisiteChange(
                                   index,

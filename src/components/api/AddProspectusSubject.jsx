@@ -42,7 +42,7 @@ import {
 // Import CustomSelector and useMediaQuery
 import CustomSelector from "../reuseable/CustomSelector";
 import { useMediaQuery } from "../../hooks/use-media-query";
-import { DeleteIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 
 const AddProspectusSubject = () => {
   const { user } = useContext(AuthContext);
@@ -769,7 +769,7 @@ const AddProspectusSubject = () => {
                               <button
                                 type="button"
                                 onClick={() => handleRemovePreRequisite(index)}
-                                className="mt-2 inline-flex items-center gap-1 bg-red-500 px-1 py-1 text-sm font-medium text-white hover:bg-red-600 md:mt-0 rounded-md"
+                                className="mt-2 inline-flex items-center gap-1 rounded-md bg-red-500 px-1 py-1 text-sm font-medium text-white hover:bg-red-600 md:mt-0"
                               >
                                 <X className="h-5 w-5" />
                                 <span className="sr-only">Remove</span>

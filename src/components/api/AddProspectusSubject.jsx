@@ -42,6 +42,7 @@ import {
 // Import CustomSelector and useMediaQuery
 import CustomSelector from "../reuseable/CustomSelector";
 import { useMediaQuery } from "../../hooks/use-media-query";
+import { DeleteIcon, X } from "lucide-react";
 
 const AddProspectusSubject = () => {
   const { user } = useContext(AuthContext);
@@ -169,6 +170,15 @@ const AddProspectusSubject = () => {
         preReqOpen: false,
       },
     ]);
+  };
+
+  // Function to remove a pre-requisite
+  const handleRemovePreRequisite = (index) => {
+    setPreRequisites((prev) => {
+      const newPreReqs = [...prev];
+      newPreReqs.splice(index, 1);
+      return newPreReqs;
+    });
   };
 
   // Adjusted handlePreRequisiteChange function
@@ -754,6 +764,16 @@ const AddProspectusSubject = () => {
                                 // Disable pre-requisites selected for the same subject code
                                 disabledItems={selectedPreRequisitesForSubject}
                               />
+
+                              {/* Remove Button */}
+                              <button
+                                type="button"
+                                onClick={() => handleRemovePreRequisite(index)}
+                                className="mt-2 inline-flex items-center gap-1 bg-red-500 px-1 py-1 text-sm font-medium text-white hover:bg-red-600 md:mt-0 rounded-md"
+                              >
+                                <X className="h-5 w-5" />
+                                <span className="sr-only">Remove</span>
+                              </button>
                             </div>
                           );
                         })}
@@ -894,7 +914,7 @@ const AddProspectusSubject = () => {
                               );
                               const preReqCodes = preReq
                                 ? preReq.subjectCode.join(", ")
-                                : "None";
+                                : "";
 
                               return (
                                 <tr key={subjectCode}>
@@ -902,7 +922,9 @@ const AddProspectusSubject = () => {
                                     {subjectCode}
                                   </td>
                                   <td className="border px-2 py-1">
-                                    {subject ? subject.label : "N/A"}
+                                    {subject
+                                      ? subject.label.split(" - ")[1]
+                                      : "N/A"}
                                   </td>
                                   <td className="border px-2 py-1">
                                     {subject ? subject.unit : "N/A"}

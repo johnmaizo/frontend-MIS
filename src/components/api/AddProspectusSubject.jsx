@@ -752,12 +752,12 @@ const AddProspectusSubject = () => {
                     </p>
                     {/* Display selected Year Level and Semester */}
                     <p className="mb-2 text-base md:text-lg">
-                      <strong>Year Level:</strong>{" "}
-                      {confirmedData?.yearLevel || "N/A"}
+                      Year Level:{" "}
+                      <strong>{confirmedData?.yearLevel || "N/A"}</strong>
                     </p>
                     <p className="mb-4 text-base md:text-lg">
-                      <strong>Semester:</strong>{" "}
-                      {confirmedData?.semesterName || "N/A"}
+                      Semester:{" "}
+                      <strong>{confirmedData?.semesterName || "N/A"}</strong>
                     </p>
                     {/* Responsive Table */}
                     <div className="overflow-x-auto">

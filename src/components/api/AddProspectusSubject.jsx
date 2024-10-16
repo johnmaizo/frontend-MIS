@@ -72,6 +72,7 @@ const AddProspectusSubject = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [preRequisites, setPreRequisites] = useState([]); // To store the pre-requisite data
+  const [totalUnits, setTotalUnits] = useState(0); // New state to track total units
 
   const [years, setYears] = useState([
     "First Year",
@@ -271,6 +272,15 @@ const AddProspectusSubject = () => {
     }
   }, []);
 
+  // Update total units whenever selectedCourses changes
+  useEffect(() => {
+    const total = selectedCourses.reduce((acc, courseCode) => {
+      const course = uniqueCourses.find((c) => c.value === courseCode);
+      return acc + (course ? parseFloat(course.unit) : 0);
+    }, 0);
+    setTotalUnits(total);
+  }, [selectedCourses, uniqueCourses]);
+
   // New state variables for confirmation dialog
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [confirmedData, setConfirmedData] = useState(null);
@@ -369,6 +379,7 @@ const AddProspectusSubject = () => {
         setSelectedYear("");
         setSelectedSemester("");
         setPreRequisites([]); // Clear pre-requisites
+        setTotalUnits(0); // Reset total units
       }, 2000);
     } else if (error) {
       setTimeout(() => {
@@ -398,6 +409,7 @@ const AddProspectusSubject = () => {
     setSelectedYear("");
     setSelectedSemester("");
     setPreRequisites([]); // Clear pre-requisites
+    setTotalUnits(0); // Reset total units
   };
 
   return (
@@ -411,10 +423,7 @@ const AddProspectusSubject = () => {
             <AddDepartmentIcon />
             <span className="max-w-[8em]">Assign Prospect Subject </span>
           </DialogTrigger>
-          <DialogContent
-            className="max-w-[90%] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white md:max-w-[70em]"
-            // Adjusted max-width for mobile responsiveness
-          >
+          <DialogContent className="max-w-[90%] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white md:max-w-[70em]">
             <DialogHeader>
               <DialogTitle className="text-xl font-medium text-black dark:text-white md:text-2xl">
                 {confirmationOpen
@@ -562,6 +571,8 @@ const AddProspectusSubject = () => {
                                   (course) => course.value === val,
                                 )?.value,
                             )}
+                            // Passing unit data to SubjectList
+                            showUnits={true} // New prop to indicate units should be displayed
                           />
                         </CustomPopover>
 
@@ -570,6 +581,13 @@ const AddProspectusSubject = () => {
                             *{errors.courseChoose.message}
                           </ErrorMessage>
                         )}
+                      </div>
+
+                      {/* Display total units */}
+                      <div className="mb-4.5 w-full">
+                        <p className="text-lg font-medium text-black dark:text-white">
+                          Total Units Selected: {totalUnits}
+                        </p>
                       </div>
 
                       {/* Pre-requisite Section */}
@@ -752,12 +770,12 @@ const AddProspectusSubject = () => {
                     </p>
                     {/* Display selected Year Level and Semester */}
                     <p className="mb-2 text-base md:text-lg">
-                      Year Level:{" "}
-                      <strong>{confirmedData?.yearLevel || "N/A"}</strong>
+                      <strong>Year Level:</strong>{" "}
+                      {confirmedData?.yearLevel || "N/A"}
                     </p>
                     <p className="mb-4 text-base md:text-lg">
-                      Semester:{" "}
-                      <strong>{confirmedData?.semesterName || "N/A"}</strong>
+                      <strong>Semester:</strong>{" "}
+                      {confirmedData?.semesterName || "N/A"}
                     </p>
                     {/* Responsive Table */}
                     <div className="overflow-x-auto">
@@ -766,6 +784,7 @@ const AddProspectusSubject = () => {
                           <tr>
                             <th className="border px-2 py-1">Subject Code</th>
                             <th className="border px-2 py-1">Subject Name</th>
+                            <th className="border px-2 py-1">Units</th>
                             <th className="border px-2 py-1">Pre-requisites</th>
                           </tr>
                         </thead>
@@ -781,7 +800,7 @@ const AddProspectusSubject = () => {
                               );
                               const preReqCodes = preReq
                                 ? preReq.subjectCode.join(", ")
-                                : "";
+                                : "None";
 
                               return (
                                 <tr key={subjectCode}>
@@ -792,12 +811,30 @@ const AddProspectusSubject = () => {
                                     {subject ? subject.label : "N/A"}
                                   </td>
                                   <td className="border px-2 py-1">
+                                    {subject ? subject.unit : "N/A"}
+                                  </td>
+                                  <td className="border px-2 py-1">
                                     {preReqCodes}
                                   </td>
                                 </tr>
                               );
                             })}
                         </tbody>
+                        {/* Display Total Units */}
+                        <tfoot>
+                          <tr>
+                            <td
+                              colSpan="2"
+                              className="border px-2 py-1 font-bold"
+                            >
+                              Total Units
+                            </td>
+                            <td className="border px-2 py-1 font-bold">
+                              {totalUnits}
+                            </td>
+                            <td className="border px-2 py-1"></td>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                     <div className="mt-4 flex flex-col-reverse justify-end md:flex-row">

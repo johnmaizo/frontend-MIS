@@ -80,6 +80,7 @@ export const getUniqueCourseCodes = (data, uniqueKey, data2) => {
             {
               value: item[uniqueKey],
               label: `${item.courseCode} - ${item.courseDescription}`,
+              unit: item.unit,
               isDepartmentIdNull: item.department_id === null, // New field
               disable: matchingItem ? true : false, // Set disable based on whether a match is found
             },

@@ -1,3 +1,4 @@
+// Updated SubjectList.jsx
 /* eslint-disable react/prop-types */
 
 import {
@@ -25,6 +26,7 @@ const SubjectList = ({
   entity,
   handleClearAll,
   selectedItems,
+  showUnits = false, // Added showUnits prop with default value
 }) => {
   // State to track whether all subjects are selected
   const [allSelected, setAllSelected] = useState(false);
@@ -74,13 +76,6 @@ const SubjectList = ({
             heading={`General Subject${generalSubjects.length > 1 ? "s" : ""}:`}
             className="relative [&_[cmdk-group-heading]]:h-[2.5em] [&_[cmdk-group-heading]]:text-[1.2rem] [&_[cmdk-group-heading]]:!text-black [&_[cmdk-group-heading]]:dark:!text-white"
           >
-            {/* <Button
-              className={`absolute right-[1em] !text-white top-0 ${allSelected ? "!bg-red-600 hover:!bg-red-700" : "!bg-blue-600 hover:!bg-blue-700"}`}
-              onClick={handleSelectAll}
-            >
-              {allSelected ? "Unselect All" : "Select All"}
-            </Button> */}
-
             <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
             <CommandList className="h-[12em]">
               {generalSubjects.map((item) => (
@@ -104,7 +99,15 @@ const SubjectList = ({
                             : "opacity-0",
                       )}
                     />
-                    {item.label}
+                    <span>
+                      {item.label}
+                      {showUnits && item.unit !== undefined ? (
+                        <span className="text-gray-600">
+                          {" "}
+                          ({item.unit} units)
+                        </span>
+                      ) : null}
+                    </span>
                   </CommandItem>
                   <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 </div>
@@ -118,7 +121,7 @@ const SubjectList = ({
         {/* CommandGroup for Other Subjects */}
         {otherSubjects.length > 0 && (
           <CommandGroup
-            heading={`Other Subject${generalSubjects.length > 1 ? "s" : ""}:`}
+            heading={`Other Subject${otherSubjects.length > 1 ? "s" : ""}:`}
             className="[&_[cmdk-group-heading]]:text-[1.2rem] [&_[cmdk-group-heading]]:!text-black [&_[cmdk-group-heading]]:dark:!text-white"
           >
             <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
@@ -144,7 +147,15 @@ const SubjectList = ({
                             : "opacity-0",
                       )}
                     />
-                    {item.label}
+                    <span>
+                      {item.label}
+                      {showUnits && item.unit !== undefined ? (
+                        <span className="text-gray-600">
+                          {" "}
+                          ({item.unit} units)
+                        </span>
+                      ) : null}
+                    </span>
                   </CommandItem>
                   <CommandSeparator className="border-t border-slate-200 dark:border-slate-700" />
                 </div>

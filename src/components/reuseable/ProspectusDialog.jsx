@@ -17,7 +17,7 @@ import DotSpinner from "../styles/DotSpinner";
  * displays a table for each year level and semester with the subject code, description title,
  * units, and pre-requisites. If there are no subjects available for the prospectus, it displays
  * a message indicating this.
- * 
+ *
  * @param {Object} props - The component props.
  * @param {boolean} props.isOpen - Whether the dialog is open or not.
  * @param {string} props.prospectusCampusId - The ID of the campus.
@@ -138,7 +138,7 @@ const ProspectusDialog = () => {
   };
 
   // Consolidate lecture and lab into one row by removing redundancy
-  const consolidateSubjects = (subjects, yearSemesterKey) => {
+  const consolidateSubjects = (subjects) => {
     const consolidated = {};
 
     subjects.forEach((subject) => {
@@ -157,8 +157,8 @@ const ProspectusDialog = () => {
 
       // Check if we are in "Fourth Year - 2nd Semester" and the course has "(Lab)" in its description
       if (
-        yearSemesterKey === "Fourth Year - 2nd Semester" &&
-        subject.courseDescription.includes("(Lab)")
+        subject.courseDescription.includes("(Lab)") &&
+        !subject.courseCode.endsWith("L")
       ) {
         // Remove "(Lab)" from the description and move the units to lab
         consolidated[baseCourseCode].labUnits = subject.unit;

@@ -701,9 +701,9 @@ const AddProspectusSubject = () => {
                                   `${item.courseDescription}`
                                 }
                                 // Disable already selected subjects globally
-                                disabledItems={selectedPreReqSubjects.filter(
-                                  (code, idx) => code !== "" && idx !== index, // Exclude the current index
-                                )}
+                                // disabledItems={selectedPreReqSubjects.filter(
+                                //   (code, idx) => code !== "" && idx !== index, // Exclude the current index
+                                // )}
                               />
 
                               {/* CustomSelector for courseCode (pre-requisite) */}
@@ -751,7 +751,9 @@ const AddProspectusSubject = () => {
                                 // Show both code and description during selection
                                 displayItem={(item) => {
                                   // If courseDescription already includes courseCode, return courseDescription
-                                  if (
+                                  if (!item) {
+                                    return `None.`;
+                                  } else if (
                                     item.courseDescription.startsWith(
                                       item.courseCode,
                                     )

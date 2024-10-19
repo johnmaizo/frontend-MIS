@@ -1413,7 +1413,12 @@ const useColumns = () => {
 
       header: "Action",
       cell: ({ cell }) => {
-        return <EditDepartment departmentId={cell.getValue()} />;
+        return (
+          <div className="flex gap-1 items-center">
+            <EditDepartment departmentId={cell.getValue()} /> 
+            <EyeIcon title={"View Account"} />
+          </div>
+        );
       },
     },
   ];

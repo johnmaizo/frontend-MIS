@@ -5,8 +5,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { RefreshCcwIcon } from "lucide-react";
 import { useEnrollment } from "../context/EnrollmentContext";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const SyncApplicants = ({ loadingApplicants }) => {
+  const { user } = useContext(AuthContext);
+
   const [loading, setLoading] = useState(false);
   const { fetchApplicants } = useEnrollment();
   let longProcessToastId = null;
@@ -34,6 +38,9 @@ const SyncApplicants = ({ loadingApplicants }) => {
 
     try {
       const response = await axios.get("/enrollment/fetch-applicant-data", {
+        params: {
+          campusName: user.campus_id ? user.campusName : null,
+        },
         signal, // Pass the signal to axios to handle the abort
       });
 

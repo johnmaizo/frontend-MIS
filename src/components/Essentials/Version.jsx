@@ -78,7 +78,7 @@ const Version = ({
 
   // Conditionally render the version or the loading indicator
   return isLoading ? (
-    <span className={`inline-block text-sm ${className}`}>Loading...</span>
+    <span className={`inline-block text-sm ${className}`}>Current Version: Loading...</span>
   ) : version ? (
     <span className={`inline-block text-sm ${className}`}>
       Current Version: {version}

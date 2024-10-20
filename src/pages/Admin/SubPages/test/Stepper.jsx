@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { defineStepper } from "@stepperize/react";
 import { Input } from "../../../../components/ui/input";
 import React, { useState, useEffect } from "react";
@@ -17,7 +18,7 @@ const { useStepper, steps } = defineStepper(
 
 const Stepper = () => {
   const stepper = useStepper();
-  const [formData, setFormData] = useState({}); // State to accumulate form data
+  const [formData, setFormData] = useState({ shipping: {}, payment: {} }); // State with nested objects for each step
 
   const form = useForm({
     mode: "onTouched",
@@ -29,17 +30,27 @@ const Stepper = () => {
   }, [formData]);
 
   const onSubmit = (values) => {
-    setFormData((prevData) => ({ ...prevData, ...values }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [stepper.current.id]: { ...prevData[stepper.current.id], ...values },
+    }));
 
     console.log(`Form values for step ${stepper.current.id}:`, values);
 
     if (stepper.isLast) {
-      // Now `formData` will have the complete data when submitting at the final step
-      console.log("Submitting final form data:", { ...formData, ...values });
-      stepper.reset();
+      console.log("Submitting final form data:", formData);
+      stepper.reset(); // Reset the stepper
+      form.reset(); // Reset the form fields
+      setFormData({ shipping: {}, payment: {} }); // Clear the accumulated form data
     } else {
       stepper.next();
     }
+  };
+
+  const handleReset = () => {
+    stepper.reset(); // Reset the stepper to the first step
+    form.reset(); // Reset the form fields
+    setFormData({ shipping: {}, payment: {} }); // Clear the form data
   };
 
   return (
@@ -79,11 +90,10 @@ const Stepper = () => {
                       aria-posinset={index + 1}
                       aria-setsize={steps.length}
                       aria-selected={stepper.current.id === step.id}
-                      className={`flex items-center justify-center ${index <= stepper.current.index ? "bg-primary hover:!bg-blue-600" : ""}`}
+                      className={`mr-10 flex items-center justify-center p-10 ${index <= stepper.current.index ? "!border-primary !bg-primary !text-white hover:!bg-primary" : ""}`}
                       onClick={() => stepper.goTo(step.id)}
                     >
-                      {index + 1}
-                      {/* <span className="text-sm font-medium"></span> */}{" "}
+                      {/* {index + 1} */}
                       {step.label}
                     </Button>
                   </li>
@@ -116,13 +126,13 @@ const Stepper = () => {
                   </Button>
                 </>
               ) : (
-                <Button onClick={stepper.reset}>Reset</Button>
+                <Button onClick={handleReset}>Reset</Button> // Use handleReset to reset both the stepper and form
               )}
             </div>
             {stepper.switch({
               shipping: () => <ShippingComponent />,
               payment: () => <PaymentComponent />,
-              complete: () => <CompleteComponent />,
+              complete: () => <CompleteComponent formData={formData} />, // Pass formData to CompleteComponent
             })}
           </div>
         </form>
@@ -263,8 +273,38 @@ function PaymentComponent() {
   );
 }
 
-function CompleteComponent() {
-  return <div className="text-center">Thank you! Your order is complete.</div>;
+function CompleteComponent({ formData }) {
+  return (
+    <div className="space-y-4 text-center">
+      <h3 className="text-lg font-medium">Order Summary</h3>
+      <div className="text-left">
+        <h4 className="font-semibold">Shipping Information</h4>
+        <p>
+          <strong>Address:</strong> {formData.shipping.address || "N/A"}
+        </p>
+        <p>
+          <strong>City:</strong> {formData.shipping.city || "N/A"}
+        </p>
+        <p>
+          <strong>Postal Code:</strong> {formData.shipping.postalCode || "N/A"}
+        </p>
+      </div>
+      <div className="text-left">
+        <h4 className="font-semibold">Payment Information</h4>
+        <p>
+          <strong>Card Number:</strong> {formData.payment.cardNumber || "N/A"}
+        </p>
+        <p>
+          <strong>Expiration Date:</strong>{" "}
+          {formData.payment.expirationDate || "N/A"}
+        </p>
+        <p>
+          <strong>CVV:</strong> {formData.payment.cvv || "N/A"}
+        </p>
+      </div>
+      <p>Thank you! Your order is complete.</p>
+    </div>
+  );
 }
 
 export default Stepper;

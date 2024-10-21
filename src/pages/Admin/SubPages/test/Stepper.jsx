@@ -90,7 +90,7 @@ const Stepper = () => {
                       aria-posinset={index + 1}
                       aria-setsize={steps.length}
                       aria-selected={stepper.current.id === step.id}
-                      className={`mr-10 flex items-center justify-center p-10 ${index <= stepper.current.index ? "!border-primary !bg-primary !text-white hover:!bg-primary" : ""}`}
+                      className={`flex items-center justify-center p-10 ${index <= stepper.current.index ? "!border-primary !bg-primary !text-white hover:!bg-primary" : ""}`}
                       onClick={() => stepper.goTo(step.id)}
                     >
                       {/* {index + 1} */}

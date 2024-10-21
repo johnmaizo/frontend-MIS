@@ -14,8 +14,6 @@ import CoursePage from "../Admin/SubPages/CoursePage";
 import { useContext } from "react";
 import { AuthContext } from "../../components/context/AuthContext";
 import AccountPage from "../Admin/SubPages/AccountPage";
-import ProgramCoursesPage from "../Admin/SubPages/ProgramCoursesPage";
-import ViewProgramCoursePage from "../Admin/SubPages/ViewProgramCoursePage";
 import { HasRole } from "../../components/reuseable/HasRole";
 import BuildingStructurePage from "../Admin/SubPages/BuildingStructurePage";
 import FloorPage from "../Admin/SubPages/FloorPage";
@@ -154,26 +152,6 @@ const EmployeeRoutes = () => {
               <>
                 <PageTitle title="Subjects - MIS Benedicto College" />
                 <CoursePage />
-              </>
-            }
-          />
-
-          <Route
-            path="/subjects/program-subjects"
-            element={
-              <>
-                <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
-                <ProgramCoursesPage />
-              </>
-            }
-          />
-
-          <Route
-            path="/subjects/program-subjects/campus/:programCampusId/:programCampusName/program/:programCode/:program_id"
-            element={
-              <>
-                <PageTitle title="Assign Subjects to Program - MIS Benedicto College" />
-                <ViewProgramCoursePage />
               </>
             }
           />

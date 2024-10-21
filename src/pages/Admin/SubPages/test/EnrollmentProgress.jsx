@@ -1,15 +1,12 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, Loader } from "lucide-react"; // Loader icon for spinner
 import { useEffect, useState } from "react";
 
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "../../../../components/ui/hover-card";
-
-const getStatusColor = (status) => {
+const getStatusColor = (status, loading) => {
+  if (loading) {
+    return "#e2e8f0"; // Default gray color while loading
+  }
   switch (status) {
     case "accepted":
       return "#38a169"; // Green for accepted steps
@@ -25,7 +22,29 @@ const getStatusColor = (status) => {
 };
 
 const EnrollmentProgress = ({ enrollmentId }) => {
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState([
+    {
+      id: 1,
+      label: "Registrar Approval",
+      description: "Check by the registrar office",
+      status: "upcoming",
+      date: null,
+    },
+    {
+      id: 2,
+      label: "Accounting Approval",
+      description: "Check by the accounting department",
+      status: "upcoming",
+      date: null,
+    },
+    {
+      id: 3,
+      label: "Final Approval",
+      description: "Final approval of the application",
+      status: "upcoming",
+      date: null,
+    },
+  ]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,15 +68,6 @@ const EnrollmentProgress = ({ enrollmentId }) => {
           },
           {
             id: 2,
-            label: "Dean Approval",
-            description: "Check by the dean's office",
-            status: mapBackendStatus(data.dean_status),
-            accepted: data.dean_status === "accepted",
-            rejected: data.dean_status === "rejected",
-            date: data.dean_status_date, // Add date
-          },
-          {
-            id: 3,
             label: "Accounting Approval",
             description: "Check by the accounting department",
             status: mapBackendStatus(data.accounting_status),
@@ -67,7 +77,7 @@ const EnrollmentProgress = ({ enrollmentId }) => {
             date: data.accounting_status_date, // Add date
           },
           {
-            id: 4,
+            id: 3,
             label: "Final Approval",
             description: "Final approval of the application",
             status: data.final_approval_status ? "accepted" : "upcoming",
@@ -101,14 +111,13 @@ const EnrollmentProgress = ({ enrollmentId }) => {
     }
   };
 
-  if (loading) {
-    return <div>Loading enrollment progress...</div>;
-  }
-
   return (
     <div className="text-gray-600 dark:text-gray-400 flex flex-wrap items-center justify-center gap-y-2 space-x-4 text-base text-black dark:text-white">
       {steps.map((step, index) => (
-        <div key={step.id} className="flex items-center">
+        <div
+          key={step.id}
+          className={`flex items-center ${loading ? "opacity-50" : "opacity-100"}`}
+        >
           <div className="mt-0 flex items-center space-x-4">
             <div className="flex flex-none items-center">
               <div
@@ -118,10 +127,14 @@ const EnrollmentProgress = ({ enrollmentId }) => {
                     : step.rejected
                       ? "text-white"
                       : "!text-black"
-                }`}
-                style={{ backgroundColor: getStatusColor(step.status) }}
+                } ${loading ? "animate-pulse" : ""}`} // Pulsating effect while loading
+                style={{
+                  backgroundColor: getStatusColor(step.status, loading),
+                }}
               >
-                {step.accepted ? (
+                {loading ? (
+                  <Loader className="text-gray-400 h-6 w-6 animate-spin" />
+                ) : step.accepted ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -155,46 +168,32 @@ const EnrollmentProgress = ({ enrollmentId }) => {
                   step.id
                 )}
               </div>
-              {/* Only show hover card for Accounting Approval */}
-              {step.label === "Accounting Approval" ? (
-                <HoverCard>
-                  <HoverCardTrigger asChild className="cursor-pointer">
-                    <div className="ml-4 w-[9em]">
-                      <span className="font-medium">{step.label}</span>
-                      <p className="text-xs">{step.description}</p>
-
-                      {step.accepted && step.date && (
-                        <p className="text-gray-500 mt-1 inline-flex items-center gap-1 text-[0.6rem] font-medium">
-                          <CalendarClock className="h-[15px] w-[15px]" />{" "}
-                          <relative-time datetime={step.date} />
-                        </p>
-                      )}
-                    </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="dark:text-white text-black !shadow-default">
-                    <p>
-                      Payment Status:{" "}
+              {/* Always show the label and description */}
+              <div className="ml-4 w-[9em]">
+                <span className="font-medium">{step.label}</span>
+                <p className="text-xs">
+                  {step.description}
+                  {step.label === "Accounting Approval" && (
+                    <span className="mt-1 text-[0.55rem] font-semibold">
+                      <br />(Payment Status:{" "}
                       {step.paymentConfirmed ? (
                         <span className="text-green-500">Confirmed</span>
                       ) : (
                         <span className="text-red-500">Pending</span>
-                      )}
-                    </p>
-                  </HoverCardContent>
-                </HoverCard>
-              ) : (
-                <div className="ml-4 w-[9em]">
-                  <span className="font-medium">{step.label}</span>
-                  <p className="text-xs">{step.description}</p>
-
-                  {step.accepted && step.date && (
-                    <p className="text-gray-500 mt-1 inline-flex items-center gap-1 text-[0.6rem] font-medium">
-                      <CalendarClock className="h-[15px] w-[15px]" />{" "}
-                      <relative-time datetime={step.date} />
-                    </p>
+                      )})
+                    </span>
                   )}
-                </div>
-              )}
+                </p>
+
+                {!loading && step.accepted && step.date && (
+                  <p className="text-gray-500 mt-1 inline-flex items-center gap-1 text-[0.6rem] font-medium">
+                    <CalendarClock className="h-[15px] w-[15px]" />{" "}
+                    <relative-time datetime={step.date} />
+                  </p>
+                )}
+
+                {/* Payment Status Indicator for Accounting Approval */}
+              </div>
             </div>
           </div>
           {index !== steps.length - 1 && (

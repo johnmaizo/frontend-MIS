@@ -153,7 +153,9 @@ export function BreadcrumbResponsive({ pageName, items, ITEMS_TO_DISPLAY }) {
                     </BreadcrumbPage>
                   )}
                 </BreadcrumbItem>
-                {index < items.length - 1 && index !== items.length - 2 && <BreadcrumbSeparator />}
+                {index + 1 < items.slice(-ITEMS_TO_DISPLAY + 1).length && (
+                  <BreadcrumbSeparator />
+                )}
               </React.Fragment>
             ))}
           </BreadcrumbList>

@@ -18,11 +18,10 @@ const { useStepper, steps } = defineStepper(
 
 const Stepper = () => {
   const stepper = useStepper();
-  const [formData, setFormData] = useState({ shipping: {}, payment: {} }); // State with nested objects for each step
-
+  const [formData, setFormData] = useState({ shipping: {}, payment: {} });
   const form = useForm({
     mode: "onTouched",
-    resolver: zodResolver(stepper.current.schema), // Use Zod resolver here
+    resolver: zodResolver(stepper.current.schema),
   });
 
   useEffect(() => {
@@ -35,28 +34,41 @@ const Stepper = () => {
       [stepper.current.id]: { ...prevData[stepper.current.id], ...values },
     }));
 
-    console.log(`Form values for step ${stepper.current.id}:`, values);
-
     if (stepper.isLast) {
       console.log("Submitting final form data:", formData);
-      stepper.reset(); // Reset the stepper
-      form.reset(); // Reset the form fields
-      setFormData({ shipping: {}, payment: {} }); // Clear the accumulated form data
+      stepper.reset();
+      form.reset();
+      setFormData({ shipping: {}, payment: {} });
     } else {
       stepper.next();
     }
   };
 
+  const validateAndNavigate = async (stepId, index) => {
+    if (index < stepper.current.index) {
+      // Allow moving back to previous steps without validation
+      stepper.goTo(stepId);
+      return;
+    }
+
+    // Prevent skipping by only allowing navigation to the next step
+    const isValid = await form.trigger();
+    if (isValid && index === stepper.current.index) {
+      stepper.goTo(stepId); // Navigate to the next step only if validation passes and it's the current step
+    } else {
+      console.log("Validation failed or trying to skip steps.");
+    }
+  };
+
   const handleReset = () => {
-    stepper.reset(); // Reset the stepper to the first step
-    form.reset(); // Reset the form fields
-    setFormData({ shipping: {}, payment: {} }); // Clear the form data
+    stepper.reset();
+    form.reset();
+    setFormData({ shipping: {}, payment: {} });
   };
 
   return (
     <div>
       <h3>Stepper:</h3>
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -90,10 +102,14 @@ const Stepper = () => {
                       aria-posinset={index + 1}
                       aria-setsize={steps.length}
                       aria-selected={stepper.current.id === step.id}
-                      className={`flex items-center justify-center p-10 ${index <= stepper.current.index ? "!border-primary !bg-primary !text-white hover:!bg-primary" : ""}`}
-                      onClick={() => stepper.goTo(step.id)}
+                      disabled={index > stepper.current.index} // Disable future steps to prevent skipping
+                      className={`flex items-center justify-center p-10 ${
+                        index <= stepper.current.index
+                          ? "!border-primary !bg-primary !text-white hover:!bg-primary"
+                          : ""
+                      }`}
+                      onClick={() => validateAndNavigate(step.id, index)}
                     >
-                      {/* {index + 1} */}
                       {step.label}
                     </Button>
                   </li>
@@ -126,13 +142,13 @@ const Stepper = () => {
                   </Button>
                 </>
               ) : (
-                <Button onClick={handleReset}>Reset</Button> // Use handleReset to reset both the stepper and form
+                <Button onClick={handleReset}>Reset</Button>
               )}
             </div>
             {stepper.switch({
               shipping: () => <ShippingComponent />,
               payment: () => <PaymentComponent />,
-              complete: () => <CompleteComponent formData={formData} />, // Pass formData to CompleteComponent
+              complete: () => <CompleteComponent formData={formData} />,
             })}
           </div>
         </form>
@@ -140,6 +156,8 @@ const Stepper = () => {
     </div>
   );
 };
+
+// ShippingComponent, PaymentComponent, CompleteComponent remain the same
 
 function ShippingComponent() {
   const {

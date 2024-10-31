@@ -438,8 +438,6 @@ const AddProspectusSubject = () => {
   // Declare isDesktop for CustomSelector
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  // ** Adjusted code starts here **
-
   // Extract selected prospectus_subject_codes from preRequisites
   const selectedPreReqSubjects = preRequisites
     .map((preReq) => preReq.prospectus_subject_code)
@@ -910,13 +908,19 @@ const AddProspectusSubject = () => {
                               const subject = uniqueCourses.find(
                                 (course) => course.value === subjectCode,
                               );
-                              const preReq = confirmedData.preRequisite.find(
+                              // Collect all pre-requisites for this subjectCode
+                              const preReqs = confirmedData.preRequisite.filter(
                                 (pr) =>
                                   pr.prospectus_subject_code === subjectCode,
                               );
-                              const preReqCodes = preReq
-                                ? preReq.subjectCode.join(", ")
-                                : "";
+                              // Collect all pre-requisite codes
+                              const preReqCodesArray =
+                                preReqs.length > 0
+                                  ? preReqs.map((pr) => pr.subjectCode[0])
+                                  : [];
+                              // Display all pre-requisite codes individually
+                              const displayPreReqCodes =
+                                preReqCodesArray.join(", ");
 
                               return (
                                 <tr key={subjectCode}>
@@ -932,7 +936,7 @@ const AddProspectusSubject = () => {
                                     {subject ? subject.unit : "N/A"}
                                   </td>
                                   <td className="border px-2 py-1">
-                                    {preReqCodes}
+                                    {displayPreReqCodes}
                                   </td>
                                 </tr>
                               );

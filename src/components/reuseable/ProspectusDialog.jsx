@@ -18,12 +18,6 @@ import DotSpinner from "../styles/DotSpinner";
  * units, and pre-requisites. If there are no subjects available for the prospectus, it displays
  * a message indicating this.
  *
- * @param {Object} props - The component props.
- * @param {boolean} props.isOpen - Whether the dialog is open or not.
- * @param {string} props.prospectusCampusId - The ID of the campus.
- * @param {string} props.prospectusCampusName - The name of the campus.
- * @param {string} props.prospectusProgramCode - The program code.
- * @param {string} props.prospectus_id - The ID of the prospectus.
  * @returns {JSX.Element} A React component that displays a dialog to generate a prospectus.
  */
 const ProspectusDialog = () => {
@@ -302,12 +296,21 @@ const ProspectusDialog = () => {
                               </td>
                               <td className="border p-2">
                                 {subject.prerequisites.length > 0
-                                  ? subject.prerequisites
-                                      .map(
-                                        (prerequisite) =>
-                                          prerequisite.courseCode,
-                                      )
-                                      .join(", ")
+                                  ? Array.from(
+                                      new Set(
+                                        subject.prerequisites.map(
+                                          (prerequisite) =>
+                                            prerequisite.courseCode.endsWith(
+                                              "L",
+                                            )
+                                              ? prerequisite.courseCode.slice(
+                                                  0,
+                                                  -1,
+                                                )
+                                              : prerequisite.courseCode,
+                                        ),
+                                      ),
+                                    ).join(", ")
                                   : ""}
                               </td>
                             </tr>

@@ -1,11 +1,45 @@
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
+import { useSchool } from "../../../../../components/context/SchoolContext";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectLabel,
+} from "../../../../../components/ui/select";
+import { HasRole } from "../../../../../components/reuseable/HasRole";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../../../components/context/AuthContext";
+import { SelectValue } from "@radix-ui/react-select";
 
 const PersonalDataComponent = () => {
   const {
+    control,
     register,
     formState: { errors },
+    setValue,
+    clearErrors,
   } = useFormContext();
+
+  const { campusActive, loading } = useSchool();
+  const { user } = useContext(AuthContext);
+
+  const [selectedCampus, setSelectedCampus] = useState("");
+
+  // Set the initial campus based on the user's role
+  useEffect(() => {
+    if (HasRole(user.role, "SuperAdmin")) {
+      // SuperAdmin can select any campus
+      setSelectedCampus("");
+    } else {
+      // Other users are assigned to a specific campus
+      const campusId = user.campus_id ? user.campus_id.toString() : "";
+      setSelectedCampus(campusId);
+      setValue("campus_id", parseInt(campusId));
+    }
+  }, [user, setValue]);
 
   return (
     <div className="space-y-4 text-start">
@@ -18,16 +52,48 @@ const PersonalDataComponent = () => {
           >
             Campus
           </label>
-          <select
-            id="campus_id"
-            {...register("campus_id", { valueAsNumber: true })}
-            className="block w-full rounded-md border p-2"
-          >
-            {/* Options should be populated dynamically */}
-            <option value="">Select Campus</option>
-            <option value="1">Main Campus</option>
-            <option value="2">City Campus</option>
-          </select>
+
+          {HasRole(user.role, "SuperAdmin") ? (
+            <Select
+              onValueChange={(value) => {
+                setSelectedCampus(value);
+                setValue("campus_id", parseInt(value));
+                clearErrors("campus_id");
+              }}
+              value={selectedCampus}
+              disabled={loading}
+            >
+              <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
+                <SelectValue placeholder="Select Campus" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Campuses</SelectLabel>
+                  {campusActive.map((campus) => (
+                    <SelectItem
+                      key={campus.campus_id}
+                      value={campus.campus_id.toString()}
+                    >
+                      {campus.campusName}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          ) : (
+            <Input
+              id="dept_campus"
+              type="text"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              value={
+                campusActive.find(
+                  (campus) => campus.campus_id.toString() === selectedCampus,
+                )?.campusName || ""
+              }
+              disabled
+            />
+          )}
+
           {errors.campus_id && (
             <span className="text-sm font-medium text-red-600">
               {errors.campus_id.message}
@@ -43,15 +109,34 @@ const PersonalDataComponent = () => {
           >
             Enrollment Type
           </label>
-          <select
-            id="enrollmentType"
-            {...register("enrollmentType")}
-            className="block w-full rounded-md border p-2"
-          >
-            <option value="">Select Enrollment Type</option>
-            <option value="online">Online</option>
-            <option value="on-site">On-site</option>
-          </select>
+
+          <Controller
+            name="enrollmentType"
+            control={control}
+            defaultValue="on-site"
+            render={({ field }) => (
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                }}
+                value={field.value || "on-site"}
+              >
+                <SelectTrigger className="h-[3em] w-full text-[1rem] text-black dark:bg-form-input dark:text-white">
+                  <SelectValue placeholder={field.value || "On-site"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Select Enrollment Type</SelectLabel>
+                    <SelectItem value="online" disabled>
+                      Online
+                    </SelectItem>
+                    <SelectItem value="on-site">On-site</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
+          />
+
           {errors.enrollmentType && (
             <span className="text-sm font-medium text-red-600">
               {errors.enrollmentType.message}

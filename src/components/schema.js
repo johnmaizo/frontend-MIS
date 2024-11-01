@@ -22,7 +22,7 @@ export const personalDataSchema = z.object({
   address: z.string().min(1, "Address is required"),
   civilStatus: z.string().min(1, "Civil Status is required"),
   birthPlace: z.string().min(1, "Birth Place is required"),
-  religion: z.string().optional(),
+  religion: z.string().min(1, "Religion is required"),
   citizenship: z.string().min(1, "Citizenship is required"),
   country: z.string().min(1, "Country is required"),
   ACR: z.string().optional(),
@@ -91,13 +91,13 @@ export const academicBackgroundSchema = z.object({
 
 // Academic History Schema
 export const academicHistorySchema = z.object({
-  elementarySchool: z.string(),
-  elementaryAddress: z.string(),
+  elementarySchool: z.string().min(1, "Elementary School is required"),
+  elementaryAddress: z.string().min(1, "Elementary Address is required"),
   elementaryHonors: z.string().optional().nullable(),
   elementaryGraduate: z.string().optional().nullable(),
 
-  secondarySchool: z.string(),
-  secondaryAddress: z.string(),
+  secondarySchool: z.string().min(1, "Secondary School is required"),
+  secondaryAddress: z.string().min(1, "Secondary School Address is required"),
   secondaryHonors: z.string().optional().nullable(),
   secondaryGraduate: z.string().optional().nullable(),
 
@@ -105,14 +105,13 @@ export const academicHistorySchema = z.object({
   seniorHighAddress: z.string().optional().nullable(),
   seniorHighHonors: z.string().optional().nullable(),
   seniorHighSchoolGraduate: z.string().optional().nullable(),
-  
+
   ncae_grade: z.string().optional().nullable(),
   ncae_year_taken: z.string().optional().nullable(),
   latest_college: z.string().optional().nullable(),
   college_address: z.string().optional().nullable(),
   college_honors: z.string().optional().nullable(),
   program: z.string().optional().nullable(),
-  
 });
 
 // Documents Schema

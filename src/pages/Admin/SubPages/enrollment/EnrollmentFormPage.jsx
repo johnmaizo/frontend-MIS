@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { defineStepper } from "@stepperize/react";
 import React, { useState, useEffect } from "react";
 import { Button } from "../../../../components/ui/button";
@@ -12,7 +13,7 @@ import FamilyDetailsComponent from "./components/FamilyDetailsComponent";
 import AcademicBackgroundComponent from "./components/AcademicBackgroundComponent";
 import AcademicHistoryComponent from "./components/AcademicHistoryComponent";
 import DocumentsComponent from "./components/DocumentsComponent";
-import CompleteComponent from "./components/CompleteComponent";
+import ConfirmationComponent from "./components/ConfirmationComponent"; // Import the confirmation component
 
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -22,8 +23,8 @@ import {
   academicHistorySchema,
   documentsSchema,
   familyDetailsSchema,
-  // ... other schemas if any
 } from "../../../../components/schema";
+import { useSchool } from "../../../../components/context/SchoolContext";
 
 const { useStepper, steps } = defineStepper(
   {
@@ -43,10 +44,18 @@ const { useStepper, steps } = defineStepper(
     schema: academicHistorySchema,
   },
   { id: "documents", label: "Documents", schema: documentsSchema },
-  { id: "complete", label: "Complete", schema: z.object({}) },
+  { id: "confirmation", label: "Confirmation", schema: z.object({}) }, // Add confirmation step with empty schema
 );
 
 const EnrollmentFormPage = () => {
+  const { fetchCampusActive, fetchProgramActive, fetchSemesters } = useSchool();
+
+  useEffect(() => {
+    fetchCampusActive();
+    fetchProgramActive();
+    fetchSemesters();
+  }, []);
+
   const stepper = useStepper();
   const [formData, setFormData] = useState({
     personalData: {},
@@ -97,6 +106,72 @@ const EnrollmentFormPage = () => {
 
       setFormData(updatedFormData);
       stepper.next();
+    } else if (stepper.current.id === "confirmation") {
+      setLocalLoading(true);
+      setGeneralError("");
+
+      // Combine all form data into a single object
+      const dataToSubmit = {
+        ...formData,
+      };
+
+      // Transform data: trim strings and replace empty strings with null
+      const transformedData = {};
+      for (const [sectionKey, sectionValue] of Object.entries(dataToSubmit)) {
+        transformedData[sectionKey] = {};
+        for (const [key, value] of Object.entries(sectionValue)) {
+          if (typeof value === "string") {
+            transformedData[sectionKey][key] =
+              value.trim() === "" ? null : value.trim();
+          } else {
+            transformedData[sectionKey][key] = value;
+          }
+        }
+      }
+
+      console.log("transformedData: ", transformedData);
+
+      try {
+        const response = await toast.promise(
+          axios.post("/enrollment/submit-application", transformedData),
+          {
+            loading: "Submitting Application...",
+            success: "Application submitted successfully!",
+            error: "Failed to submit application.",
+          },
+          {
+            position: "bottom-right",
+            duration: 5000,
+          },
+        );
+
+        if (response.data) {
+          setSuccess(true);
+          toast.success(response.data.message, {
+            position: "bottom-right",
+            duration: 5000,
+          });
+          // Reset form and stepper
+          stepper.reset();
+          form.reset();
+          setFormData({
+            personalData: {},
+            addPersonalData: {},
+            familyDetails: {},
+            academicBackground: {},
+            academicHistory: {},
+            documents: {},
+          });
+        }
+        setLocalLoading(false);
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          setGeneralError(err.response.data.message);
+        } else {
+          setGeneralError("An unexpected error occurred. Please try again.");
+        }
+        setLocalLoading(false);
+      }
     } else {
       const updatedFormData = {
         ...formData,
@@ -105,76 +180,19 @@ const EnrollmentFormPage = () => {
           ...values,
         },
       };
-
-      if (stepper.isLast) {
-        setLocalLoading(true);
-        setGeneralError("");
-
-        // Combine all form data into a single object
-        const dataToSubmit = {
-          ...updatedFormData,
-        };
-
-        // Transform data: trim strings and replace empty strings with null
-        const transformedData = {};
-        for (const [sectionKey, sectionValue] of Object.entries(dataToSubmit)) {
-          transformedData[sectionKey] = {};
-          for (const [key, value] of Object.entries(sectionValue)) {
-            if (typeof value === "string") {
-              transformedData[sectionKey][key] =
-                value.trim() === "" ? null : value.trim();
-            } else {
-              transformedData[sectionKey][key] = value;
-            }
-          }
-        }
-
-        try {
-          const response = await toast.promise(
-            axios.post("/enrollments/submit-application", transformedData),
-            {
-              loading: "Submitting Application...",
-              success: "Application submitted successfully!",
-              error: "Failed to submit application.",
-            },
-            {
-              position: "bottom-right",
-              duration: 5000,
-            },
-          );
-
-          if (response.data) {
-            setSuccess(true);
-            // Reset form and stepper
-            stepper.reset();
-            form.reset();
-            setFormData({
-              personalData: {},
-              addPersonalData: {},
-              familyDetails: {},
-              academicBackground: {},
-              academicHistory: {},
-              documents: {},
-            });
-          }
-          setLocalLoading(false);
-        } catch (err) {
-          if (err.response && err.response.data && err.response.data.message) {
-            setGeneralError(err.response.data.message);
-          } else {
-            setGeneralError("An unexpected error occurred. Please try again.");
-          }
-          setLocalLoading(false);
-        }
-      } else {
-        setFormData(updatedFormData);
-        stepper.next();
-      }
+      setFormData(updatedFormData);
+      stepper.next();
     }
   };
 
   const validateAndNavigate = async (stepId, index) => {
-    if (index < stepper.current.index) {
+    const stepsToShow = stepper.all.filter(
+      (step) => step.id !== "confirmation",
+    );
+    const currentIndex = stepsToShow.findIndex(
+      (step) => step.id === stepper.current.id,
+    );
+    if (index < currentIndex) {
       // Allow moving back to previous steps without validation
       stepper.goTo(stepId);
       return;
@@ -182,7 +200,7 @@ const EnrollmentFormPage = () => {
 
     // Prevent skipping by only allowing navigation to the next step
     const isValid = await form.trigger();
-    if (isValid && index === stepper.current.index) {
+    if (isValid && index === currentIndex) {
       stepper.goTo(stepId); // Navigate to the next step only if validation passes and it's the current step
     } else {
       console.log("Validation failed or trying to skip steps.");
@@ -212,7 +230,8 @@ const EnrollmentFormPage = () => {
           <div className="flex justify-end">
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm">
-                Step {stepper.current.index + 1} of {steps.length}
+                Step {Math.min(stepper.current.index + 1, steps.length - 1)} of{" "}
+                {steps.length - 1}
               </span>
             </div>
           </div>
@@ -221,63 +240,71 @@ const EnrollmentFormPage = () => {
               className="flex items-center justify-between gap-2"
               aria-orientation="horizontal"
             >
-              {stepper.all.map((step, index, array) => (
-                <React.Fragment key={step.id}>
-                  <li className="flex flex-shrink-0 items-center gap-4">
-                    <Button
-                      type="button"
-                      role="tab"
-                      variant={
-                        index <= stepper.current.index ? "default" : "secondary"
-                      }
-                      aria-current={
-                        stepper.current.id === step.id ? "step" : undefined
-                      }
-                      aria-posinset={index + 1}
-                      aria-setsize={steps.length}
-                      aria-selected={stepper.current.id === step.id}
-                      disabled={index > stepper.current.index} // Disable future steps to prevent skipping
-                      className={`flex items-center justify-center p-10 ${
-                        index <= stepper.current.index
-                          ? "!border-primary !bg-primary !text-white hover:!bg-primary"
-                          : ""
-                      }`}
-                      onClick={() => validateAndNavigate(step.id, index)}
-                    >
-                      {step.label}
-                    </Button>
-                  </li>
-                  {index < array.length - 1 && (
-                    <Separator
-                      className={`h-[3px] flex-1 ${
-                        index < stepper.current.index
-                          ? "bg-blue-500"
-                          : "bg-slate-500"
-                      }`}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
+              {stepper.all
+                .filter((step) => step.id !== "confirmation")
+                .map((step, index, array) => (
+                  <React.Fragment key={step.id}>
+                    <li className="flex flex-shrink-0 items-center gap-4">
+                      <Button
+                        type="button"
+                        role="tab"
+                        variant={
+                          stepper.all.findIndex(
+                            (s) => s.id === stepper.current.id,
+                          ) >= stepper.all.findIndex((s) => s.id === step.id)
+                            ? "default"
+                            : "secondary"
+                        }
+                        aria-current={
+                          stepper.current.id === step.id ? "step" : undefined
+                        }
+                        aria-posinset={index + 1}
+                        aria-setsize={steps.length - 1}
+                        aria-selected={stepper.current.id === step.id}
+                        disabled={
+                          stepper.all.findIndex(
+                            (s) => s.id === stepper.current.id,
+                          ) < stepper.all.findIndex((s) => s.id === step.id)
+                        } // Disable future steps to prevent skipping
+                        className={`flex items-center justify-center p-10 ${
+                          stepper.all.findIndex(
+                            (s) => s.id === stepper.current.id,
+                          ) >= stepper.all.findIndex((s) => s.id === step.id)
+                            ? "!border-primary !bg-primary !text-white hover:!bg-primary"
+                            : ""
+                        }`}
+                        onClick={() => validateAndNavigate(step.id, index)}
+                      >
+                        {step.label}
+                      </Button>
+                    </li>
+                    {index < array.length - 1 && (
+                      <Separator
+                        className={`h-[3px] flex-1 ${
+                          stepper.all.findIndex(
+                            (s) => s.id === stepper.current.id,
+                          ) > stepper.all.findIndex((s) => s.id === step.id)
+                            ? "bg-blue-500"
+                            : "bg-slate-500"
+                        }`}
+                      />
+                    )}
+                  </React.Fragment>
+                ))}
             </ol>
           </nav>
           <div className="space-y-4">
             <div className="flex justify-end gap-4">
-              {!stepper.isLast ? (
-                <>
-                  <Button
-                    variant="secondary"
-                    onClick={stepper.prev}
-                    disabled={stepper.isFirst}
-                  >
-                    Back
-                  </Button>
-                  <Button type="submit" disabled={localLoading}>
-                    {stepper.isLast ? "Complete" : "Next"}
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={handleReset}>Reset</Button>
-              )}
+              <Button
+                variant="secondary"
+                onClick={stepper.prev}
+                disabled={stepper.isFirst}
+              >
+                Back
+              </Button>
+              <Button type="submit" disabled={localLoading}>
+                {stepper.current.id === "confirmation" ? "Complete" : "Next"}
+              </Button>
             </div>
             {stepper.switch({
               personalData: () => <PersonalDataComponent />,
@@ -285,7 +312,7 @@ const EnrollmentFormPage = () => {
               academicBackground: () => <AcademicBackgroundComponent />,
               academicHistory: () => <AcademicHistoryComponent />,
               documents: () => <DocumentsComponent />,
-              complete: () => <CompleteComponent formData={formData} />,
+              confirmation: () => <ConfirmationComponent formData={formData} />, // Render the confirmation component
             })}
           </div>
         </form>

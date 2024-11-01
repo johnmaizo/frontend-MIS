@@ -1,33 +1,77 @@
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
+import { useSchool } from "../../../../../components/context/SchoolContext";
+import { useState } from "react";
+import CustomSelector from "../../../../../components/reuseable/CustomSelector";
+import { useMediaQuery } from "../../../../../hooks/use-media-query";
 
 const AcademicBackgroundComponent = () => {
   const {
+    control,
     register,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
+
+  const { programActive, semesters, loading } = useSchool();
+
+  const [openProgramSelector, setOpenProgramSelector] = useState(false);
+  const [openSemesterSelector, setOpenSemesterSelector] = useState(false);
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
     <div className="space-y-4 text-start">
       <div className="flex gap-10">
         {/* Program ID */}
-        <div className="w-full space-y-2">
+        <div className="w-[50%] space-y-2">
           <label
             htmlFor="program_id"
             className="block text-sm font-medium text-primary"
           >
             Program
           </label>
-          <select
-            id="program_id"
-            {...register("program_id", { valueAsNumber: true })}
-            className="block w-full rounded-md border p-2"
-          >
-            {/* Options should be populated dynamically */}
-            <option value="">Select Program</option>
-            <option value="101">Computer Science</option>
-            <option value="102">Information Technology</option>
-          </select>
+          <Controller
+            name="program_id"
+            control={control}
+            rules={{ required: "Program is required" }}
+            render={({ field }) => {
+              const fieldValue = field.value ? Number(field.value) : null;
+
+              const selectedProgram = programActive.find(
+                (program) => program.program_id === fieldValue,
+              );
+
+              // Format the selected name
+              const selectedName = selectedProgram
+                ? `${selectedProgram.programCode} - ${selectedProgram.programDescription}`
+                : "";
+
+              return (
+                <CustomSelector
+                  title="Program"
+                  isDesktop={isDesktop}
+                  open={openProgramSelector}
+                  setOpen={setOpenProgramSelector}
+                  selectedID={field.value || ""}
+                  selectedName={selectedName}
+                  data={programActive}
+                  setSelectedID={(value) => {
+                    field.onChange(Number(value)); // Convert value to number
+                    clearErrors("program_id");
+                  }}
+                  setSelectedName={() => {}}
+                  loading={loading}
+                  idKey="program_id"
+                  nameKey="programDescription"
+                  errorKey="program_id"
+                  displayItem={(program) =>
+                    `${program.programCode} - ${program.programDescription}`
+                  }
+                />
+              );
+            }}
+          />
           {errors.program_id && (
             <span className="text-sm font-medium text-red-600">
               {errors.program_id.message}
@@ -36,7 +80,7 @@ const AcademicBackgroundComponent = () => {
         </div>
 
         {/* Year Level */}
-        <div className="w-full space-y-2">
+        <div className="w-[50%] space-y-2">
           <label
             htmlFor="yearLevel"
             className="block text-sm font-medium text-primary"
@@ -62,6 +106,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
       </div>
+
       <div className="flex gap-10">
         {/* Major In */}
         <div className="w-full space-y-2">
@@ -136,16 +181,48 @@ const AcademicBackgroundComponent = () => {
           >
             Semester
           </label>
-          <select
-            id="semester_id"
-            {...register("semester_id", { valueAsNumber: true })}
-            className="block w-full rounded-md border p-2"
-          >
-            {/* Options should be populated dynamically */}
-            <option value="">Select Semester</option>
-            <option value="1">First Semester</option>
-            <option value="2">Second Semester</option>
-          </select>
+          <Controller
+            name="semester_id"
+            control={control}
+            rules={{ required: "Semester is required" }}
+            render={({ field }) => {
+              const fieldValue = field.value ? Number(field.value) : null;
+
+              const selectedSemester = semesters.find(
+                (semester) => semester.semester_id === fieldValue,
+              );
+
+              // Format the selected name
+              const selectedName = selectedSemester
+                ? `${selectedSemester.schoolYear} - ${selectedSemester.semesterName}`
+                : "";
+
+              return (
+                <CustomSelector
+                  title="Semester"
+                  isDesktop={isDesktop}
+                  open={openSemesterSelector}
+                  setOpen={setOpenSemesterSelector}
+                  selectedID={field.value || ""}
+                  selectedName={selectedName}
+                  data={semesters}
+                  setSelectedID={(value) => {
+                    field.onChange(Number(value)); // Convert value to number
+                    clearErrors("semester_id");
+                  }}
+                  setSelectedName={() => {}}
+                  loading={loading}
+                  idKey="semester_id"
+                  nameKey="semesterName"
+                  errorKey="semester_id"
+                  displayItem={(semester) =>
+                    `${semester.schoolYear} - ${semester.semesterName} `
+                  }
+                  forSemester={true}
+                />
+              );
+            }}
+          />
           {errors.semester_id && (
             <span className="text-sm font-medium text-red-600">
               {errors.semester_id.message}

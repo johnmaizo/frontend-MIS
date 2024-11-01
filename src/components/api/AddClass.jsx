@@ -276,7 +276,7 @@ const AddClass = () => {
 
                     <div className="mb-4.5 w-full">
                       <span className="mb-2.5 block text-black dark:text-white">
-                        Subject Code
+                        Semester
                       </span>
 
                       <CustomSelector

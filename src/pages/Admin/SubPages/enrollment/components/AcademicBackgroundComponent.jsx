@@ -10,6 +10,59 @@ const AcademicBackgroundComponent = () => {
   return (
     <div className="space-y-4 text-start">
       <div className="flex gap-10">
+        {/* Program ID */}
+        <div className="w-full space-y-2">
+          <label
+            htmlFor="program_id"
+            className="block text-sm font-medium text-primary"
+          >
+            Program
+          </label>
+          <select
+            id="program_id"
+            {...register("program_id", { valueAsNumber: true })}
+            className="block w-full rounded-md border p-2"
+          >
+            {/* Options should be populated dynamically */}
+            <option value="">Select Program</option>
+            <option value="101">Computer Science</option>
+            <option value="102">Information Technology</option>
+          </select>
+          {errors.program_id && (
+            <span className="text-sm font-medium text-red-600">
+              {errors.program_id.message}
+            </span>
+          )}
+        </div>
+
+        {/* Year Level */}
+        <div className="w-full space-y-2">
+          <label
+            htmlFor="yearLevel"
+            className="block text-sm font-medium text-primary"
+          >
+            Year Level
+          </label>
+          <select
+            id="yearLevel"
+            {...register("yearLevel")}
+            className="block w-full rounded-md border p-2"
+          >
+            <option value="">Select Year Level</option>
+            <option value="First Year">First Year</option>
+            <option value="Second Year">Second Year</option>
+            <option value="Third Year">Third Year</option>
+            <option value="Fourth Year">Fourth Year</option>
+            <option value="Fifth Year">Fifth Year</option>
+          </select>
+          {errors.yearLevel && (
+            <span className="text-sm font-medium text-red-600">
+              {errors.yearLevel.message}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex gap-10">
         {/* Major In */}
         <div className="w-full space-y-2">
           <label
@@ -107,7 +160,11 @@ const AcademicBackgroundComponent = () => {
           >
             Year Entry
           </label>
-          <Input id="yearEntry" type="number" {...register("yearEntry", { valueAsNumber: true })} />
+          <Input
+            id="yearEntry"
+            type="number"
+            {...register("yearEntry", { valueAsNumber: true })}
+          />
           {errors.yearEntry && (
             <span className="text-sm font-medium text-red-600">
               {errors.yearEntry.message}

@@ -7,35 +7,29 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../../../../components/ui/form";
 
-import ApplicantComponent from "./components/ApplicantComponent";
 import PersonalDataComponent from "./components/PersonalDataComponent";
-import AddPersonalDataComponent from "./components/AddPersonalDataComponent";
 import FamilyDetailsComponent from "./components/FamilyDetailsComponent";
 import AcademicBackgroundComponent from "./components/AcademicBackgroundComponent";
 import AcademicHistoryComponent from "./components/AcademicHistoryComponent";
 import DocumentsComponent from "./components/DocumentsComponent";
 import CompleteComponent from "./components/CompleteComponent";
 
-// Import axios and toast
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import {
+  combinedPersonalDataSchema,
   academicBackgroundSchema,
   academicHistorySchema,
-  addPersonalDataSchema,
-  applicantSchema,
   documentsSchema,
   familyDetailsSchema,
-  personalDataSchema,
+  // ... other schemas if any
 } from "../../../../components/schema";
 
 const { useStepper, steps } = defineStepper(
-  { id: "applicant", label: "Applicant", schema: applicantSchema },
-  { id: "personalData", label: "Personal Data", schema: personalDataSchema },
   {
-    id: "addPersonalData",
-    label: "Add Personal Data",
-    schema: addPersonalDataSchema,
+    id: "personalData",
+    label: "Personal Data",
+    schema: combinedPersonalDataSchema,
   },
   { id: "familyDetails", label: "Family Details", schema: familyDetailsSchema },
   {
@@ -55,7 +49,6 @@ const { useStepper, steps } = defineStepper(
 const EnrollmentFormPage = () => {
   const stepper = useStepper();
   const [formData, setFormData] = useState({
-    applicant: {},
     personalData: {},
     addPersonalData: {},
     familyDetails: {},
@@ -78,78 +71,105 @@ const EnrollmentFormPage = () => {
   }, [formData]);
 
   const onSubmit = async (values) => {
-    const updatedFormData = {
-      ...formData,
-      [stepper.current.id]: {
-        ...formData[stepper.current.id],
-        ...values,
-      },
-    };
+    if (stepper.current.id === "personalData") {
+      const {
+        cityAddress,
+        cityTelNumber,
+        provinceAddress,
+        provinceTelNumber,
+        ...personalDataValues
+      } = values;
 
-    if (stepper.isLast) {
-      setLocalLoading(true);
-      setGeneralError("");
-
-      // Combine all form data into a single object
-      const dataToSubmit = {
-        ...updatedFormData,
+      const updatedFormData = {
+        ...formData,
+        personalData: {
+          ...formData.personalData,
+          ...personalDataValues,
+        },
+        addPersonalData: {
+          ...formData.addPersonalData,
+          cityAddress,
+          cityTelNumber,
+          provinceAddress,
+          provinceTelNumber,
+        },
       };
 
-      // Transform data: trim strings and replace empty strings with null
-      const transformedData = {};
-      for (const [sectionKey, sectionValue] of Object.entries(dataToSubmit)) {
-        transformedData[sectionKey] = {};
-        for (const [key, value] of Object.entries(sectionValue)) {
-          if (typeof value === "string") {
-            transformedData[sectionKey][key] =
-              value.trim() === "" ? null : value.trim();
-          } else {
-            transformedData[sectionKey][key] = value;
-          }
-        }
-      }
-
-      try {
-        const response = await toast.promise(
-          axios.post("/enrollments/submit-application", transformedData),
-          {
-            loading: "Submitting Application...",
-            success: "Application submitted successfully!",
-            error: "Failed to submit application.",
-          },
-          {
-            position: "bottom-right",
-            duration: 5000,
-          },
-        );
-
-        if (response.data) {
-          setSuccess(true);
-          // Reset form and stepper
-          stepper.reset();
-          form.reset();
-          setFormData({
-            applicant: {},
-            personalData: {},
-            addPersonalData: {},
-            familyDetails: {},
-            academicBackground: {},
-            academicHistory: {},
-            documents: {},
-          });
-        }
-        setLocalLoading(false);
-      } catch (err) {
-        if (err.response && err.response.data && err.response.data.message) {
-          setGeneralError(err.response.data.message);
-        } else {
-          setGeneralError("An unexpected error occurred. Please try again.");
-        }
-        setLocalLoading(false);
-      }
-    } else {
       setFormData(updatedFormData);
       stepper.next();
+    } else {
+      const updatedFormData = {
+        ...formData,
+        [stepper.current.id]: {
+          ...formData[stepper.current.id],
+          ...values,
+        },
+      };
+
+      if (stepper.isLast) {
+        setLocalLoading(true);
+        setGeneralError("");
+
+        // Combine all form data into a single object
+        const dataToSubmit = {
+          ...updatedFormData,
+        };
+
+        // Transform data: trim strings and replace empty strings with null
+        const transformedData = {};
+        for (const [sectionKey, sectionValue] of Object.entries(dataToSubmit)) {
+          transformedData[sectionKey] = {};
+          for (const [key, value] of Object.entries(sectionValue)) {
+            if (typeof value === "string") {
+              transformedData[sectionKey][key] =
+                value.trim() === "" ? null : value.trim();
+            } else {
+              transformedData[sectionKey][key] = value;
+            }
+          }
+        }
+
+        try {
+          const response = await toast.promise(
+            axios.post("/enrollments/submit-application", transformedData),
+            {
+              loading: "Submitting Application...",
+              success: "Application submitted successfully!",
+              error: "Failed to submit application.",
+            },
+            {
+              position: "bottom-right",
+              duration: 5000,
+            },
+          );
+
+          if (response.data) {
+            setSuccess(true);
+            // Reset form and stepper
+            stepper.reset();
+            form.reset();
+            setFormData({
+              personalData: {},
+              addPersonalData: {},
+              familyDetails: {},
+              academicBackground: {},
+              academicHistory: {},
+              documents: {},
+            });
+          }
+          setLocalLoading(false);
+        } catch (err) {
+          if (err.response && err.response.data && err.response.data.message) {
+            setGeneralError(err.response.data.message);
+          } else {
+            setGeneralError("An unexpected error occurred. Please try again.");
+          }
+          setLocalLoading(false);
+        }
+      } else {
+        setFormData(updatedFormData);
+        stepper.next();
+      }
     }
   };
 
@@ -173,7 +193,6 @@ const EnrollmentFormPage = () => {
     stepper.reset();
     form.reset();
     setFormData({
-      applicant: {},
       personalData: {},
       addPersonalData: {},
       familyDetails: {},
@@ -266,9 +285,7 @@ const EnrollmentFormPage = () => {
               )}
             </div>
             {stepper.switch({
-              applicant: () => <ApplicantComponent />,
               personalData: () => <PersonalDataComponent />,
-              addPersonalData: () => <AddPersonalDataComponent />,
               familyDetails: () => <FamilyDetailsComponent />,
               academicBackground: () => <AcademicBackgroundComponent />,
               academicHistory: () => <AcademicHistoryComponent />,

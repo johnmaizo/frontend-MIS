@@ -2,45 +2,43 @@ import { z } from "zod";
 
 // Applicant Schema
 export const applicantSchema = z.object({
-  enrollmentType: z.enum(["online", "on-site"]),
   applicant_id_for_online: z.number().optional().nullable(),
-  campus_id: z.number().int(),
-  program_id: z.number().int(),
-  firstName: z.string().nonempty(),
-  middleName: z.string().optional().nullable(),
-  lastName: z.string().nonempty(),
-  suffix: z.string().optional().nullable(),
-  gender: z.string().nonempty(),
-  email: z.string().email(),
-  contactNumber: z.string().nonempty(),
-  birthDate: z.string().nonempty(),
-  address: z.string().nonempty(),
-  yearLevel: z.enum([
-    "First Year",
-    "Second Year",
-    "Third Year",
-    "Fourth Year",
-    "Fifth Year",
-  ]),
+
   isTransferee: z.boolean(),
 });
 
 // Personal Data Schema
 export const personalDataSchema = z.object({
-  civilStatus: z.string().nonempty(),
-  birthPlace: z.string().nonempty(),
-  religion: z.string().nonempty(),
-  citizenship: z.string().nonempty(),
-  country: z.string().nonempty(),
-  ACR: z.string().optional().nullable(),
+  campus_id: z.number().min(1, "Campus is required"),
+  enrollmentType: z.string().min(1, "Enrollment Type is required"),
+  firstName: z.string().min(1, "First Name is required"),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1, "Last Name is required"),
+  suffix: z.string().optional(),
+  gender: z.string().min(1, "Gender is required"),
+  email: z.string().email("Invalid email address"),
+  contactNumber: z.string().min(1, "Contact Number is required"),
+  birthDate: z.string().min(1, "Birth Date is required"),
+  address: z.string().min(1, "Address is required"),
+  civilStatus: z.string().min(1, "Civil Status is required"),
+  birthPlace: z.string().min(1, "Birth Place is required"),
+  religion: z.string().optional(),
+  citizenship: z.string().min(1, "Citizenship is required"),
+  country: z.string().min(1, "Country is required"),
+  ACR: z.string().optional(),
 });
 
 export const addPersonalDataSchema = z.object({
-  cityAddress: z.string().nonempty(),
-  cityTelNumber: z.string().optional().nullable(),
-  provinceAddress: z.string().optional().nullable(),
-  provinceTelNumber: z.string().optional().nullable(),
+  cityAddress: z.string().min(1, "City Address is required"),
+  cityTelNumber: z.string().min(1, "City Telephone Number is required"),
+  provinceAddress: z.string().min(1, "Province Address is required"),
+  provinceTelNumber: z.string().min(1, "Province Telephone Number is required"),
 });
+
+// Combined Personal Data Schema
+export const combinedPersonalDataSchema = personalDataSchema.extend(
+  addPersonalDataSchema.shape,
+);
 
 // Family Details Schema
 export const familyDetailsSchema = z.object({
@@ -78,6 +76,14 @@ export const academicBackgroundSchema = z.object({
   majorIn: z.string().optional().nullable(),
   studentType: z.enum(["Regular", "Irregular"]),
   applicationType: z.enum(["Freshmen", "Transferee", "Cross Enrollee"]),
+  yearLevel: z.enum([
+    "First Year",
+    "Second Year",
+    "Third Year",
+    "Fourth Year",
+    "Fifth Year",
+  ]),
+  program_id: z.number().int(),
   semester_id: z.number().int(),
   yearEntry: z.number().int(),
   yearGraduate: z.number().int(),
@@ -85,13 +91,13 @@ export const academicBackgroundSchema = z.object({
 
 // Academic History Schema
 export const academicHistorySchema = z.object({
-  elementarySchool: z.string().nonempty(),
-  elementaryAddress: z.string().nonempty(),
+  elementarySchool: z.string(),
+  elementaryAddress: z.string(),
   elementaryHonors: z.string().optional().nullable(),
   elementaryGraduate: z.string().optional().nullable(),
 
-  secondarySchool: z.string().nonempty(),
-  secondaryAddress: z.string().nonempty(),
+  secondarySchool: z.string(),
+  secondaryAddress: z.string(),
   secondaryHonors: z.string().optional().nullable(),
   secondaryGraduate: z.string().optional().nullable(),
 
@@ -99,6 +105,14 @@ export const academicHistorySchema = z.object({
   seniorHighAddress: z.string().optional().nullable(),
   seniorHighHonors: z.string().optional().nullable(),
   seniorHighSchoolGraduate: z.string().optional().nullable(),
+  
+  ncae_grade: z.string().optional().nullable(),
+  ncae_year_taken: z.string().optional().nullable(),
+  latest_college: z.string().optional().nullable(),
+  college_address: z.string().optional().nullable(),
+  college_honors: z.string().optional().nullable(),
+  program: z.string().optional().nullable(),
+  
 });
 
 // Documents Schema

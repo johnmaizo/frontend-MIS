@@ -175,6 +175,131 @@ const AcademicHistoryComponent = () => {
           </span>
         )}
       </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="seniorHighHonors"
+          className="block text-sm font-medium text-primary"
+        >
+          seniorHighHonors
+        </label>
+        <Input id="seniorHighHonors" {...register("seniorHighHonors")} />
+        {errors.seniorHighHonors && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.seniorHighHonors.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="seniorHighSchoolGraduate"
+          className="block text-sm font-medium text-primary"
+        >
+          seniorHighSchoolGraduate
+        </label>
+        <Input
+          id="seniorHighSchoolGraduate"
+          {...register("seniorHighSchoolGraduate")}
+        />
+        {errors.seniorHighSchoolGraduate && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.seniorHighSchoolGraduate.message}
+          </span>
+        )}
+      </div>
+
+      <hr />
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="ncae_grade"
+          className="block text-sm font-medium text-primary"
+        >
+          ncae_grade
+        </label>
+        <Input id="ncae_grade" {...register("ncae_grade")} />
+        {errors.ncae_grade && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.ncae_grade.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="ncae_year_taken"
+          className="block text-sm font-medium text-primary"
+        >
+          ncae_year_taken
+        </label>
+        <Input id="ncae_year_taken" {...register("ncae_year_taken")} />
+        {errors.ncae_year_taken && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.ncae_year_taken.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="latest_college"
+          className="block text-sm font-medium text-primary"
+        >
+          latest_college
+        </label>
+        <Input id="latest_college" {...register("latest_college")} />
+        {errors.latest_college && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.latest_college.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="college_address"
+          className="block text-sm font-medium text-primary"
+        >
+          college_address
+        </label>
+        <Input id="college_address" {...register("college_address")} />
+        {errors.college_address && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.college_address.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="college_honors"
+          className="block text-sm font-medium text-primary"
+        >
+          college_honors
+        </label>
+        <Input id="college_honors" {...register("college_honors")} />
+        {errors.college_honors && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.college_honors.message}
+          </span>
+        )}
+      </div>
+
+      <div className="w-full space-y-2">
+        <label
+          htmlFor="program"
+          className="block text-sm font-medium text-primary"
+        >
+          program
+        </label>
+        <Input id="program" {...register("program")} />
+        {errors.program && (
+          <span className="text-sm font-medium text-red-600">
+            {errors.program.message}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

@@ -204,17 +204,12 @@ const EnrollmentFormPage = () => {
 
   return (
     <div>
-      <h3>Enrollment Form:</h3>
       {generalError && (
         <div className="font-medium text-red-600">{generalError}</div>
       )}
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 rounded-lg border p-6"
-        >
-          <div className="flex justify-between">
-            <h2 className="text-lg font-medium">Application</h2>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-3">
+          <div className="flex justify-end">
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm">
                 Step {stepper.current.index + 1} of {steps.length}

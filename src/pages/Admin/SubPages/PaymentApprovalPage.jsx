@@ -21,9 +21,15 @@ import { useEnrollment } from "../../../components/context/EnrollmentContext";
 import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
-import AddEmployee from "../../../components/api/AddEmployee";
-import SyncApplicants from "../../../components/reuseable/SyncApplicants";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
+
+// Import Tabs components
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../../components/ui/tabs";
 
 const PaymentApprovalPage = () => {
   const { user } = useContext(AuthContext);
@@ -31,7 +37,7 @@ const PaymentApprovalPage = () => {
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      label: "Payment Approvals", // New breadcrumb item
+      label: "Payment Approvals",
     },
   ];
 
@@ -47,12 +53,23 @@ const PaymentApprovalPage = () => {
         ITEMS_TO_DISPLAY={2}
       />
 
-      <EnrollmentTables />
+      <Tabs defaultValue="approvals" className="w-full">
+        <TabsList>
+          <TabsTrigger value="approvals">Payment Approvals</TabsTrigger>
+          <TabsTrigger value="history">Payment History</TabsTrigger>
+        </TabsList>
+        <TabsContent value="approvals">
+          <EnrollmentTables view="approvals" />
+        </TabsContent>
+        <TabsContent value="history">
+          <EnrollmentTables view="history" />
+        </TabsContent>
+      </Tabs>
     </DefaultLayout>
   );
 };
 
-const EnrollmentTables = () => {
+const EnrollmentTables = ({ view }) => {
   const { user } = useContext(AuthContext);
 
   const {
@@ -63,15 +80,19 @@ const EnrollmentTables = () => {
   } = useEnrollment();
 
   useEffect(() => {
-    fetchEnrollmentStatus();
-  }, []);
+    fetchEnrollmentStatus(view);
+  }, [view]);
 
-  const { columnPaymentEnrollmentStatus } = useColumnsSecond();
+  const { columnPaymentEnrollmentStatus, columnPaymentHistory } =
+    useColumnsSecond();
+
+  const columns =
+    view === "approvals" ? columnPaymentEnrollmentStatus : columnPaymentHistory;
 
   return (
     <>
       <DataTable
-        columns={columnPaymentEnrollmentStatus}
+        columns={columns}
         data={enrollmentStatuses}
         loading={loadingEnrollmentStatus}
         error={error}
@@ -107,52 +128,42 @@ const DataTable = ({ data, columns, loading, error }) => {
 
   return (
     <>
-      <>
-        <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-          <div className="items-center justify-between md:flex">
-            <div className="gap-5 md:flex md:flex-col md:gap-0 lg:flex-row lg:gap-5">
-              <div className="gap-5 md:flex">
-                <SearchInput
-                  placeholder="Search by Name..."
-                  filterValue={table.getColumn("fullName")?.getFilterValue()}
-                  setFilterValue={(value) =>
-                    table.getColumn("fullName")?.setFilterValue(value)
-                  }
-                  className="md:max-w-[12em]"
-                />
-                {/* <SearchInput
-                  placeholder="Search by email..."
-                  filterValue={table.getColumn("email")?.getFilterValue()}
-                  setFilterValue={(value) =>
-                    table.getColumn("email")?.setFilterValue(value)
-                  }
-                  className="md:w-[17em]"
-                /> */}
-              </div>
-              <div className="mb-5 md:mb-0">
-                <ResetFilter table={table} className={"h-[3.3em]"} />
-              </div>
+      <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+        <div className="items-center justify-between md:flex">
+          <div className="gap-5 md:flex md:flex-col md:gap-0 lg:flex-row lg:gap-5">
+            <div className="gap-5 md:flex">
+              <SearchInput
+                placeholder="Search by Name..."
+                filterValue={table.getColumn("fullName")?.getFilterValue()}
+                setFilterValue={(value) =>
+                  table.getColumn("fullName")?.setFilterValue(value)
+                }
+                className="md:max-w-[12em]"
+              />
+            </div>
+            <div className="mb-5 md:mb-0">
+              <ResetFilter table={table} className={"h-[3.3em]"} />
             </div>
           </div>
-          <div className="max-w-full overflow-x-auto">
-            <ReuseTable
-              table={table}
-              columns={columns}
-              loading={loading}
-              error={error}
-            />
-          </div>
-
-          <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
-            <DataTablePagination
-              rowsPerPage={5}
-              totalName={"Enrollment"}
-              table={table}
-              totalDepartments={table.getFilteredRowModel().rows.length}
-            />
-          </div>
         </div>
-      </>
+        <div className="max-w-full overflow-x-auto">
+          <ReuseTable
+            table={table}
+            columns={columns}
+            loading={loading}
+            error={error}
+          />
+        </div>
+
+        <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
+          <DataTablePagination
+            rowsPerPage={5}
+            totalName={"Records"}
+            table={table}
+            totalDepartments={table.getFilteredRowModel().rows.length}
+          />
+        </div>
+      </div>
     </>
   );
 };

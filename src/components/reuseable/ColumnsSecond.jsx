@@ -14,13 +14,13 @@ import {
   DialogFooter,
   DialogClose,
 } from "../ui/dialog";
-import { DeleteIcon } from "../Icons";
-import ButtonAction from "./ButtonAction";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { HasRole } from "./HasRole";
 import { useEnrollment } from "../context/EnrollmentContext";
 import ButtonActionPayment from "./ButtonActionPayment";
+
+import { format } from "date-fns";
 
 const useColumnsSecond = () => {
   const { user } = useContext(AuthContext);
@@ -278,7 +278,7 @@ const useColumnsSecond = () => {
                       entityId={row.original.student_personal_id}
                       action="accept"
                       onSuccess={() => {
-                        fetchEnrollmentStatus();
+                        fetchEnrollmentStatus("approvals");
                       }}
                     />
 
@@ -320,7 +320,7 @@ const useColumnsSecond = () => {
                       entityId={row.original.student_personal_id}
                       action="reject"
                       onSuccess={() => {
-                        fetchEnrollmentStatus();
+                        fetchEnrollmentStatus("approvals");
                       }}
                     />
 
@@ -343,9 +343,124 @@ const useColumnsSecond = () => {
   ];
   // ! Column Payment Enrollment Status END
 
+  // ! New columns for Payment History
+  const columnPaymentHistory = [
+    {
+      accessorKey: "enrollment_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "fullName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Full Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      id: "amountPaid",
+      header: "Amount Paid",
+      cell: "₱500", // Or use actual data if available
+    },
+    {
+      accessorKey: "payment_confirmed",
+      header: "Payment Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-orange-600"
+            }`}
+          >
+            {cell.getValue() ? "Paid" : "Pending"}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "accounting_status_date",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Payment Date
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        const date = cell.getValue();
+        if (date) {
+          return format(new Date(date), "MMMM dd, yyyy");
+        }
+        return "N/A";
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() === "Campus name not found"
+                    ? "N/A"
+                    : cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
+    // No Actions column in history
+  ];
+  // ! Columns Payment History END
+
   return {
     columnViewSubjectProspectus,
     columnPaymentEnrollmentStatus,
+    columnPaymentHistory,
   };
 };
 

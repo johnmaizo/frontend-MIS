@@ -74,16 +74,28 @@ export const EnrollmentProvider = ({ children }) => {
   const [loadingEnrollmentStatus, setLoadingEnrollmentStatus] = useState(false);
   const [enrollmentStatuses, setEnrollmentStatuses] = useState([]);
 
-  const fetchEnrollmentStatus = async () => {
+  const fetchEnrollmentStatus = async (view) => {
     setError("");
     setLoadingEnrollmentStatus(true);
     try {
-      // Define params conditionally with added accounting and registrar statuses
-      const params = {
-        ...(user.campus_id ? { campus_id: user.campus_id } : {}),
-        accounting_status: "upcoming",
-        registrar_status: "accepted",
-      };
+      let params = {};
+
+      if (view === "approvals") {
+        // Fetch pending approvals
+        params = {
+          ...(user.campus_id ? { campus_id: user.campus_id } : {}),
+          accounting_status: "upcoming",
+          registrar_status: "accepted",
+        };
+      } else if (view === "history") {
+        // Fetch accepted payments
+        params = {
+          ...(user.campus_id ? { campus_id: user.campus_id } : {}),
+          accounting_status: "accepted",
+          registrar_status: "accepted",
+          payment_confirmed: true,
+        };
+      }
 
       const response = await axios.get(
         "/enrollment/get-all-enrollment-status",

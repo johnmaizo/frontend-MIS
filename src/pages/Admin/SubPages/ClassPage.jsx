@@ -21,7 +21,6 @@ import { useSchool } from "../../../components/context/SchoolContext";
 import ReuseTable from "../../../components/reuseable/ReuseTable";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { useColumns } from "../../../components/reuseable/Columns";
-import AddBuilding from "../../../components/api/AddBuilding";
 import AddClass from "../../../components/api/AddClass";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 
@@ -120,18 +119,8 @@ const DataTable = ({ data, columns, loadingClass, error }) => {
               }
               className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[14em]"
             />
-            {/* <Input
-              placeholder="Search by Campus..."
-              value={table.getColumn("campusName")?.getFilterValue() ?? ""}
-              onChange={(event) =>
-                table
-                  .getColumn("campusName")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[18em]"
-            /> */}
 
-            <ResetFilter table={table} className={"h-[3.3em] mb-5 md:mb-0"} />
+            <ResetFilter table={table} className={"mb-5 h-[3.3em] md:mb-0"} />
           </div>
           <div>
             <AddClass />

@@ -33,6 +33,9 @@ const AddClass = () => {
     employeesActive,
     employeeLoading,
     loading,
+    roomsActive,
+    fetchRoomsActive,
+    loadingRoomsActive,
   } = useSchool();
   const [open, setOpen] = useState(false);
 
@@ -52,6 +55,7 @@ const AddClass = () => {
   const [openComboBox, setOpenComboBox] = useState(false);
   const [openComboBox2, setOpenComboBox2] = useState(false);
   const [openComboBox3, setOpenComboBox3] = useState(false);
+  const [openComboBox4, setOpenComboBox4] = useState(false); // New state for room selector
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const [selectedSubjectID, setSelectedSubjectID] = useState("");
@@ -65,11 +69,32 @@ const AddClass = () => {
 
   const [selectedCourseCode, setSelectedCourseCode] = useState("");
 
+  // New states for room selection
+  const [selectedRoomID, setSelectedRoomID] = useState("");
+  const [selectedRoomName, setSelectedRoomName] = useState("");
+
+  // Days of the week
+  const daysOfWeek = [
+    { name: "Monday", value: "Monday" },
+    { name: "Tuesday", value: "Tuesday" },
+    { name: "Wednesday", value: "Wednesday" },
+    { name: "Thursday", value: "Thursday" },
+    { name: "Friday", value: "Friday" },
+    { name: "Saturday", value: "Saturday" },
+    { name: "Sunday", value: "Sunday" },
+  ];
+
   useEffect(() => {
     fetchCourseActive();
     fetchSemesters();
     fetchEmployeesActive("Instructor, Dean, Teacher", true);
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      fetchRoomsActive();
+    }
+  }, [open]);
 
   const onSubmit = async (data) => {
     if (!selectedSubjectID) {
@@ -96,19 +121,31 @@ const AddClass = () => {
       return;
     }
 
+    if (!selectedRoomID) {
+      setError("structure_id", {
+        type: "manual",
+        message: "You must select a Room.",
+      });
+      return;
+    }
+
     setLocalLoading(true);
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
           key,
-          value.trim() === "" ? null : value.trim(),
+          value === "" ? null : value,
         ]),
       ),
-
       course_id: parseInt(selectedSubjectID),
       semester_id: parseInt(selectedSemesterID),
       employee_id: parseInt(selectedInstructorID),
+      structure_id: parseInt(selectedRoomID),
+      days: data.days.join(", "),
     };
+
+    // Remove 'schedule' if it exists
+    delete transformedData.schedule;
 
     setGeneralError("");
     try {
@@ -116,8 +153,8 @@ const AddClass = () => {
         axios.post("/class/add-class", transformedData),
         {
           loading: "Adding Class...",
-          success: "Class Added successfully!",
-          error: "Failed to add Class.",
+          success: "Class added successfully!",
+          error: "Failed to add class.",
         },
         {
           position: "bottom-right",
@@ -153,6 +190,8 @@ const AddClass = () => {
         setSelectedSemesterName("");
         setSelectedInstructorID("");
         setSelectedInstructorName("");
+        setSelectedRoomID("");
+        setSelectedRoomName("");
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -183,6 +222,8 @@ const AddClass = () => {
     setSelectedSemesterName("");
     setSelectedInstructorID("");
     setSelectedInstructorName("");
+    setSelectedRoomID("");
+    setSelectedRoomName("");
   };
 
   return (
@@ -194,12 +235,12 @@ const AddClass = () => {
             onClick={() => setOpen(true)}
           >
             <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Class </span>
+            <span className="max-w-[8em]">Add Class</span>
           </DialogTrigger>
           <DialogContent className="max-w-[70em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add new Class
+                Add New Class
               </DialogTitle>
               <DialogDescription className="sr-only">
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
@@ -208,6 +249,7 @@ const AddClass = () => {
               <div className="!h-[20em] overflow-y-auto overscroll-none text-xl xl:!h-[27em]">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
+                    {/* Class Name */}
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
@@ -239,6 +281,7 @@ const AddClass = () => {
                       )}
                     </div>
 
+                    {/* Subject Code */}
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                       <div className="w-full">
                         <span className="mb-2.5 block text-black dark:text-white">
@@ -274,6 +317,7 @@ const AddClass = () => {
                       </div>
                     </div>
 
+                    {/* Semester */}
                     <div className="mb-4.5 w-full">
                       <span className="mb-2.5 block text-black dark:text-white">
                         Semester
@@ -304,6 +348,7 @@ const AddClass = () => {
                       )}
                     </div>
 
+                    {/* Instructor */}
                     <div className="mb-4.5 w-full">
                       <span className="mb-2.5 block text-black dark:text-white">
                         Instructor
@@ -339,34 +384,117 @@ const AddClass = () => {
                       )}
                     </div>
 
+                    {/* Room Selection */}
+                    <div className="mb-4.5 w-full">
+                      <span className="mb-2.5 block text-black dark:text-white">
+                        Room
+                      </span>
+
+                      <CustomSelector
+                        title={"Room"}
+                        isDesktop={isDesktop}
+                        open={openComboBox4}
+                        setOpen={setOpenComboBox4}
+                        selectedID={selectedRoomID}
+                        selectedName={selectedRoomName}
+                        data={roomsActive}
+                        setSelectedID={setSelectedRoomID}
+                        setSelectedName={setSelectedRoomName}
+                        clearErrors={clearErrors}
+                        loading={loading || loadingRoomsActive || success}
+                        idKey="structure_id"
+                        nameKey="fullStructureDetails"
+                        errorKey="structure_id"
+                      />
+
+                      {errors.structure_id && (
+                        <ErrorMessage>
+                          *{errors.structure_id.message}
+                        </ErrorMessage>
+                      )}
+                    </div>
+
+                    {/* Time Start */}
                     <div className="mb-4.5 w-full">
                       <label
                         className="mb-2.5 block text-black dark:text-white"
-                        htmlFor="schedule"
+                        htmlFor="timeStart"
                       >
-                        Schedule
+                        Time Start
                       </label>
 
                       <input
-                        id="schedule"
-                        type="text"
+                        id="timeStart"
+                        type="time"
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        {...register("schedule", {
+                        {...register("timeStart", {
                           required: {
                             value: true,
-                            message: "Schedule is required",
-                          },
-                          validate: {
-                            notEmpty: (value) =>
-                              value.trim() !== "" ||
-                              "Schedule cannot be empty or just spaces",
+                            message: "Time Start is required",
                           },
                         })}
                         disabled={localLoading || success}
                       />
 
-                      {errors.schedule && (
-                        <ErrorMessage>*{errors.schedule.message}</ErrorMessage>
+                      {errors.timeStart && (
+                        <ErrorMessage>*{errors.timeStart.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    {/* Time End */}
+                    <div className="mb-4.5 w-full">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="timeEnd"
+                      >
+                        Time End
+                      </label>
+
+                      <input
+                        id="timeEnd"
+                        type="time"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        {...register("timeEnd", {
+                          required: {
+                            value: true,
+                            message: "Time End is required",
+                          },
+                        })}
+                        disabled={localLoading || success}
+                      />
+
+                      {errors.timeEnd && (
+                        <ErrorMessage>*{errors.timeEnd.message}</ErrorMessage>
+                      )}
+                    </div>
+
+                    {/* Days */}
+                    <div className="mb-4.5 w-full">
+                      <span className="mb-2.5 block text-black dark:text-white">
+                        Days
+                      </span>
+
+                      <div className="flex flex-wrap gap-3">
+                        {daysOfWeek.map((day) => (
+                          <label key={day.value} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              value={day.value}
+                              {...register("days", {
+                                required: {
+                                  value: true,
+                                  message: "At least one day must be selected",
+                                },
+                              })}
+                              className="mr-2"
+                            />
+                            {day.name}
+                          </label>
+                        ))}
+                      </div>
+
+                      {errors.days && (
+                        <ErrorMessage>*{errors.days.message}</ErrorMessage>
                       )}
                     </div>
 

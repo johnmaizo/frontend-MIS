@@ -31,13 +31,13 @@ import {
   TabsContent,
 } from "../../../components/ui/tabs";
 
-const PaymentApprovalPage = () => {
+const UnenrolledRegistrationPage = () => {
   const { user } = useContext(AuthContext);
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      label: "Payment Approvals",
+      label: "Unenrolled Registrations",
     },
   ];
 
@@ -46,8 +46,8 @@ const PaymentApprovalPage = () => {
       <BreadcrumbResponsive
         pageName={
           !HasRole(user.role, "SuperAdmin")
-            ? `Payment Approvals (${user?.campusName})`
-            : "Payment Approvals (All Campuses)"
+            ? `Unenrolled Registrations (${user?.campusName})`
+            : "Unenrolled Registrations (All Campuses)"
         }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
@@ -70,8 +70,6 @@ const PaymentApprovalPage = () => {
 };
 
 const EnrollmentTables = ({ view }) => {
-  const { user } = useContext(AuthContext);
-
   const {
     error,
     enrollmentStatuses,
@@ -168,4 +166,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default PaymentApprovalPage;
+export default UnenrolledRegistrationPage;

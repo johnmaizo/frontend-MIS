@@ -368,7 +368,7 @@ export const SchoolProvider = ({ children }) => {
         params: {
           campus_id: user.campus_id,
           program_id: program_id,
-          programCode: programCode
+          programCode: programCode,
         },
       });
       setCourseActive(response.data);
@@ -639,6 +639,7 @@ export const SchoolProvider = ({ children }) => {
   const [rooms, setRooms] = useState([]);
   const [roomsActive, setRoomsActive] = useState([]);
   const [roomsDeleted, setRoomsDeleted] = useState([]);
+  const [loadingRoomsActive, setLoadingRoomsActive] = useState(false);
 
   const fetchRooms = async (buildingName, floorName, campusId) => {
     setError("");
@@ -666,9 +667,9 @@ export const SchoolProvider = ({ children }) => {
     setLoadingBuildings(false);
   };
 
-  const fetchRoomsActive = async (buildingName, floorName, campusId) => {
+  const fetchRoomsActive = async (campusId) => {
     setError("");
-    setLoadingBuildingsActive(true);
+    setLoadingRoomsActive(true);
     try {
       const response = await axios.get("/building-structure/active", {
         params: {
@@ -676,8 +677,6 @@ export const SchoolProvider = ({ children }) => {
             ? campusId
             : user.campus_id,
           filterRoom: "true",
-          buildingName: buildingName,
-          floorName: floorName,
         },
       });
       setRoomsActive(response.data);
@@ -685,10 +684,10 @@ export const SchoolProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Room active: (${err})`);
+        setError(`Failed to fetch active rooms: (${err})`);
       }
     }
-    setLoadingBuildingsActive(false);
+    setLoadingRoomsActive(false);
   };
 
   const fetchRoomsDeleted = async (buildingName, floorName, campusId) => {
@@ -923,7 +922,8 @@ export const SchoolProvider = ({ children }) => {
   // ! Prospectus END
 
   // ! Prospectus Subjects START
-  const [loadingProspectusSubjects, setLoadingProspectusSubjects] = useState(false);
+  const [loadingProspectusSubjects, setLoadingProspectusSubjects] =
+    useState(false);
   const [prospectusSubjects, setProspectusSubjects] = useState([]);
 
   const fetchProspectusSubjects = async (
@@ -936,14 +936,17 @@ export const SchoolProvider = ({ children }) => {
     setError("");
     setLoadingProspectusSubjects(true);
     try {
-      const response = await axios.get("/prospectus/get-all-prospectus-subjects/", {
-        params: {
-          campus_id: user.campus_id ? user.campus_id : campusId,
-          campusName: campusName,
-          prospectus_id: prospectusId,
-          programCode: programCode,
+      const response = await axios.get(
+        "/prospectus/get-all-prospectus-subjects/",
+        {
+          params: {
+            campus_id: user.campus_id ? user.campus_id : campusId,
+            campusName: campusName,
+            prospectus_id: prospectusId,
+            programCode: programCode,
+          },
         },
-      });
+      );
       setProspectusSubjects(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -1045,6 +1048,7 @@ export const SchoolProvider = ({ children }) => {
         fetchRoomsDeleted,
         roomsActive,
         fetchRoomsActive,
+        loadingRoomsActive,
 
         // ! Employee
         employees,

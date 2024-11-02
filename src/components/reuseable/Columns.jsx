@@ -1414,8 +1414,8 @@ const useColumns = () => {
       header: "Action",
       cell: ({ cell }) => {
         return (
-          <div className="flex gap-1 items-center">
-            <EditDepartment departmentId={cell.getValue()} /> 
+          <div className="flex items-center gap-1">
+            <EditDepartment departmentId={cell.getValue()} />
             <EyeIcon title={"View Account"} />
           </div>
         );
@@ -2774,45 +2774,48 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
-    {
-      accessorKey: "schoolYear",
-      header: ({ column }) => {
-        return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="S.Y."
-            options={getUniqueCodes(classes, "schoolYear")}
-          />
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
-      cell: ({ cell }) => {
-        return cell.getValue();
-      },
-    },
-    {
-      accessorKey: "semesterName",
-      header: ({ column }) => {
-        return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="Semester"
-            options={getUniqueCodes(classes, "semesterName")}
-          />
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
-      cell: ({ cell }) => {
-        return cell.getValue();
-      },
-    },
+    // {
+    //   accessorKey: "schoolYear",
+    //   header: ({ column }) => {
+    //     return (
+    //       <FacetedFilterEnrollment
+    //         column={column}
+    //         title="S.Y."
+    //         options={getUniqueCodes(classes, "schoolYear")}
+    //       />
+    //     );
+    //   },
+    //   filterFn: (row, id, value) => {
+    //     return value.includes(row.getValue(id));
+    //   },
+    //   cell: ({ cell }) => {
+    //     return cell.getValue();
+    //   },
+    // },
+    // {
+    //   accessorKey: "semesterName",
+    //   header: ({ column }) => {
+    //     return (
+    //       <FacetedFilterEnrollment
+    //         column={column}
+    //         title="Semester"
+    //         options={getUniqueCodes(classes, "semesterName")}
+    //       />
+    //     );
+    //   },
+    //   filterFn: (row, id, value) => {
+    //     return value.includes(row.getValue(id));
+    //   },
+    //   cell: ({ cell }) => {
+    //     return cell.getValue();
+    //   },
+    // },
     {
       accessorKey: "schedule",
       header: "Schedule",
+      cell: ({ cell }) => {
+        return <span>{cell.getValue()}</span>;
+      },
     },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [

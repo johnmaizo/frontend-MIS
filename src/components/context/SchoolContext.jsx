@@ -820,25 +820,27 @@ export const SchoolProvider = ({ children }) => {
 
   // ! Class START
   const [loadingClass, setLoadingClass] = useState(false);
-  const [classes, setClass] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [classDeleted, setClassDeleted] = useState([]);
   const [classActive, setClassActive] = useState([]);
 
-  const fetchClass = async () => {
+  const fetchClass = async (schoolYear = null, semesterId = null) => {
     setError("");
     setLoadingClass(true);
     try {
       const response = await axios.get("/class", {
         params: {
-          campus_id: user.campus_id,
+          campus_id: HasRole(user.role, "SuperAdmin") ? null : user.campus_id,
+          schoolYear: schoolYear,
+          semester_id: semesterId,
         },
       });
-      setClass(response.data);
+      setClasses(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch Class: (${err})`);
+        setError("Failed to fetch classes");
       }
     }
     setLoadingClass(false);

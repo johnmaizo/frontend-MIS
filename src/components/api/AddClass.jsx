@@ -141,7 +141,7 @@ const AddClass = () => {
       semester_id: parseInt(selectedSemesterID),
       employee_id: parseInt(selectedInstructorID),
       structure_id: parseInt(selectedRoomID),
-      days: data.days.join(", "),
+      days: data.days, // Send days as an array
     };
 
     // Remove 'schedule' if it exists

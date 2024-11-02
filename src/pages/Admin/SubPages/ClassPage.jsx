@@ -184,7 +184,7 @@ const DataTable = ({
                 )
               }
             >
-              <SelectTrigger className="mb-5 h-[3.3em] md:mb-0">
+              <SelectTrigger className="mb-5 h-[3.3em] w-[9em] md:mb-0">
                 <SelectValue placeholder="Select School Year" />
               </SelectTrigger>
               <SelectContent className="dark:bg-[#1A222C]">
@@ -205,7 +205,7 @@ const DataTable = ({
                 setSelectedSemesterId(value === "all-semesters" ? null : value)
               }
             >
-              <SelectTrigger className="mb-5 h-[3.3em] md:mb-0">
+              <SelectTrigger className="mb-5 h-[3.3em] w-[10em] md:mb-0">
                 <SelectValue placeholder="Select Semester" />
               </SelectTrigger>
               <SelectContent className="dark:bg-[#1A222C]">

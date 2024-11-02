@@ -28,7 +28,9 @@ export const EnrollmentProvider = ({ children }) => {
     setLoadingApplicants(true);
     try {
       const params = user.campus_id ? { campus_id: user.campus_id } : {};
-      const response = await axios.get("/enrollment/get-all-applicant", { params });
+      const response = await axios.get("/enrollment/get-all-applicant", {
+        params,
+      });
 
       setApplicants(response.data);
     } catch (err) {
@@ -61,12 +63,43 @@ export const EnrollmentProvider = ({ children }) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch enrollment applications: ${err}`);
+        setError(`Failed to fetch offical enrolled: ${err}`);
       }
     }
     setLoadingOfficalEnrolled(false);
   };
   // ! Offically Enrolled END
+
+  // ! Enrollment Status START
+  const [loadingEnrollmentStatus, setLoadingEnrollmentStatus] = useState(false);
+  const [enrollmentStatuses, setEnrollmentStatuses] = useState([]);
+
+  const fetchEnrollmentStatus = async () => {
+    setError("");
+    setLoadingEnrollmentStatus(true);
+    try {
+      // Define params conditionally with added accounting and registrar statuses
+      const params = {
+        ...(user.campus_id ? { campus_id: user.campus_id } : {}),
+        accounting_status: "upcoming",
+        registrar_status: "accepted",
+      };
+
+      const response = await axios.get(
+        "/enrollment/get-all-enrollment-status",
+        { params },
+      );
+      setEnrollmentStatuses(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch enrollment status: ${err}`);
+      }
+    }
+    setLoadingEnrollmentStatus(false);
+  };
+  // ! Enrollment Status END
 
   return (
     <EnrollmentContext.Provider
@@ -80,6 +113,10 @@ export const EnrollmentProvider = ({ children }) => {
         officalEnrolled,
         fetchOfficialEnrolled,
         loadingOfficalEnrolled,
+
+        enrollmentStatuses,
+        fetchEnrollmentStatus,
+        loadingEnrollmentStatus,
       }}
     >
       {children}

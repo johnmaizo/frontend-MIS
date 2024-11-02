@@ -20,7 +20,7 @@ import {
 
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, MonitorCheck } from "lucide-react";
 
 const AdminSidebar = ({
   sidebarExpanded,
@@ -356,7 +356,7 @@ const AdminSidebar = ({
                     }}
                   >
                     <EnrollmentIcon />
-                    Enrollments
+                    Enrollment
                     <svg
                       className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                         open && "rotate-180"
@@ -384,6 +384,21 @@ const AdminSidebar = ({
                     <ul className="mb-5.5 mt-4 flex flex-col gap-3.5 pl-3">
                       <li>
                         <NavLink
+                          to="/enrollments/official-enrolled"
+                          className={({ isActive }) =>
+                            `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                              (pathname === "/courses/official-enrolled" ||
+                                pathname.includes("official-enrolled")) &&
+                              "!underline "
+                            }` + (isActive && "text-primary dark:!text-white")
+                          }
+                        >
+                          <ArrowRightIcon className="h-4 w-4 flex-none" />
+                          Students
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
                           to="/enrollments/enrollment-application"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
@@ -403,30 +418,14 @@ const AdminSidebar = ({
                           to="/enrollments/enroll-student"
                           className={({ isActive }) =>
                             `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname ===
-                                "/enrollments/enroll-student" ||
+                              (pathname === "/enrollments/enroll-student" ||
                                 pathname.includes("enroll-student")) &&
                               "!underline "
                             }` + (isActive && "text-primary dark:!text-white")
                           }
                         >
                           <ArrowRightIcon className="h-4 w-4 flex-none" />
-                          Enroll Student
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to="/enrollments/official-enrolled"
-                          className={({ isActive }) =>
-                            `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname === "/courses/official-enrolled" ||
-                                pathname.includes("official-enrolled")) &&
-                              "!underline "
-                            }` + (isActive && "text-primary dark:!text-white")
-                          }
-                        >
-                          <ArrowRightIcon className="h-4 w-4 flex-none" />
-                          Offical Enrolled
+                          New Enrollment
                         </NavLink>
                       </li>
                     </ul>
@@ -448,6 +447,24 @@ const AdminSidebar = ({
             >
               <ClassIcon />
               Class List
+            </NavLink>
+          </li>
+
+          <h3 className="my-2 ml-4 mt-6 text-sm font-semibold text-bodydark2">
+            ACCOUNTING SECTION
+          </h3>
+
+          <li>
+            <NavLink
+              to="/payment-approvals"
+              className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                (pathname === "/payment-approvals" ||
+                  pathname.includes("payment-approvals")) &&
+                "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+              }`}
+            >
+              <MonitorCheck width={17} height={17} />
+              Payment Approvals
             </NavLink>
           </li>
 

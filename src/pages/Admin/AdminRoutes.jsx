@@ -36,6 +36,7 @@ import ProspectusPage from "./SubPages/ProspectusPage";
 import ViewProspectusPage from "./SubPages/ViewProspectusPage";
 import ViewProspectusSubjectPage from "./SubPages/ViewProspectusSubjectPage";
 import EnrollStudentPage from "./SubPages/EnrollStudentPage";
+import PaymentApprovalPage from "./SubPages/PaymentApprovalPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -237,7 +238,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/enrollments/enroll-student"
         element={
@@ -274,6 +275,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Class List - MIS Benedicto College" />
             <ClassPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/payment-approvals"
+        element={
+          <>
+            <PageTitle title="Payment Approvals - MIS Benedicto College" />
+            <PaymentApprovalPage />
           </>
         }
       />

@@ -3,9 +3,29 @@ import { Button } from "../ui/button";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 import { getUniqueCodes } from "./GetUniqueValues";
 import { useSchool } from "../context/SchoolContext";
+import EditCampus from "../api/EditCampus";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "../ui/dialog";
+import { DeleteIcon } from "../Icons";
+import ButtonAction from "./ButtonAction";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { HasRole } from "./HasRole";
+import { useEnrollment } from "../context/EnrollmentContext";
+import ButtonActionPayment from "./ButtonActionPayment";
 
 const useColumnsSecond = () => {
-  const { prospectusSubjects } = useSchool();
+  const { user } = useContext(AuthContext);
+  const { prospectusSubjects, fetchCampus, fetchCampusDeleted } = useSchool();
+  const { fetchEnrollmentStatus } = useEnrollment();
 
   // ! Column View Subject Prospectus START
   const columnViewSubjectProspectus = [
@@ -132,8 +152,200 @@ const useColumnsSecond = () => {
   ];
   // ! Column View Subject Prospectus END
 
+  // ! Column Payment Enrollment Status START
+  const columnPaymentEnrollmentStatus = [
+    {
+      accessorKey: "enrollment_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "fullName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Full Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+
+    {
+      // accessorKey: "campusAddress",
+      id: "amountDue",
+      header: "Amount Due",
+      // cell: ({ cell }) => {
+      //   return cell.getValue();
+      // },
+      cell: "₱500",
+    },
+    {
+      accessorKey: "payment_confirmed",
+      header: "Payment Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-orange-600"
+            }`}
+          >
+            {cell.getValue() ? "Payed" : "Pending"}
+          </span>
+        );
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() === "Campus name not found"
+                    ? "N/A"
+                    : cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
+    {
+      header: "Actions",
+      accessorFn: (row) =>
+        `${row.student_personal_id} ${row.fullName} ${row.isActive}`,
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex w-[5em] items-center gap-3">
+            {/* Accept Payment Dialog */}
+            <Dialog>
+              <DialogTrigger className="rounded-md !bg-green-600 p-2 !text-white">
+                Accept Payment
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Accept Payment
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to accept{" "}
+                      <strong>&quot;{row.original.fullName}&quot;</strong>{" "}
+                      payment?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonActionPayment
+                      entityType={"enrollment"}
+                      entityId={row.original.student_personal_id}
+                      action="accept"
+                      onSuccess={() => {
+                        fetchEnrollmentStatus();
+                      }}
+                    />
+
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            {/* Reject Payment Dialog */}
+            <Dialog>
+              <DialogTrigger className="rounded-md !bg-red-600 p-2 !text-white">
+                Reject Payment
+              </DialogTrigger>
+              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    Reject Payment
+                  </DialogTitle>
+                  <DialogDescription asChild className="mt-2">
+                    <p className="mb-5">
+                      Are you sure you want to reject{" "}
+                      <strong>&quot;{row.original.fullName}&quot;</strong>{" "}
+                      payment?
+                    </p>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
+                    <ButtonActionPayment
+                      entityType={"enrollment"}
+                      entityId={row.original.student_personal_id}
+                      action="reject"
+                      onSuccess={() => {
+                        fetchEnrollmentStatus();
+                      }}
+                    />
+
+                    <DialogClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full underline-offset-4 hover:underline"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        );
+      },
+    },
+  ];
+  // ! Column Payment Enrollment Status END
+
   return {
     columnViewSubjectProspectus,
+    columnPaymentEnrollmentStatus,
   };
 };
 

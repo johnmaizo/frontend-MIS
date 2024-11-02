@@ -835,6 +835,9 @@ export const SchoolProvider = ({ children }) => {
           semester_id: semesterId,
         },
       });
+
+      console.log(response.data)
+      
       setClasses(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {

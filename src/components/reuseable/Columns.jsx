@@ -45,6 +45,7 @@ import { useEnrollment } from "../context/EnrollmentContext";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 import { FacetedFilterSubjectDepartment } from "./FacetedFilterSubjectDepartment";
 import EditEmployee from "../api/EditEmployee";
+import EditClass from "../api/EditClass";
 
 const useColumns = () => {
   const {
@@ -75,6 +76,7 @@ const useColumns = () => {
     fetchFloorsDeleted,
     fetchRooms,
     fetchRoomsDeleted,
+    fetchClass,
   } = useSchool();
 
   const { applicants, officalEnrolled } = useEnrollment();
@@ -2774,42 +2776,6 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
-    // {
-    //   accessorKey: "schoolYear",
-    //   header: ({ column }) => {
-    //     return (
-    //       <FacetedFilterEnrollment
-    //         column={column}
-    //         title="S.Y."
-    //         options={getUniqueCodes(classes, "schoolYear")}
-    //       />
-    //     );
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return value.includes(row.getValue(id));
-    //   },
-    //   cell: ({ cell }) => {
-    //     return cell.getValue();
-    //   },
-    // },
-    // {
-    //   accessorKey: "semesterName",
-    //   header: ({ column }) => {
-    //     return (
-    //       <FacetedFilterEnrollment
-    //         column={column}
-    //         title="Semester"
-    //         options={getUniqueCodes(classes, "semesterName")}
-    //       />
-    //     );
-    //   },
-    //   filterFn: (row, id, value) => {
-    //     return value.includes(row.getValue(id));
-    //   },
-    //   cell: ({ cell }) => {
-    //     return cell.getValue();
-    //   },
-    // },
     {
       accessorKey: "schedule",
       header: "Schedule",
@@ -2857,11 +2823,11 @@ const useColumns = () => {
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className="pointer-events-none flex items-center gap-1">
-            <EditCourse courseId={row.getValue("class_id")} />
+          <div className="flex items-center gap-1">
+            <EditClass classId={row.getValue("class_id")} />
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Course"} />
+                <DeleteIcon forActions={"Delete Class"} />
               </DialogTrigger>
               <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
                 <DialogHeader>
@@ -2870,19 +2836,19 @@ const useColumns = () => {
                   </DialogTitle>
                   <DialogDescription asChild className="mt-2">
                     <p className="mb-5">
-                      Are you sure you want to delete this Course?
+                      Are you sure you want to delete this Class?
                     </p>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
                     <ButtonAction
-                      entityType={"course"}
+                      entityType={"class"}
                       entityId={row.getValue("class_id")}
                       action="delete"
                       onSuccess={() => {
-                        fetchCourse();
-                        fetchCourseDeleted();
+                        fetchClass();
+                        // fetchClassDeleted(); // Uncomment if you have this function
                       }}
                     />
                     <DialogClose asChild>

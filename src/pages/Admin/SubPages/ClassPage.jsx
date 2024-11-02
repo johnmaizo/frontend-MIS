@@ -73,6 +73,7 @@ const ClassTable = () => {
     error,
     semesters,
     fetchSemesters,
+    fetchRoomsActive
   } = useSchool();
 
   const [selectedSemesterId, setSelectedSemesterId] = useState(null);
@@ -80,6 +81,7 @@ const ClassTable = () => {
 
   useEffect(() => {
     fetchSemesters();
+    fetchRoomsActive();
   }, []);
 
   // Set default selected semester and school year based on the active semester

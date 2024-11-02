@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { EditDepartmentIcon } from "../Icons"; // Use your appropriate icon
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -13,50 +15,31 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import { AddDepartmentIcon } from "../Icons";
 import { useSchool } from "../context/SchoolContext";
-
-import { ErrorMessage } from "../reuseable/ErrorMessage";
+import { Switch } from "../ui/switch";
+import { AuthContext } from "../context/AuthContext";
+import { useMediaQuery } from "../../hooks/use-media-query";
 import ConfirmCloseDialog from "../reuseable/ConfirmCloseDialog";
 import CustomSelector from "../reuseable/CustomSelector";
-import { useMediaQuery } from "../../hooks/use-media-query";
 import { compareDataAndSetDisable } from "../reuseable/GetUniqueValues";
+import { ErrorMessage } from "../reuseable/ErrorMessage";
 
-const AddClass = () => {
+const EditClass = ({ classId }) => {
+  const { user } = useContext(AuthContext);
+
   const {
     fetchClass,
     courseActive,
-    fetchCourseActive,
-    fetchSemesters,
     semesters,
-    fetchEmployeesActive,
     employeesActive,
     employeeLoading,
     loading,
     roomsActive,
-    fetchRoomsActive,
     loadingRoomsActive,
   } = useSchool();
+
   const [open, setOpen] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    setError,
-    clearErrors,
-  } = useForm();
-
-  const [error, setGeneralError] = useState("");
-  const [success, setSuccess] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
-
-  const [openComboBox, setOpenComboBox] = useState(false);
-  const [openComboBox2, setOpenComboBox2] = useState(false);
-  const [openComboBox3, setOpenComboBox3] = useState(false);
-  const [openComboBox4, setOpenComboBox4] = useState(false); // New state for room selector
-  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const [selectedSubjectID, setSelectedSubjectID] = useState("");
   const [selectedSubjectName, setSelectedSubjectName] = useState("");
@@ -69,11 +52,10 @@ const AddClass = () => {
 
   const [selectedCourseCode, setSelectedCourseCode] = useState("");
 
-  // New states for room selection
   const [selectedRoomID, setSelectedRoomID] = useState("");
   const [selectedRoomName, setSelectedRoomName] = useState("");
 
-  // Days of the week
+  const [days, setDays] = useState([]);
   const daysOfWeek = [
     { name: "Monday", value: "Monday" },
     { name: "Tuesday", value: "Tuesday" },
@@ -84,17 +66,65 @@ const AddClass = () => {
     { name: "Sunday", value: "Sunday" },
   ];
 
-  useEffect(() => {
-    fetchCourseActive();
-    fetchSemesters();
-    fetchEmployeesActive("Instructor, Dean, Teacher", true);
-  }, []);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+    clearErrors,
+    setValue,
+  } = useForm();
+
+  const [error, setGeneralError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const [confirmClose, setConfirmClose] = useState(false); // State for confirmation dialog
+
+  const [openComboBox, setOpenComboBox] = useState(false);
+  const [openComboBox2, setOpenComboBox2] = useState(false);
+  const [openComboBox3, setOpenComboBox3] = useState(false);
+  const [openComboBox4, setOpenComboBox4] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   useEffect(() => {
-    if (open) {
-      fetchRoomsActive();
+    if (classId && open) {
+      // Fetch the class data when the modal is opened
+      setLocalLoading(true);
+      axios
+        .get(`/class/${classId}`)
+        .then((response) => {
+          const cls = response.data;
+
+          console.log(cls);
+
+          // Pre-fill the form with class data
+          setValue("className", cls.className);
+          setSelectedSubjectID(cls.course_id.toString());
+          setSelectedSubjectName(
+            `${cls.subjectCode} - ${cls.subjectDescription}`,
+          );
+          setSelectedCourseCode(cls.subjectCode);
+          setSelectedSemesterID(cls.semester_id.toString());
+          setSelectedSemesterName(cls.semester.semesterName); // Updated field
+          setSelectedInstructorID(cls.employee_id.toString());
+          setSelectedInstructorName(cls.instructorFullNameWithDepartmentCode);
+          setSelectedRoomID(cls.structure_id.toString());
+          setSelectedRoomName(cls.fullStructureDetails); // Updated field
+
+          setValue("timeStart", cls.timeStart.slice(0, 5)); // HH:MM
+          setValue("timeEnd", cls.timeEnd.slice(0, 5)); // HH:MM
+
+          setDays(cls.days || []);
+          setIsActive(cls.isActive); // Set the initial status
+          setLocalLoading(false);
+        })
+        .catch((err) => {
+          setGeneralError(`Failed to fetch Class data: (${err})`);
+          setLocalLoading(false);
+        });
     }
-  }, [open]);
+  }, [classId, open, setValue]);
 
   const onSubmit = async (data) => {
     if (!selectedSubjectID) {
@@ -129,7 +159,16 @@ const AddClass = () => {
       return;
     }
 
+    if (days.length === 0) {
+      setError("days", {
+        type: "manual",
+        message: "You must select at least one day.",
+      });
+      return;
+    }
+
     setLocalLoading(true);
+
     const transformedData = {
       ...Object.fromEntries(
         Object.entries(data).map(([key, value]) => [
@@ -137,24 +176,22 @@ const AddClass = () => {
           value === "" ? null : value,
         ]),
       ),
+      isActive: isActive ? true : false, // Set isActive based on the switch value
       course_id: parseInt(selectedSubjectID),
       semester_id: parseInt(selectedSemesterID),
       employee_id: parseInt(selectedInstructorID),
       structure_id: parseInt(selectedRoomID),
-      days: data.days, // Send days as an array
+      days: days, // Send days as an array
     };
-
-    // Remove 'schedule' if it exists
-    delete transformedData.schedule;
 
     setGeneralError("");
     try {
       const response = await toast.promise(
-        axios.post("/class/add-class", transformedData),
+        axios.put(`/class/${classId}`, transformedData),
         {
-          loading: "Adding Class...",
-          success: "Class added successfully!",
-          error: "Failed to add class.",
+          loading: "Updating Class...",
+          success: "Class updated successfully!",
+          error: "Failed to update Class.",
         },
         {
           position: "bottom-right",
@@ -183,7 +220,7 @@ const AddClass = () => {
       setTimeout(() => {
         setSuccess(false);
         reset();
-
+        // Reset selected IDs and names
         setSelectedSubjectID("");
         setSelectedSubjectName("");
         setSelectedSemesterID("");
@@ -192,6 +229,7 @@ const AddClass = () => {
         setSelectedInstructorName("");
         setSelectedRoomID("");
         setSelectedRoomName("");
+        setDays([]);
       }, 5000);
     } else if (error) {
       setTimeout(() => {
@@ -200,8 +238,7 @@ const AddClass = () => {
     }
   }, [success, error, reset]);
 
-  const [confirmClose, setConfirmClose] = useState(false); // State for confirmation dialog
-
+  // Confirm close dialog handling
   const handleDialogClose = (isOpen) => {
     if (!isOpen) {
       setConfirmClose(true);
@@ -210,12 +247,12 @@ const AddClass = () => {
     }
   };
 
-  // Confirm closing both dialogs
   const confirmDialogClose = () => {
     setConfirmClose(false);
     setOpen(false);
 
     reset();
+    // Reset selected IDs and names
     setSelectedSubjectID("");
     setSelectedSubjectName("");
     setSelectedSemesterID("");
@@ -224,31 +261,60 @@ const AddClass = () => {
     setSelectedInstructorName("");
     setSelectedRoomID("");
     setSelectedRoomName("");
+    setDays([]);
   };
 
+  const [isActive, setIsActive] = useState(true); // State for status switch
+
   return (
-    <div className="w-full items-center justify-end gap-2 md:flex">
+    <div className="flex items-center justify-end gap-2">
       <div>
-        <Dialog open={open} onOpenChange={handleDialogClose}>
-          <DialogTrigger
-            className="flex w-full justify-center gap-1 rounded bg-blue-600 p-3 text-white hover:bg-blue-700 md:w-auto md:justify-normal"
-            onClick={() => setOpen(true)}
-          >
-            <AddDepartmentIcon />
-            <span className="max-w-[8em]">Add Class</span>
+        <Dialog
+          open={open}
+          onOpenChange={(isOpen) => {
+            if (localLoading) {
+              // Prevent the dialog from closing while loading
+              setOpen(true);
+            } else {
+              handleDialogClose(isOpen);
+            }
+          }}
+        >
+          <DialogTrigger className="flex gap-1 rounded p-2 text-black hover:text-blue-700 dark:text-white dark:hover:text-blue-700">
+            <EditDepartmentIcon forActions={"Edit Class"} />
           </DialogTrigger>
+
           <DialogContent className="max-w-[70em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Add New Class
+                Edit Class
               </DialogTitle>
               <DialogDescription className="sr-only">
                 <span className="inline-block font-bold text-red-700">*</span>{" "}
-                Click Add when you&apos;re done.
+                Click Update when you&apos;re done.
               </DialogDescription>
               <div className="!h-[20em] overflow-y-auto overscroll-none text-xl xl:!h-[27em]">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="p-6.5">
+                    {/* Status Switch */}
+                    <div className="mb-5 w-full xl:w-[12em]">
+                      <label
+                        className="mb-2.5 block text-black dark:text-white"
+                        htmlFor="class_active"
+                      >
+                        Status{" "}
+                        <span className="inline-block font-bold text-red-700">
+                          *
+                        </span>
+                      </label>
+                      <Switch
+                        id="class_active"
+                        checked={isActive}
+                        onCheckedChange={setIsActive} // Update the status when the switch is toggled
+                        disabled={success || localLoading}
+                      />
+                    </div>
+
                     {/* Class Name */}
                     <div className="mb-4.5 w-full">
                       <label
@@ -302,7 +368,7 @@ const AddClass = () => {
                           clearErrors={clearErrors}
                           loading={loading || success}
                           idKey="course_id"
-                          nameKey="fullCourseName"
+                          nameKey="fullCourseName" // Ensure this matches your data
                           errorKey="course_id"
                           forCourse={true}
                           setSelectedInstructorID={setSelectedInstructorID}
@@ -336,7 +402,7 @@ const AddClass = () => {
                         clearErrors={clearErrors}
                         loading={loading || success}
                         idKey="semester_id"
-                        nameKey="fullSemesterName"
+                        nameKey="semesterName" // Updated to use semesterName
                         errorKey="semester_id"
                         forSemester={true}
                       />
@@ -479,12 +545,15 @@ const AddClass = () => {
                             <input
                               type="checkbox"
                               value={day.value}
-                              {...register("days", {
-                                required: {
-                                  value: true,
-                                  message: "At least one day must be selected",
-                                },
-                              })}
+                              checked={days.includes(day.value)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setDays([...days, day.value]);
+                                } else {
+                                  setDays(days.filter((d) => d !== day.value));
+                                }
+                              }}
+                              disabled={localLoading || success}
                               className="mr-2"
                             />
                             {day.name}
@@ -511,7 +580,7 @@ const AddClass = () => {
                       {localLoading && (
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                       )}
-                      {localLoading ? "Loading..." : "Add Class"}
+                      {localLoading ? "Updating Class..." : "Update Class"}
                     </button>
                   </div>
                 </form>
@@ -522,12 +591,12 @@ const AddClass = () => {
 
         <ConfirmCloseDialog
           isOpen={confirmClose}
-          onConfirmClose={confirmDialogClose} // Confirm and close both dialogs
-          onCancel={() => setConfirmClose(false)} // Cancel closing
+          onConfirmClose={confirmDialogClose}
+          onCancel={() => setConfirmClose(false)}
         />
       </div>
     </div>
   );
 };
 
-export default AddClass;
+export default EditClass;

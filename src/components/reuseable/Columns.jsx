@@ -2783,6 +2783,13 @@ const useColumns = () => {
         return <span>{cell.getValue()}</span>;
       },
     },
+    {
+      accessorKey: "room",
+      header: "Room",
+      cell: ({ cell }) => {
+        return <span>{cell.getValue()}</span>;
+      },
+    },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {

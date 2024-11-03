@@ -38,6 +38,7 @@ import ViewProspectusSubjectPage from "./SubPages/ViewProspectusSubjectPage";
 import EnrollStudentPage from "./SubPages/EnrollStudentPage";
 import PaymentApprovalPage from "./SubPages/PaymentApprovalPage";
 import UnenrolledRegistrationPage from "./SubPages/UnenrolledRegistrationPage";
+import SubjectEnlistmentPage from "./SubPages/SubjectEnlistmentPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -296,6 +297,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
             <UnenrolledRegistrationPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/enrollments/subject-enlistment/:student_personal_id"
+        element={
+          <>
+            <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
+            <SubjectEnlistmentPage />
           </>
         }
       />

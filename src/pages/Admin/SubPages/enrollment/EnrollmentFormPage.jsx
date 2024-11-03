@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "../../../../components/ui/form";
 
+import { useNavigate } from "react-router-dom";
+
 import PersonalDataComponent from "./components/PersonalDataComponent";
 import FamilyDetailsComponent from "./components/FamilyDetailsComponent";
 import AcademicBackgroundComponent from "./components/AcademicBackgroundComponent";
@@ -49,6 +51,8 @@ const { useStepper, steps } = defineStepper(
 
 const EnrollmentFormPage = () => {
   const { fetchCampusActive, fetchProgramActive, fetchSemesters } = useSchool();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCampusActive();
@@ -152,6 +156,25 @@ const EnrollmentFormPage = () => {
             duration: 5000,
           });
           // Reset form and stepper
+
+          // Redirect after 3 seconds
+          setTimeout(() => {
+            if (response.data.student_personal_id) {
+              navigate(
+                `/enrollments/subject-enlistment/${response.data.student_personal_id}`,
+              );
+            } else {
+              // Handle the case where student_personal_id is still undefined
+              toast.error(
+                "Student Personal ID is missing. Please contact support.",
+                {
+                  position: "bottom-right",
+                  duration: 5000,
+                },
+              );
+            }
+          }, 3000);
+
           stepper.reset();
           form.reset();
           setFormData({

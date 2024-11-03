@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
 import { useSchool } from "../../../../../components/context/SchoolContext";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CustomSelector from "../../../../../components/reuseable/CustomSelector";
 import { useMediaQuery } from "../../../../../hooks/use-media-query";
+import { useEffect } from "react";
+import axios from "axios";
+import { AuthContext } from "../../../../../components/context/AuthContext";
 
 const AcademicBackgroundComponent = () => {
   const {
@@ -11,18 +15,50 @@ const AcademicBackgroundComponent = () => {
     register,
     clearErrors,
     formState: { errors },
+    watch,
   } = useFormContext();
 
   const { programActive, semesters, loading } = useSchool();
 
   const [openProgramSelector, setOpenProgramSelector] = useState(false);
   const [openSemesterSelector, setOpenSemesterSelector] = useState(false);
+  const [openProspectusSelector, setOpenProspectusSelector] = useState(false);
+
+  const [prospectuses, setProspectuses] = useState([]);
+  const [loadingProspectus, setLoadingProspectus] = useState(false);
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  const selectedProgramID = watch("program_id");
+
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (selectedProgramID) {
+      setLoadingProspectus(true);
+      axios
+        .get("/prospectus/get-all-prospectus/active", {
+          params: {
+            program_id: selectedProgramID,
+            campus_id: user.campus_id ? user.campus_id : null,
+          },
+        })
+        .then((response) => {
+          setProspectuses(response.data);
+          setLoadingProspectus(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching prospectuses:", error);
+          setLoadingProspectus(false);
+        });
+    } else {
+      setProspectuses([]);
+    }
+  }, [selectedProgramID]);
+
   return (
     <div className="space-y-4 text-start">
-      <div className="flex gap-10">
+      <div className="flex flex-wrap gap-10">
         {/* Program ID */}
         <div className="w-[50%] space-y-2">
           <label
@@ -75,6 +111,60 @@ const AcademicBackgroundComponent = () => {
           {errors.program_id && (
             <span className="text-sm font-medium text-red-600">
               {errors.program_id.message}
+            </span>
+          )}
+        </div>
+
+        <div className="w-[50%] space-y-2">
+          <label
+            htmlFor="prospectus_id"
+            className="block text-sm font-medium text-primary"
+          >
+            Prospectus
+          </label>
+          <Controller
+            name="prospectus_id"
+            control={control}
+            rules={{ required: "Prospectus is required" }}
+            render={({ field }) => {
+              const fieldValue = field.value ? Number(field.value) : null;
+
+              const selectedProspectus = prospectuses.find(
+                (prospectus) => prospectus.prospectus_id === fieldValue,
+              );
+
+              const selectedName = selectedProspectus
+                ? `${selectedProspectus.prospectusName} - ${selectedProspectus.prospectusDescription}`
+                : "";
+
+              return (
+                <CustomSelector
+                  title="Prospectus"
+                  isDesktop={isDesktop}
+                  open={openProspectusSelector}
+                  setOpen={setOpenProspectusSelector}
+                  selectedID={field.value || ""}
+                  selectedName={selectedName}
+                  data={prospectuses}
+                  setSelectedID={(value) => {
+                    field.onChange(Number(value));
+                    clearErrors("prospectus_id");
+                  }}
+                  setSelectedName={() => {}}
+                  loading={loadingProspectus || !selectedProgramID}
+                  idKey="prospectus_id"
+                  nameKey="prospectusName"
+                  errorKey="prospectus_id"
+                  displayItem={(prospectus) =>
+                    `${prospectus.prospectusName} - ${prospectus.prospectusDescription}`
+                  }
+                />
+              );
+            }}
+          />
+          {errors.prospectus_id && (
+            <span className="text-sm font-medium text-red-600">
+              {errors.prospectus_id.message}
             </span>
           )}
         </div>

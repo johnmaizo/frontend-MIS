@@ -84,6 +84,7 @@ export const academicBackgroundSchema = z.object({
     "Fifth Year",
   ]),
   program_id: z.number().int(),
+  prospectus_id: z.number().int(),
   semester_id: z.number().int(),
   yearEntry: z.number().int(),
   yearGraduate: z.number().int(),

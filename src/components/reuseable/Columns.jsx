@@ -2759,13 +2759,13 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "instructureFullName",
+      accessorKey: "instructorFullName",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
             title="Instructor"
-            options={getUniqueCodes(classes, "instructureFullName")}
+            options={getUniqueCodes(classes, "instructorFullName")}
           />
         );
       },

@@ -22,17 +22,13 @@ import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
 
-const OfficialEnrolledPage = () => {
+const StudentsPage = () => {
   const { user } = useContext(AuthContext);
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      to: "/enrollments/enrollment-application",
-      label: "Enrollment Applicants",
-    },
-    {
-      label: "Officialy Enrolled", // New breadcrumb item
+      label: "Students",
     },
   ];
 
@@ -41,11 +37,11 @@ const OfficialEnrolledPage = () => {
       <BreadcrumbResponsive
         pageName={
           !HasRole(user.role, "SuperAdmin")
-            ? `Officialy Enrolled (${user?.campusName})`
-            : "Officialy Enrolled (All Campuses)"
+            ? `Students (${user?.campusName})`
+            : "Students (All Campuses)"
         }
         items={NavItems}
-        ITEMS_TO_DISPLAY={3}
+        ITEMS_TO_DISPLAY={2}
       />
 
       <EnrollmentTables />
@@ -68,6 +64,8 @@ const EnrollmentTables = () => {
     fetchOfficialEnrolled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log(officalEnrolled)
 
   const { columnOfficiallyEnrolled } = useColumns();
 
@@ -159,4 +157,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default OfficialEnrolledPage;
+export default StudentsPage;

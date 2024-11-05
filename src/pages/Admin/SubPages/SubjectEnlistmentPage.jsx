@@ -78,7 +78,6 @@ const SubjectEnlistmentPage = () => {
         });
 
         setSubjects(subjectsArray); // Corrected assignment
-
       } catch (error) {
         console.error("Error fetching classes:", error);
         toast.error("Failed to load available subjects.");
@@ -191,7 +190,7 @@ const SubjectEnlistmentPage = () => {
               {loading ? (
                 <p className="mt-4">Loading classes...</p>
               ) : filteredSubjects.length === 0 ? (
-                <p className="mt-4">No subjects found.</p>
+                <p className="mt-4">No classes found. Please add new Class.</p>
               ) : (
                 <Accordion type="single" collapsible className="mt-4">
                   {filteredSubjects.map((subject) => (

@@ -12,9 +12,9 @@ export const personalDataSchema = z.object({
   campus_id: z.number().min(1, "Campus is required"),
   enrollmentType: z.string().min(1, "Enrollment Type is required"),
   firstName: z.string().min(1, "First Name is required"),
-  middleName: z.string().optional(),
+  middleName: z.string().optional().nullable(), // Allow null
   lastName: z.string().min(1, "Last Name is required"),
-  suffix: z.string().optional(),
+  suffix: z.string().optional().nullable(), // Allow null
   gender: z.string().min(1, "Gender is required"),
   email: z.string().email("Invalid email address"),
   contactNumber: z.string().min(1, "Contact Number is required"),
@@ -25,14 +25,20 @@ export const personalDataSchema = z.object({
   religion: z.string().min(1, "Religion is required"),
   citizenship: z.string().min(1, "Citizenship is required"),
   country: z.string().min(1, "Country is required"),
-  ACR: z.string().optional(),
+  ACR: z.string().optional().nullable(), // Allow null
 });
 
 export const addPersonalDataSchema = z.object({
-  cityAddress: z.string().min(1, "City Address is required"),
-  cityTelNumber: z.string().min(1, "City Telephone Number is required"),
-  provinceAddress: z.string().min(1, "Province Address is required"),
-  provinceTelNumber: z.string().min(1, "Province Telephone Number is required"),
+  cityAddress: z.string().min(1, "City Address is required").nullable(),
+  cityTelNumber: z
+    .string()
+    .min(1, "City Telephone Number is required")
+    .nullable(),
+  provinceAddress: z.string().min(1, "Province Address is required").nullable(),
+  provinceTelNumber: z
+    .string()
+    .min(1, "Province Telephone Number is required")
+    .nullable(),
 });
 
 // Combined Personal Data Schema

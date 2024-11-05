@@ -29,7 +29,7 @@ import FloorPage from "./SubPages/FloorPage";
 import RoomPage from "./SubPages/RoomPage";
 import EnrollmentApplicationPage from "./SubPages/EnrollmentApplicationPage";
 import ViewEnrollmentApplicantPage from "./SubPages/ViewEnrollmentApplicantPage";
-import OfficialEnrolledPage from "./SubPages/OfficalEnrolledPage";
+import StudentsPage from "./SubPages/StudentsPage";
 import EmployeePage from "./SubPages/EmployeePage";
 import ClassPage from "./SubPages/ClassPage";
 import ProspectusPage from "./SubPages/ProspectusPage";
@@ -39,6 +39,8 @@ import EnrollStudentPage from "./SubPages/EnrollStudentPage";
 import PaymentApprovalPage from "./SubPages/PaymentApprovalPage";
 import UnenrolledRegistrationPage from "./SubPages/UnenrolledRegistrationPage";
 import SubjectEnlistmentPage from "./SubPages/SubjectEnlistmentPage";
+import ViewStudentDetailsPage from "./SubPages/ViewStudentDetailsPage";
+import UpdateStudentInfoPage from "./SubPages/UpdateStudentInfoPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -262,11 +264,31 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/enrollments/official-enrolled"
+        path="/enrollments/all-students"
         element={
           <>
-            <PageTitle title="Official Enrolled - MIS Benedicto College" />
-            <OfficialEnrolledPage />
+            <PageTitle title="All Students - MIS Benedicto College" />
+            <StudentsPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/enrollments/all-students/view-student/:view_student_id/:view_campus_id"
+        element={
+          <>
+            <PageTitle title="View Student Details - MIS Benedicto College" />
+            <ViewStudentDetailsPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/enrollments/all-students/update-student/:update_student_id/:update_campus_id"
+        element={
+          <>
+            <PageTitle title="Update Student Details - MIS Benedicto College" />
+            <UpdateStudentInfoPage />
           </>
         }
       />

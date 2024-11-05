@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Controller, useFormContext } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
 import { useSchool } from "../../../../../components/context/SchoolContext";
@@ -14,13 +15,15 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../../components/context/AuthContext";
 import { SelectValue } from "@radix-ui/react-select";
 
-const PersonalDataComponent = () => {
+const PersonalDataComponent = ({ isUpdate }) => {
+  // Destructure necessary methods from useFormContext
   const {
     control,
     register,
     formState: { errors },
     setValue,
     clearErrors,
+    watch, // Add watch to retrieve field values
   } = useFormContext();
 
   const { campusActive, loading } = useSchool();
@@ -41,8 +44,41 @@ const PersonalDataComponent = () => {
     }
   }, [user, setValue]);
 
+  // Retrieve student_id using watch
+  const studentId = isUpdate ? watch("student_id") : null;
+
   return (
     <div className="space-y-4 text-start">
+      {isUpdate && (
+        <div className="mb-4 rounded border border-blue-200 bg-blue-100 p-4">
+          <h3 className="text-lg font-medium text-blue-800">
+            Update Student Information
+          </h3>
+        </div>
+      )}
+
+      {isUpdate && (
+        <div className="flex gap-10">
+          {/* Student ID */}
+          <div className="w-full space-y-2">
+            <label
+              htmlFor="student_id"
+              className="block text-sm font-medium text-primary"
+            >
+              Student ID
+            </label>
+            <Input
+              id="student_id"
+              type="text"
+              {...register("student_id")}
+              readOnly
+              disabled
+              className="bg-gray-100 cursor-not-allowed"
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-10">
         {/* Campus ID */}
         <div className="w-full space-y-2">
@@ -84,7 +120,7 @@ const PersonalDataComponent = () => {
             <Input
               id="dept_campus"
               type="text"
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              className="disabled:bg-gray-100 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               value={
                 campusActive.find(
                   (campus) => campus.campus_id.toString() === selectedCampus,

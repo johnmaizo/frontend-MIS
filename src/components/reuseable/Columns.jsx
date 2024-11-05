@@ -1,4 +1,4 @@
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, PencilIcon } from "lucide-react";
 import { useSchool } from "../context/SchoolContext";
 import { Button } from "../ui/button";
 import { useContext } from "react";
@@ -2287,13 +2287,13 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "program",
+      accessorKey: "programCode",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
             title="Program"
-            options={getUniqueCodes(officalEnrolled, "program")}
+            options={getUniqueCodes(officalEnrolled, "programCode")}
           />
         );
       },
@@ -2349,25 +2349,6 @@ const useColumns = () => {
       header: "Email",
     },
     {
-      accessorKey: "contactNumber",
-      header: "Contact No.",
-    },
-    {
-      accessorKey: "gender",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Gender
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-    },
-    {
       accessorKey: "createdAt",
       header: "Date Enrolled",
       cell: ({ cell }) => {
@@ -2385,85 +2366,28 @@ const useColumns = () => {
         );
       },
     },
-    // {
-    //   accessorKey: "status",
-    //   header: ({ column }) => {
-    //     return (
-    //       <FacetedFilterEnrollment
-    //         column={column}
-    //         title="Status"
-    //         options={getUniqueCodesEnrollment(officalEnrolled, "status")}
-    //       />
-    //     );
-    //   },
-    //   cell: ({ cell }) => {
-    //     return (
-    //       <span
-    //         className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
-    //           cell.getValue() === "accepted"
-    //             ? "bg-success"
-    //             : cell.getValue() === "pending"
-    //               ? "bg-orange-500"
-    //               : "bg-danger"
-    //         }`}
-    //       >
-    //         {cell.getValue() === "accepted"
-    //           ? "Accepted"
-    //           : cell.getValue() === "pending"
-    //             ? "Pending"
-    //             : "Rejected"}
-    //       </span>
-    //     );
-    //   },
-    // },
     {
       header: "Actions",
-      accessorFn: (row) => `${row.applicant_id} ${row.active}`,
       id: "actions",
       cell: ({ row }) => {
+        const studentId = row.original.student_id;
+        const campusId = row.original.campus_id; // Ensure campus_id is available in your data
+  
         return (
-          <div className="flex items-center gap-1">
-            <EditCampus campusId={row.original.applicant_id} />
-
-            <Dialog>
-              <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Campus"} />
-              </DialogTrigger>
-              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">
-                    Delete
-                  </DialogTitle>
-                  <DialogDescription asChild className="mt-2">
-                    <p className="mb-5">
-                      Are you sure you want to delete this campus?
-                    </p>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonAction
-                      entityType={"campus"}
-                      entityId={row.getValue("applicant_id")}
-                      action="delete"
-                      onSuccess={() => {
-                        fetchCampus();
-                        fetchCampusDeleted();
-                      }}
-                    />
-
-                    <DialogClose asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full underline-offset-4 hover:underline"
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+          <div className="flex items-center gap-2">
+            {/* View Student Details */}
+            <Link to={`/enrollments/all-students/view-student/${studentId}/${campusId}`}>
+              <button className="text-blue-500 hover:text-blue-700">
+                <EyeIcon className="h-5 w-5" />
+              </button>
+            </Link>
+  
+            {/* Update Student Information */}
+            <Link to={`/enrollments/all-students/update-student/${studentId}/${campusId}`}>
+              <button className="text-green-500 hover:text-green-700">
+                <PencilIcon className="h-5 w-5" />
+              </button>
+            </Link>
           </div>
         );
       },
@@ -2777,15 +2701,26 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "schedule",
-      header: "Schedule",
+      accessorKey: "room",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Room"
+            options={getUniqueCodes(classes, "room")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
       cell: ({ cell }) => {
-        return <span>{cell.getValue()}</span>;
+        return cell.getValue();
       },
     },
     {
-      accessorKey: "room",
-      header: "Room",
+      accessorKey: "schedule",
+      header: "Schedule",
       cell: ({ cell }) => {
         return <span>{cell.getValue()}</span>;
       },

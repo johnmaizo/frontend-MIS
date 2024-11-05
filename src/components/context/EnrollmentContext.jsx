@@ -74,7 +74,11 @@ export const EnrollmentProvider = ({ children }) => {
   const [loadingEnrollmentStatus, setLoadingEnrollmentStatus] = useState(false);
   const [enrollmentStatuses, setEnrollmentStatuses] = useState([]);
 
-  const fetchEnrollmentStatus = async (view) => {
+  const fetchEnrollmentStatus = async (
+    view,
+    selectedSchoolYear,
+    selectedSemesterId,
+  ) => {
     setError("");
     setLoadingEnrollmentStatus(true);
     try {
@@ -97,6 +101,14 @@ export const EnrollmentProvider = ({ children }) => {
         };
       }
 
+      // Add selected school year and semester to params
+      if (selectedSchoolYear) {
+        params.schoolYear = selectedSchoolYear;
+      }
+      if (selectedSemesterId) {
+        params.semester_id = selectedSemesterId;
+      }
+
       const response = await axios.get(
         "/enrollment/get-all-enrollment-status",
         { params },
@@ -112,6 +124,36 @@ export const EnrollmentProvider = ({ children }) => {
     setLoadingEnrollmentStatus(false);
   };
   // ! Enrollment Status END
+
+  // EnrollmentContext.js
+
+  const [pendingStudents, setPendingStudents] = useState([]);
+  const [loadingPendingStudents, setLoadingPendingStudents] = useState(false);
+
+  const fetchPendingStudents = async () => {
+    setError("");
+    setLoadingPendingStudents(true);
+    try {
+      const params = {
+        ...(user.campus_id ? { campus_id: user.campus_id } : {}),
+        registrar_status: "accepted",
+        accounting_status: "upcoming",
+      };
+
+      const response = await axios.get(
+        "/enrollment/get-all-enrollment-status",
+        { params },
+      );
+      setPendingStudents(response.data);
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch pending students: ${err}`);
+      }
+    }
+    setLoadingPendingStudents(false);
+  };
 
   return (
     <EnrollmentContext.Provider
@@ -129,6 +171,10 @@ export const EnrollmentProvider = ({ children }) => {
         enrollmentStatuses,
         fetchEnrollmentStatus,
         loadingEnrollmentStatus,
+
+        pendingStudents,
+        fetchPendingStudents,
+        loadingPendingStudents
       }}
     >
       {children}

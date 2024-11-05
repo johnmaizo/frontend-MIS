@@ -1,4 +1,4 @@
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, PencilIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 import { getUniqueCodes } from "./GetUniqueValues";
@@ -21,10 +21,12 @@ import { useEnrollment } from "../context/EnrollmentContext";
 import ButtonActionPayment from "./ButtonActionPayment";
 
 import { format } from "date-fns";
+import AcceptPaymentDialog from "./AcceptPaymentDialog";
+import { Link } from "react-router-dom";
 
 const useColumnsSecond = () => {
   const { user } = useContext(AuthContext);
-  const { prospectusSubjects, fetchCampus, fetchCampusDeleted } = useSchool();
+  const { prospectusSubjects } = useSchool();
   const { fetchEnrollmentStatus } = useEnrollment();
 
   // ! Column View Subject Prospectus START
@@ -254,7 +256,7 @@ const useColumnsSecond = () => {
         return (
           <div className="flex w-[5em] items-center gap-3">
             {/* Accept Payment Dialog */}
-            <Dialog>
+            {/* <Dialog>
               <DialogTrigger className="rounded-md !bg-green-600 p-2 !text-white">
                 Accept Payment
               </DialogTrigger>
@@ -293,7 +295,13 @@ const useColumnsSecond = () => {
                   </div>
                 </DialogFooter>
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
+
+            <AcceptPaymentDialog
+              studentPersonalId={row.original.student_personal_id}
+              fullName={row.original.fullName}
+              fetchEnrollmentStatus={fetchEnrollmentStatus}
+            />
 
             {/* Reject Payment Dialog */}
             <Dialog>
@@ -457,10 +465,69 @@ const useColumnsSecond = () => {
   ];
   // ! Columns Payment History END
 
+  // ! Columns Pending Students START
+  const columnUnenrolledStudents = [
+    {
+      accessorKey: "enrollment_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "fullName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Full Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const studentPersonalId = row.original.student_personal_id;
+        return (
+          <Link to={`/enrollments/subject-enlistment/${studentPersonalId}`}>
+            <Button
+              variant="ghost"
+              className="text-blue-500 hover:text-blue-700"
+            >
+              <PencilIcon className="h-5 w-5" />
+            </Button>
+          </Link>
+        );
+      },
+    },
+  ];
+  // ! Columns Pending Students END
+
   return {
     columnViewSubjectProspectus,
     columnPaymentEnrollmentStatus,
     columnPaymentHistory,
+    columnUnenrolledStudents
   };
 };
 

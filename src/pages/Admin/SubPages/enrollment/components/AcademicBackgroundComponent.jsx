@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
 import { useSchool } from "../../../../../components/context/SchoolContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import CustomSelector from "../../../../../components/reuseable/CustomSelector";
 import { useMediaQuery } from "../../../../../hooks/use-media-query";
-import { useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../../../../components/context/AuthContext";
 
@@ -54,7 +53,7 @@ const AcademicBackgroundComponent = () => {
     } else {
       setProspectuses([]);
     }
-  }, [selectedProgramID]);
+  }, [selectedProgramID, user.campus_id]);
 
   return (
     <div className="space-y-4 text-start">
@@ -94,7 +93,7 @@ const AcademicBackgroundComponent = () => {
                   data={programActive}
                   setSelectedID={(value) => {
                     field.onChange(Number(value)); // Convert value to number
-                    clearErrors("program_id");
+                    clearErrors("program_id"); // Clear errors using useFormContext internally
                   }}
                   setSelectedName={() => {}}
                   loading={loading}
@@ -104,6 +103,7 @@ const AcademicBackgroundComponent = () => {
                   displayItem={(program) =>
                     `${program.programCode} - ${program.programDescription}`
                   }
+                  // No need to pass clearErrors as it's handled internally
                 />
               );
             }}
@@ -115,6 +115,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
 
+        {/* Prospectus */}
         <div className="w-[50%] space-y-2">
           <label
             htmlFor="prospectus_id"
@@ -148,7 +149,7 @@ const AcademicBackgroundComponent = () => {
                   data={prospectuses}
                   setSelectedID={(value) => {
                     field.onChange(Number(value));
-                    clearErrors("prospectus_id");
+                    clearErrors("prospectus_id"); // Clear errors using useFormContext internally
                   }}
                   setSelectedName={() => {}}
                   loading={loadingProspectus || !selectedProgramID}
@@ -158,6 +159,7 @@ const AcademicBackgroundComponent = () => {
                   displayItem={(prospectus) =>
                     `${prospectus.prospectusName} - ${prospectus.prospectusDescription}`
                   }
+                  forSemester={true}
                 />
               );
             }}
@@ -298,7 +300,7 @@ const AcademicBackgroundComponent = () => {
                   data={semesters}
                   setSelectedID={(value) => {
                     field.onChange(Number(value)); // Convert value to number
-                    clearErrors("semester_id");
+                    clearErrors("semester_id"); // Clear errors using useFormContext internally
                   }}
                   setSelectedName={() => {}}
                   loading={loading}

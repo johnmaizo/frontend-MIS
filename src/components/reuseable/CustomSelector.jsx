@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useFormContext } from "react-hook-form"; // Import useFormContext
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Command,
@@ -29,7 +30,6 @@ const CustomSelector = ({
   setSelectedName,
   setSelectedInstructorID,
   setSelectedInstructorName,
-  clearErrors,
   loading,
   idKey,
   nameKey,
@@ -41,7 +41,7 @@ const CustomSelector = ({
     <Button
       variant="outline"
       className="h-[2.5em] w-[11em] justify-start truncate text-xl text-black dark:bg-form-input dark:text-white 2xsm:w-[15em] xsm:w-[17em] md:!w-full"
-      disabled={forDisable && forDisable ? true : loading ? true : false}
+      disabled={forDisable || loading}
     >
       {selectedID ? selectedName : <>Select {title}</>}
     </Button>
@@ -60,8 +60,8 @@ const CustomSelector = ({
     );
 
     // Clear selected instructor fields
-    setSelectedInstructorID && setSelectedInstructorID("");
-    setSelectedInstructorName && setSelectedInstructorName("");
+    if (setSelectedInstructorID) setSelectedInstructorID("");
+    if (setSelectedInstructorName) setSelectedInstructorName("");
   };
 
   return isDesktop ? (
@@ -78,7 +78,6 @@ const CustomSelector = ({
           forSemester={forSemester}
           forInstructor={forInstructor}
           loading={loading}
-          clearErrors={clearErrors}
           idKey={idKey}
           nameKey={nameKey}
           errorKey={errorKey}
@@ -102,7 +101,6 @@ const CustomSelector = ({
             forSemester={forSemester}
             forInstructor={forInstructor}
             loading={loading}
-            clearErrors={clearErrors}
             idKey={idKey}
             nameKey={nameKey}
             errorKey={errorKey}
@@ -126,7 +124,6 @@ const CustomList = ({
   forSemester = null,
   forCourse = null,
   forInstructor = null,
-  clearErrors,
   idKey,
   nameKey,
   errorKey,
@@ -134,6 +131,8 @@ const CustomList = ({
   displayItem = null, // Accept displayItem prop
   disabledItems = [], // Accept disabledItems prop
 }) => {
+  const { clearErrors } = useFormContext(); // Access clearErrors via useFormContext
+
   return (
     <Command
       className="!w-full"
@@ -146,7 +145,7 @@ const CustomList = ({
         return 0;
       }}
     >
-      <CommandInput placeholder={`Filter ${title}...`} />{" "}
+      <CommandInput placeholder={`Filter ${title}...`} />
       <CommandEmpty>No results found.</CommandEmpty>
       <CommandList>
         <CommandGroup>
@@ -176,7 +175,7 @@ const CustomList = ({
                           )
                         : onSelectItem(value, list[nameKey]);
                       setOpen(false);
-                      clearErrors(errorKey);
+                      clearErrors(errorKey); // Now clearErrors is accessible
                     }}
                     disabled={
                       disabledItems.includes(list[idKey]) ||

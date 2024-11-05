@@ -23,14 +23,6 @@ import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
 
-// Import Tabs components
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../../../components/ui/tabs";
-
 const UnenrolledRegistrationPage = () => {
   const { user } = useContext(AuthContext);
 
@@ -53,46 +45,31 @@ const UnenrolledRegistrationPage = () => {
         ITEMS_TO_DISPLAY={2}
       />
 
-      <Tabs defaultValue="approvals" className="w-full">
-        <TabsList>
-          <TabsTrigger value="approvals">Payment Approvals</TabsTrigger>
-          <TabsTrigger value="history">Payment History</TabsTrigger>
-        </TabsList>
-        <TabsContent value="approvals">
-          <EnrollmentTables view="approvals" />
-        </TabsContent>
-        <TabsContent value="history">
-          <EnrollmentTables view="history" />
-        </TabsContent>
-      </Tabs>
+      <UnenrolledStudentsTable />
     </DefaultLayout>
   );
 };
 
-const EnrollmentTables = ({ view }) => {
+const UnenrolledStudentsTable = () => {
   const {
+    pendingStudents,
+    fetchPendingStudents,
+    loadingPendingStudents,
     error,
-    enrollmentStatuses,
-    fetchEnrollmentStatus,
-    loadingEnrollmentStatus,
   } = useEnrollment();
 
   useEffect(() => {
-    fetchEnrollmentStatus(view);
-  }, [view]);
+    fetchPendingStudents();
+  }, []);
 
-  const { columnPaymentEnrollmentStatus, columnPaymentHistory } =
-    useColumnsSecond();
-
-  const columns =
-    view === "approvals" ? columnPaymentEnrollmentStatus : columnPaymentHistory;
+  const { columnUnenrolledStudents } = useColumnsSecond();
 
   return (
     <>
       <DataTable
-        columns={columns}
-        data={enrollmentStatuses}
-        loading={loadingEnrollmentStatus}
+        columns={columnUnenrolledStudents}
+        data={pendingStudents}
+        loading={loadingPendingStudents}
         error={error}
       />
     </>

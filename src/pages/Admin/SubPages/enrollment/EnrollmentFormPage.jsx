@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { defineStepper } from "@stepperize/react";
 import React, { useState, useEffect } from "react";
@@ -15,7 +16,7 @@ import FamilyDetailsComponent from "./components/FamilyDetailsComponent";
 import AcademicBackgroundComponent from "./components/AcademicBackgroundComponent";
 import AcademicHistoryComponent from "./components/AcademicHistoryComponent";
 import DocumentsComponent from "./components/DocumentsComponent";
-import ConfirmationComponent from "./components/ConfirmationComponent"; // Import the confirmation component
+import ConfirmationComponent from "./components/ConfirmationComponent";
 
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -28,28 +29,7 @@ import {
 } from "../../../../components/schema";
 import { useSchool } from "../../../../components/context/SchoolContext";
 
-const { useStepper, steps } = defineStepper(
-  {
-    id: "personalData",
-    label: "Personal Data",
-    schema: combinedPersonalDataSchema,
-  },
-  { id: "familyDetails", label: "Family Details", schema: familyDetailsSchema },
-  {
-    id: "academicBackground",
-    label: "Academic Background",
-    schema: academicBackgroundSchema,
-  },
-  {
-    id: "academicHistory",
-    label: "Academic History",
-    schema: academicHistorySchema,
-  },
-  { id: "documents", label: "Documents", schema: documentsSchema },
-  { id: "confirmation", label: "Confirmation", schema: z.object({}) }, // Add confirmation step with empty schema
-);
-
-const EnrollmentFormPage = () => {
+const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
   const { fetchCampusActive, fetchProgramActive, fetchSemesters } = useSchool();
 
   const navigate = useNavigate();
@@ -59,6 +39,42 @@ const EnrollmentFormPage = () => {
     fetchProgramActive();
     fetchSemesters();
   }, []);
+
+  // Define steps conditionally based on isUpdate
+  const stepsDefinition = [
+    {
+      id: "personalData",
+      label: "Personal Data",
+      schema: combinedPersonalDataSchema,
+    },
+    {
+      id: "familyDetails",
+      label: "Family Details",
+      schema: familyDetailsSchema,
+    },
+    {
+      id: "academicBackground",
+      label: "Academic Background",
+      schema: academicBackgroundSchema,
+    },
+    {
+      id: "academicHistory",
+      label: "Academic History",
+      schema: academicHistorySchema,
+    },
+    { id: "documents", label: "Documents", schema: documentsSchema },
+  ];
+
+  // Include confirmation step only if not updating
+  if (!isUpdate) {
+    stepsDefinition.push({
+      id: "confirmation",
+      label: "Confirmation",
+      schema: z.object({}),
+    });
+  }
+
+  const { useStepper, steps } = defineStepper(...stepsDefinition);
 
   const stepper = useStepper();
   const [formData, setFormData] = useState({
@@ -79,9 +95,31 @@ const EnrollmentFormPage = () => {
     resolver: zodResolver(stepper.current.schema),
   });
 
+  // Set initial form data if available
   useEffect(() => {
-    console.log("Final form data:", formData);
-  }, [formData]);
+    if (initialData && Object.keys(initialData).length > 0) {
+      // Map initialData to formData structure
+      setFormData({
+        personalData: initialData.personalData || {},
+        addPersonalData: initialData.addPersonalData || {},
+        familyDetails: initialData.familyDetails || {},
+        academicBackground: initialData.academicBackground || {},
+        academicHistory: initialData.academicHistory || {},
+        documents: initialData.documents || {},
+      });
+
+      // Also set form values
+      form.reset({
+        student_id: initialData.student_id || "", // Include student_id
+        ...initialData.personalData,
+        ...initialData.addPersonalData,
+        ...initialData.familyDetails,
+        ...initialData.academicBackground,
+        ...initialData.academicHistory,
+        ...initialData.documents,
+      });
+    }
+  }, [initialData]);
 
   const onSubmit = async (values) => {
     if (stepper.current.id === "personalData") {
@@ -110,13 +148,18 @@ const EnrollmentFormPage = () => {
 
       setFormData(updatedFormData);
       stepper.next();
-    } else if (stepper.current.id === "confirmation") {
+    } else if (
+      stepper.isLast ||
+      (isUpdate && stepper.current.id === steps[steps.length - 1].id)
+    ) {
+      // If it's the last step or update mode
       setLocalLoading(true);
       setGeneralError("");
 
       // Combine all form data into a single object
       const dataToSubmit = {
         ...formData,
+        [stepper.current.id]: values,
       };
 
       // Transform data: trim strings and replace empty strings with null
@@ -136,55 +179,64 @@ const EnrollmentFormPage = () => {
       console.log("transformedData: ", transformedData);
 
       try {
-        const response = await toast.promise(
-          axios.post("/enrollment/submit-application", transformedData),
-          {
-            loading: "Submitting Application...",
-            success: "Application submitted successfully!",
-            error: "Failed to submit application.",
-          },
-          {
-            position: "bottom-right",
-            duration: 5000,
-          },
-        );
+        if (isUpdate) {
+          // Call update API
+          const response = await toast.promise(
+            axios.put("/students/update-student", transformedData),
+            {
+              loading: "Updating Student Information...",
+              success: "Student information updated successfully!",
+              error: "Failed to update student information.",
+            },
+            {
+              position: "bottom-right",
+              duration: 5000,
+            },
+          );
 
-        if (response.data) {
-          setSuccess(true);
-          toast.success(response.data.message, {
-            position: "bottom-right",
-            duration: 5000,
-          });
-          // Reset form and stepper
+          if (response.data) {
+            navigate("/enrollments/all-students");
+          }
+        } else {
+          // Call enrollment API
+          const response = await toast.promise(
+            axios.post("/enrollment/submit-application", transformedData),
+            {
+              loading: "Submitting Application...",
+              success: "Application submitted successfully!",
+              error: "Failed to submit application.",
+            },
+            {
+              position: "bottom-right",
+              duration: 5000,
+            },
+          );
 
-          // Redirect after 3 seconds
-          setTimeout(() => {
-            if (response.data.student_personal_id) {
-              navigate(
-                `/enrollments/subject-enlistment/${response.data.student_personal_id}`,
-              );
-            } else {
-              // Handle the case where student_personal_id is still undefined
-              toast.error(
-                "Student Personal ID is missing. Please contact support.",
-                {
-                  position: "bottom-right",
-                  duration: 5000,
-                },
-              );
-            }
-          }, 3000);
+          if (response.data) {
+            setSuccess(true);
+            toast.success(response.data.message, {
+              position: "bottom-right",
+              duration: 5000,
+            });
 
-          stepper.reset();
-          form.reset();
-          setFormData({
-            personalData: {},
-            addPersonalData: {},
-            familyDetails: {},
-            academicBackground: {},
-            academicHistory: {},
-            documents: {},
-          });
+            // Redirect after 3 seconds
+            setTimeout(() => {
+              if (response.data.student_personal_id) {
+                navigate(
+                  `/enrollments/subject-enlistment/${response.data.student_personal_id}`,
+                );
+              } else {
+                // Handle the case where student_personal_id is undefined
+                toast.error(
+                  "Student Personal ID is missing. Please contact support.",
+                  {
+                    position: "bottom-right",
+                    duration: 5000,
+                  },
+                );
+              }
+            }, 3000);
+          }
         }
         setLocalLoading(false);
       } catch (err) {
@@ -209,9 +261,9 @@ const EnrollmentFormPage = () => {
   };
 
   const validateAndNavigate = async (stepId, index) => {
-    const stepsToShow = stepper.all.filter(
-      (step) => step.id !== "confirmation",
-    );
+    const stepsToShow = isUpdate
+      ? stepper.all
+      : stepper.all.filter((step) => step.id !== "confirmation");
     const currentIndex = stepsToShow.findIndex(
       (step) => step.id === stepper.current.id,
     );
@@ -230,19 +282,6 @@ const EnrollmentFormPage = () => {
     }
   };
 
-  const handleReset = () => {
-    stepper.reset();
-    form.reset();
-    setFormData({
-      personalData: {},
-      addPersonalData: {},
-      familyDetails: {},
-      academicBackground: {},
-      academicHistory: {},
-      documents: {},
-    });
-  };
-
   return (
     <div>
       {generalError && (
@@ -253,8 +292,8 @@ const EnrollmentFormPage = () => {
           <div className="flex justify-end">
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm">
-                Step {Math.min(stepper.current.index + 1, steps.length - 1)} of{" "}
-                {steps.length - 1}
+                Step {Math.min(stepper.current.index + 1, steps.length)} of{" "}
+                {steps.length}
               </span>
             </div>
           </div>
@@ -264,7 +303,7 @@ const EnrollmentFormPage = () => {
               aria-orientation="horizontal"
             >
               {stepper.all
-                .filter((step) => step.id !== "confirmation")
+                .filter((step) => isUpdate || step.id !== "confirmation")
                 .map((step, index, array) => (
                   <React.Fragment key={step.id}>
                     <li className="flex flex-shrink-0 items-center gap-4">
@@ -282,7 +321,7 @@ const EnrollmentFormPage = () => {
                           stepper.current.id === step.id ? "step" : undefined
                         }
                         aria-posinset={index + 1}
-                        aria-setsize={steps.length - 1}
+                        aria-setsize={steps.length}
                         aria-selected={stepper.current.id === step.id}
                         disabled={
                           stepper.all.findIndex(
@@ -318,24 +357,31 @@ const EnrollmentFormPage = () => {
           </nav>
           <div className="space-y-4">
             <div className="flex justify-end gap-4">
-              <Button
-                variant="secondary"
+              <input
+                type="button"
+                value="Back"
                 onClick={stepper.prev}
                 disabled={stepper.isFirst}
-              >
-                Back
-              </Button>
+                className="inline-block cursor-pointer rounded bg-black font-medium px-3 text-sm text-white"
+              />
               <Button type="submit" disabled={localLoading}>
-                {stepper.current.id === "confirmation" ? "Complete" : "Next"}
+                {isUpdate
+                  ? stepper.isLast
+                    ? "Update"
+                    : "Next"
+                  : stepper.current.id === "confirmation"
+                    ? "Complete"
+                    : "Next"}
               </Button>
             </div>
             {stepper.switch({
-              personalData: () => <PersonalDataComponent />,
+              personalData: () => <PersonalDataComponent isUpdate={isUpdate} />,
               familyDetails: () => <FamilyDetailsComponent />,
               academicBackground: () => <AcademicBackgroundComponent />,
               academicHistory: () => <AcademicHistoryComponent />,
               documents: () => <DocumentsComponent />,
-              confirmation: () => <ConfirmationComponent formData={formData} />, // Render the confirmation component
+              confirmation: () =>
+                !isUpdate && <ConfirmationComponent formData={formData} />,
             })}
           </div>
         </form>

@@ -20,7 +20,7 @@ import FloorPage from "../Admin/SubPages/FloorPage";
 import RoomPage from "../Admin/SubPages/RoomPage";
 import EnrollmentApplicationPage from "../Admin/SubPages/EnrollmentApplicationPage";
 import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
-import OfficialEnrolledPage from "../Admin/SubPages/OfficalEnrolledPage";
+import StudentsPage from "../Admin/SubPages/StudentsPage";
 import EmployeePage from "../Admin/SubPages/EmployeePage";
 import EmployeeHomePage from "./SubPages/EmployeeHomePage";
 import ClassPage from "../Admin/SubPages/ClassPage";
@@ -256,11 +256,11 @@ const EmployeeRoutes = () => {
           />
 
           <Route
-            path="/enrollments/official-enrolled"
+            path="/enrollments/all-students"
             element={
               <>
                 <PageTitle title="Official Enrolled - MIS Benedicto College" />
-                <OfficialEnrolledPage />
+                <StudentsPage />
               </>
             }
           />

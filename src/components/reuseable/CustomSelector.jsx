@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useFormContext } from "react-hook-form"; // Import useFormContext
+import { useFormContext, Controller } from "react-hook-form"; // Import useFormContext and Controller
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Command,
@@ -36,12 +36,18 @@ const CustomSelector = ({
   errorKey,
   displayItem = null, // Accept displayItem prop
   disabledItems = [], // Accept disabledItems prop
+  clearErrorsProp, // New prop to accept clearErrors
 }) => {
+  // Attempt to get clearErrors from FormProvider context
+  const formContext = useFormContext();
+  const clearErrors = clearErrorsProp || formContext?.clearErrors;
+
   const renderButton = () => (
     <Button
       variant="outline"
       className="h-[2.5em] w-[11em] justify-start truncate text-xl text-black dark:bg-form-input dark:text-white 2xsm:w-[15em] xsm:w-[17em] md:!w-full"
       disabled={forDisable || loading}
+      type="button" // Ensure the button type is set to avoid form submissions
     >
       {selectedID ? selectedName : <>Select {title}</>}
     </Button>
@@ -50,6 +56,9 @@ const CustomSelector = ({
   const handleItemSelect = (id, name) => {
     setSelectedID(id);
     setSelectedName(name);
+    if (clearErrors) {
+      clearErrors(errorKey);
+    }
   };
 
   const handleItemSelectWithCourseCode = (id, name, courseCode) => {
@@ -62,6 +71,9 @@ const CustomSelector = ({
     // Clear selected instructor fields
     if (setSelectedInstructorID) setSelectedInstructorID("");
     if (setSelectedInstructorName) setSelectedInstructorName("");
+    if (clearErrors) {
+      clearErrors(errorKey);
+    }
   };
 
   return isDesktop ? (
@@ -85,6 +97,7 @@ const CustomSelector = ({
           forCourse={forCourse}
           displayItem={displayItem} // Pass displayItem to CustomList
           disabledItems={disabledItems} // Pass disabledItems to CustomList
+          clearErrors={clearErrors} // Pass clearErrors to CustomList
         />
       </PopoverContent>
     </Popover>
@@ -108,6 +121,7 @@ const CustomSelector = ({
             forCourse={forCourse}
             displayItem={displayItem} // Pass displayItem to CustomList
             disabledItems={disabledItems} // Pass disabledItems to CustomList
+            clearErrors={clearErrors} // Pass clearErrors to CustomList
           />
         </div>
       </DrawerContent>
@@ -130,9 +144,8 @@ const CustomList = ({
   title,
   displayItem = null, // Accept displayItem prop
   disabledItems = [], // Accept disabledItems prop
+  clearErrors, // Accept clearErrors from props
 }) => {
-  const { clearErrors } = useFormContext(); // Access clearErrors via useFormContext
-
   return (
     <Command
       className="!w-full"
@@ -175,7 +188,9 @@ const CustomList = ({
                           )
                         : onSelectItem(value, list[nameKey]);
                       setOpen(false);
-                      clearErrors(errorKey); // Now clearErrors is accessible
+                      if (clearErrors) {
+                        clearErrors(errorKey); // Now clearErrors is accessible
+                      }
                     }}
                     disabled={
                       disabledItems.includes(list[idKey]) ||

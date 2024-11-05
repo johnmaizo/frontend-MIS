@@ -1,5 +1,3 @@
-// SubjectEnlistmentPage.jsx
-
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -58,7 +56,25 @@ const SubjectEnlistmentPage = () => {
         const classesResponse = await axios.get(`/class/active`, {
           params: { semester_id: academicBackground.semester_id },
         });
-        const classesData = classesResponse.data;
+        let classesData = classesResponse.data;
+
+        console.log("Fetched Classes Data:", classesData); // Debugging line
+
+        // Format 'days' for each class
+        classesData = classesData.map((cls) => ({
+          ...cls,
+          days: Array.isArray(cls.days)
+            ? cls.days
+            : typeof cls.days === "string"
+              ? cls.days.split(",").map((day) => day.trim())
+              : cls.schedule
+                ? cls.schedule
+                    .split(/\d/)[0]
+                    .trim()
+                    .split(",")
+                    .map((day) => day.trim())
+                : [],
+        }));
 
         // Group classes by subjectCode and subjectDescription
         const subjectsMap = {};
@@ -89,6 +105,23 @@ const SubjectEnlistmentPage = () => {
     fetchAcademicBackground();
   }, [student_personal_id]);
 
+  // Helper function to format days
+  const formatDays = (cls) => {
+    if (cls.days && Array.isArray(cls.days)) {
+      return cls.days.join(", ");
+    } else if (typeof cls.days === "string") {
+      return cls.days;
+    } else if (cls.schedule && typeof cls.schedule === "string") {
+      // Attempt to extract days from schedule
+      const daysPart = cls.schedule.split(/\d/)[0].trim(); // Split at first digit
+      return daysPart
+        .split(",")
+        .map((day) => day.trim())
+        .join(", ");
+    }
+    return "N/A"; // Default if days can't be determined
+  };
+
   const handleAddClass = (cls) => {
     // Check for schedule conflicts
     const conflict = selectedClasses.some((selectedClass) => {
@@ -116,7 +149,23 @@ const SubjectEnlistmentPage = () => {
       return;
     }
 
-    setSelectedClasses([...selectedClasses, cls]);
+    // Ensure 'days' is an array
+    const formattedClass = {
+      ...cls,
+      days: Array.isArray(cls.days)
+        ? cls.days
+        : typeof cls.days === "string"
+          ? cls.days.split(",").map((day) => day.trim())
+          : cls.schedule
+            ? cls.schedule
+                .split(/\d/)[0]
+                .trim()
+                .split(",")
+                .map((day) => day.trim())
+            : [],
+    };
+
+    setSelectedClasses([...selectedClasses, formattedClass]);
   };
 
   const handleRemoveClass = (class_id) => {
@@ -261,7 +310,7 @@ const SubjectEnlistmentPage = () => {
                     selectedClasses.map((cls) => (
                       <TableRow key={cls.class_id}>
                         <TableCell>{cls.subjectCode}</TableCell>
-                        <TableCell>{cls.days.join(", ")}</TableCell>
+                        <TableCell>{formatDays(cls)}</TableCell>
                         <TableCell>
                           {formatTime(cls.timeStart)} -{" "}
                           {formatTime(cls.timeEnd)}
@@ -298,6 +347,7 @@ const SubjectEnlistmentPage = () => {
 
 // Helper function to format time
 const formatTime = (timeString) => {
+  if (!timeString) return "N/A";
   const [hour, minute] = timeString.split(":");
   const date = new Date();
   date.setHours(hour, minute);

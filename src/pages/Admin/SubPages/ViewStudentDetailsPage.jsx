@@ -6,11 +6,15 @@ import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs"
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
 
+import EnrolledSubjects from "../../../components/EnrolledSubjects";
+
 const ViewStudentDetailsPage = () => {
   const { view_student_id, view_campus_id } = useParams();
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [groupedEnrollments, setGroupedEnrollments] = useState([]);
 
   useEffect(() => {
     // Fetch student data
@@ -28,6 +32,27 @@ const ViewStudentDetailsPage = () => {
         setLoading(false);
       });
   }, [view_student_id, view_campus_id]);
+
+  useEffect(() => {
+    if (studentData && studentData.student_personal_datum) {
+      const enrollments =
+        studentData.student_personal_datum.student_class_enrollments || [];
+
+      // Group enrollments by semester and school year
+      const grouped = enrollments.reduce((acc, enrollment) => {
+        const semester = enrollment.class.semester.semesterName;
+        const schoolYear = enrollment.class.semester.schoolYear;
+        const key = `${schoolYear} - ${semester}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(enrollment);
+        return acc;
+      }, {});
+
+      setGroupedEnrollments(Object.entries(grouped));
+    }
+  }, [studentData]);
 
   // Destructure studentData for easier access
   const { student_id, campus, student_personal_datum } = studentData || {};
@@ -127,6 +152,11 @@ const ViewStudentDetailsPage = () => {
         {/* Main Content */}
         {!loading && !error && studentData && (
           <>
+            {/* Enrolled Subjects Section */}
+            {groupedEnrollments.length > 0 && (
+              <EnrolledSubjects groupedEnrollments={groupedEnrollments} />
+            )}
+
             {/* Personal Information */}
             <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <section className="mb-6">

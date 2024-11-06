@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 // src/components/EnrolledSubjects.jsx
 
-import React from "react";
 import {
   Accordion,
   AccordionItem,
@@ -102,7 +101,7 @@ const EnrolledSubjects = ({ groupedEnrollments }) => {
                                         }
                                       </TableCell>
                                       <TableCell>
-                                        {enrollment.class.days.join(", ")}
+                                        {formatDays(enrollment.class.days)}
                                       </TableCell>
                                       <TableCell>
                                         {formatTime(
@@ -150,6 +149,18 @@ const formatTime = (start, end) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
   return `${format(start)} - ${format(end)}`;
+};
+
+// New helper function to safely format days
+const formatDays = (days) => {
+  if (Array.isArray(days)) {
+    return days.join(", ");
+  } else if (typeof days === "string") {
+    return days; // If days is a single string
+  } else {
+    console.warn("Unexpected type for days:", days);
+    return "N/A";
+  }
 };
 
 export default EnrolledSubjects;

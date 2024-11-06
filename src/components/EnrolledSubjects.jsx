@@ -140,6 +140,30 @@ const EnrolledSubjects = ({ groupedEnrollments }) => {
   );
 };
 
+// Updated helper function to format days
+const formatDays = (days) => {
+  if (Array.isArray(days)) {
+    return days.join(", ");
+  } else if (typeof days === "string") {
+    // Check if it's a JSON stringified array
+    if (days.startsWith("[") && days.endsWith("]")) {
+      try {
+        const parsedDays = JSON.parse(days);
+        if (Array.isArray(parsedDays)) {
+          return parsedDays.join(", ");
+        }
+      } catch (error) {
+        console.warn("Failed to parse days string:", days);
+      }
+    }
+    // If it's a comma-separated string, return as-is
+    return days;
+  } else {
+    console.warn("Unexpected type for days:", days);
+    return "N/A";
+  }
+};
+
 // Helper function to format time
 const formatTime = (start, end) => {
   const format = (timeStr) => {
@@ -149,18 +173,6 @@ const formatTime = (start, end) => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
   return `${format(start)} - ${format(end)}`;
-};
-
-// New helper function to safely format days
-const formatDays = (days) => {
-  if (Array.isArray(days)) {
-    return days.join(", ");
-  } else if (typeof days === "string") {
-    return days; // If days is a single string
-  } else {
-    console.warn("Unexpected type for days:", days);
-    return "N/A";
-  }
 };
 
 export default EnrolledSubjects;

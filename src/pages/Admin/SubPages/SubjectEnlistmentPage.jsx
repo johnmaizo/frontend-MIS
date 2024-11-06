@@ -63,17 +63,7 @@ const SubjectEnlistmentPage = () => {
         // Format 'days' for each class
         classesData = classesData.map((cls) => ({
           ...cls,
-          days: Array.isArray(cls.days)
-            ? cls.days
-            : typeof cls.days === "string"
-              ? cls.days.split(",").map((day) => day.trim())
-              : cls.schedule
-                ? cls.schedule
-                    .split(/\d/)[0]
-                    .trim()
-                    .split(",")
-                    .map((day) => day.trim())
-                : [],
+          days: parseDays(cls.days, cls.schedule),
         }));
 
         // Group classes by subjectCode and subjectDescription
@@ -105,14 +95,51 @@ const SubjectEnlistmentPage = () => {
     fetchAcademicBackground();
   }, [student_personal_id]);
 
-  // Helper function to format days
+  // Helper function to parse days
+  const parseDays = (days, schedule) => {
+    if (Array.isArray(days)) {
+      return days;
+    } else if (typeof days === "string") {
+      // Check if it's a JSON stringified array
+      if (days.startsWith("[") && days.endsWith("]")) {
+        try {
+          const parsedDays = JSON.parse(days);
+          if (Array.isArray(parsedDays)) {
+            return parsedDays;
+          }
+        } catch (error) {
+          console.warn("Failed to parse days string:", days);
+        }
+      }
+      // If it's a comma-separated string, split it
+      return days.split(",").map((day) => day.trim());
+    } else if (schedule && typeof schedule === "string") {
+      // Attempt to extract days from schedule
+      const daysPart = schedule.split(/\d/)[0].trim(); // Split at first digit
+      return daysPart.split(",").map((day) => day.trim());
+    }
+    return [];
+  };
+
+  // Updated helper function to format days
   const formatDays = (cls) => {
     if (cls.days && Array.isArray(cls.days)) {
       return cls.days.join(", ");
     } else if (typeof cls.days === "string") {
+      // Check if it's a JSON stringified array
+      if (cls.days.startsWith("[") && cls.days.endsWith("]")) {
+        try {
+          const parsedDays = JSON.parse(cls.days);
+          if (Array.isArray(parsedDays)) {
+            return parsedDays.join(", ");
+          }
+        } catch (error) {
+          console.warn("Failed to parse days string:", cls.days);
+        }
+      }
+      // If it's a comma-separated string, return as-is
       return cls.days;
     } else if (cls.schedule && typeof cls.schedule === "string") {
-      // Attempt to extract days from schedule
       const daysPart = cls.schedule.split(/\d/)[0].trim(); // Split at first digit
       return daysPart
         .split(",")
@@ -343,6 +370,34 @@ const SubjectEnlistmentPage = () => {
       </div>
     </DefaultLayout>
   );
+};
+
+// Updated helper function to format days
+const formatDays = (cls) => {
+  if (cls.days && Array.isArray(cls.days)) {
+    return cls.days.join(", ");
+  } else if (typeof cls.days === "string") {
+    // Check if it's a JSON stringified array
+    if (cls.days.startsWith("[") && cls.days.endsWith("]")) {
+      try {
+        const parsedDays = JSON.parse(cls.days);
+        if (Array.isArray(parsedDays)) {
+          return parsedDays.join(", ");
+        }
+      } catch (error) {
+        console.warn("Failed to parse days string:", cls.days);
+      }
+    }
+    // If it's a comma-separated string, return as-is
+    return cls.days;
+  } else if (cls.schedule && typeof cls.schedule === "string") {
+    const daysPart = cls.schedule.split(/\d/)[0].trim(); // Split at first digit
+    return daysPart
+      .split(",")
+      .map((day) => day.trim())
+      .join(", ");
+  }
+  return "N/A"; // Default if days can't be determined
 };
 
 // Helper function to format time

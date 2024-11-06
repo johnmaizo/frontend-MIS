@@ -689,7 +689,7 @@ const AddProspectusSubject = () => {
                                     name,
                                   )
                                 }
-                                clearErrors={clearErrors}
+                                clearErrorsProp={clearErrors}
                                 loading={false}
                                 idKey="courseCode"
                                 nameKey="courseDescription"
@@ -740,7 +740,7 @@ const AddProspectusSubject = () => {
                                     name,
                                   )
                                 }
-                                clearErrors={clearErrors}
+                                clearErrorsProp={clearErrors}
                                 loading={false}
                                 idKey="courseCode"
                                 nameKey="courseDescription"

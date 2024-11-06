@@ -299,7 +299,7 @@ const AddClass = () => {
                           setSelectedCourseCode={setSelectedCourseCode}
                           setSelectedID={setSelectedSubjectID}
                           setSelectedName={setSelectedSubjectName}
-                          clearErrors={clearErrors}
+                          clearErrorsProp={clearErrors}
                           loading={loading || success}
                           idKey="course_id"
                           nameKey="fullCourseName"
@@ -333,7 +333,7 @@ const AddClass = () => {
                         data={semesters}
                         setSelectedID={setSelectedSemesterID}
                         setSelectedName={setSelectedSemesterName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || success}
                         idKey="semester_id"
                         nameKey="fullSemesterName"
@@ -370,7 +370,7 @@ const AddClass = () => {
                         forInstructor={true}
                         setSelectedID={setSelectedInstructorID}
                         setSelectedName={setSelectedInstructorName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || employeeLoading || success}
                         idKey="employee_id"
                         nameKey="fullNameWithDepartmentCode"
@@ -400,7 +400,7 @@ const AddClass = () => {
                         data={roomsActive}
                         setSelectedID={setSelectedRoomID}
                         setSelectedName={setSelectedRoomName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || loadingRoomsActive || success}
                         idKey="structure_id"
                         nameKey="fullStructureDetails"

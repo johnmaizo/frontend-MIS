@@ -365,7 +365,7 @@ const EditClass = ({ classId }) => {
                           setSelectedCourseCode={setSelectedCourseCode}
                           setSelectedID={setSelectedSubjectID}
                           setSelectedName={setSelectedSubjectName}
-                          clearErrors={clearErrors}
+                          clearErrorsProp={clearErrors}
                           loading={loading || success}
                           idKey="course_id"
                           nameKey="fullCourseName" // Ensure this matches your data
@@ -399,7 +399,7 @@ const EditClass = ({ classId }) => {
                         data={semesters}
                         setSelectedID={setSelectedSemesterID}
                         setSelectedName={setSelectedSemesterName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || success}
                         idKey="semester_id"
                         nameKey="semesterName" // Updated to use semesterName
@@ -436,7 +436,7 @@ const EditClass = ({ classId }) => {
                         forInstructor={true}
                         setSelectedID={setSelectedInstructorID}
                         setSelectedName={setSelectedInstructorName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || employeeLoading || success}
                         idKey="employee_id"
                         nameKey="fullNameWithDepartmentCode"
@@ -466,7 +466,7 @@ const EditClass = ({ classId }) => {
                         data={roomsActive}
                         setSelectedID={setSelectedRoomID}
                         setSelectedName={setSelectedRoomName}
-                        clearErrors={clearErrors}
+                        clearErrorsProp={clearErrors}
                         loading={loading || loadingRoomsActive || success}
                         idKey="structure_id"
                         nameKey="fullStructureDetails"

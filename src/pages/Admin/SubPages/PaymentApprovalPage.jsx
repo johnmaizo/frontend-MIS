@@ -90,30 +90,27 @@ const EnrollmentTables = ({ view }) => {
   const { semesters, fetchSemesters } = useSchool();
 
   const [selectedSemesterId, setSelectedSemesterId] = useState(null);
-  const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
 
   useEffect(() => {
     fetchSemesters();
   }, []);
 
-  // Set default selected semester and school year based on the active semester
+  // Set default selected semester based on the active semester
   useEffect(() => {
     if (semesters.length > 0) {
       const activeSemester = semesters.find((sem) => sem.isActive);
       if (activeSemester) {
-        setSelectedSchoolYear(activeSemester.schoolYear);
         setSelectedSemesterId(activeSemester.semester_id.toString());
       } else {
         // If no active semester, you can set default values or leave it null
-        setSelectedSchoolYear(semesters[0].schoolYear);
         setSelectedSemesterId(semesters[0].semester_id.toString());
       }
     }
   }, [semesters]);
 
   useEffect(() => {
-    fetchEnrollmentStatus(view, selectedSchoolYear, selectedSemesterId);
-  }, [view, selectedSchoolYear, selectedSemesterId]);
+    fetchEnrollmentStatus(view, selectedSemesterId);
+  }, [view, selectedSemesterId]);
 
   const { columnPaymentEnrollmentStatus, columnPaymentHistory } =
     useColumnsSecond();
@@ -131,8 +128,6 @@ const EnrollmentTables = ({ view }) => {
         semesters={semesters}
         selectedSemesterId={selectedSemesterId}
         setSelectedSemesterId={setSelectedSemesterId}
-        selectedSchoolYear={selectedSchoolYear}
-        setSelectedSchoolYear={setSelectedSchoolYear}
       />
     </>
   );
@@ -146,8 +141,6 @@ const DataTable = ({
   semesters,
   selectedSemesterId,
   setSelectedSemesterId,
-  selectedSchoolYear,
-  setSelectedSchoolYear,
 }) => {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -191,56 +184,26 @@ const DataTable = ({
               }
               className="md:max-w-[12em]"
             />
-            {/* School Year Selector */}
-            <Select
-              value={selectedSchoolYear || "all-school-years"}
-              onValueChange={(value) =>
-                setSelectedSchoolYear(
-                  value === "all-school-years" ? null : value,
-                )
-              }
-            >
-              <SelectTrigger className="mb-5 h-[3.3em] w-[9em] md:mb-0">
-                <SelectValue placeholder="Select School Year" />
-              </SelectTrigger>
-              <SelectContent className="dark:bg-[#1A222C]">
-                <SelectItem value="all-school-years">
-                  All School Years
-                </SelectItem>
-                {schoolYears.map((sy) => (
-                  <SelectItem key={sy} value={sy}>
-                    {sy}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Semester Selector */}
+            {/* Combined Semester Selector */}
             <Select
               value={selectedSemesterId || "all-semesters"}
               onValueChange={(value) =>
                 setSelectedSemesterId(value === "all-semesters" ? null : value)
               }
             >
-              <SelectTrigger className="mb-5 h-[3.3em] w-[10em] md:mb-0">
+              <SelectTrigger className="mb-5 h-[3.3em] w-[18em] md:mb-0">
                 <SelectValue placeholder="Select Semester" />
               </SelectTrigger>
               <SelectContent className="dark:bg-[#1A222C]">
                 <SelectItem value="all-semesters">All Semesters</SelectItem>
-                {semesters
-                  .filter(
-                    (sem) =>
-                      !selectedSchoolYear ||
-                      sem.schoolYear === selectedSchoolYear,
-                  )
-                  .map((sem) => (
-                    <SelectItem
-                      key={sem.semester_id}
-                      value={sem.semester_id.toString()}
-                    >
-                      {sem.semesterName}
-                    </SelectItem>
-                  ))}
+                {semesters.map((sem) => (
+                  <SelectItem
+                    key={sem.semester_id}
+                    value={sem.semester_id.toString()}
+                  >
+                    {`${sem.schoolYear} - ${sem.semesterName}`}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 

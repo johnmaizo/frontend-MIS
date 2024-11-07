@@ -11,6 +11,13 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../../components/ui/tabs";
+
 import { useContext, useEffect, useState } from "react";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
@@ -45,12 +52,26 @@ const UnenrolledRegistrationPage = () => {
         ITEMS_TO_DISPLAY={2}
       />
 
-      <UnenrolledStudentsTable />
+      {/* <UnenrolledStudentsTable /> */}
+      <Tabs defaultValue="existing-students" className="w-full">
+        <TabsList>
+          <TabsTrigger value="existing-students">Existing Students</TabsTrigger>
+          <TabsTrigger value="new-students">
+            New Unenrolled Students
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="existing-students">
+          <UnenrolledStudentsTable view="existing-students" />
+        </TabsContent>
+        <TabsContent value="new-students">
+          <UnenrolledStudentsTable view="new-students" />
+        </TabsContent>
+      </Tabs>
     </DefaultLayout>
   );
 };
 
-const UnenrolledStudentsTable = () => {
+const UnenrolledStudentsTable = ({ view }) => {
   const {
     pendingStudents,
     fetchPendingStudents,
@@ -59,20 +80,24 @@ const UnenrolledStudentsTable = () => {
   } = useEnrollment();
 
   useEffect(() => {
-    fetchPendingStudents();
-  }, []);
+    fetchPendingStudents(view);
+  }, [view]);
 
-  const { columnUnenrolledStudents } = useColumnsSecond();
+  const { columnExistingStudents, columnNewUnenrolledStudents } =
+    useColumnsSecond();
+
+  const columns =
+    view === "existing-students"
+      ? columnExistingStudents
+      : columnNewUnenrolledStudents;
 
   return (
-    <>
-      <DataTable
-        columns={columnUnenrolledStudents}
-        data={pendingStudents}
-        loading={loadingPendingStudents}
-        error={error}
-      />
-    </>
+    <DataTable
+      columns={columns}
+      data={pendingStudents}
+      loading={loadingPendingStudents}
+      error={error}
+    />
   );
 };
 

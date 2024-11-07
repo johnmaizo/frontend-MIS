@@ -74,11 +74,7 @@ export const EnrollmentProvider = ({ children }) => {
   const [loadingEnrollmentStatus, setLoadingEnrollmentStatus] = useState(false);
   const [enrollmentStatuses, setEnrollmentStatuses] = useState([]);
 
-  const fetchEnrollmentStatus = async (
-    view,
-    selectedSchoolYear,
-    selectedSemesterId,
-  ) => {
+  const fetchEnrollmentStatus = async (view, selectedSemesterId) => {
     setError("");
     setLoadingEnrollmentStatus(true);
     try {
@@ -90,6 +86,7 @@ export const EnrollmentProvider = ({ children }) => {
           ...(user.campus_id ? { campus_id: user.campus_id } : {}),
           accounting_status: "upcoming",
           registrar_status: "accepted",
+          require_enlisted_subjects: true,
         };
       } else if (view === "history") {
         // Fetch accepted payments
@@ -101,10 +98,7 @@ export const EnrollmentProvider = ({ children }) => {
         };
       }
 
-      // Add selected school year and semester to params
-      if (selectedSchoolYear) {
-        params.schoolYear = selectedSchoolYear;
-      }
+      // Add selected semester to params
       if (selectedSemesterId) {
         params.semester_id = selectedSemesterId;
       }
@@ -115,11 +109,7 @@ export const EnrollmentProvider = ({ children }) => {
       );
       setEnrollmentStatuses(response.data);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch enrollment status: ${err}`);
-      }
+      // Error handling...
     }
     setLoadingEnrollmentStatus(false);
   };
@@ -130,20 +120,29 @@ export const EnrollmentProvider = ({ children }) => {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [loadingPendingStudents, setLoadingPendingStudents] = useState(false);
 
-  const fetchPendingStudents = async () => {
+  const fetchPendingStudents = async (view) => {
     setError("");
     setLoadingPendingStudents(true);
     try {
-      const params = {
-        ...(user.campus_id ? { campus_id: user.campus_id } : {}),
-        registrar_status: "accepted",
-        accounting_status: "upcoming",
-      };
+      let params = {};
 
-      const response = await axios.get(
-        "/enrollment/get-all-enrollment-status",
-        { params },
-      );
+      if (view === "existing-students") {
+        // Fetch existing students who are official but not enrolled in the new semester
+        params = {
+          campus_id: user.campus_id,
+          existing_students: true,
+        };
+      } else if (view === "new-students") {
+        // Fetch new unenrolled students who have not been officially enrolled and not having to enlist
+        params = {
+          campus_id: user.campus_id,
+          new_unenrolled_students: true,
+        };
+      }
+
+      const response = await axios.get("/students/get-unenrolled-students", {
+        params,
+      });
       setPendingStudents(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -174,7 +173,7 @@ export const EnrollmentProvider = ({ children }) => {
 
         pendingStudents,
         fetchPendingStudents,
-        loadingPendingStudents
+        loadingPendingStudents,
       }}
     >
       {children}

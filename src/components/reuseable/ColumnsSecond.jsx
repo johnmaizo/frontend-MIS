@@ -23,6 +23,7 @@ import ButtonActionPayment from "./ButtonActionPayment";
 import { format } from "date-fns";
 import AcceptPaymentDialog from "./AcceptPaymentDialog";
 import { Link } from "react-router-dom";
+import AddEnrollment from "../api/AddEnrollment";
 
 const useColumnsSecond = () => {
   const { user } = useContext(AuthContext);
@@ -523,11 +524,61 @@ const useColumnsSecond = () => {
   ];
   // ! Columns Pending Students END
 
+  const columnExistingStudents = [
+    {
+      accessorKey: "fullName",
+      header: "Full Name",
+      cell: ({ cell }) => (
+        <span className="text-lg font-semibold">{cell.getValue()}</span>
+      ),
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const student = row.original;
+        return <AddEnrollment student={student} />;
+      },
+    },
+  ];
+
+  const columnNewUnenrolledStudents = [
+    {
+      accessorKey: "fullName",
+      header: "Full Name",
+      cell: ({ cell }) => (
+        <span className="text-lg font-semibold">{cell.getValue()}</span>
+      ),
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const studentPersonalId = row.original.student_personal_id;
+        const hasEnlistedSubjects = row.original.hasEnlistedSubjects;
+
+        return (
+          <Link to={`/enrollments/subject-enlistment/${studentPersonalId}`}>
+            <Button
+              variant="ghost"
+              className="text-blue-500 hover:text-blue-700"
+            >
+              {hasEnlistedSubjects ? "Edit Enlistment" : "Enlist Subjects"}
+            </Button>
+          </Link>
+        );
+      },
+    },
+  ];
+
   return {
     columnViewSubjectProspectus,
     columnPaymentEnrollmentStatus,
     columnPaymentHistory,
-    columnUnenrolledStudents
+    columnUnenrolledStudents,
+
+    columnExistingStudents,
+    columnNewUnenrolledStudents,
   };
 };
 

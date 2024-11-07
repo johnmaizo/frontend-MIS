@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import {
@@ -25,40 +25,46 @@ import { AuthContext } from "../../../components/context/AuthContext";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
-  const [classes, setClasses] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const [semester_id, setSemesterID] = useState(null);
-
   const [searchTerm, setSearchTerm] = useState("");
-
   const [selectedClasses, setSelectedClasses] = useState([]);
-
-  const navigate = useNavigate();
+  const [studentInfo, setStudentInfo] = useState(null);
 
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    // Fetch the student's academic background to get the semester_id
-    const fetchAcademicBackground = async () => {
+    const fetchStudentData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
+        // Fetch student academic background
+        const academicResponse = await axios.get(
           `/enrollment/student-academic-background/${student_personal_id}`,
         );
-        const academicBackground = response.data;
-        setSemesterID(academicBackground.semester_id);
+        const academicBackground = academicResponse.data;
 
-        console.log("Semester id: ", academicBackground.semester_id);
+        // Fetch student personal data
+        const studentResponse = await axios.get(
+          `/students/personal-data/${student_personal_id}`,
+        );
+        const studentData = studentResponse.data;
+
+        console.log("studentData: ", studentData)
+
+        // Combine data
+        setStudentInfo({
+          firstName: studentData.firstName,
+          lastName: studentData.lastName,
+          officialStudentId: studentData.officialStudentId,
+          schoolYear: studentData.schoolYear,
+          semesterName: studentData.semesterName,
+        });
 
         // Fetch available classes for the semester
         const classesResponse = await axios.get(`/class/active`, {
           params: { semester_id: academicBackground.semester_id },
         });
         let classesData = classesResponse.data;
-
-        console.log("Fetched Classes Data:", classesData); // Debugging line
 
         // Format 'days' for each class
         classesData = classesData.map((cls) => ({
@@ -83,16 +89,41 @@ const SubjectEnlistmentPage = () => {
           };
         });
 
-        setSubjects(subjectsArray); // Corrected assignment
+        setSubjects(subjectsArray);
+
+        // Fetch student's existing enlisted classes
+        const enlistedClassesResponse = await axios.get(
+          `/enrollment/get-enlisted-classes/${student_personal_id}`,
+        );
+        const enlistedClassesData = enlistedClassesResponse.data;
+
+        // Map enlisted classes to match the structure of classesData
+        const selectedClassesData = enlistedClassesData.map((cls) => {
+          // Find the matching class in classesData
+          const matchingClass = classesData.find(
+            (c) => c.class_id === cls.class_id,
+          );
+          if (matchingClass) {
+            return matchingClass;
+          } else {
+            // If the class is not in classesData, perhaps it is inactive now
+            return {
+              ...cls,
+              days: parseDays(cls.days, cls.schedule),
+            };
+          }
+        });
+
+        setSelectedClasses(selectedClassesData);
       } catch (error) {
-        console.error("Error fetching classes:", error);
-        toast.error("Failed to load available subjects.");
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load student data.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAcademicBackground();
+    fetchStudentData();
   }, [student_personal_id]);
 
   // Helper function to parse days
@@ -119,34 +150,6 @@ const SubjectEnlistmentPage = () => {
       return daysPart.split(",").map((day) => day.trim());
     }
     return [];
-  };
-
-  // Updated helper function to format days
-  const formatDays = (cls) => {
-    if (cls.days && Array.isArray(cls.days)) {
-      return cls.days.join(", ");
-    } else if (typeof cls.days === "string") {
-      // Check if it's a JSON stringified array
-      if (cls.days.startsWith("[") && cls.days.endsWith("]")) {
-        try {
-          const parsedDays = JSON.parse(cls.days);
-          if (Array.isArray(parsedDays)) {
-            return parsedDays.join(", ");
-          }
-        } catch (error) {
-          console.warn("Failed to parse days string:", cls.days);
-        }
-      }
-      // If it's a comma-separated string, return as-is
-      return cls.days;
-    } else if (cls.schedule && typeof cls.schedule === "string") {
-      const daysPart = cls.schedule.split(/\d/)[0].trim(); // Split at first digit
-      return daysPart
-        .split(",")
-        .map((day) => day.trim())
-        .join(", ");
-    }
-    return "N/A"; // Default if days can't be determined
   };
 
   const handleAddClass = (cls) => {
@@ -254,6 +257,25 @@ const SubjectEnlistmentPage = () => {
 
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
         <div className="p-4">
+          {/* Display student information */}
+          {studentInfo && (
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold">
+                Enlistment for &quot;{studentInfo.firstName}{" "}
+                {studentInfo.lastName}&quot;
+              </h2>
+              <p>
+                Official Student ID: {studentInfo.officialStudentId || "N/A"}
+              </p>
+              <p>
+                School Year: <strong>{studentInfo.schoolYear}</strong>
+              </p>
+              <p>
+                Semester: <strong>{studentInfo.semesterName}</strong>
+              </p>
+            </div>
+          )}
+
           <h2 className="text-2xl font-bold">Available Subjects</h2>
           <div className="mt-4 flex flex-col md:flex-row">
             {/* Left side - Subjects */}
@@ -372,7 +394,7 @@ const SubjectEnlistmentPage = () => {
   );
 };
 
-// Updated helper function to format days
+// Helper function to format days
 const formatDays = (cls) => {
   if (cls.days && Array.isArray(cls.days)) {
     return cls.days.join(", ");

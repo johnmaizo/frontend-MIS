@@ -15,7 +15,7 @@ const FamilyDetailsComponent = () => {
       </h3>
       {/* Include all father's fields here using the same pattern */}
       {/* ... */}
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="fatherFirstName"
@@ -60,7 +60,7 @@ const FamilyDetailsComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="fatherAddress"
@@ -108,7 +108,7 @@ const FamilyDetailsComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="fatherCompanyName"
@@ -178,7 +178,7 @@ const FamilyDetailsComponent = () => {
       </h3>
       {/* Include all mother's fields here using the same pattern */}
       {/* ... */}
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="motherFirstName"
@@ -223,7 +223,7 @@ const FamilyDetailsComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="motherAddress"
@@ -271,7 +271,7 @@ const FamilyDetailsComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="motherCompanyName"
@@ -341,7 +341,7 @@ const FamilyDetailsComponent = () => {
       </h3>
       {/* Include all guardian's fields here using the same pattern */}
       {/* ... */}
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="guardianFirstName"
@@ -386,7 +386,7 @@ const FamilyDetailsComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
           <label
             htmlFor="guardianRelation"

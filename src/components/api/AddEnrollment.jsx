@@ -50,9 +50,7 @@ const AddEnrollment = ({ student }) => {
 
       toast.success("Enrollment added successfully!");
       setEnrollmentCreated(true);
-
-      // Refresh the list of unenrolled students
-      fetchPendingStudents();
+      fetchPendingStudents("existing-students"); // Refresh the list
     } catch (error) {
       console.error("Error adding enrollment:", error);
       toast.error(
@@ -82,8 +80,13 @@ const AddEnrollment = ({ student }) => {
               to={`/enrollments/subject-enlistment/${student.student_personal_id}`}
               className="text-blue-500 hover:text-blue-700"
             >
-              Click me to proceed to enlistment
+              Click here to proceed to enlistment
             </Link>
+            <div className="mt-4 flex justify-end">
+              <Button variant="primary" onClick={() => setOpen(false)}>
+                Close
+              </Button>
+            </div>
           </div>
         ) : (
           <div>

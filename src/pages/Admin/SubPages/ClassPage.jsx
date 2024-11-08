@@ -73,37 +73,34 @@ const ClassTable = () => {
     error,
     semesters,
     fetchSemesters,
-    fetchRoomsActive
+    fetchRoomsActive,
   } = useSchool();
 
   const [selectedSemesterId, setSelectedSemesterId] = useState(null);
-  const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
 
   useEffect(() => {
     fetchSemesters();
     fetchRoomsActive();
   }, []);
 
-  // Set default selected semester and school year based on the active semester
+  // Set default selected semester based on the active semester
   useEffect(() => {
     if (semesters.length > 0) {
       const activeSemester = semesters.find((sem) => sem.isActive);
       if (activeSemester) {
-        setSelectedSchoolYear(activeSemester.schoolYear);
         setSelectedSemesterId(activeSemester.semester_id.toString());
       } else {
-        // If no active semester, you can set default values or leave it null
-        setSelectedSchoolYear(semesters[0].schoolYear);
+        // If no active semester, set to the first semester in the list
         setSelectedSemesterId(semesters[0].semester_id.toString());
       }
     }
   }, [semesters]);
 
   useEffect(() => {
-    if (selectedSchoolYear && selectedSemesterId) {
-      fetchClass(selectedSchoolYear, selectedSemesterId);
+    if (selectedSemesterId) {
+      fetchClass(null, selectedSemesterId); // Passing null for schoolYear as it's combined
     }
-  }, [selectedSchoolYear, selectedSemesterId]);
+  }, [selectedSemesterId]);
 
   const { columnClass } = useColumns();
 
@@ -117,8 +114,6 @@ const ClassTable = () => {
         semesters={semesters}
         selectedSemesterId={selectedSemesterId}
         setSelectedSemesterId={setSelectedSemesterId}
-        selectedSchoolYear={selectedSchoolYear}
-        setSelectedSchoolYear={setSelectedSchoolYear}
       />
     </>
   );
@@ -132,16 +127,9 @@ const DataTable = ({
   semesters,
   selectedSemesterId,
   setSelectedSemesterId,
-  selectedSchoolYear,
-  setSelectedSchoolYear,
 }) => {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
-
-  // Get unique school years from semesters
-  const schoolYears = Array.from(
-    new Set(semesters.map((sem) => sem.schoolYear)),
-  ).sort();
 
   const table = useReactTable({
     data,
@@ -164,6 +152,12 @@ const DataTable = ({
     },
   });
 
+  // Combine School Year and Semester Name for selector
+  const combinedSemesters = semesters.map((sem) => ({
+    id: sem.semester_id.toString(),
+    label: `${sem.schoolYear} - ${sem.semesterName}`,
+  }));
+
   return (
     <>
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
@@ -178,61 +172,30 @@ const DataTable = ({
               className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[14em]"
             />
 
-            <Select
-              value={selectedSchoolYear || "all-school-years"}
-              onValueChange={(value) =>
-                setSelectedSchoolYear(
-                  value === "all-school-years" ? null : value,
-                )
-              }
-            >
-              <SelectTrigger className="mb-5 h-[3.3em] w-[9em] md:mb-0">
-                <SelectValue placeholder="Select School Year" />
-              </SelectTrigger>
-              <SelectContent className="dark:bg-[#1A222C]">
-                <SelectItem value="all-school-years">
-                  All School Years
-                </SelectItem>
-                {schoolYears.map((sy) => (
-                  <SelectItem key={sy} value={sy}>
-                    {sy}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
+            {/* Combined Semester Selector */}
             <Select
               value={selectedSemesterId || "all-semesters"}
               onValueChange={(value) =>
                 setSelectedSemesterId(value === "all-semesters" ? null : value)
               }
             >
-              <SelectTrigger className="mb-5 h-[3.3em] w-[10em] md:mb-0">
+              <SelectTrigger className="mb-5 h-[3.3em] w-[18em] md:mb-0">
                 <SelectValue placeholder="Select Semester" />
               </SelectTrigger>
               <SelectContent className="dark:bg-[#1A222C]">
                 <SelectItem value="all-semesters">All Semesters</SelectItem>
-                {semesters
-                  .filter(
-                    (sem) =>
-                      !selectedSchoolYear ||
-                      sem.schoolYear === selectedSchoolYear,
-                  )
-                  .map((sem) => (
-                    <SelectItem
-                      key={sem.semester_id}
-                      value={sem.semester_id.toString()}
-                    >
-                      {sem.semesterName}
-                    </SelectItem>
-                  ))}
+                {combinedSemesters.map((sem) => (
+                  <SelectItem key={sem.id} value={sem.id}>
+                    {sem.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
             <ResetFilter table={table} className={"mb-5 h-[3.3em] md:mb-0"} />
           </div>
           <div>
-            <AddClass />
+            <AddClass selectedSemesterId={selectedSemesterId} />
           </div>
         </div>
         <div className="max-w-full overflow-x-auto">

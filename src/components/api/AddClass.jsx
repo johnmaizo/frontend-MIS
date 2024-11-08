@@ -22,7 +22,7 @@ import CustomSelector from "../reuseable/CustomSelector";
 import { useMediaQuery } from "../../hooks/use-media-query";
 import { compareDataAndSetDisable } from "../reuseable/GetUniqueValues";
 
-const AddClass = () => {
+const AddClass = ({ selectedSemesterId }) => {
   const {
     fetchClass,
     courseActive,
@@ -164,7 +164,7 @@ const AddClass = () => {
 
       if (response.data) {
         setSuccess(true);
-        fetchClass();
+        fetchClass(null, selectedSemesterId);
         setOpen(false); // Close the dialog
       }
       setLocalLoading(false);

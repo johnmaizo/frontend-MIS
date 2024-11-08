@@ -204,7 +204,7 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
             {
               loading: "Submitting Application...",
               success: "Application submitted successfully!",
-              error: "Failed to submit application.",
+              error: "Failed to submit application. ",
             },
             {
               position: "bottom-right",
@@ -362,7 +362,7 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
                 value="Back"
                 onClick={stepper.prev}
                 disabled={stepper.isFirst}
-                className="inline-block cursor-pointer rounded bg-black font-medium px-3 text-sm text-white"
+                className="inline-block cursor-pointer rounded bg-black px-3 text-sm font-medium text-white"
               />
               <Button type="submit" disabled={localLoading}>
                 {isUpdate

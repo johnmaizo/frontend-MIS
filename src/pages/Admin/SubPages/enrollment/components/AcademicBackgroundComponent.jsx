@@ -59,7 +59,7 @@ const AcademicBackgroundComponent = () => {
     <div className="space-y-4 text-start">
       <div className="flex flex-wrap gap-10">
         {/* Program ID */}
-        <div className="w-[50%] space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2">
           <label
             htmlFor="program_id"
             className="block text-sm font-medium text-primary"
@@ -116,7 +116,7 @@ const AcademicBackgroundComponent = () => {
         </div>
 
         {/* Prospectus */}
-        <div className="w-[50%] space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2">
           <label
             htmlFor="prospectus_id"
             className="block text-sm font-medium text-primary"
@@ -172,7 +172,7 @@ const AcademicBackgroundComponent = () => {
         </div>
 
         {/* Year Level */}
-        <div className="w-[50%] space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2">
           <label
             htmlFor="yearLevel"
             className="block text-sm font-medium text-primary"
@@ -199,9 +199,9 @@ const AcademicBackgroundComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-wrap gap-10">
         {/* Major In */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="majorIn"
             className="block text-sm font-medium text-primary"
@@ -216,7 +216,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
         {/* Student Type */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="studentType"
             className="block text-sm font-medium text-primary"
@@ -239,7 +239,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
         {/* Application Type */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="applicationType"
             className="block text-sm font-medium text-primary"
@@ -264,9 +264,9 @@ const AcademicBackgroundComponent = () => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-wrap gap-10">
         {/* Semester ID */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="semester_id"
             className="block text-sm font-medium text-primary"
@@ -322,7 +322,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
         {/* Year Entry */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="yearEntry"
             className="block text-sm font-medium text-primary"
@@ -341,7 +341,7 @@ const AcademicBackgroundComponent = () => {
           )}
         </div>
         {/* Year Graduate */}
-        <div className="w-full space-y-2">
+        <div className="w-full space-y-2 sm:w-1/2 lg:w-1/3">
           <label
             htmlFor="yearGraduate"
             className="block text-sm font-medium text-primary"

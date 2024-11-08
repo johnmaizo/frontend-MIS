@@ -81,12 +81,12 @@ export const EnrollmentProvider = ({ children }) => {
       let params = {};
 
       if (view === "approvals") {
-        // Fetch pending approvals
+        // Fetch pending approvals for both new and existing students
         params = {
           ...(user.campus_id ? { campus_id: user.campus_id } : {}),
           accounting_status: "upcoming",
           registrar_status: "accepted",
-          require_enlisted_subjects: true,
+          // No need to include 'require_enlisted_subjects'
         };
       } else if (view === "history") {
         // Fetch accepted payments
@@ -109,9 +109,10 @@ export const EnrollmentProvider = ({ children }) => {
       );
       setEnrollmentStatuses(response.data);
     } catch (err) {
-      // Error handling...
+      setError("Failed to fetch enrollment statuses.");
+    } finally {
+      setLoadingEnrollmentStatus(false);
     }
-    setLoadingEnrollmentStatus(false);
   };
   // ! Enrollment Status END
 
@@ -127,13 +128,13 @@ export const EnrollmentProvider = ({ children }) => {
       let params = {};
 
       if (view === "existing-students") {
-        // Fetch existing students who are official but not enrolled in the new semester
+        // Fetch existing students not enrolled in the new semester
         params = {
           campus_id: user.campus_id,
           existing_students: true,
         };
       } else if (view === "new-students") {
-        // Fetch new unenrolled students who have not been officially enrolled and not having to enlist
+        // Fetch new unenrolled students
         params = {
           campus_id: user.campus_id,
           new_unenrolled_students: true,
@@ -145,13 +146,10 @@ export const EnrollmentProvider = ({ children }) => {
       });
       setPendingStudents(response.data);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError(`Failed to fetch pending students: ${err}`);
-      }
+      setError("Failed to fetch pending students.");
+    } finally {
+      setLoadingPendingStudents(false);
     }
-    setLoadingPendingStudents(false);
   };
 
   return (

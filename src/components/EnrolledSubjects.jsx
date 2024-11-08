@@ -28,7 +28,7 @@ import {
 
 const EnrolledSubjects = ({ groupedEnrollments }) => {
   return (
-    <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
+    <div className="mb-8 rounded-lg bg-white dark:bg-boxdark dark:!text-white p-6 shadow-md">
       <section>
         <h2 className="mb-4 border-b pb-2 text-2xl font-semibold">
           Enrolled Subjects

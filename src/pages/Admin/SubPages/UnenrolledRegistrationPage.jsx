@@ -52,7 +52,6 @@ const UnenrolledRegistrationPage = () => {
         ITEMS_TO_DISPLAY={2}
       />
 
-      {/* <UnenrolledStudentsTable /> */}
       <Tabs defaultValue="existing-students" className="w-full">
         <TabsList>
           <TabsTrigger value="existing-students">Existing Students</TabsTrigger>

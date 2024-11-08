@@ -58,7 +58,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
       )}
 
       {isUpdate && (
-        <div className="flex gap-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
           {/* Student ID */}
           <div className="w-full space-y-2">
             <label
@@ -79,7 +79,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       )}
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Campus ID */}
         <div className="w-full space-y-2">
           <label
@@ -181,7 +181,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* First Name */}
         <div className="w-full space-y-2">
           <label
@@ -244,7 +244,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Gender */}
         <div className="w-full space-y-2">
           <label
@@ -315,7 +315,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Address */}
         <div className="w-full space-y-2">
           <label
@@ -335,7 +335,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
 
       <hr />
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Civil Status */}
         <div className="w-full space-y-2">
           <label
@@ -394,7 +394,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Citizenship */}
         <div className="w-full space-y-2">
           <label
@@ -445,7 +445,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
       {/* Additional Personal Data Fields */}
       <hr />
       <h3 className="text-lg font-medium">Additional Personal Data</h3>
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* City Address */}
         <div className="w-full space-y-2">
           <label
@@ -478,7 +478,7 @@ const PersonalDataComponent = ({ isUpdate }) => {
         </div>
       </div>
 
-      <div className="flex gap-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         {/* Province Address */}
         <div className="w-full space-y-2">
           <label

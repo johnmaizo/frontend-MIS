@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import {
@@ -31,6 +31,8 @@ const SubjectEnlistmentPage = () => {
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [studentInfo, setStudentInfo] = useState(null);
 
+  const navigate = useNavigate();
+
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const SubjectEnlistmentPage = () => {
         );
         const studentData = studentResponse.data;
 
-        console.log("studentData: ", studentData)
+        console.log("studentData: ", studentData);
 
         // Combine data
         setStudentInfo({
@@ -215,11 +217,14 @@ const SubjectEnlistmentPage = () => {
     axios
       .post("/enrollment/submit-enlistment", payload)
       .then((response) => {
-        toast.success("Subjects enlisted successfully!");
-        toast.success(response.data.message);
-
-        // Navigate to the next step, e.g., payment section
-        // navigate(`/enrollment/payment/${student_personal_id}`);
+        toast.success("Subjects enlisted successfully!", {
+          position: "bottom-right",
+        });
+        toast.success(response.data.message, {
+          duration: 5500,
+          position: "bottom-right",
+        });
+        navigate("/enrollments/unenrolled-registrations/");
       })
       .catch((error) => {
         console.error("Error submitting enlistment:", error);
@@ -242,6 +247,12 @@ const SubjectEnlistmentPage = () => {
       label: "Subject Enlistment",
     },
   ];
+
+  // Calculate total units
+  const totalUnits = selectedClasses.reduce((total, cls) => {
+    // Assuming units are stored in cls.courseinfo.unit or cls.subjectUnits
+    return total + (cls.courseinfo?.unit || cls.subjectUnits || 0);
+  }, 0);
 
   return (
     <DefaultLayout>
@@ -365,7 +376,9 @@ const SubjectEnlistmentPage = () => {
                           {formatTime(cls.timeEnd)}
                         </TableCell>
                         <TableCell>{cls.room}</TableCell>
-                        <TableCell>{cls.courseinfo.unit}</TableCell>
+                        <TableCell>
+                          {cls.courseinfo?.unit || cls.subjectUnits || 0}
+                        </TableCell>
                         <TableCell>
                           <Button
                             variant="destructive"
@@ -379,6 +392,15 @@ const SubjectEnlistmentPage = () => {
                   )}
                 </TableBody>
               </Table>
+
+              {/* Display Total Units */}
+              <div className="mt-4 flex justify-end">
+                <p className="text-lg font-semibold">
+                  Total Units:{" "}
+                  <span className="text-blue-600">{totalUnits}</span>
+                </p>
+              </div>
+
               <Button
                 className="mt-4 w-full"
                 onClick={handleSubmitEnlistment}

@@ -50,7 +50,7 @@ const AddEnrollment = ({ student }) => {
 
       toast.success("Enrollment added successfully!");
       setEnrollmentCreated(true);
-      fetchPendingStudents("existing-students"); // Refresh the list
+      // fetchPendingStudents("existing-students"); // Refresh the list
     } catch (error) {
       console.error("Error adding enrollment:", error);
       toast.error(

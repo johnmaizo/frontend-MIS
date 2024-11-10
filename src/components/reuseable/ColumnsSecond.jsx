@@ -256,48 +256,6 @@ const useColumnsSecond = () => {
       cell: ({ row }) => {
         return (
           <div className="flex w-[5em] items-center gap-3">
-            {/* Accept Payment Dialog */}
-            {/* <Dialog>
-              <DialogTrigger className="rounded-md !bg-green-600 p-2 !text-white">
-                Accept Payment
-              </DialogTrigger>
-              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">
-                    Accept Payment
-                  </DialogTitle>
-                  <DialogDescription asChild className="mt-2">
-                    <p className="mb-5">
-                      Are you sure you want to accept{" "}
-                      <strong>&quot;{row.original.fullName}&quot;</strong>{" "}
-                      payment?
-                    </p>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonActionPayment
-                      entityType={"enrollment"}
-                      entityId={row.original.student_personal_id}
-                      action="accept"
-                      onSuccess={() => {
-                        fetchEnrollmentStatus("approvals");
-                      }}
-                    />
-
-                    <DialogClose asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full underline-offset-4 hover:underline"
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog> */}
-
             <AcceptPaymentDialog
               studentPersonalId={row.original.student_personal_id}
               fullName={row.original.fullName}
@@ -525,6 +483,13 @@ const useColumnsSecond = () => {
   // ! Columns Pending Students END
 
   const columnExistingStudents = [
+    {
+      accessorKey: "student_id",
+      header: "Student ID",
+      cell: ({ cell }) => (
+        <span className="text-base font-medium">{cell.getValue()}</span>
+      ),
+    },
     {
       accessorKey: "fullName",
       header: "Full Name",

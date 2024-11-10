@@ -86,7 +86,7 @@ export const EnrollmentProvider = ({ children }) => {
           ...(user.campus_id ? { campus_id: user.campus_id } : {}),
           accounting_status: "upcoming",
           registrar_status: "accepted",
-          // No need to include 'require_enlisted_subjects'
+          payment_confirmed: false,
         };
       } else if (view === "history") {
         // Fetch accepted payments
@@ -109,7 +109,11 @@ export const EnrollmentProvider = ({ children }) => {
       );
       setEnrollmentStatuses(response.data);
     } catch (err) {
-      setError("Failed to fetch enrollment statuses.");
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch enrollment statuses: ${err}`);
+      }
     } finally {
       setLoadingEnrollmentStatus(false);
     }
@@ -146,7 +150,11 @@ export const EnrollmentProvider = ({ children }) => {
       });
       setPendingStudents(response.data);
     } catch (err) {
-      setError("Failed to fetch pending students.");
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError(`Failed to fetch pending students: ${err}`);
+      }
     } finally {
       setLoadingPendingStudents(false);
     }

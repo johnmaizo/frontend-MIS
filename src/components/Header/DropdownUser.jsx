@@ -94,6 +94,10 @@ const DropdownUser = () => {
                 <Badge className="!bg-cyan-700 !text-white hover:!bg-cyan-800">
                   Dean {user.campusName && `(${user.campusName})`}
                 </Badge>
+              ) : HasRole(user.role, "Accounting") ? (
+                <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
+                  Accounting {user.campusName && `(${user.campusName})`}
+                </Badge>
               ) : (
                 <span className="ml-1 font-semibold">
                   {HasRole(user.role, "SuperAdmin") ||
@@ -178,6 +182,10 @@ const DropdownUser = () => {
                     <Badge className="!bg-cyan-700 !text-white hover:!bg-cyan-800">
                       Dean {user.campusName && `(${user.campusName})`}
                     </Badge>
+                  ) : HasRole(user.role, "Accounting") ? (
+                    <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
+                      Accounting {user.campusName && `(${user.campusName})`}
+                    </Badge>
                   ) : (
                     <span className="ml-1 font-semibold">
                       {HasRole(user.role, "SuperAdmin") ||
@@ -190,7 +198,7 @@ const DropdownUser = () => {
                 </div>
               </div>
             </span>
-            
+
             <li>
               <Link
                 to="/pages/settings"

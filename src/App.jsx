@@ -53,7 +53,8 @@ function App() {
                 (HasRole(user?.allRoles, "MIS") ||
                   HasRole(user?.role, "DataCenter") ||
                   HasRole(user?.role, "Registrar") ||
-                  HasRole(user?.role, "Dean")) && <EmployeeRoutes />
+                  HasRole(user?.role, "Dean") ||
+                  HasRole(user?.role, "Accounting")) && <EmployeeRoutes />
               )}
 
               {/* // ) : HasRole(user?.allRoles, "MIS") ? ( // <MISRoutes />

@@ -244,21 +244,21 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/enrollments/enroll-student"
-        element={
-          <>
-            <PageTitle title="Enrollment Student - MIS Benedicto College" />
-            <EnrollStudentPage />
-          </>
-        }
-      />
-
-      <Route
         path="/enrollments/enrollment-application/applicant/:applicantId"
         element={
           <>
             <PageTitle title="View Enrollment Application - MIS Benedicto College" />
             <ViewEnrollmentApplicantPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/enroll-student"
+        element={
+          <>
+            <PageTitle title="Enrollment Student - MIS Benedicto College" />
+            <EnrollStudentPage />
           </>
         }
       />
@@ -272,7 +272,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/enrollments/all-students/view-student/:view_student_id/:view_campus_id"
         element={
@@ -282,7 +282,7 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/enrollments/all-students/update-student/:update_student_id/:update_campus_id"
         element={
@@ -304,16 +304,6 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/payment-approvals"
-        element={
-          <>
-            <PageTitle title="Payment Approvals - MIS Benedicto College" />
-            <PaymentApprovalPage />
-          </>
-        }
-      />
-      
-      <Route
         path="/enrollments/unenrolled-registrations"
         element={
           <>
@@ -322,13 +312,23 @@ const AdminRoutes = () => {
           </>
         }
       />
-      
+
       <Route
         path="/enrollments/subject-enlistment/:student_personal_id"
         element={
           <>
             <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
             <SubjectEnlistmentPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/payment-approvals"
+        element={
+          <>
+            <PageTitle title="Payment Approvals - MIS Benedicto College" />
+            <PaymentApprovalPage />
           </>
         }
       />

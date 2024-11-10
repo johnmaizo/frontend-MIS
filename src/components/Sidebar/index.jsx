@@ -157,7 +157,8 @@ const Sidebar = ({
           {(HasRole(user.allRoles, "MIS") ||
             HasRole(user.allRoles, "DataCenter") ||
             HasRole(user.allRoles, "Registrar") ||
-            HasRole(user.allRoles, "Dean")) && (
+            HasRole(user.allRoles, "Dean") ||
+            HasRole(user.allRoles, "Accounting")) && (
             <EmployeeSidebar
               sidebarExpanded={sidebarExpanded}
               setSidebarExpanded={setSidebarExpanded}

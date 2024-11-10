@@ -27,6 +27,12 @@ import ClassPage from "../Admin/SubPages/ClassPage";
 import ProspectusPage from "../Admin/SubPages/ProspectusPage";
 import ViewProspectusPage from "../Admin/SubPages/ViewProspectusPage";
 import ViewProspectusSubjectPage from "../Admin/SubPages/ViewProspectusSubjectPage";
+import UnenrolledRegistrationPage from "../Admin/SubPages/UnenrolledRegistrationPage";
+import SubjectEnlistmentPage from "../Admin/SubPages/SubjectEnlistmentPage";
+import UpdateStudentInfoPage from "../Admin/SubPages/UpdateStudentInfoPage";
+import ViewStudentDetailsPage from "../Admin/SubPages/ViewStudentDetailsPage";
+import EnrollStudentPage from "../Admin/SubPages/EnrollStudentPage";
+import PaymentApprovalPage from "../Admin/SubPages/PaymentApprovalPage";
 
 const EmployeeRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -266,11 +272,75 @@ const EmployeeRoutes = () => {
           />
 
           <Route
+            path="/enrollments/enroll-student"
+            element={
+              <>
+                <PageTitle title="Enrollment Student - MIS Benedicto College" />
+                <EnrollStudentPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/all-students/view-student/:view_student_id/:view_campus_id"
+            element={
+              <>
+                <PageTitle title="View Student Details - MIS Benedicto College" />
+                <ViewStudentDetailsPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/all-students/update-student/:update_student_id/:update_campus_id"
+            element={
+              <>
+                <PageTitle title="Update Student Details - MIS Benedicto College" />
+                <UpdateStudentInfoPage />
+              </>
+            }
+          />
+
+          <Route
             path="/class-list"
             element={
               <>
                 <PageTitle title="Class List - MIS Benedicto College" />
                 <ClassPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/unenrolled-registrations"
+            element={
+              <>
+                <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
+                <UnenrolledRegistrationPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/subject-enlistment/:student_personal_id"
+            element={
+              <>
+                <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
+                <SubjectEnlistmentPage />
+              </>
+            }
+          />
+        </>
+      )}
+
+      {HasRole(user.allRoles, "Accounting") && (
+        <>
+          <Route
+            path="/payment-approvals"
+            element={
+              <>
+                <PageTitle title="Payment Approvals - MIS Benedicto College" />
+                <PaymentApprovalPage />
               </>
             }
           />

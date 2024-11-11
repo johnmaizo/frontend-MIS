@@ -86,12 +86,6 @@ const ProgramCourseTables = () => {
       program_id,
       programCode,
     );
-    // fetchProgramCourseDeleted(
-    //   programCampusId,
-    //   programCampusName,
-    //   program_id,
-    //   programCode,
-    // );
   }, [programCampusId, programCampusName, program_id, programCode]);
 
   const { columnViewSpecificProspectus } = useColumns();

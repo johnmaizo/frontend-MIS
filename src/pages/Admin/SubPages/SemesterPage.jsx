@@ -134,7 +134,7 @@ const DataTable = ({ data, columns, loading, error }) => {
             <StatusFilter table={table} option={"semester"} />
           </div>
 
-          <DeletedSemesters />
+          {/* <DeletedSemesters /> */}
         </div>
 
         <div className="max-w-full overflow-x-auto">

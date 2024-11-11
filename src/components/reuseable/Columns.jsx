@@ -46,6 +46,7 @@ import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
 import { FacetedFilterSubjectDepartment } from "./FacetedFilterSubjectDepartment";
 import EditEmployee from "../api/EditEmployee";
 import EditClass from "../api/EditClass";
+import EditProspectus from "../api/EditProspectus";
 
 const useColumns = () => {
   const {
@@ -330,6 +331,7 @@ const useColumns = () => {
           <div className="flex items-center gap-1">
             <EditSemester semesterId={row.getValue("semester_id")} />
 
+            {/* 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Semester"} />
@@ -369,6 +371,7 @@ const useColumns = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            */}
           </div>
         );
       },
@@ -1392,6 +1395,9 @@ const useColumns = () => {
         );
       },
     },
+
+    /*
+
     {
       accessorKey: "updated",
       header: "Date Updated",
@@ -1423,6 +1429,8 @@ const useColumns = () => {
         );
       },
     },
+
+    */
   ];
   // ! Accounts End
 
@@ -2562,6 +2570,7 @@ const useColumns = () => {
               className={`flex items-center gap-1 ${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "pointer-events-none hover:cursor-not-allowed" : ""}`}
             >
               <EditEmployee employeeId={row.getValue("employee_id")} />
+              {/* 
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
                   <DeleteIcon forActions={"Delete Employee"} />
@@ -2600,6 +2609,7 @@ const useColumns = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+              */}
             </div>
           </div>
         );
@@ -3062,29 +3072,31 @@ const useColumns = () => {
           },
         ]
       : []),
-    // {
-    //   accessorKey: "isActive",
-    //   header: "Status",
-    //   cell: ({ cell }) => {
-    //     return (
-    //       <span
-    //         className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-    //           cell.getValue() ? "bg-success" : "bg-danger"
-    //         }`}
-    //       >
-    //         {cell.getValue() ? "Active" : "Inactive"}
-    //       </span>
-    //     );
-    //   },
-    // },
+    {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() ? "bg-success" : "bg-danger"
+            }`}
+          >
+            {cell.getValue() ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
     {
       header: "Actions",
       accessorFn: (row) => `${row.prospectus_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
         return (
-          <div className="pointer-events-none flex items-center gap-1">
-            <EditCourse courseId={row.getValue("prospectus_id")} />
+          <div className="flex items-center gap-1">
+            <EditProspectus prospectusID={row.getValue("prospectus_id")} />
+            
+            {/* 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Course"} />
@@ -3102,14 +3114,6 @@ const useColumns = () => {
                 </DialogHeader>
                 <DialogFooter>
                   <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    {/* <ButtonActionCourse
-                      action="delete"
-                      courseId={row.getValue("prospectus_id")}
-                      onSuccess={() => {
-                        fetchProgramCourse(campusName, program_id);
-                        fetchProgramCourseDeleted(campusName, program_id);
-                      }}
-                    /> */}
                     <ButtonAction
                       entityType={"course"}
                       entityId={row.getValue("prospectus_id")}
@@ -3131,6 +3135,7 @@ const useColumns = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+             */}
           </div>
         );
       },
@@ -3142,15 +3147,15 @@ const useColumns = () => {
       },
       id: "selectProspectus",
       accessorFn: (row) =>
-        `${row.prospectus_id} ${row.campus_id} ${row.campusName} ${row.programCode} ${row.isActive}`,
+        `${row.prospectus_id} ${row.campus_id} ${row.campusName} ${row.programCode}`,
       cell: ({ row }) => {
         return (
           <div
-            className={`flex items-center gap-1 ${!row.original.isActive ? "cursor-not-allowed" : ""}`}
+            className={`flex items-center gap-1`}
           >
             <Link
               to={`/subjects/prospectus-subjects/campus/${row.original.campus_id}/${row.original.campusName}/program/${row.original.programCode}/prospectus/${row.original.prospectus_id}`}
-              className={`rounded p-3 text-sm font-medium text-white ${!row.original.isActive ? "pointer-events-none bg-blue-400 hover:no-underline" : "bg-primary hover:underline hover:underline-offset-2"}`}
+              className={`rounded p-3 text-sm font-medium text-white bg-primary hover:underline hover:underline-offset-2`}
             >
               Select Prospectus
             </Link>

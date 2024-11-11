@@ -15,6 +15,7 @@ const AcademicBackgroundComponent = () => {
     clearErrors,
     formState: { errors },
     watch,
+    setValue,
   } = useFormContext();
 
   const { programActive, semesters, loading } = useSchool();
@@ -92,8 +93,12 @@ const AcademicBackgroundComponent = () => {
                   selectedName={selectedName}
                   data={programActive}
                   setSelectedID={(value) => {
-                    field.onChange(Number(value)); // Convert value to number
-                    clearErrors("program_id"); // Clear errors using useFormContext internally
+                    field.onChange(Number(value)); // Update program_id
+                    clearErrors("program_id"); // Clear program_id errors
+
+                    // Reset prospectus_id when program changes
+                    setValue("prospectus_id", null); // or undefined
+                    clearErrors("prospectus_id"); // Clear any prospectus_id errors
                   }}
                   setSelectedName={() => {}}
                   loading={loading}
@@ -138,6 +143,11 @@ const AcademicBackgroundComponent = () => {
                 ? `${selectedProspectus.prospectusName} - ${selectedProspectus.prospectusDescription}`
                 : "";
 
+              // Filter out any undefined or null prospectuses
+              const validProspectuses = prospectuses.filter(
+                (prospectus) => prospectus !== undefined && prospectus !== null,
+              );
+
               return (
                 <CustomSelector
                   title="Prospectus"
@@ -146,7 +156,7 @@ const AcademicBackgroundComponent = () => {
                   setOpen={setOpenProspectusSelector}
                   selectedID={field.value || ""}
                   selectedName={selectedName}
-                  data={prospectuses}
+                  data={validProspectuses} // Use filtered data
                   setSelectedID={(value) => {
                     field.onChange(Number(value));
                     clearErrors("prospectus_id"); // Clear errors using useFormContext internally
@@ -157,7 +167,9 @@ const AcademicBackgroundComponent = () => {
                   nameKey="prospectusName"
                   errorKey="prospectus_id"
                   displayItem={(prospectus) =>
-                    `${prospectus.prospectusName} - ${prospectus.prospectusDescription}`
+                    prospectus
+                      ? `${prospectus.prospectusName || "None"} - ${prospectus.prospectusDescription || "Please add prospectus"}`
+                      : "Empty, please add prospectus"
                   }
                   forSemester={true}
                 />

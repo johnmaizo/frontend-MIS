@@ -227,7 +227,8 @@ const EditSemester = ({ semesterId }) => {
                             message: 'You must follow the format "YYYY-YYYY"',
                           },
                         })}
-                        disabled={success || loading}
+                        // disabled={success || loading}
+                        disabled
                       />
                       {errors.schoolYear && (
                         <ErrorMessage>
@@ -253,7 +254,8 @@ const EditSemester = ({ semesterId }) => {
                           setSelectedSemester(value);
                           clearErrors("semester_name"); // Clear error when semester is selected
                         }}
-                        disabled={loading || success}
+                        // disabled={loading || success}
+                        disabled
                       >
                         <SelectTrigger className="h-[2.5em] w-full text-xl text-black dark:bg-form-input dark:text-white">
                           <SelectValue placeholder="Select Semester" />

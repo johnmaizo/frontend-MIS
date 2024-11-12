@@ -185,7 +185,7 @@ const ViewStudentDetailsPage = () => {
                             className="object-cove h-full w-full rounded-full" // Make the image fill the container
                           />
                         )}
-                        <p className="mt-2 flex p-2 rounded-md bg-slate-700 !text-white items-center justify-center gap-1">
+                        <p className="mt-2 flex p-2 rounded-md bg-blue-700 !text-white items-center justify-center gap-1">
                           <span>Student ID: </span>{" "}
                           <strong>{student_id}</strong>
                         </p>

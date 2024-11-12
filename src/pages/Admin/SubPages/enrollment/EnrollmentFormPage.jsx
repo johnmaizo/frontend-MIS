@@ -240,10 +240,38 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
         }
         setLocalLoading(false);
       } catch (err) {
-        if (err.response && err.response.data && err.response.data.message) {
-          setGeneralError(err.response.data.message);
+        if (err.response && err.response.data && err.response.data.reason) {
+          setGeneralError(
+            `Failed to submit application: ${err.response.data.reason}`,
+          );
+          toast.error(
+            `${err.response.data.reason}`,
+            {
+              position: "bottom-right",
+              duration: 5000,
+            },
+          );
+        } else if (
+          err.response &&
+          err.response.data &&
+          err.response.data.message
+        ) {
+          setGeneralError(
+            `Failed to submit application: ${err.response.data.message}`,
+          );
+          toast.error(
+            `Failed to submit application: ${err.response.data.message}`,
+            {
+              position: "bottom-right",
+              duration: 5000,
+            },
+          );
         } else {
           setGeneralError("An unexpected error occurred. Please try again.");
+          toast.error("An unexpected error occurred. Please try again.", {
+            position: "bottom-right",
+            duration: 5000,
+          });
         }
         setLocalLoading(false);
       }

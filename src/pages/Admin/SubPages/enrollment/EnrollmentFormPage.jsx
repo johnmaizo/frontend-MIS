@@ -195,7 +195,7 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
           );
 
           if (response.data) {
-            navigate("/enrollments/all-students");
+            navigate("/all-students");
           }
         } else {
           // Call enrollment API
@@ -204,7 +204,7 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
             {
               loading: "Submitting Application...",
               success: "Application submitted successfully!",
-              error: "Failed to submit application. ",
+              error: "Failed to submit application.",
             },
             {
               position: "bottom-right",
@@ -307,39 +307,44 @@ const EnrollmentFormPage = ({ initialData = {}, isUpdate = false }) => {
                 .map((step, index, array) => (
                   <React.Fragment key={step.id}>
                     <li className="flex flex-shrink-0 items-center gap-4">
-                      <Button
-                        type="button"
-                        role="tab"
-                        variant={
-                          stepper.all.findIndex(
-                            (s) => s.id === stepper.current.id,
-                          ) >= stepper.all.findIndex((s) => s.id === step.id)
-                            ? "default"
-                            : "secondary"
-                        }
-                        aria-current={
-                          stepper.current.id === step.id ? "step" : undefined
-                        }
-                        aria-posinset={index + 1}
-                        aria-setsize={steps.length}
-                        aria-selected={stepper.current.id === step.id}
-                        disabled={
-                          stepper.all.findIndex(
-                            (s) => s.id === stepper.current.id,
-                          ) < stepper.all.findIndex((s) => s.id === step.id)
-                        } // Disable future steps to prevent skipping
-                        className={`flex items-center justify-center p-10 ${
-                          stepper.all.findIndex(
-                            (s) => s.id === stepper.current.id,
-                          ) >= stepper.all.findIndex((s) => s.id === step.id)
-                            ? "!border-primary !bg-primary !text-white hover:!bg-primary"
-                            : ""
-                        }`}
-                        onClick={() => validateAndNavigate(step.id, index)}
+                      <div
+                        className={`${stepper.current.id !== step.id ? "hidden md:flex" : "flex"} w-full justify-center md:justify-start`}
                       >
-                        {step.label}
-                      </Button>
+                        <Button
+                          type="button"
+                          role="tab"
+                          variant={
+                            stepper.all.findIndex(
+                              (s) => s.id === stepper.current.id,
+                            ) >= stepper.all.findIndex((s) => s.id === step.id)
+                              ? "default"
+                              : "secondary"
+                          }
+                          aria-current={
+                            stepper.current.id === step.id ? "step" : undefined
+                          }
+                          aria-posinset={index + 1}
+                          aria-setsize={steps.length}
+                          aria-selected={stepper.current.id === step.id}
+                          disabled={
+                            stepper.all.findIndex(
+                              (s) => s.id === stepper.current.id,
+                            ) < stepper.all.findIndex((s) => s.id === step.id)
+                          } // Disable future steps to prevent skipping
+                          className={`// Base mobile size // Medium screen adjustments // Larger screen adjustments flex items-center justify-center p-4 text-sm md:p-6 md:text-base lg:p-8 lg:text-lg ${
+                            stepper.all.findIndex(
+                              (s) => s.id === stepper.current.id,
+                            ) >= stepper.all.findIndex((s) => s.id === step.id)
+                              ? "!border-primary !bg-primary !text-white hover:!bg-primary"
+                              : ""
+                          }`}
+                          onClick={() => validateAndNavigate(step.id, index)}
+                        >
+                          {step.label}
+                        </Button>
+                      </div>
                     </li>
+
                     {index < array.length - 1 && (
                       <Separator
                         className={`h-[3px] flex-1 ${

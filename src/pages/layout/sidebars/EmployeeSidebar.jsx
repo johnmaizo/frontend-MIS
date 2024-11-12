@@ -19,6 +19,7 @@ import {
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { ArrowRightIcon, MonitorCheck } from "lucide-react";
+import { PersonIcon } from "@radix-ui/react-icons";
 
 const EmployeeSidebar = ({
   sidebarExpanded,
@@ -355,6 +356,20 @@ const EmployeeSidebar = ({
                 REGISTRAR SECTION
               </h3>
 
+              <li>
+                <NavLink
+                  to="/all-students"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium duration-300 ease-in-out hover:bg-gray dark:text-bodydark1 dark:hover:bg-meta-4 ${
+                    (pathname === "/all-students" ||
+                      pathname.includes("all-students")) &&
+                    "bg-gray text-primary underline underline-offset-4 dark:bg-meta-4"
+                  }`}
+                >
+                  <PersonIcon className="inline-block h-5 w-5 font-medium" />
+                  Students
+                </NavLink>
+              </li>
+
               <SidebarLinkGroup
                 activeCondition={
                   pathname === "/enrollments" ||
@@ -405,22 +420,6 @@ const EmployeeSidebar = ({
                         }`}
                       >
                         <ul className="mb-5.5 mt-4 flex flex-col gap-3.5 pl-3">
-                          <li>
-                            <NavLink
-                              to="/enrollments/all-students"
-                              className={({ isActive }) =>
-                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                                  (pathname === "/enrollments/all-students" ||
-                                    pathname.includes("all-students")) &&
-                                  "!underline "
-                                }` +
-                                (isActive && "text-primary dark:!text-white")
-                              }
-                            >
-                              <ArrowRightIcon className="h-4 w-4 flex-none" />
-                              Students
-                            </NavLink>
-                          </li>
                           {/* <li>
                         <NavLink
                           to="/enrollments/enrollment-application"

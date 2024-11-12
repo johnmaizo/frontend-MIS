@@ -174,7 +174,7 @@ const ViewStudentDetailsPage = () => {
                     {/* Profile Picture */}
                     <div className="mb-6 flex items-center justify-center">
                       <div
-                        className={` ${loading ? "grid place-content-center" : ""} h-[15em] w-[15em] rounded-full border bg-white dark:bg-boxdark`} // Increased size here
+                        className={` ${loading ? "grid place-content-center" : ""} h-[15em] w-[15em] rounded-full border bg-white dark:bg-boxdark`}
                       >
                         {loading ? (
                           <ProfileLoadingIcon />
@@ -185,15 +185,19 @@ const ViewStudentDetailsPage = () => {
                             className="object-cove h-full w-full rounded-full" // Make the image fill the container
                           />
                         )}
+                        <p className="text-gray-700 mt-2 flex items-center justify-center gap-1">
+                          <span>Student ID: </span>{" "}
+                          <strong>{student_id}</strong>
+                        </p>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
                       <div>
-                        <p className="text-gray-700">
-                          <span className="font-medium">Student ID:</span>{" "}
-                          {student_id}
-                        </p>
+                        {/* <p className="text-gray-700">
+                      <span className="font-medium">Student ID:</span>{" "}
+                      {student_id}
+                    </p> */}
                         <p className="text-gray-700">
                           <span className="font-medium">Name:</span> {firstName}{" "}
                           {middleName ? `${middleName} ` : ""}

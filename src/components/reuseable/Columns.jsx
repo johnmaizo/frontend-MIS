@@ -2384,14 +2384,14 @@ const useColumns = () => {
         return (
           <div className="flex items-center gap-2">
             {/* View Student Details */}
-            <Link to={`/enrollments/all-students/view-student/${studentId}/${campusId}`}>
+            <Link to={`/all-students/view-student/${studentId}/${campusId}`}>
               <button className="text-blue-500 hover:text-blue-700">
                 <EyeIcon className="h-5 w-5" />
               </button>
             </Link>
   
             {/* Update Student Information */}
-            <Link to={`/enrollments/all-students/update-student/${studentId}/${campusId}`}>
+            <Link to={`/all-students/update-student/${studentId}/${campusId}`}>
               <button className="text-green-500 hover:text-green-700">
                 <PencilIcon className="h-5 w-5" />
               </button>

@@ -18,7 +18,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="elementarySchool"
           className="block text-sm font-medium text-primary"
         >
-          elementarySchool
+          Elementary School
         </label>
         <Input id="elementarySchool" {...register("elementarySchool")} />
         {errors.elementarySchool && (
@@ -33,7 +33,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="elementaryAddress"
           className="block text-sm font-medium text-primary"
         >
-          elementaryAddress
+          Elementary Address
         </label>
         <Input id="elementaryAddress" {...register("elementaryAddress")} />
         {errors.elementaryAddress && (
@@ -48,7 +48,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="elementaryHonors"
           className="block text-sm font-medium text-primary"
         >
-          elementaryHonors
+          Elementary Honors
         </label>
         <Input id="elementaryHonors" {...register("elementaryHonors")} />
         {errors.elementaryHonors && (
@@ -63,7 +63,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="elementaryGraduate"
           className="block text-sm font-medium text-primary"
         >
-          elementaryGraduate
+          Elementary Graduate
         </label>
         <Input id="elementaryGraduate" {...register("elementaryGraduate")} />
         {errors.elementaryGraduate && (
@@ -84,7 +84,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="secondarySchool"
           className="block text-sm font-medium text-primary"
         >
-          secondarySchool
+          Secondary School
         </label>
         <Input id="secondarySchool" {...register("secondarySchool")} />
         {errors.secondarySchool && (
@@ -99,7 +99,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="secondaryAddress"
           className="block text-sm font-medium text-primary"
         >
-          secondaryAddress
+          Secondary Address
         </label>
         <Input id="secondaryAddress" {...register("secondaryAddress")} />
         {errors.secondaryAddress && (
@@ -114,7 +114,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="secondaryHonors"
           className="block text-sm font-medium text-primary"
         >
-          secondaryHonors
+          Secondary Honors
         </label>
         <Input id="secondaryHonors" {...register("secondaryHonors")} />
         {errors.secondaryHonors && (
@@ -129,7 +129,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="secondaryGraduate"
           className="block text-sm font-medium text-primary"
         >
-          secondaryGraduate
+          Secondary Graduate
         </label>
         <Input id="secondaryGraduate" {...register("secondaryGraduate")} />
         {errors.secondaryGraduate && (
@@ -151,7 +151,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="seniorHighSchool"
           className="block text-sm font-medium text-primary"
         >
-          seniorHighSchool
+          Senior High School
         </label>
         <Input id="seniorHighSchool" {...register("seniorHighSchool")} />
         {errors.seniorHighSchool && (
@@ -166,7 +166,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="seniorHighAddress"
           className="block text-sm font-medium text-primary"
         >
-          seniorHighAddress
+          Senior High Address
         </label>
         <Input id="seniorHighAddress" {...register("seniorHighAddress")} />
         {errors.seniorHighAddress && (
@@ -181,7 +181,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="seniorHighHonors"
           className="block text-sm font-medium text-primary"
         >
-          seniorHighHonors
+          Senior High Honors
         </label>
         <Input id="seniorHighHonors" {...register("seniorHighHonors")} />
         {errors.seniorHighHonors && (
@@ -196,7 +196,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="seniorHighSchoolGraduate"
           className="block text-sm font-medium text-primary"
         >
-          seniorHighSchoolGraduate
+          Senior High School Graduate
         </label>
         <Input
           id="seniorHighSchoolGraduate"
@@ -216,7 +216,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="ncae_grade"
           className="block text-sm font-medium text-primary"
         >
-          ncae_grade
+          NCAE Grade
         </label>
         <Input id="ncae_grade" {...register("ncae_grade")} />
         {errors.ncae_grade && (
@@ -231,7 +231,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="ncae_year_taken"
           className="block text-sm font-medium text-primary"
         >
-          ncae_year_taken
+          NCAE Year Taken
         </label>
         <Input id="ncae_year_taken" {...register("ncae_year_taken")} />
         {errors.ncae_year_taken && (
@@ -246,7 +246,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="latest_college"
           className="block text-sm font-medium text-primary"
         >
-          latest_college
+          Latest College
         </label>
         <Input id="latest_college" {...register("latest_college")} />
         {errors.latest_college && (
@@ -261,7 +261,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="college_address"
           className="block text-sm font-medium text-primary"
         >
-          college_address
+          College Address
         </label>
         <Input id="college_address" {...register("college_address")} />
         {errors.college_address && (
@@ -276,7 +276,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="college_honors"
           className="block text-sm font-medium text-primary"
         >
-          college_honors
+          College Honor's
         </label>
         <Input id="college_honors" {...register("college_honors")} />
         {errors.college_honors && (
@@ -291,7 +291,7 @@ const AcademicHistoryComponent = () => {
           htmlFor="program"
           className="block text-sm font-medium text-primary"
         >
-          program
+          Program
         </label>
         <Input id="program" {...register("program")} />
         {errors.program && (

@@ -121,7 +121,7 @@ const AcceptPaymentDialog = ({
                       <th className="px-4 py-2 border border-gray-200 text-left">Units</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white">
+                  <tbody className="bg-white dark:bg-boxdark">
                     {loadingSubjects ? (
                       <tr>
                         <td colSpan="3" className="px-4 py-4 text-center">

@@ -262,7 +262,7 @@ const EmployeeRoutes = () => {
           />
 
           <Route
-            path="/enrollments/all-students"
+            path="/all-students"
             element={
               <>
                 <PageTitle title="Official Enrolled - MIS Benedicto College" />
@@ -282,7 +282,7 @@ const EmployeeRoutes = () => {
           />
 
           <Route
-            path="/enrollments/all-students/view-student/:view_student_id/:view_campus_id"
+            path="/all-students/view-student/:view_student_id/:view_campus_id"
             element={
               <>
                 <PageTitle title="View Student Details - MIS Benedicto College" />
@@ -292,7 +292,7 @@ const EmployeeRoutes = () => {
           />
 
           <Route
-            path="/enrollments/all-students/update-student/:update_student_id/:update_campus_id"
+            path="/all-students/update-student/:update_student_id/:update_campus_id"
             element={
               <>
                 <PageTitle title="Update Student Details - MIS Benedicto College" />

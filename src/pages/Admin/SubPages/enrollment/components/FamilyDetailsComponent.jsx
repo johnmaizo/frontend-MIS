@@ -9,11 +9,11 @@ const FamilyDetailsComponent = () => {
 
   return (
     <div className="space-y-4 text-start">
-      {/* Father's Information */}
+      {/* Father&apos;s Information */}
       <h3 className="text-lg font-medium text-primary">
         Father&apos;s Information
       </h3>
-      {/* Include all father's fields here using the same pattern */}
+      {/* Include all father&apos;s fields here using the same pattern */}
       {/* ... */}
       <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
@@ -21,7 +21,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherFirstName"
             className="block text-sm font-medium text-primary"
           >
-            fatherFirstName
+            Father&apos;s FirstName
           </label>
           <Input id="fatherFirstName" {...register("fatherFirstName")} />
           {errors.fatherFirstName && (
@@ -35,7 +35,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherMiddleName"
             className="block text-sm font-medium text-primary"
           >
-            fatherMiddleName
+            Father&apos;s MiddleName
           </label>
           <Input id="fatherMiddleName" {...register("fatherMiddleName")} />
           {errors.fatherMiddleName && (
@@ -49,7 +49,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherLastName"
             className="block text-sm font-medium text-primary"
           >
-            fatherLastName
+            Father&apos;s LastName
           </label>
           <Input id="fatherLastName" {...register("fatherLastName")} />
           {errors.fatherLastName && (
@@ -66,7 +66,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherAddress"
             className="block text-sm font-medium text-primary"
           >
-            fatherAddress
+            Father&apos;s Address
           </label>
           <Input id="fatherAddress" {...register("fatherAddress")} />
           {errors.fatherAddress && (
@@ -80,7 +80,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherOccupation"
             className="block text-sm font-medium text-primary"
           >
-            fatherOccupation
+            Father&apos;s Occupation
           </label>
           <Input id="fatherOccupation" {...register("fatherOccupation")} />
           {errors.fatherOccupation && (
@@ -94,7 +94,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherContactNumber"
             className="block text-sm font-medium text-primary"
           >
-            fatherContactNumber
+            Father&apos;s Contact Number
           </label>
           <Input
             id="fatherContactNumber"
@@ -114,7 +114,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherCompanyName"
             className="block text-sm font-medium text-primary"
           >
-            fatherCompanyName
+            Father&apos;s Company Name
           </label>
           <Input id="fatherCompanyName" {...register("fatherCompanyName")} />
           {errors.fatherCompanyName && (
@@ -128,7 +128,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherCompanyAddress"
             className="block text-sm font-medium text-primary"
           >
-            fatherCompanyAddress
+            Father&apos;s Company Address
           </label>
           <Input
             id="fatherCompanyAddress"
@@ -145,7 +145,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherEmail"
             className="block text-sm font-medium text-primary"
           >
-            fatherEmail
+            Father&apos;s Email Address
           </label>
           <Input id="fatherEmail" {...register("fatherEmail")} />
           {errors.fatherEmail && (
@@ -159,7 +159,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="fatherIncome"
             className="block text-sm font-medium text-primary"
           >
-            fatherIncome
+            Father&apos;s Income
           </label>
           <Input id="fatherIncome" {...register("fatherIncome")} />
           {errors.fatherIncome && (
@@ -172,11 +172,11 @@ const FamilyDetailsComponent = () => {
 
       <hr />
 
-      {/* Mother's Information */}
+      {/* Mother&apos;s Information */}
       <h3 className="text-lg font-medium text-primary">
         Mother&apos;s Information
       </h3>
-      {/* Include all mother's fields here using the same pattern */}
+      {/* Include all mother&apos;s fields here using the same pattern */}
       {/* ... */}
       <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
@@ -184,7 +184,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherFirstName"
             className="block text-sm font-medium text-primary"
           >
-            motherFirstName
+            Mother&apos;s FirstName
           </label>
           <Input id="motherFirstName" {...register("motherFirstName")} />
           {errors.motherFirstName && (
@@ -198,7 +198,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherMiddleName"
             className="block text-sm font-medium text-primary"
           >
-            motherMiddleName
+            Mother&apos;s MiddleName
           </label>
           <Input id="motherMiddleName" {...register("motherMiddleName")} />
           {errors.motherMiddleName && (
@@ -212,7 +212,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherLastName"
             className="block text-sm font-medium text-primary"
           >
-            motherLastName
+            Mother&apos;s LastName
           </label>
           <Input id="motherLastName" {...register("motherLastName")} />
           {errors.motherLastName && (
@@ -229,7 +229,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherAddress"
             className="block text-sm font-medium text-primary"
           >
-            motherAddress
+            Mother&apos;s Address
           </label>
           <Input id="motherAddress" {...register("motherAddress")} />
           {errors.motherAddress && (
@@ -243,7 +243,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherOccupation"
             className="block text-sm font-medium text-primary"
           >
-            motherOccupation
+            Mother&apos;s Occupation
           </label>
           <Input id="motherOccupation" {...register("motherOccupation")} />
           {errors.motherOccupation && (
@@ -257,7 +257,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherContactNumber"
             className="block text-sm font-medium text-primary"
           >
-            motherContactNumber
+            Mother&apos;s Contact Number
           </label>
           <Input
             id="motherContactNumber"
@@ -277,7 +277,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherCompanyName"
             className="block text-sm font-medium text-primary"
           >
-            motherCompanyName
+            Mother&apos;s Company Name
           </label>
           <Input id="motherCompanyName" {...register("motherCompanyName")} />
           {errors.motherCompanyName && (
@@ -291,7 +291,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherCompanyAddress"
             className="block text-sm font-medium text-primary"
           >
-            motherCompanyAddress
+            Mother&apos;s Company Address
           </label>
           <Input
             id="motherCompanyAddress"
@@ -308,7 +308,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherEmail"
             className="block text-sm font-medium text-primary"
           >
-            motherEmail
+            Mother&apos;s Email Address
           </label>
           <Input id="motherEmail" {...register("motherEmail")} />
           {errors.motherEmail && (
@@ -322,7 +322,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="motherIncome"
             className="block text-sm font-medium text-primary"
           >
-            motherIncome
+            Mother&apos;s Income
           </label>
           <Input id="motherIncome" {...register("motherIncome")} />
           {errors.motherIncome && (
@@ -335,11 +335,11 @@ const FamilyDetailsComponent = () => {
 
       <hr />
 
-      {/* Guardian's Information */}
+      {/* Guardian&apos;s Information */}
       <h3 className="text-lg font-medium text-primary">
         Guardian&apos;s Information
       </h3>
-      {/* Include all guardian's fields here using the same pattern */}
+      {/* Include all guardian&apos;s fields here using the same pattern */}
       {/* ... */}
       <div className="flex flex-col gap-4 p-2 sm:flex-row sm:gap-6 sm:p-4 md:gap-8 md:p-6 lg:gap-10">
         <div className="w-full space-y-2">
@@ -347,7 +347,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="guardianFirstName"
             className="block text-sm font-medium text-primary"
           >
-            guardianFirstName
+            Guardian&apos;s FirstName
           </label>
           <Input id="guardianFirstName" {...register("guardianFirstName")} />
           {errors.guardianFirstName && (
@@ -361,7 +361,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="guardianMiddleName"
             className="block text-sm font-medium text-primary"
           >
-            guardianMiddleName
+            Guardian&apos;s MiddleName
           </label>
           <Input id="guardianMiddleName" {...register("guardianMiddleName")} />
           {errors.guardianMiddleName && (
@@ -375,7 +375,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="guardianLastName"
             className="block text-sm font-medium text-primary"
           >
-            guardianLastName
+            Guardian&apos;s LastName
           </label>
           <Input id="guardianLastName" {...register("guardianLastName")} />
           {errors.guardianLastName && (
@@ -392,7 +392,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="guardianRelation"
             className="block text-sm font-medium text-primary"
           >
-            guardianRelation
+            Guardian&apos;s Relation
           </label>
           <Input id="guardianRelation" {...register("guardianRelation")} />
           {errors.guardianRelation && (
@@ -406,7 +406,7 @@ const FamilyDetailsComponent = () => {
             htmlFor="guardianContactNumber"
             className="block text-sm font-medium text-primary"
           >
-            guardianContactNumber
+            Guardian&apos;s Contact Number
           </label>
           <Input
             id="guardianContactNumber"

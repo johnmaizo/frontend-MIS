@@ -27,7 +27,6 @@ import { HasRole } from "../../components/reuseable/HasRole";
 import BuildingStructurePage from "./SubPages/BuildingStructurePage";
 import FloorPage from "./SubPages/FloorPage";
 import RoomPage from "./SubPages/RoomPage";
-import EnrollmentApplicationPage from "./SubPages/EnrollmentApplicationPage";
 import ViewEnrollmentApplicantPage from "./SubPages/ViewEnrollmentApplicantPage";
 import StudentsPage from "./SubPages/StudentsPage";
 import EmployeePage from "./SubPages/EmployeePage";
@@ -41,6 +40,7 @@ import UnenrolledRegistrationPage from "./SubPages/UnenrolledRegistrationPage";
 import SubjectEnlistmentPage from "./SubPages/SubjectEnlistmentPage";
 import ViewStudentDetailsPage from "./SubPages/ViewStudentDetailsPage";
 import UpdateStudentInfoPage from "./SubPages/UpdateStudentInfoPage";
+import OnlinePendingApplicantPage from "./SubPages/OnlinePendingApplicantPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -234,26 +234,6 @@ const AdminRoutes = () => {
       />
 
       <Route
-        path="/enrollments/enrollment-application"
-        element={
-          <>
-            <PageTitle title="Enrollment Application - MIS Benedicto College" />
-            <EnrollmentApplicationPage />
-          </>
-        }
-      />
-
-      <Route
-        path="/enrollments/enrollment-application/applicant/:applicantId"
-        element={
-          <>
-            <PageTitle title="View Enrollment Application - MIS Benedicto College" />
-            <ViewEnrollmentApplicantPage />
-          </>
-        }
-      />
-
-      <Route
         path="/enrollments/enroll-student"
         element={
           <>
@@ -319,6 +299,26 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
             <SubjectEnlistmentPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/online-applicants"
+        element={
+          <>
+            <PageTitle title="Online Applicants - MIS Benedicto College" />
+            <OnlinePendingApplicantPage />
+          </>
+        }
+      />
+
+      <Route
+        path="/enrollments/online-applicants/applicant/:applicantId"
+        element={
+          <>
+            <PageTitle title="View Enrollment Application - MIS Benedicto College" />
+            <ViewEnrollmentApplicantPage />
           </>
         }
       />

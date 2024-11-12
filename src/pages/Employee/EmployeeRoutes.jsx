@@ -18,8 +18,6 @@ import { HasRole } from "../../components/reuseable/HasRole";
 import BuildingStructurePage from "../Admin/SubPages/BuildingStructurePage";
 import FloorPage from "../Admin/SubPages/FloorPage";
 import RoomPage from "../Admin/SubPages/RoomPage";
-import EnrollmentApplicationPage from "../Admin/SubPages/EnrollmentApplicationPage";
-import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
 import StudentsPage from "../Admin/SubPages/StudentsPage";
 import EmployeePage from "../Admin/SubPages/EmployeePage";
 import EmployeeHomePage from "./SubPages/EmployeeHomePage";
@@ -241,26 +239,6 @@ const EmployeeRoutes = () => {
 
       {HasRole(user.allRoles, "Registrar") && (
         <>
-          <Route
-            path="/enrollments/enrollment-application"
-            element={
-              <>
-                <PageTitle title="Enrollment Application - MIS Benedicto College" />
-                <EnrollmentApplicationPage />
-              </>
-            }
-          />
-
-          <Route
-            path="/enrollments/enrollment-application/applicant/:applicantId"
-            element={
-              <>
-                <PageTitle title="View Enrollment Application - MIS Benedicto College" />
-                <ViewEnrollmentApplicantPage />
-              </>
-            }
-          />
-
           <Route
             path="/all-students"
             element={

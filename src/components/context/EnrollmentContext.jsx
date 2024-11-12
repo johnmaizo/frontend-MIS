@@ -19,20 +19,20 @@ export const EnrollmentProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // ! Applicants START
-  const [loadingApplicants, setLoadingApplicants] = useState(false);
+  const [loadingOnlineApplicants, setLoadingApplicants] = useState(false);
 
-  const [applicants, setApplicants] = useState([]);
+  const [onlineApplicants, setOnlineApplicants] = useState([]);
 
-  const fetchApplicants = async () => {
+  const fetchOnlineApplicants = async () => {
     setError("");
     setLoadingApplicants(true);
     try {
       const params = user.campus_id ? { campus_id: user.campus_id } : {};
-      const response = await axios.get("/enrollment/get-all-applicant", {
+      const response = await axios.get("/enrollment/get-all-online-applicant", {
         params,
       });
 
-      setApplicants(response.data);
+      setOnlineApplicants(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -165,9 +165,9 @@ export const EnrollmentProvider = ({ children }) => {
       value={{
         error,
 
-        loadingApplicants,
-        applicants,
-        fetchApplicants,
+        onlineApplicants,
+        fetchOnlineApplicants,
+        loadingOnlineApplicants,
 
         officalEnrolled,
         fetchOfficialEnrolled,

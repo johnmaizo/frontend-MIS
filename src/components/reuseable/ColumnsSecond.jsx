@@ -1,7 +1,7 @@
 import { ArrowUpDown, PencilIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { FacetedFilterEnrollment } from "./FacetedFilterEnrollment";
-import { getUniqueCodes } from "./GetUniqueValues";
+import { getUniqueCodes, getUniqueCodesEnrollment } from "./GetUniqueValues";
 import { useSchool } from "../context/SchoolContext";
 import EditCampus from "../api/EditCampus";
 import {
@@ -28,7 +28,8 @@ import AddEnrollment from "../api/AddEnrollment";
 const useColumnsSecond = () => {
   const { user } = useContext(AuthContext);
   const { prospectusSubjects } = useSchool();
-  const { fetchEnrollmentStatus } = useEnrollment();
+  const { fetchEnrollmentStatus, pendingStudents, onlineApplicants } =
+    useEnrollment();
 
   // ! Column View Subject Prospectus START
   const columnViewSubjectProspectus = [
@@ -509,17 +510,87 @@ const useColumnsSecond = () => {
 
   const columnNewUnenrolledStudents = [
     {
+      accessorKey: "id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
       accessorKey: "fullName",
       header: "Full Name",
-      cell: ({ cell }) => (
-        <span className="text-lg font-semibold">{cell.getValue()}</span>
-      ),
+      cell: ({ cell }) => <span className="text-lg">{cell.getValue()}</span>,
+    },
+    {
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(pendingStudents, "programCode")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(pendingStudents, "yearLevel")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "enrollmentType",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Enrollment Type"
+            options={getUniqueCodes(pendingStudents, "enrollmentType")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
     },
     {
       header: "Actions",
       id: "actions",
       cell: ({ row }) => {
-        const studentPersonalId = row.original.student_personal_id;
+        const studentPersonalId = row.original.id;
         const hasEnlistedSubjects = row.original.hasEnlistedSubjects;
 
         return (
@@ -536,6 +607,172 @@ const useColumnsSecond = () => {
     },
   ];
 
+  const columnPendingOnlineApplicant = [
+    {
+      accessorKey: "fulldata_applicant_id",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            No.
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: (info) => {
+        return <span className="font-semibold">{info.row.index + 1}</span>;
+      },
+    },
+    {
+      accessorKey: "fullName",
+      header: "Full Name",
+      cell: ({ cell }) => <span className="text-lg">{cell.getValue()}</span>,
+    },
+    {
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(onlineApplicants, "programCode")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(onlineApplicants, "yearLevel")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "enrollmentType",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Enrollment Type"
+            options={getUniqueCodes(onlineApplicants, "enrollmentType")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return (
+          <span className="inline-block rounded-md !bg-green-600 p-1 font-medium !text-white">
+            {cell.getValue()}
+          </span>
+        );
+      },
+    },
+    {
+      accessorKey: "status",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Status"
+            options={getUniqueCodesEnrollment(onlineApplicants, "status")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return (
+          <span
+            className={`inline-block rounded px-3 py-1 text-sm font-medium text-white ${
+              cell.getValue() === "accepted"
+                ? "bg-success"
+                : cell.getValue() === "pending"
+                  ? "bg-orange-500"
+                  : "bg-danger"
+            }`}
+          >
+            {cell.getValue() === "accepted"
+              ? "Accepted"
+              : cell.getValue() === "pending"
+                ? "Pending"
+                : "Rejected"}
+          </span>
+        );
+      },
+    },
+    ...(user && HasRole(user.role, "SuperAdmin")
+      ? [
+          {
+            accessorKey: "campusName",
+            header: ({ column }) => {
+              return (
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                  }
+                  className="p-1 hover:underline hover:underline-offset-4"
+                >
+                  Campus
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              );
+            },
+            cell: ({ cell }) => {
+              return (
+                <span className="font-semibold">
+                  {cell.getValue() === "Campus name not found"
+                    ? "N/A"
+                    : cell.getValue()}
+                </span>
+              );
+            },
+          },
+        ]
+      : []),
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const applicantID = row.original.fulldata_applicant_id;
+
+        return (
+          <Link to={`/enrollments/online-applicants/applicant/${applicantID}`}>
+            <Button
+              variant="ghost"
+              className="text-blue-500 hover:text-blue-700"
+            >
+              View Applicant
+            </Button>
+          </Link>
+        );
+      },
+    },
+  ];
+
   return {
     columnViewSubjectProspectus,
     columnPaymentEnrollmentStatus,
@@ -544,6 +781,8 @@ const useColumnsSecond = () => {
 
     columnExistingStudents,
     columnNewUnenrolledStudents,
+
+    columnPendingOnlineApplicant,
   };
 };
 

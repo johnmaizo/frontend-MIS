@@ -21,20 +21,20 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
   const [success, setSuccess] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
 
-  const navigate = useNavigate(); // Initialize the navigate function from react-router-dom
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     setGeneralError("");
-    setLocalLoading(true); // Set loading to true when the process starts
+    setLocalLoading(true);
     try {
       const response = await toast.promise(
-        axios.post("/enrollment/enroll-student", {
-          applicant_id: applicantId,
+        axios.post("/enrollment/enroll-online-applicant-student", {
+          fulldata_applicant_id: applicantId,
         }),
         {
-          loading: "Adding Enrollment...",
-          success: "Enrollment Added successfully!",
-          error: "Failed to add Enrollment.",
+          loading: "Processing enrollment...",
+          success: "Enrollment accepted successfully!",
+          error: "Failed to accept enrollment.",
         },
         {
           position: "bottom-right",
@@ -44,23 +44,23 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
 
       if (response.data) {
         setSuccess(true);
-        setOpen(false); // Close the dialog
-        navigate(-1); // Navigate to the previous page on success
+        setOpen(false);
+        navigate("/enrollments/unenrolled-registrations");
       }
-      setLocalLoading(false); // Set loading to false after the process finishes
     } catch (err) {
-      // if (err.response && err.response.data && err.response.data.message) {
-      //   setGeneralError(err.response.data.message);
-      // } else {
-      //   setGeneralError("An unexpected error occurred. Please try again.");
-      // }
-      if (error.response.data) {
-        setGeneralError(error.response.data);
-      } else {
-        setGeneralError("An unexpected error occurred. Please try again.");
-      }
-      console.log(err);
-      setLocalLoading(false); // Set loading to false in case of an error
+      toast.error(
+        err.response?.data?.message || "An unexpected error occurred.",
+        {
+          position: "bottom-right",
+          duration: 5000,
+        },
+      );
+      setGeneralError(
+        err.response?.data?.message || "An unexpected error occurred.",
+      );
+      console.error(err);
+    } finally {
+      setLocalLoading(false);
     }
   };
 
@@ -83,14 +83,14 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
           open={open}
           onOpenChange={(isOpen) => {
             if (!localLoading) {
-              setOpen(isOpen); // Prevent closing the dialog if loading
+              setOpen(isOpen);
             }
           }}
-          modal // This prevents closing the dialog via the backdrop click
+          modal
         >
           <DialogTrigger
             className="flex w-full justify-center gap-1 rounded bg-green-600 p-3 text-white hover:bg-green-700 md:w-auto md:justify-normal"
-            disabled={loading || localLoading} // Disable trigger while loading
+            disabled={loading || localLoading}
           >
             {loading ? (
               "Loading..."
@@ -104,8 +104,8 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
           <DialogContent
             className="max-w-[40em] rounded-sm border border-stroke bg-white p-4 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white"
             onClose={(e) => {
-              e.preventDefault(); // Prevent any close action if loading
-              if (!localLoading) setOpen(false); // Close only if not loading
+              e.preventDefault();
+              if (!localLoading) setOpen(false);
             }}
           >
             <DialogHeader>
@@ -128,12 +128,12 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
                     type="submit"
                     className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                     onClick={handleClick}
-                    disabled={loading || localLoading || success} // Disable the button while loading
+                    disabled={loading || localLoading || success}
                   >
                     {(localLoading || loading) && (
                       <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                     )}
-                    {localLoading || loading ? "Loading..." : "Accept"}
+                    {localLoading || loading ? "Processing..." : "Accept"}
                   </button>
                 </div>
               </DialogDescription>

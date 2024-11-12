@@ -11,13 +11,6 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../../../components/ui/tabs";
-
 import { useContext, useEffect, useState } from "react";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
@@ -30,13 +23,13 @@ import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
 
-const UnenrolledRegistrationPage = () => {
+const OnlinePendingApplicantPage = () => {
   const { user } = useContext(AuthContext);
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
     {
-      label: "Unenrolled Registrations",
+      label: "Pending Enrollment Applicants",
     },
   ];
 
@@ -45,56 +38,37 @@ const UnenrolledRegistrationPage = () => {
       <BreadcrumbResponsive
         pageName={
           !HasRole(user.role, "SuperAdmin")
-            ? `Unenrolled Registrations (${user?.campusName})`
-            : "Unenrolled Registrations (All Campuses)"
+            ? `Pending Enrollment Applicants (${user?.campusName})`
+            : "Pending Enrollment Applicants (All Campuses)"
         }
         items={NavItems}
         ITEMS_TO_DISPLAY={2}
       />
 
-      <Tabs defaultValue="existing-students" className="w-full">
-        <TabsList>
-          <TabsTrigger value="existing-students">Existing Students</TabsTrigger>
-          <TabsTrigger value="new-students">
-            New Unenrolled Students
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="existing-students">
-          <UnenrolledStudentsTable view="existing-students" />
-        </TabsContent>
-        <TabsContent value="new-students">
-          <UnenrolledStudentsTable view="new-students" />
-        </TabsContent>
-      </Tabs>
+      <PendingOnlineApplicantTable />
     </DefaultLayout>
   );
 };
 
-const UnenrolledStudentsTable = ({ view }) => {
+const PendingOnlineApplicantTable = () => {
   const {
-    pendingStudents,
-    fetchPendingStudents,
-    loadingPendingStudents,
+    onlineApplicants,
+    fetchOnlineApplicants,
+    loadingOnlineApplicants,
     error,
   } = useEnrollment();
 
   useEffect(() => {
-    fetchPendingStudents(view);
-  }, [view]);
+    fetchOnlineApplicants();
+  }, []);
 
-  const { columnExistingStudents, columnNewUnenrolledStudents } =
-    useColumnsSecond();
-
-  const columns =
-    view === "existing-students"
-      ? columnExistingStudents
-      : columnNewUnenrolledStudents;
+  const { columnPendingOnlineApplicant } = useColumnsSecond();
 
   return (
     <DataTable
-      columns={columns}
-      data={pendingStudents}
-      loading={loadingPendingStudents}
+      columns={columnPendingOnlineApplicant}
+      data={onlineApplicants}
+      loading={loadingOnlineApplicants}
       error={error}
     />
   );
@@ -120,7 +94,7 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 20,
       },
     },
   });
@@ -137,7 +111,7 @@ const DataTable = ({ data, columns, loading, error }) => {
                 setFilterValue={(value) =>
                   table.getColumn("fullName")?.setFilterValue(value)
                 }
-                className="md:max-w-[12em] transition-none"
+                className="transition-none md:max-w-[12em]"
               />
             </div>
             <div className="mb-5 md:mb-0">
@@ -156,7 +130,7 @@ const DataTable = ({ data, columns, loading, error }) => {
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            rowsPerPage={5}
+            rowsPerPage={20}
             totalName={"Record"}
             table={table}
             totalDepartments={table.getFilteredRowModel().rows.length}
@@ -167,4 +141,4 @@ const DataTable = ({ data, columns, loading, error }) => {
   );
 };
 
-export default UnenrolledRegistrationPage;
+export default OnlinePendingApplicantPage;

@@ -2777,6 +2777,8 @@ const useColumns = () => {
         return (
           <div className="flex items-center gap-1">
             <EditClass classId={row.getValue("class_id")} />
+
+            {/* 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
                 <DeleteIcon forActions={"Delete Class"} />
@@ -2815,7 +2817,8 @@ const useColumns = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          </div>
+             */}
+            </div>
         );
       },
     },

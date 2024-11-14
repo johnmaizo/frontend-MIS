@@ -78,8 +78,6 @@ const ClassTable = () => {
 
   const [selectedSemesterId, setSelectedSemesterId] = useState(null);
 
-  console.log(classes)
-
   useEffect(() => {
     fetchSemesters();
     fetchRoomsActive();

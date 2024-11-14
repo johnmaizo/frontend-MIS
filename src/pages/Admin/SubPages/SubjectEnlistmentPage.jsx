@@ -30,6 +30,7 @@ const SubjectEnlistmentPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [studentInfo, setStudentInfo] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state variable
 
   const navigate = useNavigate();
 
@@ -481,7 +482,11 @@ const SubjectEnlistmentPage = () => {
   /**
    * Handles submitting the enlisted classes.
    */
-  const handleSubmitEnlistment = () => {
+  const handleSubmitEnlistment = async () => {
+    if (selectedClasses.length === 0) return;
+
+    setIsSubmitting(true); // Set submitting state to true
+
     const selectedClassIds = selectedClasses.map((cls) => cls.class_id);
 
     const payload = {
@@ -489,26 +494,29 @@ const SubjectEnlistmentPage = () => {
       class_ids: selectedClassIds,
     };
 
-    axios
-      .post("/enrollment/submit-enlistment", payload)
-      .then((response) => {
-        toast.success("Subjects enlisted successfully!", {
-          position: "bottom-right",
-        });
-        toast.success(response.data.message, {
-          duration: 5500,
-          position: "bottom-right",
-        });
-        navigate("/enrollments/unenrolled-registrations/");
-      })
-      .catch((error) => {
-        console.error("Error submitting enlistment:", error);
-        toast.error(
-          error.response?.data?.message ||
-            "Failed to submit enlistment. Please try again.",
-          { position: "bottom-right" },
-        );
+    try {
+      const response = await axios.post(
+        "/enrollment/submit-enlistment",
+        payload,
+      );
+      toast.success("Subjects enlisted successfully!", {
+        position: "bottom-right",
       });
+      toast.success(response.data.message, {
+        duration: 5500,
+        position: "bottom-right",
+      });
+      navigate("/enrollments/unenrolled-registrations/");
+    } catch (error) {
+      console.error("Error submitting enlistment:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to submit enlistment. Please try again.",
+        { position: "bottom-right" },
+      );
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
+    }
   };
 
   /**
@@ -576,7 +584,7 @@ const SubjectEnlistmentPage = () => {
               />
               {loading ? (
                 <div className="mt-4 flex justify-center">
-                  {/* You can replace this with a spinner or any loading indicator */}
+                  {/* Spinner */}
                   <svg
                     className="h-8 w-8 animate-spin text-blue-500"
                     xmlns="http://www.w3.org/2000/svg"
@@ -637,7 +645,7 @@ const SubjectEnlistmentPage = () => {
                               </div>
                               <Button
                                 onClick={() => handleAddClass(cls)}
-                                disabled={isSelected} // **Fixed Condition**
+                                disabled={isSubmitting || isSelected} // Disable if submitting or already selected
                                 className={`${
                                   isSelected
                                     ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added
@@ -703,6 +711,7 @@ const SubjectEnlistmentPage = () => {
                             variant="destructive"
                             onClick={() => handleRemoveClass(cls.class_id)}
                             className="bg-red-500 text-white hover:bg-red-600"
+                            disabled={isSubmitting} // Optionally disable remove during submission
                           >
                             Remove
                           </Button>
@@ -721,12 +730,40 @@ const SubjectEnlistmentPage = () => {
                 </p>
               </div>
 
+              {/* Submit Enlistment Button */}
               <Button
-                className="mt-4 w-full bg-purple-500 text-white hover:bg-purple-600"
+                className="mt-4 flex w-full items-center justify-center bg-purple-500 text-white hover:bg-purple-600"
                 onClick={handleSubmitEnlistment}
-                disabled={selectedClasses.length === 0}
+                disabled={selectedClasses.length === 0 || isSubmitting} // Disabled if no classes or submitting
               >
-                Submit Enlistment
+                {isSubmitting ? (
+                  <>
+                    {/* Spinner Icon */}
+                    <svg
+                      className="mr-2 h-5 w-5 animate-spin text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8H4z"
+                      ></path>
+                    </svg>
+                    Submitting Enlistment...
+                  </>
+                ) : (
+                  "Submit Enlistment"
+                )}
               </Button>
             </div>
           </div>
@@ -734,139 +771,6 @@ const SubjectEnlistmentPage = () => {
       </div>
     </DefaultLayout>
   );
-};
-
-/**
- * Parses the schedule string to extract days, start time, and end time.
- * Expected format: "DAYS START_TIME - END_TIME"
- * Example: "TTH 3:00 AM - 4:30 AM"
- *
- * @param {string} scheduleStr - The schedule string to parse.
- * @returns {object|null} - An object with daysString, startTime, and endTime or null if parsing fails.
- */
-const parseSchedule = (scheduleStr) => {
-  if (typeof scheduleStr !== "string") return null;
-
-  // Regular expression to match the schedule format
-  const scheduleRegex =
-    /^([A-Za-z,]+)\s+(\d{1,2}:\d{2}\s?(AM|PM))\s*-\s*(\d{1,2}:\d{2}\s?(AM|PM))$/i;
-  const match = scheduleStr.match(scheduleRegex);
-
-  if (!match) return null;
-
-  const daysString = match[1].toUpperCase();
-  const startTime = match[2].toUpperCase();
-  const endTime = match[4].toUpperCase();
-
-  return { daysString, startTime, endTime };
-};
-
-/**
- * Formats the schedule components into a readable string.
- *
- * @param {string} daysString - The days string (e.g., "TTH").
- * @param {string} startTime - The start time (e.g., "3:00 AM").
- * @param {string} endTime - The end time (e.g., "4:30 AM").
- * @returns {string} - The formatted schedule string.
- */
-const formatSchedule = (daysString, startTime, endTime) => {
-  const daysFormatted = daysString
-    .split(",")
-    .map((day) => day.trim())
-    .join(", ");
-  return `${daysFormatted} ${startTime} - ${endTime}`;
-};
-
-/**
- * Parses the days string into an array of standardized day codes.
- *
- * @param {string} daysString - The days string (e.g., "TTH").
- * @returns {Array<string>} - An array of day codes (e.g., ["TU", "TH"]).
- */
-const parseDays = (daysString) => {
-  if (typeof daysString !== "string") return [];
-
-  // Handle multiple days separated by commas
-  if (daysString.includes(",")) {
-    return daysString.split(",").map((day) => day.trim());
-  }
-
-  // Handle abbreviations like "TTH"
-  const dayMapping = {
-    M: "MO",
-    MT: "MO",
-    MO: "MO",
-    TU: "TU",
-    T: "TU",
-    TTH: "TH",
-    TH: "TH",
-    W: "WE",
-    WE: "WE",
-    F: "FR",
-    FR: "FR",
-    S: "SA",
-    SA: "SA",
-    SU: "SU",
-  };
-
-  const days = [];
-
-  // Split the string into possible day codes
-  let temp = daysString;
-  while (temp.length > 0) {
-    if (temp.startsWith("TTH")) {
-      days.push(dayMapping["TTH"]);
-      temp = temp.slice(3);
-    } else if (temp.startsWith("TH")) {
-      days.push(dayMapping["TH"]);
-      temp = temp.slice(2);
-    } else {
-      const dayCode = temp.slice(0, 1);
-      if (dayMapping[dayCode]) {
-        days.push(dayMapping[dayCode]);
-        temp = temp.slice(1);
-      } else {
-        // If unknown, skip one character to prevent infinite loop
-        console.warn(`Unknown day code in daysString: "${daysString}"`);
-        temp = temp.slice(1);
-      }
-    }
-  }
-
-  return days;
-};
-
-/**
- * Formats the days array into a readable string.
- *
- * @param {object} cls - The class object.
- * @returns {string} - Formatted days string.
- */
-const formatDays = (cls) => {
-  if (cls.days && Array.isArray(cls.days)) {
-    return cls.days.join(", ");
-  } else if (typeof cls.days === "string") {
-    return cls.days;
-  } else if (cls.schedule && typeof cls.schedule === "string") {
-    const parsed = parseSchedule(cls.schedule);
-    if (parsed) {
-      const { daysString } = parsed;
-      return parseDays(daysString).join(", ");
-    }
-  }
-  return "N/A"; // Default if days can't be determined
-};
-
-/**
- * Formats the time string for display.
- *
- * @param {string} timeString - The time string (e.g., "3:00 AM").
- * @returns {string} - Formatted time string.
- */
-const formatTime = (timeString) => {
-  if (!timeString) return "N/A";
-  // Optionally, you can format the time string if needed
-  return timeString; // Already in "3:00 AM" format
 };
 
 export default SubjectEnlistmentPage;

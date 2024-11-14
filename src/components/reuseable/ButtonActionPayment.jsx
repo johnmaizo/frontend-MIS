@@ -15,7 +15,7 @@ import { AuthContext } from "../context/AuthContext";
  * @param {() => void} onSuccess A callback function to call when the action is successful.
  * @returns {JSX.Element} A button element with the appropriate action and styling.
  */
-const ButtonActionPayment = ({ entityType, entityId, action, onSuccess }) => {
+const ButtonActionPayment = ({ entityType, entityId, action, onSuccess, loadingOutisde }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
 
@@ -96,7 +96,7 @@ const ButtonActionPayment = ({ entityType, entityId, action, onSuccess }) => {
             : ""
       } inline-flex gap-2 !rounded-md p-2 !text-sm !text-white underline-offset-4 hover:underline`}
       onClick={handleAction}
-      disabled={loading}
+      disabled={loading || loadingOutisde}
     >
       {loading && <SmallLoader />}
       {loading

@@ -828,7 +828,7 @@ export const SchoolProvider = ({ children }) => {
     setError("");
     setLoadingClass(true);
     try {
-      const response = await axios.get("/class", {
+      const response = await axios.get("/class/active", {
         params: {
           campus_id: HasRole(user.role, "SuperAdmin") ? null : user.campus_id,
           schoolYear: schoolYear,

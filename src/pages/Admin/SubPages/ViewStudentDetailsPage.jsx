@@ -17,6 +17,7 @@ const ViewStudentDetailsPage = () => {
   const [error, setError] = useState(null);
 
   const [groupedEnrollments, setGroupedEnrollments] = useState([]);
+  const [prospectus_id, setProspectus_id] = useState(null);
 
   useEffect(() => {
     // Fetch student data
@@ -27,6 +28,11 @@ const ViewStudentDetailsPage = () => {
       .then((response) => {
         setStudentData(response.data);
         setLoading(false);
+        // Extract prospectus_id
+        const prospectus =
+          response.data.student_personal_datum
+            ?.student_current_academicbackground?.prospectus_id;
+        setProspectus_id(prospectus);
       })
       .catch((error) => {
         console.error("Error fetching student data:", error);
@@ -42,8 +48,10 @@ const ViewStudentDetailsPage = () => {
 
       // Group enrollments by semester and school year
       const grouped = enrollments.reduce((acc, enrollment) => {
-        const semester = enrollment.class.semester.semesterName;
-        const schoolYear = enrollment.class.semester.schoolYear;
+        const semester =
+          enrollment.classDetails?.semesterName || "Unknown Semester";
+        const schoolYear =
+          enrollment.classDetails?.schoolYear || "Unknown School Year";
         const key = `${schoolYear} - ${semester}`;
         if (!acc[key]) {
           acc[key] = [];
@@ -98,7 +106,7 @@ const ViewStudentDetailsPage = () => {
     yearLevel,
     yearGraduate,
     semester_id,
-    prospectus_id,
+    prospectus_id: prospectusIdFromBackground,
     semester,
   } = student_current_academicbackground || {};
 
@@ -154,13 +162,6 @@ const ViewStudentDetailsPage = () => {
         {/* Main Content */}
         {!loading && !error && studentData && (
           <>
-            {/* Enrolled Subjects Section on the right */}
-            {/* <div className="md:w-1/2 pl-4">
-              {groupedEnrollments.length > 0 && (
-                <EnrolledSubjects groupedEnrollments={groupedEnrollments} />
-              )}
-            </div> */}
-
             {/* Personal Information */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="flex flex-col md:flex-row">
@@ -185,7 +186,7 @@ const ViewStudentDetailsPage = () => {
                             className="object-cove h-full w-full rounded-full" // Make the image fill the container
                           />
                         )}
-                        <p className="mt-2 flex p-2 rounded-md bg-blue-700 !text-white items-center justify-center gap-1">
+                        <p className="mt-2 flex items-center justify-center gap-1 rounded-md bg-blue-700 p-2 !text-white">
                           <span>Student ID: </span>{" "}
                           <strong>{student_id}</strong>
                         </p>
@@ -700,7 +701,10 @@ const ViewStudentDetailsPage = () => {
                 <div className="pl-4 md:w-1/2">
                   {/* Enrolled Subjects Section */}
                   {groupedEnrollments.length > 0 && (
-                    <EnrolledSubjects groupedEnrollments={groupedEnrollments} />
+                    <EnrolledSubjects
+                      groupedEnrollments={groupedEnrollments}
+                      prospectus_id={prospectus_id}
+                    />
                   )}
 
                   {/* Campus Information */}

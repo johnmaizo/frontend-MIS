@@ -1,7 +1,7 @@
 import { ArrowUpDown, PencilIcon } from "lucide-react";
 import { useSchool } from "../context/SchoolContext";
 import { Button } from "../ui/button";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import {
   Dialog,
@@ -2380,7 +2380,7 @@ const useColumns = () => {
       cell: ({ row }) => {
         const studentId = row.original.student_id;
         const campusId = row.original.campus_id; // Ensure campus_id is available in your data
-  
+
         return (
           <div className="flex items-center gap-2">
             {/* View Student Details */}
@@ -2389,7 +2389,7 @@ const useColumns = () => {
                 <EyeIcon className="h-5 w-5" />
               </button>
             </Link>
-  
+
             {/* Update Student Information */}
             <Link to={`/all-students/update-student/${studentId}/${campusId}`}>
               <button className="text-green-500 hover:text-green-700">
@@ -2621,7 +2621,7 @@ const useColumns = () => {
   // ! Column Class START
   const columnClass = [
     {
-      accessorKey: "class_id",
+      accessorKey: "id",
       header: ({ column }) => {
         return (
           <Button
@@ -2639,31 +2639,13 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "className",
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="p-1 hover:underline hover:underline-offset-4"
-          >
-            Class Name
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        );
-      },
-      cell: ({ cell }) => {
-        return <span className="text-lg">{cell.getValue()}</span>;
-      },
-    },
-    {
-      accessorKey: "subjectCode",
+      accessorKey: "subject_code",
       header: ({ column }) => {
         return (
           <FacetedFilterEnrollment
             column={column}
             title="Subject Code"
-            options={getUniqueCodes(classes, "subjectCode")}
+            options={getUniqueCodes(classes, "subject_code")}
           />
         );
       },
@@ -2675,7 +2657,7 @@ const useColumns = () => {
       },
     },
     {
-      accessorKey: "subjectDescription",
+      accessorKey: "subject",
       header: ({ column }) => {
         return (
           <Button
@@ -2687,24 +2669,6 @@ const useColumns = () => {
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
-      },
-      cell: ({ cell }) => {
-        return cell.getValue();
-      },
-    },
-    {
-      accessorKey: "instructorFullName",
-      header: ({ column }) => {
-        return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="Instructor"
-            options={getUniqueCodes(classes, "instructorFullName")}
-          />
-        );
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
       },
       cell: ({ cell }) => {
         return cell.getValue();
@@ -2735,90 +2699,60 @@ const useColumns = () => {
         return <span>{cell.getValue()}</span>;
       },
     },
-    ...(user && HasRole(user.role, "SuperAdmin")
-      ? [
-          {
-            accessorKey: "campusName",
-            header: ({ column }) => {
-              return (
-                <FacetedFilterEnrollment
-                  column={column}
-                  title="Campus"
-                  options={getUniqueCodes(course, "campusName")}
-                />
-              );
-            },
-            filterFn: (row, id, value) => {
-              return value.includes(row.getValue(id));
-            },
-          },
-        ]
-      : []),
-    // {
-    //   accessorKey: "isActive",
-    //   header: "Status",
-    //   cell: ({ cell }) => {
-    //     return (
-    //       <span
-    //         className={`inline-flex rounded px-3 py-1 text-sm font-medium text-white ${
-    //           cell.getValue() ? "bg-success" : "bg-danger"
-    //         }`}
-    //       >
-    //         {cell.getValue() ? "Active" : "Inactive"}
-    //       </span>
-    //     );
-    //   },
-    // },
+    {
+      accessorKey: "totalStudents",
+      header: "Total Students",
+      cell: ({ cell }) => {
+        return <span>{cell.getValue()}</span>;
+      },
+    },
     {
       header: "Actions",
-      accessorFn: (row) => `${row.class_id} ${row.isActive}`,
       id: "actions",
       cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-1">
-            <EditClass classId={row.getValue("class_id")} />
+        const students = row.original.students;
 
-            {/* 
-            <Dialog>
-              <DialogTrigger className="p-2 hover:text-primary">
-                <DeleteIcon forActions={"Delete Class"} />
-              </DialogTrigger>
-              <DialogContent className="rounded-sm border border-stroke bg-white p-6 !text-black shadow-default dark:border-strokedark dark:bg-boxdark dark:!text-white">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">
-                    Delete
-                  </DialogTitle>
-                  <DialogDescription asChild className="mt-2">
-                    <p className="mb-5">
-                      Are you sure you want to delete this Class?
-                    </p>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <div className="mx-[2em] flex w-full justify-center gap-[6em]">
-                    <ButtonAction
-                      entityType={"class"}
-                      entityId={row.getValue("class_id")}
-                      action="delete"
-                      onSuccess={() => {
-                        fetchClass();
-                        // fetchClassDeleted(); // Uncomment if you have this function
-                      }}
-                    />
-                    <DialogClose asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full underline-offset-4 hover:underline"
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                  </div>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-             */}
-            </div>
+        return (
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="text-blue-500 hover:text-blue-700">
+                <EyeIcon className="h-5 w-5" />
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Students Enrolled</DialogTitle>
+              <DialogDescription>
+                {students.length > 0 ? (
+                  <table className="border-gray-200 min-w-full border bg-white">
+                    <thead>
+                      <tr>
+                        <th className="border-gray-300 text-gray-700 border-b px-4 py-2 text-left font-medium">
+                          Student ID
+                        </th>
+                        <th className="border-gray-300 text-gray-700 border-b px-4 py-2 text-left font-medium">
+                          Full Name
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {students.map((student) => (
+                        <tr key={student.student_id}>
+                          <td className="border-gray-300 text-gray-600 border-b border-r px-4 py-2">
+                            {student.student_id}
+                          </td>
+                          <td className="text-gray-600 border-b px-4 py-2">
+                            {student.fullName}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No students enrolled in this class.</p>
+                )}
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
         );
       },
     },
@@ -3098,7 +3032,7 @@ const useColumns = () => {
         return (
           <div className="flex items-center gap-1">
             <EditProspectus prospectusID={row.getValue("prospectus_id")} />
-            
+
             {/* 
             <Dialog>
               <DialogTrigger className="p-2 hover:text-primary">
@@ -3153,12 +3087,10 @@ const useColumns = () => {
         `${row.prospectus_id} ${row.campus_id} ${row.campusName} ${row.programCode}`,
       cell: ({ row }) => {
         return (
-          <div
-            className={`flex items-center gap-1`}
-          >
+          <div className={`flex items-center gap-1`}>
             <Link
               to={`/subjects/prospectus-subjects/campus/${row.original.campus_id}/${row.original.campusName}/program/${row.original.programCode}/prospectus/${row.original.prospectus_id}`}
-              className={`rounded p-3 text-sm font-medium text-white bg-primary hover:underline hover:underline-offset-2`}
+              className={`rounded bg-primary p-3 text-sm font-medium text-white hover:underline hover:underline-offset-2`}
             >
               Select Prospectus
             </Link>

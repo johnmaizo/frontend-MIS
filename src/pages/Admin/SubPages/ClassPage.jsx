@@ -164,10 +164,10 @@ const DataTable = ({
         <div className="mb-5 mt-2 justify-between gap-5 md:flex">
           <div className="gap-5 md:flex md:items-center">
             <Input
-              placeholder="Search by Class Name..."
-              value={table.getColumn("className")?.getFilterValue() ?? ""}
+              placeholder="Search by Description..."
+              value={table.getColumn("subject")?.getFilterValue() ?? ""}
               onChange={(event) =>
-                table.getColumn("className")?.setFilterValue(event.target.value)
+                table.getColumn("subject")?.setFilterValue(event.target.value)
               }
               className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[14em]"
             />
@@ -194,9 +194,9 @@ const DataTable = ({
 
             <ResetFilter table={table} className={"mb-5 h-[3.3em] md:mb-0"} />
           </div>
-          <div>
+          {/* <div>
             <AddClass selectedSemesterId={selectedSemesterId} />
-          </div>
+          </div> */}
         </div>
         <div className="max-w-full overflow-x-auto">
           <ReuseTable

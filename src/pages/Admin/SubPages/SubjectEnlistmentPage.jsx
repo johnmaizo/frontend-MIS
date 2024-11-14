@@ -45,13 +45,23 @@ const SubjectEnlistmentPage = () => {
         );
         const academicBackground = academicResponse.data;
 
+        // Extract prospectus_id and semester_id from academicBackground
+        const { prospectus_id, semester_id } = academicBackground;
+
+        // Fetch prospectus subjects
+        const prospectusResponse = await axios.get(
+          "/prospectus/get-all-prospectus-subjects",
+          {
+            params: { prospectus_id },
+          },
+        );
+        const prospectusSubjects = prospectusResponse.data;
+
         // Fetch student personal data
         const studentResponse = await axios.get(
           `/students/personal-data/${student_personal_id}`,
         );
         const studentData = studentResponse.data;
-
-        console.log("studentData: ", studentData);
 
         // Combine data
         setStudentInfo({
@@ -62,16 +72,61 @@ const SubjectEnlistmentPage = () => {
           semesterName: studentData.semesterName,
         });
 
+        // Determine the current semester from studentInfo
+        const currentSemester = studentData.semesterName;
+
+        // Filter prospectus subjects for the current semester
+        const currentSemesterProspectusSubjects = prospectusSubjects.filter(
+          (ps) =>
+            ps.semesterName === currentSemester && ps.isActive && !ps.isDeleted,
+        );
+
+        // Debugging: Log the filtered prospectus subjects
+        console.log(
+          "Filtered Prospectus Subjects:",
+          currentSemesterProspectusSubjects,
+        );
+
+        // Collect unique subject_codes from the filtered prospectus subjects
+        const subjectCodes = [
+          ...new Set(
+            currentSemesterProspectusSubjects.map((ps) => ps.courseCode),
+          ),
+        ];
+
+        // Debugging: Log the subjectCodes to verify correctness
+        console.log("Prospectus Subject Codes:", subjectCodes);
+
         // Fetch available classes for the semester
         const classesResponse = await axios.get(`/class/active`, {
-          params: { semester_id: academicBackground.semester_id },
+          params: { semester_id },
         });
         let classesData = classesResponse.data;
 
-        // Format 'days' for each class
+        // Debugging: Log the fetched classesData before filtering
+        console.log("Fetched Classes Data (Before Filtering):", classesData);
+
+        // Filter classesData to include only classes with subject_code in subjectCodes
+        classesData = classesData.filter((cls) =>
+          subjectCodes.includes(cls.subject_code),
+        );
+
+        // Debugging: Log the classesData after filtering
+        console.log("Filtered Classes Data:", classesData);
+
+        // Map the fetched data to match the expected structure
         classesData = classesData.map((cls) => ({
-          ...cls,
-          days: parseDays(cls.days, cls.schedule),
+          class_id: cls.id,
+          subjectCode: cls.subject_code,
+          subjectDescription: cls.subject,
+          schedule: formatSchedule(cls),
+          instructorFullName: cls.teacher,
+          className: cls.subject, // Assuming class name is the subject name
+          timeStart: cls.start, // Keep as ISO string
+          timeEnd: cls.end, // Keep as ISO string
+          room: cls.room,
+          units: cls.units,
+          days: parseDays(cls.day), // Parse days correctly
         }));
 
         // Group classes by subjectCode and subjectDescription
@@ -110,8 +165,17 @@ const SubjectEnlistmentPage = () => {
           } else {
             // If the class is not in classesData, perhaps it is inactive now
             return {
-              ...cls,
-              days: parseDays(cls.days, cls.schedule),
+              class_id: cls.id,
+              subjectCode: cls.subject_code,
+              subjectDescription: cls.subject,
+              schedule: formatSchedule(cls),
+              instructorFullName: cls.teacher,
+              className: cls.subject,
+              timeStart: cls.start, // Keep as ISO string
+              timeEnd: cls.end, // Keep as ISO string
+              room: cls.room,
+              units: cls.units,
+              days: parseDays(cls.day), // Parse days correctly
             };
           }
         });
@@ -119,7 +183,9 @@ const SubjectEnlistmentPage = () => {
         setSelectedClasses(selectedClassesData);
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Failed to load student data.");
+        toast.error("Failed to load student data.", {
+          position: "bottom-right",
+        });
       } finally {
         setLoading(false);
       }
@@ -128,45 +194,87 @@ const SubjectEnlistmentPage = () => {
     fetchStudentData();
   }, [student_personal_id]);
 
-  // Helper function to parse days
-  const parseDays = (days, schedule) => {
-    if (Array.isArray(days)) {
-      return days;
-    } else if (typeof days === "string") {
-      // Check if it's a JSON stringified array
-      if (days.startsWith("[") && days.endsWith("]")) {
-        try {
-          const parsedDays = JSON.parse(days);
-          if (Array.isArray(parsedDays)) {
-            return parsedDays;
-          }
-        } catch (error) {
-          console.warn("Failed to parse days string:", days);
+  // Helper function to format schedule string
+  const formatSchedule = (cls) => {
+    const daysFormatted = cls.day
+      .split(",")
+      .map((day) => day.trim())
+      .join(", ");
+    const startTime = formatTime(cls.start);
+    const endTime = formatTime(cls.end);
+    return `${daysFormatted} ${startTime} - ${endTime}`;
+  };
+
+  // Helper function to parse days from the 'day' field
+  const parseDays = (daysString) => {
+    if (typeof daysString === "string") {
+      // Handle cases like "TTH" or "TU, TH"
+      if (daysString.includes(",")) {
+        return daysString.split(",").map((day) => day.trim());
+      } else {
+        // Split "TTH" into ["TU", "TH"] if necessary
+        // This assumes "TTH" stands for Tuesday and Thursday
+        if (daysString === "TTH") {
+          return ["TU", "TH"];
         }
+        // Handle other abbreviations as needed
+        const dayMapping = {
+          M: "MO",
+          T: "TU",
+          W: "WE",
+          TH: "TH",
+          F: "FR",
+          S: "SA",
+          SU: "SU",
+          MO: "MO",
+          TU: "TU",
+          WE: "WE",
+          FR: "FR",
+          SA: "SA",
+          // Removed duplicate 'TH' and 'SU' keys
+        };
+        return [dayMapping[daysString] || daysString];
       }
-      // If it's a comma-separated string, split it
-      return days.split(",").map((day) => day.trim());
-    } else if (schedule && typeof schedule === "string") {
-      // Attempt to extract days from schedule
-      const daysPart = schedule.split(/\d/)[0].trim(); // Split at first digit
-      return daysPart.split(",").map((day) => day.trim());
     }
     return [];
   };
 
   const handleAddClass = (cls) => {
-    // Check for schedule conflicts
-    const conflict = selectedClasses.some((selectedClass) => {
+    // Find existing class for the same subject
+    const existingClass = selectedClasses.find(
+      (selectedClass) => selectedClass.subjectCode === cls.subjectCode,
+    );
+
+    // Prepare a list of classes to check for conflict
+    const classesToCheck = existingClass
+      ? selectedClasses.filter(
+          (selectedClass) => selectedClass.class_id !== existingClass.class_id,
+        )
+      : selectedClasses;
+
+    // Check for schedule conflicts with classesToCheck
+    const conflict = classesToCheck.some((selectedClass) => {
       // Compare days and times
       const daysOverlap = selectedClass.days.some((day) =>
         cls.days.includes(day),
       );
 
       if (daysOverlap) {
-        const selectedStart = new Date(`1970-01-01T${selectedClass.timeStart}`);
-        const selectedEnd = new Date(`1970-01-01T${selectedClass.timeEnd}`);
-        const clsStart = new Date(`1970-01-01T${cls.timeStart}`);
-        const clsEnd = new Date(`1970-01-01T${cls.timeEnd}`);
+        const selectedStart = new Date(selectedClass.timeStart);
+        const selectedEnd = new Date(selectedClass.timeEnd);
+        const clsStart = new Date(cls.timeStart);
+        const clsEnd = new Date(cls.timeEnd);
+
+        // Ensure valid dates
+        if (
+          isNaN(selectedStart) ||
+          isNaN(selectedEnd) ||
+          isNaN(clsStart) ||
+          isNaN(clsEnd)
+        ) {
+          console.warn("Invalid date encountered during conflict check.");
+          return false;
+        }
 
         return (
           (clsStart >= selectedStart && clsStart < selectedEnd) ||
@@ -177,32 +285,36 @@ const SubjectEnlistmentPage = () => {
     });
 
     if (conflict) {
-      toast.error("Schedule conflict detected!");
+      toast.error("Schedule conflict detected!", { position: "bottom-right" });
       return;
     }
 
-    // Ensure 'days' is an array
-    const formattedClass = {
-      ...cls,
-      days: Array.isArray(cls.days)
-        ? cls.days
-        : typeof cls.days === "string"
-          ? cls.days.split(",").map((day) => day.trim())
-          : cls.schedule
-            ? cls.schedule
-                .split(/\d/)[0]
-                .trim()
-                .split(",")
-                .map((day) => day.trim())
-            : [],
-    };
-
-    setSelectedClasses([...selectedClasses, formattedClass]);
+    if (existingClass) {
+      // Replace the existing class with the new one
+      setSelectedClasses((prev) => [
+        ...prev.filter(
+          (selectedClass) => selectedClass.subjectCode !== cls.subjectCode,
+        ),
+        cls,
+      ]);
+      toast.success(
+        `Replaced "${existingClass.className}" with "${cls.className}"`,
+        {
+          position: "bottom-right",
+        },
+      );
+    } else {
+      // Add the new class
+      setSelectedClasses((prev) => [...prev, cls]);
+      toast.success(`Added "${cls.className}"`, {
+        position: "bottom-right",
+      });
+    }
   };
 
   const handleRemoveClass = (class_id) => {
-    setSelectedClasses(
-      selectedClasses.filter((cls) => cls.class_id !== class_id),
+    setSelectedClasses((prev) =>
+      prev.filter((cls) => cls.class_id !== class_id),
     );
   };
 
@@ -231,6 +343,7 @@ const SubjectEnlistmentPage = () => {
         toast.error(
           error.response?.data?.message ||
             "Failed to submit enlistment. Please try again.",
+          { position: "bottom-right" },
         );
       });
   };
@@ -250,8 +363,7 @@ const SubjectEnlistmentPage = () => {
 
   // Calculate total units
   const totalUnits = selectedClasses.reduce((total, cls) => {
-    // Assuming units are stored in cls.courseinfo.unit or cls.subjectUnits
-    return total + (cls.courseinfo?.unit || cls.subjectUnits || 0);
+    return total + (cls.units || 0);
   }, 0);
 
   return (
@@ -297,7 +409,29 @@ const SubjectEnlistmentPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {loading ? (
-                <p className="mt-4">Loading classes...</p>
+                <div className="mt-4 flex justify-center">
+                  {/* You can replace this with a spinner or any loading indicator */}
+                  <svg
+                    className="h-8 w-8 animate-spin text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>
+                </div>
               ) : filteredSubjects.length === 0 ? (
                 <p className="mt-4">No classes found. Please add new Class.</p>
               ) : (
@@ -309,32 +443,52 @@ const SubjectEnlistmentPage = () => {
                     >
                       <AccordionTrigger>{subject.subjectKey}</AccordionTrigger>
                       <AccordionContent>
-                        {subject.classes.map((cls) => (
-                          <div
-                            key={cls.class_id}
-                            className="flex items-center justify-between border-b p-2"
-                          >
-                            <div>
-                              <p className="font-semibold">{cls.className}</p>
-                              <p>{cls.schedule}</p>
-                              <p>Instructor: {cls.instructorFullName}</p>
-                            </div>
-                            <Button
-                              onClick={() => handleAddClass(cls)}
-                              disabled={selectedClasses.some(
-                                (selected) =>
-                                  selected.class_id === cls.class_id,
-                              )}
+                        {subject.classes.map((cls) => {
+                          // Determine if this class is already selected
+                          const isSelected = selectedClasses.some(
+                            (selected) => selected.class_id === cls.class_id,
+                          );
+
+                          // Determine if any class from the same subject is already selected
+                          const isSubjectSelected = selectedClasses.some(
+                            (selected) =>
+                              selected.subjectCode === cls.subjectCode,
+                          );
+
+                          return (
+                            <div
+                              key={cls.class_id}
+                              className={`flex items-center justify-between border-b p-2 ${
+                                isSelected
+                                  ? "bg-green-100" // Light green background for selected
+                                  : "bg-white" // Default background
+                              }`}
                             >
-                              {selectedClasses.some(
-                                (selected) =>
-                                  selected.class_id === cls.class_id,
-                              )
-                                ? "Added"
-                                : "Add"}
-                            </Button>
-                          </div>
-                        ))}
+                              <div>
+                                <p className="font-semibold">{cls.className}</p>
+                                <p>{cls.schedule}</p>
+                                <p>Instructor: {cls.instructorFullName}</p>
+                              </div>
+                              <Button
+                                onClick={() => handleAddClass(cls)}
+                                disabled={isSelected} // **Fixed Condition**
+                                className={`${
+                                  isSelected
+                                    ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added
+                                    : isSubjectSelected
+                                      ? "bg-yellow-500 text-white hover:bg-yellow-600" // Yellow for replace
+                                      : "bg-blue-500 text-white hover:bg-blue-600" // Blue for add
+                                }`}
+                              >
+                                {isSelected
+                                  ? "Added"
+                                  : isSubjectSelected
+                                    ? "Replace"
+                                    : "Add"}
+                              </Button>
+                            </div>
+                          );
+                        })}
                       </AccordionContent>
                     </AccordionItem>
                   ))}
@@ -371,18 +525,18 @@ const SubjectEnlistmentPage = () => {
                       <TableRow key={cls.class_id}>
                         <TableCell>{cls.subjectCode}</TableCell>
                         <TableCell>{formatDays(cls)}</TableCell>
+                        {/* Updated Time Column */}
                         <TableCell>
                           {formatTime(cls.timeStart)} -{" "}
                           {formatTime(cls.timeEnd)}
                         </TableCell>
                         <TableCell>{cls.room}</TableCell>
-                        <TableCell>
-                          {cls.courseinfo?.unit || cls.subjectUnits || 0}
-                        </TableCell>
+                        <TableCell>{cls.units}</TableCell>
                         <TableCell>
                           <Button
                             variant="destructive"
                             onClick={() => handleRemoveClass(cls.class_id)}
+                            className="bg-red-500 text-white hover:bg-red-600"
                           >
                             Remove
                           </Button>
@@ -402,7 +556,7 @@ const SubjectEnlistmentPage = () => {
               </div>
 
               <Button
-                className="mt-4 w-full"
+                className="mt-4 w-full bg-purple-500 text-white hover:bg-purple-600"
                 onClick={handleSubmitEnlistment}
                 disabled={selectedClasses.length === 0}
               >
@@ -421,21 +575,9 @@ const formatDays = (cls) => {
   if (cls.days && Array.isArray(cls.days)) {
     return cls.days.join(", ");
   } else if (typeof cls.days === "string") {
-    // Check if it's a JSON stringified array
-    if (cls.days.startsWith("[") && cls.days.endsWith("]")) {
-      try {
-        const parsedDays = JSON.parse(cls.days);
-        if (Array.isArray(parsedDays)) {
-          return parsedDays.join(", ");
-        }
-      } catch (error) {
-        console.warn("Failed to parse days string:", cls.days);
-      }
-    }
-    // If it's a comma-separated string, return as-is
     return cls.days;
   } else if (cls.schedule && typeof cls.schedule === "string") {
-    const daysPart = cls.schedule.split(/\d/)[0].trim(); // Split at first digit
+    const daysPart = cls.schedule.split(" ")[0].trim(); // Extract days before time
     return daysPart
       .split(",")
       .map((day) => day.trim())
@@ -445,12 +587,11 @@ const formatDays = (cls) => {
 };
 
 // Helper function to format time
-const formatTime = (timeString) => {
-  if (!timeString) return "N/A";
-  const [hour, minute] = timeString.split(":");
-  const date = new Date();
-  date.setHours(hour, minute);
-  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const formatTime = (dateTimeString) => {
+  if (!dateTimeString) return "N/A";
+  const date = new Date(dateTimeString);
+  if (isNaN(date)) return "N/A"; // Handle invalid dates
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 export default SubjectEnlistmentPage;

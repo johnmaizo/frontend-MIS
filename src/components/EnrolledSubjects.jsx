@@ -25,14 +25,68 @@ import {
   TableBody,
   TableCell,
 } from "./ui/table";
+// import CurriculumTracker from "./CurriculumTracker"; // Import the new component
+import CurriculumTracker from "./reuseable/CurriculumTracker";
 
-const EnrolledSubjects = ({ groupedEnrollments }) => {
+// Helper function to format days
+const formatDays = (days) => {
+  if (Array.isArray(days)) {
+    return days.join(", ");
+  } else if (typeof days === "string") {
+    // Check if it's a JSON stringified array
+    if (days.startsWith("[") && days.endsWith("]")) {
+      try {
+        const parsedDays = JSON.parse(days);
+        if (Array.isArray(parsedDays)) {
+          return parsedDays.join(", ");
+        }
+      } catch (error) {
+        console.warn("Failed to parse days string:", days);
+      }
+    }
+    // If it's a comma-separated string, return as-is
+    return days;
+  } else {
+    console.warn("Unexpected type for days:", days);
+    return "N/A";
+  }
+};
+
+// Helper function to format time
+const formatTime = (start, end) => {
+  const format = (timeStr) => {
+    if (typeof timeStr !== "string") return "N/A";
+    const parts = timeStr.split(":");
+    if (parts.length < 2) return "N/A";
+    const [hour, minute] = parts;
+    const date = new Date();
+    date.setHours(parseInt(hour, 10), parseInt(minute, 10));
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+  return `${format(start)} - ${format(end)}`;
+};
+
+const EnrolledSubjects = ({ groupedEnrollments, prospectus_id }) => {
+  // Extract enrolledSubjects for CurriculumTracker
+  const enrolledSubjects = groupedEnrollments.flatMap(
+    ([_, enrollments]) => enrollments,
+  );
+
   return (
-    <div className="mb-8 rounded-lg bg-white dark:bg-boxdark dark:!text-white p-6 shadow-md">
+    <div className="mb-8 rounded-lg bg-white p-6 shadow-md dark:bg-boxdark dark:!text-white">
       <section>
         <h2 className="mb-4 border-b pb-2 text-2xl font-semibold">
           Enrolled Subjects
         </h2>
+
+        {/* Add Curriculum Tracker */}
+        <div className="w-full flex justify-end mb-6">
+          <CurriculumTracker
+            prospectus_id={prospectus_id}
+            enrolledSubjects={enrolledSubjects}
+          />
+        </div>
+
         <Accordion type="single" collapsible>
           {groupedEnrollments.map(([semesterKey, enrollments]) => (
             <AccordionItem key={semesterKey} value={semesterKey}>
@@ -52,10 +106,10 @@ const EnrolledSubjects = ({ groupedEnrollments }) => {
                     {enrollments.map((enrollment) => (
                       <TableRow key={enrollment.student_class_enrollment_id}>
                         <TableCell>
-                          {enrollment.class.courseinfo.courseCode}
+                          {enrollment.classDetails?.subjectCode || "N/A"}
                         </TableCell>
                         <TableCell>
-                          {enrollment.class.courseinfo.unit}
+                          {enrollment.classDetails?.unit || "N/A"}
                         </TableCell>
                         <TableCell></TableCell>
                         <TableCell>Taken</TableCell>
@@ -92,33 +146,34 @@ const EnrolledSubjects = ({ groupedEnrollments }) => {
                                   <TableBody>
                                     <TableRow>
                                       <TableCell>
-                                        {enrollment.class.courseinfo.courseCode}
+                                        {enrollment.classDetails?.subjectCode ||
+                                          "N/A"}
                                       </TableCell>
                                       <TableCell>
-                                        {
-                                          enrollment.class.courseinfo
-                                            .courseDescription
-                                        }
+                                        {enrollment.classDetails
+                                          ?.subjectDescription || "N/A"}
                                       </TableCell>
                                       <TableCell>
-                                        {formatDays(enrollment.class.days)}
-                                      </TableCell>
-                                      <TableCell>
-                                        {formatTime(
-                                          enrollment.class.timeStart,
-                                          enrollment.class.timeEnd,
+                                        {formatDays(
+                                          enrollment.classDetails?.schedule
+                                            ?.day,
                                         )}
                                       </TableCell>
                                       <TableCell>
-                                        {
-                                          enrollment.class.buildingstructure
-                                            .roomName
-                                        }
+                                        {formatTime(
+                                          enrollment.classDetails?.schedule
+                                            ?.start,
+                                          enrollment.classDetails?.schedule
+                                            ?.end,
+                                        )}
                                       </TableCell>
                                       <TableCell>
-                                        {enrollment.class.employee
-                                          ? `${enrollment.class.employee.firstName} ${enrollment.class.employee.lastName}`
-                                          : "N/A"}
+                                        {enrollment.classDetails?.room
+                                          ?.room_number || "N/A"}
+                                      </TableCell>
+                                      <TableCell>
+                                        {enrollment.classDetails
+                                          ?.instructorFullName || "N/A"}
                                       </TableCell>
                                     </TableRow>
                                   </TableBody>
@@ -138,41 +193,6 @@ const EnrolledSubjects = ({ groupedEnrollments }) => {
       </section>
     </div>
   );
-};
-
-// Updated helper function to format days
-const formatDays = (days) => {
-  if (Array.isArray(days)) {
-    return days.join(", ");
-  } else if (typeof days === "string") {
-    // Check if it's a JSON stringified array
-    if (days.startsWith("[") && days.endsWith("]")) {
-      try {
-        const parsedDays = JSON.parse(days);
-        if (Array.isArray(parsedDays)) {
-          return parsedDays.join(", ");
-        }
-      } catch (error) {
-        console.warn("Failed to parse days string:", days);
-      }
-    }
-    // If it's a comma-separated string, return as-is
-    return days;
-  } else {
-    console.warn("Unexpected type for days:", days);
-    return "N/A";
-  }
-};
-
-// Helper function to format time
-const formatTime = (start, end) => {
-  const format = (timeStr) => {
-    const [hour, minute] = timeStr.split(":");
-    const date = new Date();
-    date.setHours(parseInt(hour, 10), parseInt(minute, 10));
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
-  return `${format(start)} - ${format(end)}`;
 };
 
 export default EnrolledSubjects;

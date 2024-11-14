@@ -179,6 +179,7 @@ const AcceptPaymentDialog = ({
               entityType={"enrollment"}
               entityId={studentPersonalId}
               action="accept"
+              loadingOutisde={loadingSubjects}
               onSuccess={() => {
                 fetchEnrollmentStatus("approvals");
                 setOpen(false); // Close the dialog after success

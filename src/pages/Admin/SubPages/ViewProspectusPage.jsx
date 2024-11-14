@@ -27,6 +27,7 @@ import StatusFilter from "../../../components/reuseable/StatusFilter";
 import AddProspectus from "../../../components/api/AddProspectus";
 import { useColumns } from "../../../components/reuseable/Columns";
 import PageNotFound from "../../PageNotFound";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const ViewProspectusPage = () => {
   // const { user } = useContext(AuthContext);
@@ -135,14 +136,18 @@ const DataTable = ({ data, columns, loading, error }) => {
             placeholder="Search by Prospectus Name..."
             value={table.getColumn("prospectusName")?.getFilterValue() ?? ""}
             onChange={(event) =>
-              table.getColumn("prospectusName")?.setFilterValue(event.target.value)
+              table
+                .getColumn("prospectusName")
+                ?.setFilterValue(event.target.value)
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[17em]"
           />
 
           <Input
             placeholder="Search by Prospectus Description..."
-            value={table.getColumn("prospectusDescription")?.getFilterValue() ?? ""}
+            value={
+              table.getColumn("prospectusDescription")?.getFilterValue() ?? ""
+            }
             onChange={(event) =>
               table
                 .getColumn("prospectusDescription")
@@ -150,6 +155,8 @@ const DataTable = ({ data, columns, loading, error }) => {
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[19em]"
           />
+
+          <ResetFilter table={table} className={"mb-5 h-[3.3em] md:mb-0"} />
         </div>
 
         <div className=" ">
@@ -162,7 +169,6 @@ const DataTable = ({ data, columns, loading, error }) => {
           <div className="w-[11.5em]">
             <StatusFilter table={table} option={"campus"} />
           </div>
-
         </div>
 
         <div className="max-w-full overflow-x-auto">

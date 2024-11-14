@@ -2675,6 +2675,57 @@ const useColumns = () => {
       },
     },
     {
+      accessorKey: "fullDepartmentNameWithCampus",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterSubjectDepartment
+            column={column}
+            title="Department"
+            options={getUniqueCodesForSubject(
+              classes,
+              "fullDepartmentNameWithCampus",
+            )}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        // const getDeparmentName = cell.getValue().split(" - ")[1];
+
+        return cell.getValue() ? (
+          <TooltipProvider delayDuration={75}>
+            <Tooltip>
+              <TooltipTrigger
+                asChild
+                className="cursor-default hover:underline hover:underline-offset-2"
+              >
+                <span className="font-medium">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[0]
+                    : "General Subject"}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white !shadow-default dark:border-strokedark dark:bg-[#1A222C]">
+                <p className="text-[1rem]">
+                  {cell.getValue()
+                    ? cell.getValue().split(" - ")[1]
+                    : "General Subject"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <p className="text-[1rem] font-[500]">
+            {cell.getValue()
+              ? cell.getValue().split(" - ")[1]
+              : "General Subject"}
+          </p>
+        );
+      },
+    },
+    {
       accessorKey: "room",
       header: ({ column }) => {
         return (
@@ -2694,16 +2745,38 @@ const useColumns = () => {
     },
     {
       accessorKey: "schedule",
-      header: "Schedule",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Schedule"
+            options={getUniqueCodes(classes, "schedule")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
       cell: ({ cell }) => {
-        return <span>{cell.getValue()}</span>;
+        return cell.getValue().toString();
       },
     },
     {
       accessorKey: "totalStudents",
-      header: "Total Students",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Students"
+            options={getUniqueCodes(classes, "totalStudents")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
       cell: ({ cell }) => {
-        return <span>{cell.getValue()}</span>;
+        return cell.getValue().toString();
       },
     },
     {

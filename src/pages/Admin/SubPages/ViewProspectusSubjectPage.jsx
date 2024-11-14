@@ -28,6 +28,7 @@ import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
 import PageNotFound from "../../PageNotFound";
 import ProspectusDialog from "../../../components/reuseable/ProspectusDialog";
 import AddProspectusSubject from "../../../components/api/AddProspectusSubject";
+import ResetFilter from "../../../components/reuseable/ResetFilter";
 
 const ViewProspectusSubjectPage = () => {
   // const { user } = useContext(AuthContext);
@@ -69,8 +70,12 @@ const ViewProspectusSubjectPage = () => {
 };
 
 const ProgramCourseTables = () => {
-  const { prospectusCampusId, prospectusCampusName, prospectusProgramCode, prospectus_id } =
-    useParams();
+  const {
+    prospectusCampusId,
+    prospectusCampusName,
+    prospectusProgramCode,
+    prospectus_id,
+  } = useParams();
 
   const {
     prospectusSubjects,
@@ -86,7 +91,12 @@ const ProgramCourseTables = () => {
       prospectusProgramCode,
       prospectus_id,
     );
-  }, [prospectusCampusId, prospectusCampusName, prospectus_id, prospectusProgramCode]);
+  }, [
+    prospectusCampusId,
+    prospectusCampusName,
+    prospectus_id,
+    prospectusProgramCode,
+  ]);
 
   const { columnViewSubjectProspectus } = useColumnsSecond();
 
@@ -148,6 +158,8 @@ const DataTable = ({ data, columns, loading, error }) => {
             }
             className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none !transition focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[19em]"
           />
+
+          <ResetFilter table={table} className={"mb-5 h-[3.3em] md:mb-0"} />
         </div>
 
         <div className=" ">
@@ -166,7 +178,6 @@ const DataTable = ({ data, columns, loading, error }) => {
             {/* <StatusFilter table={table} option={"prospectus"} /> */}
             <ProspectusDialog />
           </div>
-
         </div>
 
         <div className="max-w-full overflow-x-auto">

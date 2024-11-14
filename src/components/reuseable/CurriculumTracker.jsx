@@ -9,13 +9,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
+
   TableCell,
 } from "../ui/table";
 import axios from "axios";
@@ -314,7 +309,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                   ? subject.prerequisites
                                       .map((prereq) => prereq.courseCode)
                                       .join(", ")
-                                  : "None"}
+                                  : ""}
                               </TableCell>
                               <TableCell className="border p-2 text-center">
                                 <span

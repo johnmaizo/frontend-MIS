@@ -18,7 +18,7 @@ export const getUniqueCodes = (data, uniqueKey) => {
         },
       ]),
     ).values(),
-  ].sort((a, b) => a.value.localeCompare(b.value));
+  ].sort((a, b) => a.value.toString().localeCompare(b.value));
 };
 
 /**

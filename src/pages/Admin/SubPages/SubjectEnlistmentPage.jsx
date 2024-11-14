@@ -115,19 +115,35 @@ const SubjectEnlistmentPage = () => {
         console.log("Filtered Classes Data:", classesData);
 
         // Map the fetched data to match the expected structure
-        classesData = classesData.map((cls) => ({
-          class_id: cls.id,
-          subjectCode: cls.subject_code,
-          subjectDescription: cls.subject,
-          schedule: formatSchedule(cls),
-          instructorFullName: cls.teacher,
-          className: cls.subject, // Assuming class name is the subject name
-          timeStart: cls.start, // Keep as ISO string
-          timeEnd: cls.end, // Keep as ISO string
-          room: cls.room,
-          units: cls.units,
-          days: parseDays(cls.day), // Parse days correctly
-        }));
+        classesData = classesData.map((cls) => {
+          // Parse the schedule string
+          const parsedSchedule = parseSchedule(cls.schedule);
+          if (!parsedSchedule) {
+            console.warn(
+              `Unable to parse schedule for class ID ${cls.id}: "${cls.schedule}"`,
+            );
+            return null; // Skip classes with invalid schedule formats
+          }
+
+          const { daysString, startTime, endTime } = parsedSchedule;
+
+          return {
+            class_id: cls.id,
+            subjectCode: cls.subject_code,
+            subjectDescription: cls.subject,
+            schedule: formatSchedule(daysString, startTime, endTime),
+            instructorFullName: cls.teacher,
+            className: cls.subject, // Assuming class name is the subject name
+            timeStart: startTime, // e.g., "3:00 AM"
+            timeEnd: endTime, // e.g., "4:30 AM"
+            room: cls.room,
+            units: cls.units,
+            days: parseDays(daysString), // Parsed days
+          };
+        });
+
+        // Remove any classes that failed to parse
+        classesData = classesData.filter((cls) => cls !== null);
 
         // Group classes by subjectCode and subjectDescription
         const subjectsMap = {};
@@ -164,23 +180,38 @@ const SubjectEnlistmentPage = () => {
             return matchingClass;
           } else {
             // If the class is not in classesData, perhaps it is inactive now
+            const parsedSchedule = parseSchedule(cls.schedule);
+            if (!parsedSchedule) {
+              console.warn(
+                `Unable to parse schedule for enlisted class ID ${cls.id}: "${cls.schedule}"`,
+              );
+              return null; // Skip if schedule can't be parsed
+            }
+
+            const { daysString, startTime, endTime } = parsedSchedule;
+
             return {
               class_id: cls.id,
               subjectCode: cls.subject_code,
               subjectDescription: cls.subject,
-              schedule: formatSchedule(cls),
+              schedule: formatSchedule(daysString, startTime, endTime),
               instructorFullName: cls.teacher,
               className: cls.subject,
-              timeStart: cls.start, // Keep as ISO string
-              timeEnd: cls.end, // Keep as ISO string
+              timeStart: startTime, // e.g., "3:00 AM"
+              timeEnd: endTime, // e.g., "4:30 AM"
               room: cls.room,
               units: cls.units,
-              days: parseDays(cls.day), // Parse days correctly
+              days: parseDays(daysString), // Parsed days
             };
           }
         });
 
-        setSelectedClasses(selectedClassesData);
+        // Remove any classes that failed to parse
+        const validSelectedClasses = selectedClassesData.filter(
+          (cls) => cls !== null,
+        );
+
+        setSelectedClasses(validSelectedClasses);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load student data.", {
@@ -194,51 +225,144 @@ const SubjectEnlistmentPage = () => {
     fetchStudentData();
   }, [student_personal_id]);
 
-  // Helper function to format schedule string
-  const formatSchedule = (cls) => {
-    const daysFormatted = cls.day
+  /**
+   * Parses the schedule string to extract days, start time, and end time.
+   * Expected format: "DAYS START_TIME - END_TIME"
+   * Example: "TTH 3:00 AM - 4:30 AM"
+   *
+   * @param {string} scheduleStr - The schedule string to parse.
+   * @returns {object|null} - An object with daysString, startTime, and endTime or null if parsing fails.
+   */
+  const parseSchedule = (scheduleStr) => {
+    if (typeof scheduleStr !== "string") return null;
+
+    // Regular expression to match the schedule format
+    const scheduleRegex =
+      /^([A-Za-z,]+)\s+(\d{1,2}:\d{2}\s?(AM|PM))\s*-\s*(\d{1,2}:\d{2}\s?(AM|PM))$/i;
+    const match = scheduleStr.match(scheduleRegex);
+
+    if (!match) return null;
+
+    const daysString = match[1].toUpperCase();
+    const startTime = match[2].toUpperCase();
+    const endTime = match[4].toUpperCase();
+
+    return { daysString, startTime, endTime };
+  };
+
+  /**
+   * Formats the schedule components into a readable string.
+   *
+   * @param {string} daysString - The days string (e.g., "TTH").
+   * @param {string} startTime - The start time (e.g., "3:00 AM").
+   * @param {string} endTime - The end time (e.g., "4:30 AM").
+   * @returns {string} - The formatted schedule string.
+   */
+  const formatSchedule = (daysString, startTime, endTime) => {
+    const daysFormatted = daysString
       .split(",")
       .map((day) => day.trim())
       .join(", ");
-    const startTime = formatTime(cls.start);
-    const endTime = formatTime(cls.end);
     return `${daysFormatted} ${startTime} - ${endTime}`;
   };
 
-  // Helper function to parse days from the 'day' field
+  /**
+   * Parses the days string into an array of standardized day codes.
+   *
+   * @param {string} daysString - The days string (e.g., "TTH").
+   * @returns {Array<string>} - An array of day codes (e.g., ["TU", "TH"]).
+   */
   const parseDays = (daysString) => {
-    if (typeof daysString === "string") {
-      // Handle cases like "TTH" or "TU, TH"
-      if (daysString.includes(",")) {
-        return daysString.split(",").map((day) => day.trim());
+    if (typeof daysString !== "string") return [];
+
+    // Handle multiple days separated by commas
+    if (daysString.includes(",")) {
+      return daysString.split(",").map((day) => day.trim());
+    }
+
+    // Handle abbreviations like "TTH"
+    const dayMapping = {
+      M: "MO",
+      MT: "MO",
+      MO: "MO",
+      TU: "TU",
+      T: "TU",
+      TTH: "TH",
+      TH: "TH",
+      W: "WE",
+      WE: "WE",
+      F: "FR",
+      FR: "FR",
+      S: "SA",
+      SA: "SA",
+      SU: "SU",
+    };
+
+    const days = [];
+
+    // Split the string into possible day codes
+    let temp = daysString;
+    while (temp.length > 0) {
+      if (temp.startsWith("TTH")) {
+        days.push(dayMapping["TTH"]);
+        temp = temp.slice(3);
+      } else if (temp.startsWith("TH")) {
+        days.push(dayMapping["TH"]);
+        temp = temp.slice(2);
       } else {
-        // Split "TTH" into ["TU", "TH"] if necessary
-        // This assumes "TTH" stands for Tuesday and Thursday
-        if (daysString === "TTH") {
-          return ["TU", "TH"];
+        const dayCode = temp.slice(0, 1);
+        if (dayMapping[dayCode]) {
+          days.push(dayMapping[dayCode]);
+          temp = temp.slice(1);
+        } else {
+          // If unknown, skip one character to prevent infinite loop
+          console.warn(`Unknown day code in daysString: "${daysString}"`);
+          temp = temp.slice(1);
         }
-        // Handle other abbreviations as needed
-        const dayMapping = {
-          M: "MO",
-          T: "TU",
-          W: "WE",
-          TH: "TH",
-          F: "FR",
-          S: "SA",
-          SU: "SU",
-          MO: "MO",
-          TU: "TU",
-          WE: "WE",
-          FR: "FR",
-          SA: "SA",
-          // Removed duplicate 'TH' and 'SU' keys
-        };
-        return [dayMapping[daysString] || daysString];
       }
     }
-    return [];
+
+    return days;
   };
 
+  /**
+   * Formats the days array into a readable string.
+   *
+   * @param {object} cls - The class object.
+   * @returns {string} - Formatted days string.
+   */
+  const formatDays = (cls) => {
+    if (cls.days && Array.isArray(cls.days)) {
+      return cls.days.join(", ");
+    } else if (typeof cls.days === "string") {
+      return cls.days;
+    } else if (cls.schedule && typeof cls.schedule === "string") {
+      const parsed = parseSchedule(cls.schedule);
+      if (parsed) {
+        const { daysString } = parsed;
+        return parseDays(daysString).join(", ");
+      }
+    }
+    return "N/A"; // Default if days can't be determined
+  };
+
+  /**
+   * Formats the time string for display.
+   *
+   * @param {string} timeString - The time string (e.g., "3:00 AM").
+   * @returns {string} - Formatted time string.
+   */
+  const formatTime = (timeString) => {
+    if (!timeString) return "N/A";
+    // Optionally, you can format the time string if needed
+    return timeString; // Already in "3:00 AM" format
+  };
+
+  /**
+   * Handles adding a class to the selectedClasses state.
+   *
+   * @param {object} cls - The class object to add.
+   */
   const handleAddClass = (cls) => {
     // Find existing class for the same subject
     const existingClass = selectedClasses.find(
@@ -260,10 +384,18 @@ const SubjectEnlistmentPage = () => {
       );
 
       if (daysOverlap) {
-        const selectedStart = new Date(selectedClass.timeStart);
-        const selectedEnd = new Date(selectedClass.timeEnd);
-        const clsStart = new Date(cls.timeStart);
-        const clsEnd = new Date(cls.timeEnd);
+        const selectedStart = new Date(
+          `1970-01-01T${convertTo24Hour(selectedClass.timeStart)}:00`,
+        );
+        const selectedEnd = new Date(
+          `1970-01-01T${convertTo24Hour(selectedClass.timeEnd)}:00`,
+        );
+        const clsStart = new Date(
+          `1970-01-01T${convertTo24Hour(cls.timeStart)}:00`,
+        );
+        const clsEnd = new Date(
+          `1970-01-01T${convertTo24Hour(cls.timeEnd)}:00`,
+        );
 
         // Ensure valid dates
         if (
@@ -278,7 +410,8 @@ const SubjectEnlistmentPage = () => {
 
         return (
           (clsStart >= selectedStart && clsStart < selectedEnd) ||
-          (clsEnd > selectedStart && clsEnd <= selectedEnd)
+          (clsEnd > selectedStart && clsEnd <= selectedEnd) ||
+          (clsStart <= selectedStart && clsEnd >= selectedEnd) // Overlapping entire duration
         );
       }
       return false;
@@ -312,12 +445,42 @@ const SubjectEnlistmentPage = () => {
     }
   };
 
+  /**
+   * Converts a 12-hour time string to a 24-hour format.
+   *
+   * @param {string} timeStr - Time string in "h:mm AM/PM" format.
+   * @returns {string} - Time string in "HH:MM" 24-hour format.
+   */
+  const convertTo24Hour = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+    hours = parseInt(hours, 10);
+
+    if (modifier.toUpperCase() === "PM" && hours !== 12) {
+      hours += 12;
+    }
+    if (modifier.toUpperCase() === "AM" && hours === 12) {
+      hours = 0;
+    }
+
+    const formattedHours = hours.toString().padStart(2, "0");
+    return `${formattedHours}:${minutes}`;
+  };
+
+  /**
+   * Handles removing a class from the selectedClasses state.
+   *
+   * @param {number} class_id - The ID of the class to remove.
+   */
   const handleRemoveClass = (class_id) => {
     setSelectedClasses((prev) =>
       prev.filter((cls) => cls.class_id !== class_id),
     );
   };
 
+  /**
+   * Handles submitting the enlisted classes.
+   */
   const handleSubmitEnlistment = () => {
     const selectedClassIds = selectedClasses.map((cls) => cls.class_id);
 
@@ -348,6 +511,9 @@ const SubjectEnlistmentPage = () => {
       });
   };
 
+  /**
+   * Filters subjects based on the search term.
+   */
   const filteredSubjects = subjects.filter(
     (subject) =>
       subject.subjectKey &&
@@ -570,28 +736,137 @@ const SubjectEnlistmentPage = () => {
   );
 };
 
-// Helper function to format days
+/**
+ * Parses the schedule string to extract days, start time, and end time.
+ * Expected format: "DAYS START_TIME - END_TIME"
+ * Example: "TTH 3:00 AM - 4:30 AM"
+ *
+ * @param {string} scheduleStr - The schedule string to parse.
+ * @returns {object|null} - An object with daysString, startTime, and endTime or null if parsing fails.
+ */
+const parseSchedule = (scheduleStr) => {
+  if (typeof scheduleStr !== "string") return null;
+
+  // Regular expression to match the schedule format
+  const scheduleRegex =
+    /^([A-Za-z,]+)\s+(\d{1,2}:\d{2}\s?(AM|PM))\s*-\s*(\d{1,2}:\d{2}\s?(AM|PM))$/i;
+  const match = scheduleStr.match(scheduleRegex);
+
+  if (!match) return null;
+
+  const daysString = match[1].toUpperCase();
+  const startTime = match[2].toUpperCase();
+  const endTime = match[4].toUpperCase();
+
+  return { daysString, startTime, endTime };
+};
+
+/**
+ * Formats the schedule components into a readable string.
+ *
+ * @param {string} daysString - The days string (e.g., "TTH").
+ * @param {string} startTime - The start time (e.g., "3:00 AM").
+ * @param {string} endTime - The end time (e.g., "4:30 AM").
+ * @returns {string} - The formatted schedule string.
+ */
+const formatSchedule = (daysString, startTime, endTime) => {
+  const daysFormatted = daysString
+    .split(",")
+    .map((day) => day.trim())
+    .join(", ");
+  return `${daysFormatted} ${startTime} - ${endTime}`;
+};
+
+/**
+ * Parses the days string into an array of standardized day codes.
+ *
+ * @param {string} daysString - The days string (e.g., "TTH").
+ * @returns {Array<string>} - An array of day codes (e.g., ["TU", "TH"]).
+ */
+const parseDays = (daysString) => {
+  if (typeof daysString !== "string") return [];
+
+  // Handle multiple days separated by commas
+  if (daysString.includes(",")) {
+    return daysString.split(",").map((day) => day.trim());
+  }
+
+  // Handle abbreviations like "TTH"
+  const dayMapping = {
+    M: "MO",
+    MT: "MO",
+    MO: "MO",
+    TU: "TU",
+    T: "TU",
+    TTH: "TH",
+    TH: "TH",
+    W: "WE",
+    WE: "WE",
+    F: "FR",
+    FR: "FR",
+    S: "SA",
+    SA: "SA",
+    SU: "SU",
+  };
+
+  const days = [];
+
+  // Split the string into possible day codes
+  let temp = daysString;
+  while (temp.length > 0) {
+    if (temp.startsWith("TTH")) {
+      days.push(dayMapping["TTH"]);
+      temp = temp.slice(3);
+    } else if (temp.startsWith("TH")) {
+      days.push(dayMapping["TH"]);
+      temp = temp.slice(2);
+    } else {
+      const dayCode = temp.slice(0, 1);
+      if (dayMapping[dayCode]) {
+        days.push(dayMapping[dayCode]);
+        temp = temp.slice(1);
+      } else {
+        // If unknown, skip one character to prevent infinite loop
+        console.warn(`Unknown day code in daysString: "${daysString}"`);
+        temp = temp.slice(1);
+      }
+    }
+  }
+
+  return days;
+};
+
+/**
+ * Formats the days array into a readable string.
+ *
+ * @param {object} cls - The class object.
+ * @returns {string} - Formatted days string.
+ */
 const formatDays = (cls) => {
   if (cls.days && Array.isArray(cls.days)) {
     return cls.days.join(", ");
   } else if (typeof cls.days === "string") {
     return cls.days;
   } else if (cls.schedule && typeof cls.schedule === "string") {
-    const daysPart = cls.schedule.split(" ")[0].trim(); // Extract days before time
-    return daysPart
-      .split(",")
-      .map((day) => day.trim())
-      .join(", ");
+    const parsed = parseSchedule(cls.schedule);
+    if (parsed) {
+      const { daysString } = parsed;
+      return parseDays(daysString).join(", ");
+    }
   }
   return "N/A"; // Default if days can't be determined
 };
 
-// Helper function to format time
-const formatTime = (dateTimeString) => {
-  if (!dateTimeString) return "N/A";
-  const date = new Date(dateTimeString);
-  if (isNaN(date)) return "N/A"; // Handle invalid dates
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+/**
+ * Formats the time string for display.
+ *
+ * @param {string} timeString - The time string (e.g., "3:00 AM").
+ * @returns {string} - Formatted time string.
+ */
+const formatTime = (timeString) => {
+  if (!timeString) return "N/A";
+  // Optionally, you can format the time string if needed
+  return timeString; // Already in "3:00 AM" format
 };
 
 export default SubjectEnlistmentPage;

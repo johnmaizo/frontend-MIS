@@ -35,6 +35,8 @@ const ViewEnrollmentApplicantPage = () => {
         // Log the API response for debugging
         console.log("API Response:", response.data);
 
+        console.log("HAHAAHHAAHHAHAAHAHAAHA API Response:", response.data);
+
         // Check if the response contains the expected data
         if (
           response.data &&

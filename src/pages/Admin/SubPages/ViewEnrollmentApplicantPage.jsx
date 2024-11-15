@@ -9,7 +9,7 @@ import loadingProfile from "../../../assets/images/profile-user.jpg";
 
 import { ProfileLoadingIcon } from "../../../components/Icons";
 
-import axiosExternal from "../../../axios/axiosExternal";
+import axios from "axios";
 import AcceptEnrollment from "../../../components/api/AcceptEnrollment";
 
 const ViewEnrollmentApplicantPage = () => {
@@ -26,8 +26,8 @@ const ViewEnrollmentApplicantPage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axiosExternal.get(
-          `/api/full-student-data/?filter=fulldata_applicant_id=${applicantId}`,
+        const response = await axios.get(
+          `/enrollment/get-applicant-data/${applicantId}`,
         );
 
         // Log the API response for debugging

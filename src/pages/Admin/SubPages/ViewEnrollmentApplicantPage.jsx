@@ -35,14 +35,21 @@ const ViewEnrollmentApplicantPage = () => {
           },
         });
 
-        // Set the fetched data to the state
-        setStudent(response.data);
-        // console.log(response.data);
+        // Log the response to verify structure
+        console.log("API Response:", response.data);
+
+        // Ensure response.data exists and has the expected structure
+        if (response.data) {
+          setStudent(response.data);
+        } else {
+          setError("No data received from the server.");
+        }
       } catch (err) {
+        console.error("Fetch Error:", err);
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
-          setError(`Failed to fetch student: ${err}`);
+          setError(`Failed to fetch student: ${err.message}`);
         }
       }
       setLoading(false);
@@ -58,13 +65,21 @@ const ViewEnrollmentApplicantPage = () => {
       label: "Pending Enrollment Applicants",
     },
     {
-      label: `${loading ? "Loading..." : error ? "Error" : `View Enrollment Application`}`,
+      label: `${loading ? "Loading..." : error ? "Error" : "View Enrollment Application"}`,
     },
   ];
 
   // Helper function to safely access nested data
   const getData = (section, field) => {
-    return student[section]?.[0]?.[field] || "N/A";
+    if (
+      student[section] &&
+      Array.isArray(student[section]) &&
+      student[section].length > 0 &&
+      student[section][0][field] !== undefined
+    ) {
+      return student[section][0][field] || "N/A";
+    }
+    return "N/A";
   };
 
   return (
@@ -83,35 +98,35 @@ const ViewEnrollmentApplicantPage = () => {
 
       {/* Display status messages based on the student&apos;s active status and application status */}
       {!loading &&
-        student.personal_data[0] &&
-        !student.personal_data[0].is_active && (
-          <div className="mb-6 rounded border border-red-500 bg-red-100 p-4 shadow">
-            <p className="text-xl font-semibold text-red-700">
-              NOTE: This Student is Inactive.
-            </p>
-          </div>
-        )}
+        student.personal_data &&
+        student.personal_data.length > 0 && (
+          <>
+            {!student.personal_data[0].is_active && (
+              <div className="mb-6 rounded border border-red-500 bg-red-100 p-4 shadow">
+                <p className="text-xl font-semibold text-red-700">
+                  NOTE: This Student is Inactive.
+                </p>
+              </div>
+            )}
 
-      {!loading &&
-        student.personal_data[0] &&
-        student.personal_data[0].status === "accepted" && (
-          <div className="mb-6 rounded border border-green-500 bg-green-100 p-4 shadow">
-            <p className="text-xl font-semibold text-green-700">
-              NOTE: This Student has been Accepted. 🎉🎉
-            </p>
-          </div>
-        )}
+            {student.personal_data[0].status === "accepted" && (
+              <div className="mb-6 rounded border border-green-500 bg-green-100 p-4 shadow">
+                <p className="text-xl font-semibold text-green-700">
+                  NOTE: This Student has been Accepted. 🎉🎉
+                </p>
+              </div>
+            )}
 
-      {/* New Status Message for Pending Submission */}
-      {!loading &&
-        student.personal_data[0] &&
-        student.personal_data[0].status === "pending" && (
-          <div className="mb-6 rounded border border-yellow-500 bg-yellow-100 p-4 shadow">
-            <p className="text-xl font-semibold text-yellow-700">
-              NOTE: This Student is submitting through the online enrollment
-              application.
-            </p>
-          </div>
+            {/* New Status Message for Pending Submission */}
+            {student.personal_data[0].status === "pending" && (
+              <div className="mb-6 rounded border border-yellow-500 bg-yellow-100 p-4 shadow">
+                <p className="text-xl font-semibold text-yellow-700">
+                  NOTE: This Student is submitting through the online enrollment
+                  application.
+                </p>
+              </div>
+            )}
+          </>
         )}
 
       <div className="mb-6 rounded bg-white p-6 shadow dark:bg-boxdark">

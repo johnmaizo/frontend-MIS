@@ -4,17 +4,14 @@ import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 
-const BarChartEnrollmentsByDepartment = ({ filters }) => {
+const PieChartEnrollmentStatus = ({ filters }) => {
   const { user } = useContext(AuthContext);
   const [series, setSeries] = useState([]);
-  const [options, setOptions] = useState({
-    chart: { type: "bar" },
-    xaxis: { categories: [] },
-  });
+  const [options, setOptions] = useState({ labels: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEnrollmentsByDepartment = async () => {
+    const fetchEnrollmentStatusBreakdown = async () => {
       try {
         const params = {
           campus_id: user.campus_id,
@@ -22,35 +19,30 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
           semester_id: filters.semester_id,
         };
         const response = await axios.get(
-          "/statistics/enrollments-by-department",
+          "/statistics/enrollment-status-breakdown",
           { params },
         );
         const data = response.data;
 
-        const departments = data.map(
-          (item) => item.departmentName || "Unassigned Department",
-        );
-        const enrollments = data.map((item) => item.totalEnrollments);
+        const statuses = data.map((item) => item.status);
+        const counts = data.map((item) => item.count);
 
-        setOptions((prev) => ({
-          ...prev,
-          xaxis: { categories: departments },
-        }));
-        setSeries([{ name: "Enrollments", data: enrollments }]);
+        setOptions({ labels: statuses });
+        setSeries(counts);
       } catch (error) {
-        console.error("Error fetching enrollments by department:", error);
+        console.error("Error fetching enrollment status breakdown:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEnrollmentsByDepartment();
+    fetchEnrollmentStatusBreakdown();
   }, [user.campus_id, filters]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
       <h5 className="mb-4 text-xl font-semibold text-black">
-        Subjects Enrolled by Department
+        Enrollment Status Breakdown
       </h5>
       {loading ? (
         <p>Loading...</p>
@@ -58,7 +50,7 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         <ReactApexChart
           options={options}
           series={series}
-          type="bar"
+          type="pie"
           height={350}
         />
       )}
@@ -66,4 +58,4 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
   );
 };
 
-export default BarChartEnrollmentsByDepartment;
+export default PieChartEnrollmentStatus;

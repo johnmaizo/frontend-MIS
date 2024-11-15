@@ -22,6 +22,8 @@ import EnrollmentProgress from "./test/EnrollmentProgress";
 import CardTotalEnrollments from "../../../components/Essentials/statistics/CardTotalEnrollments";
 import BarChartEnrollmentsByDepartment from "../../../components/Essentials/statistics/BarChartEnrollmentsByDepartment";
 import BarChartEnrollmentsBySubject from "../../../components/Essentials/statistics/BarChartEnrollmentsBySubject";
+import PieChartEnrollmentStatus from "../../../components/Essentials/statistics/PieChartEnrollmentStatus";
+import PieChartGenderDistribution from "../../../components/Essentials/statistics/PieChartGenderDistribution";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -58,6 +60,8 @@ const AdminHome = () => {
 
           <BarChartEnrollmentsByDepartment filters={filters} />
           <BarChartEnrollmentsBySubject filters={filters} />
+          <PieChartEnrollmentStatus filters={filters} />
+          <PieChartGenderDistribution filters={filters} />
           {/* <ChartTwo /> */}
 
           {/* <div className="col-span-12 xl:col-span-8">

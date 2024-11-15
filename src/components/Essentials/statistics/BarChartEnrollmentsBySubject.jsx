@@ -58,8 +58,6 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         });
         const data = response.data;
 
-        console.log("Enrollments Data:", data);
-
         if (!Array.isArray(data)) {
           throw new Error("Invalid data format: Expected an array");
         }

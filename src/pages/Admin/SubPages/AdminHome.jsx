@@ -12,27 +12,27 @@ import CardDataCourse from "../../../components/Essentials/CardDataCourse";
 
 // import { ComboboxDemo } from "./ComboboxDemo";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import CardDataOfficialStudent from "../../../components/Essentials/CardDataOfficialStudent";
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 import MultipleSelector from "../../../components/ui/multiple-selector";
 import EnrollmentProgress from "./test/EnrollmentProgress";
+import CardTotalEnrollments from "../../../components/Essentials/statistics/CardTotalEnrollments";
+import BarChartEnrollmentsByDepartment from "../../../components/Essentials/statistics/BarChartEnrollmentsByDepartment";
+import BarChartEnrollmentsBySubject from "../../../components/Essentials/statistics/BarChartEnrollmentsBySubject";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
 
+  const [filters, setFilters] = useState({
+    schoolYear: null,
+    semester_id: null,
+  });
+
   return (
     <DefaultLayout>
-      {/* {user && user.campusName && (
-        <div className="mb-8">
-          <h2 className="mt-5 text-[2rem] font-bold text-black dark:text-white md:mt-0">
-            {user.campusName}
-          </h2>
-        </div>
-      )} */}
-
       <h3 className="mb-5 mt-2 text-[1.1rem] font-bold text-black dark:text-white">
         Welcome {user?.name}!
       </h3>
@@ -44,6 +44,7 @@ const AdminHome = () => {
         <CardDataDepartment />
         <CardDataPrograms />
         <CardDataCourse />
+        <CardTotalEnrollments />
       </div>
 
       <div className="mt-8">{/* <UserTables /> */}</div>
@@ -54,6 +55,9 @@ const AdminHome = () => {
           {/* <ChartOne /> */}
           {/* <ChartThree /> */}
           <PieChartDepartment />
+
+          <BarChartEnrollmentsByDepartment filters={filters} />
+          <BarChartEnrollmentsBySubject filters={filters} />
           {/* <ChartTwo /> */}
 
           {/* <div className="col-span-12 xl:col-span-8">
@@ -67,9 +71,11 @@ const AdminHome = () => {
         <ComboboxDemo />
       </div> */}
 
-      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <EnrollmentProgress enrollmentId={1} />
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* ... other charts */}
       </div>
+
+      <div className="mt-6 h-screen rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark"></div>
     </DefaultLayout>
   );
 };

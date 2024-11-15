@@ -31,6 +31,8 @@ import UpdateStudentInfoPage from "../Admin/SubPages/UpdateStudentInfoPage";
 import ViewStudentDetailsPage from "../Admin/SubPages/ViewStudentDetailsPage";
 import EnrollStudentPage from "../Admin/SubPages/EnrollStudentPage";
 import PaymentApprovalPage from "../Admin/SubPages/PaymentApprovalPage";
+import OnlinePendingApplicantPage from "../Admin/SubPages/OnlinePendingApplicantPage";
+import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
 
 const EmployeeRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -305,6 +307,26 @@ const EmployeeRoutes = () => {
               <>
                 <PageTitle title="Unenrolled Registration - MIS Benedicto College" />
                 <SubjectEnlistmentPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/online-applicants"
+            element={
+              <>
+                <PageTitle title="Online Applicants - MIS Benedicto College" />
+                <OnlinePendingApplicantPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/enrollments/online-applicants/applicant/:applicantId"
+            element={
+              <>
+                <PageTitle title="View Enrollment Application - MIS Benedicto College" />
+                <ViewEnrollmentApplicantPage />
               </>
             }
           />

@@ -420,22 +420,23 @@ const EmployeeSidebar = ({
                         }`}
                       >
                         <ul className="mb-5.5 mt-4 flex flex-col gap-3.5 pl-3">
-                          {/* <li>
-                        <NavLink
-                          to="/enrollments/enrollment-application"
-                          className={({ isActive }) =>
-                            `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
-                              (pathname ===
-                                "/enrollments/enrollment-application" ||
-                                pathname.includes("enrollment-application")) &&
-                              "!underline "
-                            }` + (isActive && "text-primary dark:!text-white")
-                          }
-                        >
-                          <ArrowRightIcon className="h-4 w-4 flex-none" />
-                          Enrollment Applicants
-                        </NavLink>
-                      </li> */}
+                          <li>
+                            <NavLink
+                              to="/enrollments/online-applicants"
+                              className={({ isActive }) =>
+                                `group relative flex items-center gap-1 rounded-md px-4 font-medium underline-offset-4 duration-300 ease-in-out hover:underline dark:text-bodydark1 ${
+                                  (pathname ===
+                                    "/enrollments/online-applicants" ||
+                                    pathname.includes("online-applicants")) &&
+                                  "!underline "
+                                }` +
+                                (isActive && "text-primary dark:!text-white")
+                              }
+                            >
+                              <ArrowRightIcon className="h-4 w-4 flex-none" />
+                              Pending Enrollment Applicants
+                            </NavLink>
+                          </li>
                           <li>
                             <NavLink
                               to="/enrollments/enroll-student"

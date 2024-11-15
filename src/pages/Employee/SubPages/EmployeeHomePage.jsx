@@ -45,27 +45,15 @@ const EmployeeHomePage = () => {
         </div>
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h3 className="mb-2 text-center text-3xl font-semibold text-red-600">
-            😭 MISSING 😭
-          </h3>
-          <img
-            src={HamsterProfile}
-            alt=""
-            draggable={false}
-            className="animator mx-auto w-[35%]"
-          />
-          <p className="text-center text-xl font-semibold text-red-600">
-            Reward: P1000.00
-          </p>
+
+
+
         </div>
 
         <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <img
-            src={profile}
-            alt=""
-            draggable={false}
-            className="mx-auto max-w-full"
-          />
+
+
+          
         </div>
       </>
     </DefaultLayout>

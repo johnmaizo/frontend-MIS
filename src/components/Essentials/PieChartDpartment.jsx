@@ -107,7 +107,7 @@ const PieChartDepartment = () => {
   }, [user.campusName, user.role]);
 
   return loading ? (
-    <div className="relative col-span-12 grid !h-[427.36px] !w-[465.33px] place-content-center rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
       <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
         <SmallLoader width={10} height={10} /> <span>Loading...</span>
       </div>

@@ -26,11 +26,9 @@ const ViewEnrollmentApplicantPage = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axiosExternal.get(`/api/full-student-data/`, {
-          params: {
-            filter: `fulldata_applicant_id=${applicantId}`,
-          },
-        });
+        const response = await axiosExternal.get(
+          `/api/full-student-data/?filter=fulldata_applicant_id=${applicantId}`,
+        );
 
         // Log the API response for debugging
         console.log("API Response:", response.data);

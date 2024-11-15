@@ -44,7 +44,6 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
   });
   const [loading, setLoading] = useState(true);
-  const [othersSubjects, setOthersSubjects] = useState([]); // New state for "Others" descriptions
 
   useEffect(() => {
     const fetchEnrollmentsByCourse = async () => {
@@ -70,11 +69,11 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           (a, b) => b.totalEnrollments - a.totalEnrollments,
         );
 
-        // Select the top 4 courses
-        const topCourses = sortedData.slice(0, 4);
+        // Select the top 3 courses
+        const topCourses = sortedData.slice(0, 3);
 
         // Aggregate the remaining courses into "Others"
-        const others = sortedData.slice(4);
+        const others = sortedData.slice(3);
 
         // Calculate the total enrollments for "Others"
         const othersTotalEnrollments = others.reduce(
@@ -82,13 +81,11 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           0,
         );
 
-        // Collect the descriptions of the courses under "Others"
+        // Collect the descriptions and enrollment counts of the courses under "Others"
         const othersDescriptions = others.map(
-          (course) => `${course.courseCode} - ${course.courseDescription}`,
+          (course) =>
+            `${course.courseCode} - ${course.courseDescription}: ${course.totalEnrollments}`,
         );
-
-        // Update the state for "Others" descriptions
-        setOthersSubjects(othersDescriptions);
 
         // Prepare the final categories and series data
         const finalCategories = [
@@ -101,7 +98,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           othersTotalEnrollments,
         ];
 
-        // Update the chart options with categories
+        // Update the chart options with categories and customized tooltip
         setOptions((prev) => ({
           ...prev,
           xaxis: { categories: finalCategories },
@@ -110,7 +107,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
               const category = w.globals.labels[dataPointIndex]; // Corrected access
 
               if (category === "Others") {
-                // If "Others" is hovered, display the list of other subjects
+                // If "Others" is hovered, display the list of other subjects with enrollments
                 return `<div style="padding:10px;">
                           <strong>Others</strong><br/>
                           ${
@@ -129,6 +126,8 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
             },
           },
         }));
+
+        // Update the series data
         setSeries([{ name: "Enrollments", data: finalEnrollments }]);
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);

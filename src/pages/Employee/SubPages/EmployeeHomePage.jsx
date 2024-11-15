@@ -1,28 +1,19 @@
 import DefaultLayout from "../../layout/DefaultLayout";
 
-import HamsterProfile from "../../../assets/images/profile-maizo.jpg";
-import VonsProfile from "../../../assets/images/profile-vons.jpg";
-import ThomasProfile from "../../../assets/images/thomas.jfif";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../components/context/AuthContext";
+import { HasRole } from "../../../components/reuseable/HasRole";
+import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
+import BarChartEnrollmentsByDepartment from "../../../components/Essentials/statistics/BarChartEnrollmentsByDepartment";
+import BarChartEnrollmentsBySubject from "../../../components/Essentials/statistics/BarChartEnrollmentsBySubject";
 
 const EmployeeHomePage = () => {
-  const [profile, setProfile] = useState(HamsterProfile);
-
-  useEffect(() => {
-    const profileChange = setTimeout(() => {
-      setProfile(
-        profile === HamsterProfile
-          ? VonsProfile
-          : profile === VonsProfile
-            ? ThomasProfile
-            : HamsterProfile,
-      );
-    }, 1500);
-    return () => clearInterval(profileChange);
-  }, [profile]);
-
   const { user } = useContext(AuthContext);
+
+  const [filters, setFilters] = useState({
+    schoolYear: null,
+    semester_id: null,
+  });
 
   return (
     <DefaultLayout>
@@ -33,28 +24,19 @@ const EmployeeHomePage = () => {
 
         <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
           <h3 className="text-xl font-bold">
-            {user?.role === "DataCenter" ? "Data Center" : user?.role} Home Page
+            {user?.allRoles === "DataCenter" ? "Data Center" : user?.allRoles}{" "}
+            Home Page
           </h3>
         </div>
 
-        <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, rem
-          quisquam! Recusandae non dignissimos quibusdam cupiditate sit adipisci
-          aspernatur in, aliquid, amet sint autem nam accusamus itaque nesciunt
-          ipsum. Perferendis.
-        </div>
+        {HasRole(user.allRoles, "Registrar") && (
+          <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+            <PieChartDepartment />
 
-        <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-
-
-
-        </div>
-
-        <div className="mt-6 rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
-
-
-          
-        </div>
+            <BarChartEnrollmentsByDepartment filters={filters} />
+            <BarChartEnrollmentsBySubject filters={filters} />
+          </div>
+        )}
       </>
     </DefaultLayout>
   );

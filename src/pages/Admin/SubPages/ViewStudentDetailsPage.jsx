@@ -64,6 +64,8 @@ const ViewStudentDetailsPage = () => {
     }
   }, [studentData]);
 
+  console.log(groupedEnrollments)
+
   // Destructure studentData for easier access
   const { student_id, campus, student_personal_datum } = studentData || {};
 

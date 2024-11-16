@@ -22,6 +22,7 @@ import DefaultLayout from "../../layout/DefaultLayout";
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
+import CurriculumTracker from "../../../components/reuseable/CurriculumTracker";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
@@ -30,7 +31,10 @@ const SubjectEnlistmentPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClasses, setSelectedClasses] = useState([]);
   const [studentInfo, setStudentInfo] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state variable
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [enrolledSubjects, setEnrolledSubjects] = useState([]);
+  const [prospectusId, setProspectusId] = useState(null);
+  const [unitLimit, setUnitLimit] = useState(null); // Added state for unit limit
 
   const navigate = useNavigate();
 
@@ -40,14 +44,18 @@ const SubjectEnlistmentPage = () => {
     const fetchStudentData = async () => {
       try {
         setLoading(true);
+
         // Fetch student academic background
         const academicResponse = await axios.get(
           `/enrollment/student-academic-background/${student_personal_id}`,
         );
         const academicBackground = academicResponse.data;
 
-        // Extract prospectus_id and semester_id from academicBackground
-        const { prospectus_id, semester_id } = academicBackground;
+        console.log("academicBackground:", academicBackground);
+
+        // Extract prospectus_id and student_class_enrollments
+        const { prospectus_id, student_class_enrollments, yearLevel } =
+          academicBackground;
 
         // Fetch prospectus subjects
         const prospectusResponse = await axios.get(
@@ -73,47 +81,50 @@ const SubjectEnlistmentPage = () => {
           semesterName: studentData.semesterName,
         });
 
-        // Determine the current semester from studentInfo
-        const currentSemester = studentData.semesterName;
-
-        // Filter prospectus subjects for the current semester
-        const currentSemesterProspectusSubjects = prospectusSubjects.filter(
-          (ps) =>
-            ps.semesterName === currentSemester && ps.isActive && !ps.isDeleted,
+        // Collect unique subject_codes from all the prospectus subjects
+        const prospectusSubjectCodesSet = new Set(
+          prospectusSubjects.map((ps) => ps.courseCode.toUpperCase()),
         );
 
-        // Debugging: Log the filtered prospectus subjects
-        console.log(
-          "Filtered Prospectus Subjects:",
-          currentSemesterProspectusSubjects,
-        );
+        // Extract class_ids from student_class_enrollments with status "enrolled"
+        const enrolledClassIds = student_class_enrollments
+          .filter((enrollment) => enrollment.status === "enrolled")
+          .map((enrollment) => enrollment.class_id);
 
-        // Collect unique subject_codes from the filtered prospectus subjects
-        const subjectCodes = [
-          ...new Set(
-            currentSemesterProspectusSubjects.map((ps) => ps.courseCode),
-          ),
-        ];
-
-        // Debugging: Log the subjectCodes to verify correctness
-        console.log("Prospectus Subject Codes:", subjectCodes);
-
-        // Fetch available classes for the semester
-        const classesResponse = await axios.get(`/class/active`, {
-          params: { semester_id },
-        });
+        // Fetch all active classes without filtering by semester_id
+        const classesResponse = await axios.get(`/class/active`);
         let classesData = classesResponse.data;
 
-        // Debugging: Log the fetched classesData before filtering
-        console.log("Fetched Classes Data (Before Filtering):", classesData);
-
-        // Filter classesData to include only classes with subject_code in subjectCodes
-        classesData = classesData.filter((cls) =>
-          subjectCodes.includes(cls.subject_code),
+        // Map class IDs to subject codes for enrolled classes
+        const enrolledClassesData = classesData.filter((cls) =>
+          enrolledClassIds.includes(cls.id),
         );
 
-        // Debugging: Log the classesData after filtering
-        console.log("Filtered Classes Data:", classesData);
+        // Extract subject codes of enrolled classes
+        const enrolledSubjectCodesSet = new Set(
+          enrolledClassesData.map((cls) => cls.subject_code.toUpperCase()),
+        );
+
+        // Map enrolledClassesData to the expected format for CurriculumTracker
+        const enrolledSubjectsData = enrolledClassesData.map((cls) => {
+          return {
+            classDetails: {
+              subjectCode: cls.subject_code,
+              subjectDescription: cls.subject,
+            },
+          };
+        });
+
+        // Set enrolledSubjects state for CurriculumTracker
+        setEnrolledSubjects(enrolledSubjectsData);
+        setProspectusId(prospectus_id);
+
+        // Now, filter classesData to include only classes with subject_code in prospectusSubjectCodesSet and not in enrolledSubjectCodesSet
+        classesData = classesData.filter(
+          (cls) =>
+            prospectusSubjectCodesSet.has(cls.subject_code.toUpperCase()) &&
+            !enrolledSubjectCodesSet.has(cls.subject_code.toUpperCase()),
+        );
 
         // Map the fetched data to match the expected structure
         classesData = classesData.map((cls) => {
@@ -166,53 +177,92 @@ const SubjectEnlistmentPage = () => {
         setSubjects(subjectsArray);
 
         // Fetch student's existing enlisted classes
-        const enlistedClassesResponse = await axios.get(
-          `/enrollment/get-enlisted-classes/${student_personal_id}`,
-        );
-        const enlistedClassesData = enlistedClassesResponse.data;
-
-        // Map enlisted classes to match the structure of classesData
-        const selectedClassesData = enlistedClassesData.map((cls) => {
-          // Find the matching class in classesData
-          const matchingClass = classesData.find(
-            (c) => c.class_id === cls.class_id,
-          );
-          if (matchingClass) {
-            return matchingClass;
-          } else {
-            // If the class is not in classesData, perhaps it is inactive now
-            const parsedSchedule = parseSchedule(cls.schedule);
-            if (!parsedSchedule) {
-              console.warn(
-                `Unable to parse schedule for enlisted class ID ${cls.id}: "${cls.schedule}"`,
+        const enlistedClassesData = student_class_enrollments
+          .filter((enrollment) => enrollment.status === "enlisted")
+          .map((enrollment) => {
+            // Find the matching class in classesData
+            const matchingClass = classesData.find(
+              (cls) => cls.class_id === enrollment.class_id,
+            );
+            if (matchingClass) {
+              return matchingClass;
+            } else {
+              // If the class is not in classesData, perhaps it is inactive now
+              // Try to find it in the enrolledClassesData
+              const enrolledClass = enrolledClassesData.find(
+                (cls) => cls.id === enrollment.class_id,
               );
-              return null; // Skip if schedule can't be parsed
+              if (enrolledClass) {
+                // Map to the expected structure
+                const parsedSchedule = parseSchedule(enrolledClass.schedule);
+                const { daysString, startTime, endTime } = parsedSchedule || {
+                  daysString: "",
+                  startTime: "",
+                  endTime: "",
+                };
+
+                return {
+                  class_id: enrolledClass.id,
+                  subjectCode: enrolledClass.subject_code,
+                  subjectDescription: enrolledClass.subject,
+                  schedule: formatSchedule(daysString, startTime, endTime),
+                  instructorFullName: enrolledClass.teacher,
+                  className: enrolledClass.subject,
+                  timeStart: startTime,
+                  timeEnd: endTime,
+                  room: enrolledClass.room,
+                  units: enrolledClass.units,
+                  days: parseDays(daysString),
+                };
+              } else {
+                // If not found, create a placeholder
+                return {
+                  class_id: enrollment.class_id,
+                  subjectCode: "Unknown",
+                  subjectDescription: "Unknown",
+                  schedule: "Unknown",
+                  instructorFullName: "Unknown",
+                  className: "Unknown",
+                  timeStart: "Unknown",
+                  timeEnd: "Unknown",
+                  room: "Unknown",
+                  units: 0,
+                  days: [],
+                };
+              }
             }
+          });
 
-            const { daysString, startTime, endTime } = parsedSchedule;
-
-            return {
-              class_id: cls.id,
-              subjectCode: cls.subject_code,
-              subjectDescription: cls.subject,
-              schedule: formatSchedule(daysString, startTime, endTime),
-              instructorFullName: cls.teacher,
-              className: cls.subject,
-              timeStart: startTime, // e.g., "3:00 AM"
-              timeEnd: endTime, // e.g., "4:30 AM"
-              room: cls.room,
-              units: cls.units,
-              days: parseDays(daysString), // Parsed days
-            };
-          }
-        });
-
-        // Remove any classes that failed to parse
-        const validSelectedClasses = selectedClassesData.filter(
+        // Remove any classes that failed to map
+        const validSelectedClasses = enlistedClassesData.filter(
           (cls) => cls !== null,
         );
 
         setSelectedClasses(validSelectedClasses);
+
+        // Calculate unit limit based on the current semester and year level in the prospectus
+        const currentSemester = studentData.semesterName.trim().toLowerCase();
+        const currentYearLevel = yearLevel.trim().toLowerCase();
+        const semesterUnitsSubjects = prospectusSubjects.filter(
+          (subject) =>
+            subject.semesterName.trim().toLowerCase() === currentSemester &&
+            subject.yearLevel.trim().toLowerCase() === currentYearLevel,
+        );
+
+        // Debugging: Log the subjects used for unit calculation
+        console.log(
+          "Subjects used for unit limit calculation:",
+          semesterUnitsSubjects,
+        );
+
+        const semesterUnits = semesterUnitsSubjects.reduce(
+          (total, subject) => total + (subject.unit || 0),
+          0,
+        );
+        setUnitLimit(semesterUnits);
+
+        // Debugging: Log the calculated unit limit
+        console.log("Calculated unit limit:", semesterUnits);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load student data.", {
@@ -365,6 +415,20 @@ const SubjectEnlistmentPage = () => {
    * @param {object} cls - The class object to add.
    */
   const handleAddClass = (cls) => {
+    // Calculate total units including the new class
+    const newTotalUnits = selectedClasses.reduce(
+      (total, c) => total + (c.units || 0),
+      cls.units || 0,
+    );
+
+    if (unitLimit !== null && newTotalUnits > unitLimit) {
+      toast.error(
+        `Unit limit exceeded! You can only enroll up to ${unitLimit} units.`,
+        { position: "bottom-right" },
+      );
+      return;
+    }
+
     // Find existing class for the same subject
     const existingClass = selectedClasses.find(
       (selectedClass) => selectedClass.subjectCode === cls.subjectCode,
@@ -570,6 +634,13 @@ const SubjectEnlistmentPage = () => {
               <p>
                 Semester: <strong>{studentInfo.semesterName}</strong>
               </p>
+              {/* Add CurriculumTracker here */}
+              {prospectusId && enrolledSubjects && (
+                <CurriculumTracker
+                  prospectus_id={prospectusId}
+                  enrolledSubjects={enrolledSubjects}
+                />
+              )}
             </div>
           )}
 
@@ -629,6 +700,14 @@ const SubjectEnlistmentPage = () => {
                               selected.subjectCode === cls.subjectCode,
                           );
 
+                          // Disable adding if unit limit is reached
+                          const disableAddButton =
+                            isSubmitting ||
+                            isSelected ||
+                            (unitLimit !== null &&
+                              totalUnits >= unitLimit &&
+                              !isSubjectSelected);
+
                           return (
                             <div
                               key={cls.class_id}
@@ -645,7 +724,7 @@ const SubjectEnlistmentPage = () => {
                               </div>
                               <Button
                                 onClick={() => handleAddClass(cls)}
-                                disabled={isSubmitting || isSelected} // Disable if submitting or already selected
+                                disabled={disableAddButton} // Disable if submitting, already selected, or unit limit reached
                                 className={`${
                                   isSelected
                                     ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added
@@ -726,7 +805,10 @@ const SubjectEnlistmentPage = () => {
               <div className="mt-4 flex justify-end">
                 <p className="text-lg font-semibold">
                   Total Units:{" "}
-                  <span className="text-blue-600">{totalUnits}</span>
+                  <span className="text-blue-600">
+                    {totalUnits}
+                    {unitLimit !== null ? `/${unitLimit}` : ""}
+                  </span>
                 </p>
               </div>
 

@@ -72,6 +72,8 @@ const EnrolledSubjects = ({ groupedEnrollments, prospectus_id }) => {
     ([_, enrollments]) => enrollments,
   );
 
+  console.log("enrolledSubjects: ", enrolledSubjects)
+
   return (
     <div className="mb-8 rounded-lg bg-white p-6 shadow-md dark:bg-boxdark dark:!text-white">
       <section>

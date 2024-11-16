@@ -9,23 +9,10 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../ui/dialog";
-import {
-
-  TableCell,
-} from "../ui/table";
+import { TableCell } from "../ui/table";
 import axios from "axios";
 import DotSpinner from "../styles/DotSpinner"; // Adjust the import based on your project structure
 
-/**
- * CurriculumTracker is a React component that displays a dialog to track the student's
- * progress through their prospectus subjects. It shows a table for each year level and
- * semester, displaying subject codes, descriptions, units, prerequisites, and status.
- *
- * @param {object} props - The component props.
- * @param {number} props.prospectus_id - The ID of the prospectus.
- * @param {Array} props.enrolledSubjects - The list of subjects the student has enrolled in.
- * @returns {JSX.Element} The CurriculumTracker component.
- */
 const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [prospectusSubjects, setProspectusSubjects] = useState([]);

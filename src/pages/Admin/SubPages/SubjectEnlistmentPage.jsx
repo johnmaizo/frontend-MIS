@@ -23,6 +23,8 @@ import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs"
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
 import CurriculumTracker from "../../../components/reuseable/CurriculumTracker";
+// Import the Switch component from shadcn
+import { Switch } from "../../../components/ui/switch";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
@@ -34,7 +36,11 @@ const SubjectEnlistmentPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [enrolledSubjects, setEnrolledSubjects] = useState([]);
   const [prospectusId, setProspectusId] = useState(null);
-  const [unitLimit, setUnitLimit] = useState(null); // Added state for unit limit
+  const [unitLimit, setUnitLimit] = useState(null);
+  // New states for toggles
+  const [allowOverloadUnits, setAllowOverloadUnits] = useState(false);
+  const [allowOverCapacityEnrollment, setAllowOverCapacityEnrollment] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -151,6 +157,7 @@ const SubjectEnlistmentPage = () => {
             room: cls.room,
             units: cls.units,
             days: parseDays(daysString), // Parsed days
+            totalStudents: cls.totalStudents || 0, // Added totalStudents
           };
         });
 
@@ -213,6 +220,7 @@ const SubjectEnlistmentPage = () => {
                   room: enrolledClass.room,
                   units: enrolledClass.units,
                   days: parseDays(daysString),
+                  totalStudents: enrolledClass.totalStudents || 0,
                 };
               } else {
                 // If not found, create a placeholder
@@ -228,6 +236,7 @@ const SubjectEnlistmentPage = () => {
                   room: "Unknown",
                   units: 0,
                   days: [],
+                  totalStudents: 0,
                 };
               }
             }
@@ -249,20 +258,12 @@ const SubjectEnlistmentPage = () => {
             subject.yearLevel.trim().toLowerCase() === currentYearLevel,
         );
 
-        // Debugging: Log the subjects used for unit calculation
-        console.log(
-          "Subjects used for unit limit calculation:",
-          semesterUnitsSubjects,
-        );
-
+        // For reference
         const semesterUnits = semesterUnitsSubjects.reduce(
           (total, subject) => total + (subject.unit || 0),
           0,
         );
         setUnitLimit(semesterUnits);
-
-        // Debugging: Log the calculated unit limit
-        console.log("Calculated unit limit:", semesterUnits);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load student data.", {
@@ -415,20 +416,6 @@ const SubjectEnlistmentPage = () => {
    * @param {object} cls - The class object to add.
    */
   const handleAddClass = (cls) => {
-    // Calculate total units including the new class
-    const newTotalUnits = selectedClasses.reduce(
-      (total, c) => total + (c.units || 0),
-      cls.units || 0,
-    );
-
-    if (unitLimit !== null && newTotalUnits > unitLimit) {
-      toast.error(
-        `Unit limit exceeded! You can only enroll up to ${unitLimit} units.`,
-        { position: "bottom-right" },
-      );
-      return;
-    }
-
     // Find existing class for the same subject
     const existingClass = selectedClasses.find(
       (selectedClass) => selectedClass.subjectCode === cls.subjectCode,
@@ -487,6 +474,29 @@ const SubjectEnlistmentPage = () => {
       return;
     }
 
+    // Check unit limit if overloading is not allowed
+    if (!allowOverloadUnits) {
+      const newTotalUnits = selectedClasses.reduce(
+        (total, c) => total + (c.units || 0),
+        cls.units || 0,
+      );
+      if (unitLimit !== null && newTotalUnits > unitLimit) {
+        toast.error(
+          `Unit limit exceeded! You can only enroll up to ${unitLimit} units.`,
+          { position: "bottom-right" },
+        );
+        return;
+      }
+    }
+
+    // Check class capacity if overcapacity enrollment is not allowed
+    if (!allowOverCapacityEnrollment && cls.totalStudents >= 50) {
+      toast.error(`Cannot add "${cls.className}". The class is full.`, {
+        position: "bottom-right",
+      });
+      return;
+    }
+
     if (existingClass) {
       // Replace the existing class with the new one
       setSelectedClasses((prev) => [
@@ -507,6 +517,14 @@ const SubjectEnlistmentPage = () => {
       toast.success(`Added "${cls.className}"`, {
         position: "bottom-right",
       });
+
+      // If overcapacity enrollment is allowed, display a warning
+      if (allowOverCapacityEnrollment && cls.totalStudents >= 50) {
+        toast(
+          `Warning: "${cls.className}" has reached its capacity of 50 students.`,
+          { icon: "⚠️", position: "bottom-right" },
+        );
+      }
     }
   };
 
@@ -644,6 +662,33 @@ const SubjectEnlistmentPage = () => {
             </div>
           )}
 
+          {/* Toggles for allowing overloading and overcapacity enrollment */}
+          <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="allowOverloadUnits"
+                checked={allowOverloadUnits}
+                onCheckedChange={setAllowOverloadUnits}
+              />
+              <label htmlFor="allowOverloadUnits" className="select-none">
+                Allow Overloading Units
+              </label>
+            </div>
+            <div className="mt-2 flex items-center space-x-2 md:mt-0">
+              <Switch
+                id="allowOverCapacityEnrollment"
+                checked={allowOverCapacityEnrollment}
+                onCheckedChange={setAllowOverCapacityEnrollment}
+              />
+              <label
+                htmlFor="allowOverCapacityEnrollment"
+                className="select-none"
+              >
+                Allow Enrollment in Full Classes
+              </label>
+            </div>
+          </div>
+
           <h2 className="text-2xl font-bold">Available Subjects</h2>
           <div className="mt-4 flex flex-col md:flex-row">
             {/* Left side - Subjects */}
@@ -700,13 +745,7 @@ const SubjectEnlistmentPage = () => {
                               selected.subjectCode === cls.subjectCode,
                           );
 
-                          // Disable adding if unit limit is reached
-                          const disableAddButton =
-                            isSubmitting ||
-                            isSelected ||
-                            (unitLimit !== null &&
-                              totalUnits >= unitLimit &&
-                              !isSubjectSelected);
+                          const disableAddButton = isSubmitting || isSelected;
 
                           return (
                             <div
@@ -721,10 +760,19 @@ const SubjectEnlistmentPage = () => {
                                 <p className="font-semibold">{cls.className}</p>
                                 <p>{cls.schedule}</p>
                                 <p>Instructor: {cls.instructorFullName}</p>
+                                <p>
+                                  Enrolled Students: {cls.totalStudents}
+                                  {cls.totalStudents >= 50 && (
+                                    <span className="text-red-500">
+                                      {" "}
+                                      (Class is full)
+                                    </span>
+                                  )}
+                                </p>
                               </div>
                               <Button
                                 onClick={() => handleAddClass(cls)}
-                                disabled={disableAddButton} // Disable if submitting, already selected, or unit limit reached
+                                disabled={disableAddButton} // Disable if submitting or already selected
                                 className={`${
                                   isSelected
                                     ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added

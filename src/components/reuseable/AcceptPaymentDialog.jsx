@@ -110,7 +110,7 @@ const AcceptPaymentDialog = ({
                 </p>
               )}
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overflow-y-auto md:h-[20em]">
                 <table className="min-w-full border-collapse border border-gray-200">
                   <thead className="bg-gray-50">
                     <tr>

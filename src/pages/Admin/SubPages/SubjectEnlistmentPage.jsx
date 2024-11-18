@@ -92,9 +92,13 @@ const SubjectEnlistmentPage = () => {
           prospectusSubjects.map((ps) => ps.courseCode.toUpperCase()),
         );
 
-        // Extract class_ids from student_class_enrollments with status "enrolled"
+        // Extract class_ids from student_class_enrollments with status "enrolled" or "passed"
         const enrolledClassIds = student_class_enrollments
-          .filter((enrollment) => enrollment.status === "enrolled")
+          .filter(
+            (enrollment) =>
+              enrollment.status === "enrolled" ||
+              enrollment.status === "passed",
+          )
           .map((enrollment) => enrollment.class_id);
 
         // Fetch all active classes without filtering by semester_id
@@ -164,22 +168,37 @@ const SubjectEnlistmentPage = () => {
         // Remove any classes that failed to parse
         classesData = classesData.filter((cls) => cls !== null);
 
+        // Include prerequisites in the subjects
+        const prospectusSubjectsMap = {};
+        prospectusSubjects.forEach((subject) => {
+          prospectusSubjectsMap[subject.courseCode.toUpperCase()] = subject;
+        });
+
         // Group classes by subjectCode and subjectDescription
         const subjectsMap = {};
         classesData.forEach((cls) => {
           const key = `${cls.subjectCode} - ${cls.subjectDescription}`;
           if (!subjectsMap[key]) {
-            subjectsMap[key] = [];
+            subjectsMap[key] = {
+              subjectKey: key,
+              classes: [],
+              prerequisites: [],
+            };
           }
-          subjectsMap[key].push(cls);
+          subjectsMap[key].classes.push(cls);
+
+          // Add prerequisites from the prospectusSubjects data
+          const prospectusSubject =
+            prospectusSubjectsMap[cls.subjectCode.toUpperCase()];
+          if (prospectusSubject && prospectusSubject.prerequisites) {
+            subjectsMap[key].prerequisites =
+              prospectusSubject.prerequisites.map((preq) =>
+                preq.courseCode.toUpperCase(),
+              );
+          }
         });
 
-        const subjectsArray = Object.keys(subjectsMap).map((subjectKey) => {
-          return {
-            subjectKey,
-            classes: subjectsMap[subjectKey],
-          };
-        });
+        const subjectsArray = Object.values(subjectsMap);
 
         setSubjects(subjectsArray);
 
@@ -258,7 +277,7 @@ const SubjectEnlistmentPage = () => {
             subject.yearLevel.trim().toLowerCase() === currentYearLevel,
         );
 
-        // For reference
+        // For reference only
         const semesterUnits = semesterUnitsSubjects.reduce(
           (total, subject) => total + (subject.unit || 0),
           0,
@@ -429,6 +448,7 @@ const SubjectEnlistmentPage = () => {
       : selectedClasses;
 
     // Check for schedule conflicts with classesToCheck
+    let conflictingClass = null;
     const conflict = classesToCheck.some((selectedClass) => {
       // Compare days and times
       const daysOverlap = selectedClass.days.some((day) =>
@@ -460,17 +480,28 @@ const SubjectEnlistmentPage = () => {
           return false;
         }
 
-        return (
+        const isConflict =
           (clsStart >= selectedStart && clsStart < selectedEnd) ||
           (clsEnd > selectedStart && clsEnd <= selectedEnd) ||
-          (clsStart <= selectedStart && clsEnd >= selectedEnd) // Overlapping entire duration
-        );
+          (clsStart <= selectedStart && clsEnd >= selectedEnd); // Overlapping entire duration
+
+        if (isConflict) {
+          conflictingClass = selectedClass;
+          return true;
+        }
       }
       return false;
     });
 
     if (conflict) {
-      toast.error("Schedule conflict detected!", { position: "bottom-right" });
+      toast.error(
+        `Schedule conflict detected with ${conflictingClass.subjectCode} - ${conflictingClass.className} on ${formatDays(
+          conflictingClass,
+        )} ${formatTime(conflictingClass.timeStart)} - ${formatTime(
+          conflictingClass.timeEnd,
+        )}.`,
+        { position: "bottom-right", duration: 4000 },
+      );
       return;
     }
 
@@ -622,6 +653,16 @@ const SubjectEnlistmentPage = () => {
     return total + (cls.units || 0);
   }, 0);
 
+  // Collect all subject codes that the student has completed or is currently enrolled in
+  const studentCompletedSubjects = new Set(
+    enrolledSubjects.map((subj) => subj.classDetails.subjectCode.toUpperCase()),
+  );
+
+  // Also include subjects in selectedClasses (subjects the student is enlisting in this session)
+  selectedClasses.forEach((cls) =>
+    studentCompletedSubjects.add(cls.subjectCode.toUpperCase()),
+  );
+
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
@@ -726,73 +767,98 @@ const SubjectEnlistmentPage = () => {
                 <p className="mt-4">No classes found. Please add new Class.</p>
               ) : (
                 <Accordion type="single" collapsible className="mt-4">
-                  {filteredSubjects.map((subject) => (
-                    <AccordionItem
-                      key={subject.subjectKey}
-                      value={subject.subjectKey}
-                    >
-                      <AccordionTrigger>{subject.subjectKey}</AccordionTrigger>
-                      <AccordionContent>
-                        {subject.classes.map((cls) => {
-                          // Determine if this class is already selected
-                          const isSelected = selectedClasses.some(
-                            (selected) => selected.class_id === cls.class_id,
-                          );
+                  {filteredSubjects.map((subject) => {
+                    const prerequisites = subject.prerequisites || [];
+                    // Check if prerequisites are met
+                    const prerequisitesMet = prerequisites.every((preqCode) =>
+                      studentCompletedSubjects.has(preqCode),
+                    );
 
-                          // Determine if any class from the same subject is already selected
-                          const isSubjectSelected = selectedClasses.some(
-                            (selected) =>
-                              selected.subjectCode === cls.subjectCode,
-                          );
+                    return (
+                      <AccordionItem
+                        key={subject.subjectKey}
+                        value={subject.subjectKey}
+                      >
+                        <AccordionTrigger>
+                          {subject.subjectKey}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          {/* Display missing prerequisites if any */}
+                          {!prerequisitesMet && prerequisites.length > 0 && (
+                            <p className="text-red-500">
+                              Missing Prerequisites:{" "}
+                              {prerequisites
+                                .filter(
+                                  (preqCode) =>
+                                    !studentCompletedSubjects.has(preqCode),
+                                )
+                                .join(", ")}
+                            </p>
+                          )}
+                          {subject.classes.map((cls) => {
+                            // Determine if this class is already selected
+                            const isSelected = selectedClasses.some(
+                              (selected) => selected.class_id === cls.class_id,
+                            );
 
-                          const disableAddButton = isSubmitting || isSelected;
+                            // Determine if any class from the same subject is already selected
+                            const isSubjectSelected = selectedClasses.some(
+                              (selected) =>
+                                selected.subjectCode === cls.subjectCode,
+                            );
 
-                          return (
-                            <div
-                              key={cls.class_id}
-                              className={`flex items-center justify-between border-b p-2 ${
-                                isSelected
-                                  ? "bg-green-100" // Light green background for selected
-                                  : "bg-white" // Default background
-                              }`}
-                            >
-                              <div>
-                                <p className="font-semibold">{cls.className}</p>
-                                <p>{cls.schedule}</p>
-                                <p>Instructor: {cls.instructorFullName}</p>
-                                <p>
-                                  Enrolled Students: {cls.totalStudents}
-                                  {cls.totalStudents >= 50 && (
-                                    <span className="text-red-500">
-                                      {" "}
-                                      (Class is full)
-                                    </span>
-                                  )}
-                                </p>
-                              </div>
-                              <Button
-                                onClick={() => handleAddClass(cls)}
-                                disabled={disableAddButton} // Disable if submitting or already selected
-                                className={`${
+                            const disableAddButton =
+                              isSubmitting || isSelected || !prerequisitesMet;
+
+                            return (
+                              <div
+                                key={cls.class_id}
+                                className={`flex items-center justify-between border-b p-2 ${
                                   isSelected
-                                    ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added
-                                    : isSubjectSelected
-                                      ? "bg-yellow-500 text-white hover:bg-yellow-600" // Yellow for replace
-                                      : "bg-blue-500 text-white hover:bg-blue-600" // Blue for add
+                                    ? "bg-green-100" // Light green background for selected
+                                    : "bg-white" // Default background
                                 }`}
                               >
-                                {isSelected
-                                  ? "Added"
-                                  : isSubjectSelected
-                                    ? "Replace"
-                                    : "Add"}
-                              </Button>
-                            </div>
-                          );
-                        })}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
+                                <div>
+                                  <p className="font-semibold">
+                                    {cls.className}
+                                  </p>
+                                  <p>{cls.schedule}</p>
+                                  <p>Instructor: {cls.instructorFullName}</p>
+                                  <p>
+                                    Enrolled Students: {cls.totalStudents}
+                                    {cls.totalStudents >= 50 && (
+                                      <span className="text-red-500">
+                                        {" "}
+                                        (Class is full)
+                                      </span>
+                                    )}
+                                  </p>
+                                </div>
+                                <Button
+                                  onClick={() => handleAddClass(cls)}
+                                  disabled={disableAddButton} // Disable if submitting, already selected, or prerequisites not met
+                                  className={`${
+                                    isSelected
+                                      ? "cursor-not-allowed bg-green-500 text-white hover:bg-green-600" // Green for added
+                                      : isSubjectSelected
+                                        ? "bg-yellow-500 text-white hover:bg-yellow-600" // Yellow for replace
+                                        : "bg-blue-500 text-white hover:bg-blue-600" // Blue for add
+                                  }`}
+                                >
+                                  {isSelected
+                                    ? "Added"
+                                    : isSubjectSelected
+                                      ? "Replace"
+                                      : "Add"}
+                                </Button>
+                              </div>
+                            );
+                          })}
+                        </AccordionContent>
+                      </AccordionItem>
+                    );
+                  })}
                 </Accordion>
               )}
             </div>

@@ -125,18 +125,23 @@ const ViewAccountDetailsPage = () => {
         {!loading && !error && accountData && (
           <>
             {/* Combined Account & Employee Information */}
-            <Card className="mb-6">
+            <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+              
               <h3 className="mb-4 text-2xl font-semibold">
                 Account & Employee Information
               </h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Account Information */}
                 <div>
-                  <p className="text-gray-500 text-sm">Email:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Email:
+                  </p>
                   <p className="text-lg font-medium">{accountData.email}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Verified:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Verified:
+                  </p>
                   <p className="text-lg font-medium">
                     {accountData.isVerified ? (
                       <Badge variant="success">Verified</Badge>
@@ -146,13 +151,17 @@ const ViewAccountDetailsPage = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Account Created:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Account Created:
+                  </p>
                   <p className="text-lg font-medium">
                     {new Date(accountData.created).toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Last Updated:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Last Updated:
+                  </p>
                   <p className="text-lg font-medium">
                     {new Date(accountData.updated).toLocaleString()}
                   </p>
@@ -160,7 +169,9 @@ const ViewAccountDetailsPage = () => {
 
                 {/* Employee Information */}
                 <div>
-                  <p className="text-gray-500 text-sm">Employee Name:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Employee Name:
+                  </p>
                   <p className="text-lg font-medium">
                     {accountData.employee.firstName}{" "}
                     {accountData.employee.middleName}{" "}
@@ -168,44 +179,53 @@ const ViewAccountDetailsPage = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Role:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Role:
+                  </p>
                   <p className="text-lg font-medium">
                     {accountData.employee.role}
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Campus:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Campus:
+                  </p>
                   <p className="text-lg font-medium">
                     {accountData.employee.campus.campusName}
                   </p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-sm">Contact Number:</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Contact Number:
+                  </p>
                   <p className="text-lg font-medium">
                     {accountData.employee.contactNumber}
                   </p>
                 </div>
                 {/* Add more fields as necessary */}
               </div>
-            </Card>
+            </div>
 
             {/* History Logging Tracker */}
-            <Card>
+            <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+              
               <h3 className="mb-4 text-2xl font-semibold">
                 History Logging Tracker
               </h3>
               {accountData.histories.length === 0 ? (
-                <p className="text-gray-500">No history logs available.</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  No history logs available.
+                </p>
               ) : (
                 <Accordion type="multiple" collapsible className="w-full">
                   {Object.entries(groupedHistories)
                     .sort((a, b) => new Date(b[0]) - new Date(a[0])) // Sort by date descending
                     .map(([date, entities]) => (
                       <AccordionItem key={date} value={date}>
-                        <AccordionTrigger className="flex w-full items-center justify-between rounded-lg bg-blue-100 px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
+                        <AccordionTrigger className="dark:bg-gray-700 dark:hover:bg-gray-600 flex w-full items-center justify-between rounded-lg bg-blue-100 px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75 dark:text-blue-300">
                           <span>{date}</span>
                         </AccordionTrigger>
-                        <AccordionContent className="text-gray-500 px-4 pb-2 pt-4 text-sm">
+                        <AccordionContent className="text-gray-500 dark:text-gray-400 px-4 pb-2 pt-4 text-sm">
                           {/* Nested Accordion for Entities */}
                           <Accordion
                             type="multiple"
@@ -216,10 +236,10 @@ const ViewAccountDetailsPage = () => {
                               .sort((a, b) => a[0].localeCompare(b[0])) // Sort entities alphabetically
                               .map(([entity, histories]) => (
                                 <AccordionItem key={entity} value={entity}>
-                                  <AccordionTrigger className="text-gray-800 bg-gray-100 hover:bg-gray-200 focus-visible:ring-gray-500 flex w-full items-center justify-between rounded-lg px-4 py-2 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-opacity-75">
+                                  <AccordionTrigger className="text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 focus-visible:ring-gray-500 flex w-full items-center justify-between rounded-lg px-4 py-2 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-opacity-75">
                                     <span>{entity}</span>
                                   </AccordionTrigger>
-                                  <AccordionContent className="text-gray-600 px-4 pb-2 pt-4 text-sm">
+                                  <AccordionContent className="text-gray-600 dark:text-gray-300 px-4 pb-2 pt-4 text-sm">
                                     <div className="space-y-4">
                                       {histories
                                         .sort(
@@ -243,7 +263,7 @@ const ViewAccountDetailsPage = () => {
                     ))}
                 </Accordion>
               )}
-            </Card>
+            </div>
           </>
         )}
       </div>

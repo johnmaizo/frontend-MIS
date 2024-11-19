@@ -41,6 +41,7 @@ import SubjectEnlistmentPage from "./SubPages/SubjectEnlistmentPage";
 import ViewStudentDetailsPage from "./SubPages/ViewStudentDetailsPage";
 import UpdateStudentInfoPage from "./SubPages/UpdateStudentInfoPage";
 import OnlinePendingApplicantPage from "./SubPages/OnlinePendingApplicantPage";
+import ViewAccountDetailsPage from "./SubPages/ViewAccountDetailsPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -329,6 +330,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Payment Approvals - MIS Benedicto College" />
             <PaymentApprovalPage />
+          </>
+        }
+      />  
+      
+      <Route
+        path="/employees/accounts/campus/:accountCampusName/account/:accountID"
+        element={
+          <>
+            <PageTitle title="View Account Details - MIS Benedicto College" />
+            <ViewAccountDetailsPage />
           </>
         }
       />

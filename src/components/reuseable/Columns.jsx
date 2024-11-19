@@ -47,6 +47,7 @@ import { FacetedFilterSubjectDepartment } from "./FacetedFilterSubjectDepartment
 import EditEmployee from "../api/EditEmployee";
 import EditClass from "../api/EditClass";
 import EditProspectus from "../api/EditProspectus";
+import EditAccount from "../api/EditAccount";
 
 const useColumns = () => {
   const {
@@ -1395,9 +1396,6 @@ const useColumns = () => {
         );
       },
     },
-
-    /*
-
     {
       accessorKey: "updated",
       header: "Date Updated",
@@ -1415,22 +1413,40 @@ const useColumns = () => {
         );
       },
     },
-    {
-      accessorKey: "id",
-      id: "Actions",
+    ...(user &&
+    (HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin"))
+      ? [
+          {
+            accessorFn: (row) => `${row.id} ${row.role} ${row.campusName}`,
 
-      header: "Action",
-      cell: ({ cell }) => {
-        return (
-          <div className="flex items-center gap-1">
-            <EditDepartment departmentId={cell.getValue()} />
-            <EyeIcon title={"View Account"} />
-          </div>
-        );
-      },
-    },
+            id: "Actions",
 
-    */
+            header: "Action",
+            cell: ({ row }) => {
+              return (
+                <div className="flex items-center gap-1">
+                  <div
+                    className={`${user.id !== row.original.id && (HasRole(row.original.role, "Admin") || HasRole(row.original.role, "SuperAdmin")) ? "cursor-not-allowed" : ""}`}
+                  >
+                    <div
+                      className={`${user.id !== row.original.id && (HasRole(row.original.role, "Admin") || HasRole(row.original.role, "SuperAdmin")) ? "pointer-events-none" : ""}`}
+                    >
+                      <EditAccount accountID={row.original.id} />
+                    </div>
+                  </div>
+                  
+                  <Link
+              to={`/employees/accounts/campus/${row.original.campusName}/account/${row.original.id}`}
+              className="p-2"
+            >
+              <EyeIcon title={"View Account"} />
+            </Link>
+                </div>
+              );
+            },
+          },
+        ]
+      : []),
   ];
   // ! Accounts End
 

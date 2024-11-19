@@ -6,6 +6,9 @@ import { HasRole } from "../../../components/reuseable/HasRole";
 import PieChartDepartment from "../../../components/Essentials/PieChartDpartment";
 import BarChartEnrollmentsByDepartment from "../../../components/Essentials/statistics/BarChartEnrollmentsByDepartment";
 import BarChartEnrollmentsBySubject from "../../../components/Essentials/statistics/BarChartEnrollmentsBySubject";
+import EnrollmentTrendsChart from "../../../components/Essentials/statistics/EnrollmentTrendsChart";
+import PieChartEnrollmentStatus from "../../../components/Essentials/statistics/PieChartEnrollmentStatus";
+import PieChartGenderDistribution from "../../../components/Essentials/statistics/PieChartGenderDistribution";
 
 const EmployeeHomePage = () => {
   const { user } = useContext(AuthContext);
@@ -31,10 +34,13 @@ const EmployeeHomePage = () => {
 
         {HasRole(user.allRoles, "Registrar") && (
           <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+            <EnrollmentTrendsChart filters={filters} />
             <PieChartDepartment />
 
             <BarChartEnrollmentsByDepartment filters={filters} />
             <BarChartEnrollmentsBySubject filters={filters} />
+            <PieChartEnrollmentStatus filters={filters} />
+            <PieChartGenderDistribution filters={filters} />
           </div>
         )}
       </>

@@ -8,7 +8,6 @@ import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
 
 // Importing shadCN components
-import { Card } from "../../../components/ui/Card";
 import { Badge } from "../../../components/ui/badge";
 
 // Importing Accordion components from shadCN

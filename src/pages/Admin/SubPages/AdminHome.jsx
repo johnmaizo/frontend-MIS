@@ -24,6 +24,9 @@ import BarChartEnrollmentsByDepartment from "../../../components/Essentials/stat
 import BarChartEnrollmentsBySubject from "../../../components/Essentials/statistics/BarChartEnrollmentsBySubject";
 import PieChartEnrollmentStatus from "../../../components/Essentials/statistics/PieChartEnrollmentStatus";
 import PieChartGenderDistribution from "../../../components/Essentials/statistics/PieChartGenderDistribution";
+import EnrollmentTrendsChart from "../../../components/Essentials/statistics/EnrollmentTrendsChart";
+import FilterComponent from "../../../components/Essentials/statistics/FilterComponent";
+import DataExportButton from "../../../components/Essentials/statistics/DataExportButton";
 
 const AdminHome = () => {
   const { user } = useContext(AuthContext);
@@ -49,13 +52,21 @@ const AdminHome = () => {
         <CardTotalEnrollments />
       </div>
 
-      <div className="mt-8">{/* <UserTables /> */}</div>
+      <div className="mt-8">
+        {/* <UserTables /> */}{" "}
+        <FilterComponent filters={filters} setFilters={setFilters} />
+        <DataExportButton
+          endpoint="/statistics/export-enrollments"
+          filename="enrollments.csv"
+          filters={filters}
+        />
+      </div>
 
       {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (
         // <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           {/* <ChartOne /> */}
-          {/* <ChartThree /> */}
+          <EnrollmentTrendsChart filters={filters} />
           <PieChartDepartment />
 
           <BarChartEnrollmentsByDepartment filters={filters} />

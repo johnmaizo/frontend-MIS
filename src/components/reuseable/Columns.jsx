@@ -2761,22 +2761,40 @@ const useColumns = () => {
         return cell.getValue().toString();
       },
     },
+    // {
+    //   accessorKey: "totalStudents",
+    //   header: ({ column }) => {
+    //     return (
+    //       <FacetedFilterEnrollment
+    //         column={column}
+    //         title="Students"
+    //         options={getUniqueCodes(classes, "totalStudents")}
+    //       />
+    //     );
+    //   },
+    //   filterFn: (row, id, value) => {
+    //     return value.includes(row.getValue(id));
+    //   },
+    //   cell: ({ cell }) => {
+    //     return cell.getValue().toString();
+    //   },
+    // },
     {
       accessorKey: "totalStudents",
       header: ({ column }) => {
         return (
-          <FacetedFilterEnrollment
-            column={column}
-            title="Students"
-            options={getUniqueCodes(classes, "totalStudents")}
-          />
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="p-1 hover:underline hover:underline-offset-4"
+          >
+            Students
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
         );
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id));
-      },
       cell: ({ cell }) => {
-        return cell.getValue().toString();
+        return cell.getValue();
       },
     },
     {

@@ -357,10 +357,10 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
           </DialogDescription>
           <div>
             {loading ? (
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col h-[37.5em] items-center justify-center">
                 <DotSpinner size="3.8rem" />
                 <span className="mt-4 text-lg font-bold">
-                  Loading Curriculum Tracker...
+                  Loading Prospectus...
                 </span>
               </div>
             ) : error ? (
@@ -463,7 +463,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                                 ),
                                               ),
                                             ).join(", ")
-                                          : "N/A"}
+                                          : ""}
                                       </TableCell>
                                       <TableCell className="border p-2 text-center">
                                         <span
@@ -486,19 +486,19 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                     </td>
                                     <td className="border p-2 text-center font-bold">
                                       {/* Sum of Lec Units */}
-                                      {subjects.reduce(
+                                      {/* {subjects.reduce(
                                         (sum, subj) =>
                                           sum + (subj.lecUnits || 0),
                                         0,
-                                      )}
+                                      )} */}
                                     </td>
                                     <td className="border p-2 text-center font-bold">
                                       {/* Sum of Lab Units */}
-                                      {subjects.reduce(
+                                      {/* {subjects.reduce(
                                         (sum, subj) =>
                                           sum + (subj.labUnits || 0),
                                         0,
-                                      )}
+                                      )} */}
                                     </td>
                                     <td className="border p-2 text-center font-bold">
                                       {totalUnits}

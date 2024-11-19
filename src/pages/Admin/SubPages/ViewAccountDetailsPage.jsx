@@ -127,7 +127,7 @@ const ViewAccountDetailsPage = () => {
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               
               <h3 className="mb-4 text-2xl font-semibold">
-                Account & Employee Information
+                Account Information
               </h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {/* Account Information */}
@@ -143,9 +143,9 @@ const ViewAccountDetailsPage = () => {
                   </p>
                   <p className="text-lg font-medium">
                     {accountData.isVerified ? (
-                      <Badge variant="success">Verified</Badge>
+                      <Badge variant="success" className={"!bg-green-500 !text-white"}>Verified</Badge>
                     ) : (
-                      <Badge variant="danger">Not Verified</Badge>
+                      <Badge variant="danger" className={"!bg-red-500 !text-white"}>Not Verified</Badge>
                     )}
                   </p>
                 </div>
@@ -169,7 +169,7 @@ const ViewAccountDetailsPage = () => {
                 {/* Employee Information */}
                 <div>
                   <p className="text-gray-500 dark:text-gray-400 text-sm">
-                    Employee Name:
+                    Name:
                   </p>
                   <p className="text-lg font-medium">
                     {accountData.employee.firstName}{" "}

@@ -91,8 +91,8 @@ const ViewAccountDetailsPage = () => {
       <BreadcrumbResponsive
         pageName={
           !HasRole(user.role, "SuperAdmin")
-            ? `Student Details (${user?.campusName})`
-            : "Student Details (All Campuses)"
+            ? `Account Details (${user?.campusName})`
+            : "Account Details"
         }
         items={NavItems}
         ITEMS_TO_DISPLAY={3}

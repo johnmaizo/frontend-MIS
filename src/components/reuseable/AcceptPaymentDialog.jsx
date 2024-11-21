@@ -50,6 +50,9 @@ const AcceptPaymentDialog = ({
       const response = await axios.get(
         `/enrollment/student-enrolled-classes/${studentPersonalId}/${semesterId}?status=enlisted`,
       );
+
+      console.log(response.data)
+
       setEnlistedSubjects(response.data);
 
       // Set semester info from the first class (assuming all classes are in the same semester)

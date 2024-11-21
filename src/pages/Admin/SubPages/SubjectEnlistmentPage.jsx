@@ -734,11 +734,38 @@ const SubjectEnlistmentPage = () => {
           <div className="mt-4 flex flex-col md:flex-row">
             {/* Left side - Subjects */}
             <div className="w-full pr-4 md:w-1/2">
-              <Input
-                placeholder="Search by subject code or class name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              {/* **Modified Search Input with Clear ('X') Button Start** */}
+              <div className="relative">
+                <Input
+                  placeholder="Search by subject code or class name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchTerm("")}
+                    className="text-gray-500 hover:text-gray-700 absolute right-3 top-1/2 -translate-y-1/2 transform focus:outline-none"
+                    aria-label="Clear search"
+                  >
+                    {/* 'X' Icon */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 8.586L15.95 2.636a1 1 0 111.414 1.414L11.414 10l5.95 5.95a1 1 0 01-1.414 1.414L10 11.414l-5.95 5.95a1 1 0 01-1.414-1.414L8.586 10 2.636 4.05a1 1 0 011.414-1.414L10 8.586z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              {/* **Modified Search Input with Clear ('X') Button End** */}
+
               {loading ? (
                 <div className="mt-4 flex justify-center">
                   {/* Spinner */}
@@ -766,7 +793,7 @@ const SubjectEnlistmentPage = () => {
               ) : filteredSubjects.length === 0 ? (
                 <p className="mt-4">No classes found. Please add new Class.</p>
               ) : (
-                <Accordion type="single" collapsible className="mt-4">
+                <Accordion type="single" collapsible className="mt-4 h-[95em] overflow-y-auto">
                   {filteredSubjects.map((subject) => {
                     const prerequisites = subject.prerequisites || [];
                     // Check if prerequisites are met
@@ -835,6 +862,8 @@ const SubjectEnlistmentPage = () => {
                                     )}
                                   </p>
                                 </div>
+                                {/* **Added Room Information Here** */}
+                                <p>Room: {cls.room}</p>
                                 <Button
                                   onClick={() => handleAddClass(cls)}
                                   disabled={disableAddButton} // Disable if submitting, already selected, or prerequisites not met
@@ -897,7 +926,7 @@ const SubjectEnlistmentPage = () => {
                           {formatTime(cls.timeStart)} -{" "}
                           {formatTime(cls.timeEnd)}
                         </TableCell>
-                        <TableCell>{cls.room}</TableCell>
+                        <TableCell>{cls.room || "N/A"}</TableCell>
                         <TableCell>{cls.units}</TableCell>
                         <TableCell>
                           <Button

@@ -2585,7 +2585,9 @@ const useColumns = () => {
             <div
               className={`flex items-center gap-1 ${(HasRole(row.getValue("role"), "Admin") || HasRole(row.getValue("role"), "SuperAdmin")) && !(HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin")) ? "pointer-events-none hover:cursor-not-allowed" : ""}`}
             >
-              <EditEmployee employeeId={row.getValue("employee_id")} />
+              <div className={`${row.original.employee_id !== row.original.employee_id && (HasRole(row.original.role, "Admin") || HasRole(row.original.role, "SuperAdmin")) ? "pointer-events-none bg-red-700" : ""}`} >
+                <EditEmployee employeeId={row.getValue("employee_id")} />
+              </div>
               {/* 
               <Dialog>
                 <DialogTrigger className="p-2 hover:text-primary">
@@ -2672,6 +2674,7 @@ const useColumns = () => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
       },
     },
+    /*
     {
       accessorKey: "subject",
       header: ({ column }) => {
@@ -2690,6 +2693,7 @@ const useColumns = () => {
         return cell.getValue();
       },
     },
+    */
     {
       accessorKey: "fullDepartmentNameWithCampus",
       header: ({ column }) => {

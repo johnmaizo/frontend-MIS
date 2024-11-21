@@ -49,7 +49,7 @@ const AdminHome = () => {
         <CardDataDepartment />
         <CardDataPrograms />
         <CardDataCourse />
-        <CardTotalEnrollments />
+        {/* <CardTotalEnrollments /> */}
       </div>
 
       <div className="mt-8">

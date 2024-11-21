@@ -49,9 +49,9 @@ const ViewAccountDetailsPage = () => {
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
-    { to: "/enrollments/all-students", label: "All Students" },
+    { to: "/employees/accounts", label: "Accounts" },
     {
-      label: "Student Details",
+      label: "Account Details",
     },
   ];
 

@@ -34,7 +34,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
     yaxis: {
       title: {
-        text: "Number of Enrollments",
+        text: "Number of Unique Students", // Updated y-axis title
       },
       min: 0,
       forceNiceScale: true,
@@ -44,6 +44,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // New state for error handling
 
   useEffect(() => {
     const fetchEnrollmentsByCourse = async () => {
@@ -56,50 +57,28 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         const response = await axios.get("/statistics/enrollments-by-course", {
           params,
         });
-        const data = response.data;
+        const { categories, data, othersDescriptions } = response.data;
 
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid data format: Expected an array");
+        if (
+          !categories ||
+          !Array.isArray(categories) ||
+          !Array.isArray(data) ||
+          !othersDescriptions ||
+          typeof othersDescriptions !== "object"
+        ) {
+          throw new Error("Invalid data format: Expected structured data");
         }
 
-        // Sort the data in descending order based on totalEnrollments
-        const sortedData = [...data].sort(
-          (a, b) => b.totalEnrollments - a.totalEnrollments,
-        );
-
-        // Select the top 3 courses
-        const topCourses = sortedData.slice(0, 3);
-
-        // Aggregate the remaining courses into "Others"
-        const others = sortedData.slice(3);
-
-        // Calculate the total enrollments for "Others"
-        const othersTotalEnrollments = others.reduce(
-          (acc, curr) => acc + curr.totalEnrollments,
-          0,
-        );
-
-        // Collect the descriptions and enrollment counts of the courses under "Others"
-        const othersDescriptions = others.map(
-          (course) =>
-            `${course.courseCode} - ${course.courseDescription}: ${course.totalEnrollments}`,
-        );
-
-        // Prepare the final categories and series data
-        const finalCategories = [
-          ...topCourses.map((item) => `${item.courseCode}`),
-          "Others",
-        ];
-
-        const finalEnrollments = [
-          ...topCourses.map((item) => item.totalEnrollments),
-          othersTotalEnrollments,
-        ];
+        console.log("Fetched Enrollment Trends by Subject:", {
+          categories,
+          data,
+          othersDescriptions,
+        });
 
         // Update the chart options with categories and customized tooltip
         setOptions((prev) => ({
           ...prev,
-          xaxis: { categories: finalCategories },
+          xaxis: { categories: categories },
           tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
               const category = w.globals.labels[dataPointIndex]; // Corrected access
@@ -118,7 +97,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
                 // For other categories, display the default tooltip
                 return `<div style="padding:10px;">
                           <strong>${category}</strong><br/>
-                          Enrollments: ${finalEnrollments[dataPointIndex]}
+                          Unique Students: ${data[dataPointIndex]}
                         </div>`;
               }
             },
@@ -126,9 +105,10 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         }));
 
         // Update the series data
-        setSeries([{ name: "Enrollments", data: finalEnrollments }]);
+        setSeries([{ name: "Unique Students", data: data }]);
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);
+        setError("Failed to load enrollments by subject.");
         // Optionally, update the chart to indicate an error
         setOptions((prev) => ({
           ...prev,
@@ -178,13 +158,19 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           </svg>
           <p className="text-lg">Loading...</p>
         </div>
+      ) : error ? (
+        <div className="flex h-80 items-center justify-center">
+          <p className="text-red-500">{error}</p>
+        </div>
       ) : series.length > 0 ? (
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="bar"
-          height={350}
-        />
+        <div className="mt-5 overflow-hidden">
+          <ReactApexChart
+            options={options}
+            series={series}
+            type="bar"
+            height={350}
+          />
+        </div>
       ) : (
         <p className="text-gray-500 text-center">
           No enrollment data available for the selected filters.

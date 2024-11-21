@@ -22,7 +22,7 @@ const DataExportButton = ({ endpoint, filename, filters }) => {
   };
 
   return (
-    <button onClick={handleExport} className="btn btn-primary">
+    <button onClick={handleExport} className="p-2 bg-blue-600 rounded-md hover:bg-blue-700 !text-white">
       Export Data
     </button>
   );

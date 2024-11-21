@@ -117,7 +117,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return `${val} Students`; // Updated tooltip
+          return `${val} Student${val !== 1 ? "s" : ""}`; // Updated tooltip
         },
         title: {
           formatter: (seriesName) => seriesName,

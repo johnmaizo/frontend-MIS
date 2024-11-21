@@ -98,7 +98,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
     },
     yaxis: {
       title: {
-        text: "Total Enrollments",
+        text: "Total Students", // Updated y-axis title
         style: {
           fontSize: "14px",
           fontWeight: 600,
@@ -117,7 +117,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return `${val} Students`;
+          return `${val} Students`; // Updated tooltip
         },
         title: {
           formatter: (seriesName) => seriesName,
@@ -185,13 +185,13 @@ const EnrollmentTrendsChart = ({ filters }) => {
         }
 
         const semesters = data.map((item) => item.semester);
-        const totalEnrollments = data.map((item) => item.totalEnrollments);
+        const totalStudents = data.map((item) => item.totalStudents); // Updated property name
 
         setOptions((prev) => ({
           ...prev,
           xaxis: { categories: semesters },
         }));
-        setSeries([{ name: "Total Enrollments", data: totalEnrollments }]);
+        setSeries([{ name: "Total Students", data: totalStudents }]); // Updated series name
       } catch (err) {
         console.error("Error fetching enrollment trends:", err);
         setError("Failed to load enrollment trends.");

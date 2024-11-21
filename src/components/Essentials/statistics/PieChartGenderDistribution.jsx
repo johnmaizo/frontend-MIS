@@ -115,7 +115,7 @@ const PieChartGenderDistribution = ({ filters }) => {
             tooltip: {
               y: {
                 formatter: function (val) {
-                  return `${val} Enrollments`;
+                  return `${val} Student${ val === 1 ? "" : "s"}`;
                 },
               },
             },

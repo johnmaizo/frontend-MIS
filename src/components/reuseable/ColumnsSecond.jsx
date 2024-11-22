@@ -665,7 +665,7 @@ const useColumnsSecond = () => {
 
         return (
           <Link
-            to={`/enrollments/enlist-student/${student.student_personal_id}`}
+            to={`/enrollments/subject-enlistment/${student.student_personal_id}`}
           >
             <Button
               variant="ghost"

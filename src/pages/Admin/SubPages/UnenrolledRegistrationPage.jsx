@@ -68,7 +68,25 @@ const UnenrolledRegistrationPage = () => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="existing-students">
-          <UnenrolledStudentsTable view="existing-students" />
+          {/* Nested Tabs for Existing Students */}
+          <Tabs defaultValue="unenrolled" className="w-full">
+            <TabsList>
+              <TabsTrigger value="unenrolled">Unenrolled Students</TabsTrigger>
+              <TabsTrigger value="enlistment">Enlistment</TabsTrigger>
+            </TabsList>
+            <TabsContent value="unenrolled">
+              <UnenrolledStudentsTable
+                view="existing-students"
+                subView="unenrolled"
+              />
+            </TabsContent>
+            <TabsContent value="enlistment">
+              <UnenrolledStudentsTable
+                view="existing-students"
+                subView="enlistment"
+              />
+            </TabsContent>
+          </Tabs>
         </TabsContent>
         <TabsContent value="new-students">
           <UnenrolledStudentsTable view="new-students" />
@@ -78,7 +96,8 @@ const UnenrolledRegistrationPage = () => {
   );
 };
 
-const UnenrolledStudentsTable = ({ view }) => {
+const UnenrolledStudentsTable = ({ view, subView }) => {
+  const { user } = useContext(AuthContext);
   const [selectedSemesterId, setSelectedSemesterId] = useState(null);
 
   const {
@@ -108,16 +127,26 @@ const UnenrolledStudentsTable = ({ view }) => {
   }, [semesters]);
 
   useEffect(() => {
-    fetchPendingStudents(view, selectedSemesterId);
-  }, [view, selectedSemesterId]);
+    fetchPendingStudents(view, selectedSemesterId, subView);
+  }, [view, selectedSemesterId, subView]);
 
-  const { columnExistingStudents, columnNewUnenrolledStudents } =
-    useColumnsSecond();
+  const {
+    columnExistingStudents,
+    columnNewUnenrolledStudents,
+    columnEnlistment,
+  } = useColumnsSecond(pendingStudents);
 
-  const columns =
-    view === "existing-students"
-      ? columnExistingStudents
-      : columnNewUnenrolledStudents;
+  // Select columns based on view and subView
+  let columns;
+  if (view === "existing-students") {
+    if (subView === "enlistment") {
+      columns = columnEnlistment;
+    } else {
+      columns = columnExistingStudents;
+    }
+  } else if (view === "new-students") {
+    columns = columnNewUnenrolledStudents;
+  }
 
   return (
     <DataTable

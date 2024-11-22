@@ -607,6 +607,76 @@ const useColumnsSecond = () => {
     },
   ];
 
+  const columnEnlistment = [
+    {
+      accessorKey: "student_id",
+      header: "Student ID",
+      cell: ({ cell }) => (
+        <span className="text-base font-medium">{cell.getValue()}</span>
+      ),
+    },
+    {
+      accessorKey: "fullName",
+      header: "Full Name",
+      cell: ({ cell }) => (
+        <span className="text-lg font-semibold">{cell.getValue()}</span>
+      ),
+    },
+    {
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(pendingStudents, "programCode")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => (
+        <span className="text-lg font-semibold">{cell.getValue()}</span>
+      ),
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(pendingStudents, "yearLevel")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => <span className="text-lg">{cell.getValue()}</span>,
+    },
+    {
+      header: "Actions",
+      id: "actions",
+      cell: ({ row }) => {
+        const student = row.original;
+        return (
+          <Link
+            to={`/enrollments/enlist-student/${student.student_personal_id}`}
+          >
+            <Button
+              variant="ghost"
+              className="text-blue-500 hover:text-blue-700"
+            >
+              Enlist Student
+            </Button>
+          </Link>
+        );
+      },
+    },
+  ];
+
   const columnPendingOnlineApplicant = [
     {
       accessorKey: "fulldata_applicant_id",
@@ -781,6 +851,7 @@ const useColumnsSecond = () => {
 
     columnExistingStudents,
     columnNewUnenrolledStudents,
+    columnEnlistment,
 
     columnPendingOnlineApplicant,
   };

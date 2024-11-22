@@ -590,11 +590,11 @@ const useColumnsSecond = () => {
       header: "Actions",
       id: "actions",
       cell: ({ row }) => {
-        const studentPersonalId = row.original.id;
+        const student = row.original;
         const hasEnlistedSubjects = row.original.hasEnlistedSubjects;
 
         return (
-          <Link to={`/enrollments/subject-enlistment/${studentPersonalId}`}>
+          <Link to={`/enrollments/subject-enlistment/${student.student_personal_id}`}>
             <Button
               variant="ghost"
               className="text-blue-500 hover:text-blue-700"

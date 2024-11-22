@@ -29,6 +29,9 @@ const AcceptPaymentDialog = ({
     semesterName: "",
   });
 
+  
+  const [semesterID, setSemesterID] = useState("");
+
   useEffect(() => {
     if (open) {
       fetchEnlistedSubjects();
@@ -45,6 +48,7 @@ const AcceptPaymentDialog = ({
         `/enrollment/student-academic-background/${studentPersonalId}`,
       );
       const semesterId = academicBackgroundResponse.data.semester_id;
+      setSemesterID(semesterId)
 
       // Fetch enlisted classes for the student and semester
       const response = await axios.get(
@@ -184,7 +188,7 @@ const AcceptPaymentDialog = ({
               action="accept"
               loadingOutisde={loadingSubjects}
               onSuccess={() => {
-                fetchEnrollmentStatus("approvals");
+                fetchEnrollmentStatus("approvals", semesterID);
                 setOpen(false); // Close the dialog after success
               }}
             >

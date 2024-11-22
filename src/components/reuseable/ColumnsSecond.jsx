@@ -661,6 +661,8 @@ const useColumnsSecond = () => {
       id: "actions",
       cell: ({ row }) => {
         const student = row.original;
+        const hasEnlistedSubjects = row.original.hasEnlistedSubjects;
+
         return (
           <Link
             to={`/enrollments/enlist-student/${student.student_personal_id}`}
@@ -669,7 +671,7 @@ const useColumnsSecond = () => {
               variant="ghost"
               className="text-blue-500 hover:text-blue-700"
             >
-              Enlist Student
+              {hasEnlistedSubjects ? "Edit Enlistment" : "Enlist Subjects"}
             </Button>
           </Link>
         );

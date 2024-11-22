@@ -13,6 +13,7 @@ import EnrolledSubjects from "../../../components/EnrolledSubjects";
 const ViewStudentDetailsPage = () => {
   const { view_student_id, view_campus_id } = useParams();
   const [studentData, setStudentData] = useState(null);
+  const [gradesData, setGradesData] = useState([]); // New state variable for grades
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,10 +34,18 @@ const ViewStudentDetailsPage = () => {
           response.data.student_personal_datum
             ?.student_current_academicbackground?.prospectus_id;
         setProspectus_id(prospectus);
+
+        // Fetch grades data after fetching student data
+        return axios.get("/students/get-student-grades", {
+          params: { student_id: view_student_id, campus_id: view_campus_id },
+        });
+      })
+      .then((gradesResponse) => {
+        setGradesData(gradesResponse.data.students || []);
       })
       .catch((error) => {
-        console.error("Error fetching student data:", error);
-        setError("Failed to fetch student data.");
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch data.");
         setLoading(false);
       });
   }, [view_student_id, view_campus_id]);
@@ -177,7 +186,9 @@ const ViewStudentDetailsPage = () => {
                     {/* Profile Picture */}
                     <div className="mb-6 flex items-center justify-center">
                       <div
-                        className={` ${loading ? "grid place-content-center" : ""} h-[15em] w-[15em] rounded-full border bg-white dark:bg-boxdark`}
+                        className={` ${
+                          loading ? "grid place-content-center" : ""
+                        } h-[15em] w-[15em] rounded-full border bg-white dark:bg-boxdark`}
                       >
                         {loading ? (
                           <ProfileLoadingIcon />
@@ -185,7 +196,7 @@ const ViewStudentDetailsPage = () => {
                           <img
                             src={loadingProfile}
                             alt="Anonymous Profile"
-                            className="object-cove h-full w-full rounded-full" // Make the image fill the container
+                            className="object-cove h-full w-full rounded-full"
                           />
                         )}
                         <p className="mt-2 flex items-center justify-center gap-1 rounded-md bg-blue-700 p-2 !text-white">
@@ -197,10 +208,6 @@ const ViewStudentDetailsPage = () => {
 
                     <div className="mt-17 grid grid-cols-1 gap-6 md:grid-cols-2">
                       <div>
-                        {/* <p className="text-gray-700">
-                      <span className="font-medium">Student ID:</span>{" "}
-                      {student_id}
-                    </p> */}
                         <p className="text-gray-700">
                           <span className="font-medium">Name:</span> {firstName}{" "}
                           {middleName ? `${middleName} ` : ""}
@@ -706,6 +713,7 @@ const ViewStudentDetailsPage = () => {
                     <EnrolledSubjects
                       groupedEnrollments={groupedEnrollments}
                       prospectus_id={prospectus_id}
+                      gradesData={gradesData} // Pass grades data here
                     />
                   )}
 

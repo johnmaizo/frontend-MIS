@@ -60,7 +60,7 @@ const SubjectEnlistmentPage = () => {
         console.log("academicBackground:", academicBackground);
 
         // Extract prospectus_id and student_class_enrollments
-        const { prospectus_id, student_class_enrollments, yearLevel } =
+        const { prospectus_id, student_class_enrollments, yearLevel, semester_id, campus_id } =
           academicBackground;
 
         // Fetch prospectus subjects
@@ -102,7 +102,12 @@ const SubjectEnlistmentPage = () => {
           .map((enrollment) => enrollment.class_id);
 
         // Fetch all active classes without filtering by semester_id
-        const classesResponse = await axios.get(`/class/active`);
+        const classesResponse = await axios.get(`/class/active`, {
+          params: {
+            semester_id: semester_id, 
+            campus_id: campus_id,
+          }
+        });
         let classesData = classesResponse.data;
 
         // Map class IDs to subject codes for enrolled classes

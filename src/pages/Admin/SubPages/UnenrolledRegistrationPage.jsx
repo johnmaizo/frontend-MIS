@@ -29,6 +29,14 @@ import SearchInput from "../../../components/reuseable/SearchInput";
 import ResetFilter from "../../../components/reuseable/ResetFilter";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { useColumnsSecond } from "../../../components/reuseable/ColumnsSecond";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../../../components/ui/select";
+import { useSchool } from "../../../components/context/SchoolContext";
 
 const UnenrolledRegistrationPage = () => {
   const { user } = useContext(AuthContext);
@@ -71,6 +79,8 @@ const UnenrolledRegistrationPage = () => {
 };
 
 const UnenrolledStudentsTable = ({ view }) => {
+  const [selectedSemesterId, setSelectedSemesterId] = useState(null);
+
   const {
     pendingStudents,
     fetchPendingStudents,
@@ -78,9 +88,28 @@ const UnenrolledStudentsTable = ({ view }) => {
     error,
   } = useEnrollment();
 
+  const { fetchSemesters, semesters } = useSchool();
+
   useEffect(() => {
-    fetchPendingStudents(view);
-  }, [view]);
+    fetchSemesters();
+  }, []);
+
+  useEffect(() => {
+    // Set default selected semester based on the active semester
+    if (semesters.length > 0) {
+      const activeSemester = semesters.find((sem) => sem.isActive);
+      if (activeSemester) {
+        setSelectedSemesterId(activeSemester.semester_id.toString());
+      } else {
+        // If no active semester, set to the first semester in the list
+        setSelectedSemesterId(semesters[0].semester_id.toString());
+      }
+    }
+  }, [semesters]);
+
+  useEffect(() => {
+    fetchPendingStudents(view, selectedSemesterId);
+  }, [view, selectedSemesterId]);
 
   const { columnExistingStudents, columnNewUnenrolledStudents } =
     useColumnsSecond();
@@ -96,11 +125,22 @@ const UnenrolledStudentsTable = ({ view }) => {
       data={pendingStudents}
       loading={loadingPendingStudents}
       error={error}
+      semesters={semesters}
+      selectedSemesterId={selectedSemesterId}
+      setSelectedSemesterId={setSelectedSemesterId}
     />
   );
 };
 
-const DataTable = ({ data, columns, loading, error }) => {
+const DataTable = ({
+  data,
+  columns,
+  loading,
+  error,
+  semesters,
+  selectedSemesterId,
+  setSelectedSemesterId,
+}) => {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
 
@@ -125,6 +165,12 @@ const DataTable = ({ data, columns, loading, error }) => {
     },
   });
 
+  // Combine School Year and Semester Name for selector
+  const combinedSemesters = semesters.map((sem) => ({
+    id: sem.semester_id.toString(),
+    label: `${sem.schoolYear} - ${sem.semesterName}`,
+  }));
+
   return (
     <>
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
@@ -137,8 +183,30 @@ const DataTable = ({ data, columns, loading, error }) => {
                 setFilterValue={(value) =>
                   table.getColumn("fullName")?.setFilterValue(value)
                 }
-                className="md:max-w-[12em] transition-none"
+                className="transition-none md:max-w-[12em]"
               />
+
+              {/* Semester Selector */}
+              <Select
+                value={selectedSemesterId || "all-semesters"}
+                onValueChange={(value) =>
+                  setSelectedSemesterId(
+                    value === "all-semesters" ? null : value,
+                  )
+                }
+              >
+                <SelectTrigger className="mb-5 h-[3.3em] w-[18em] md:mb-0">
+                  <SelectValue placeholder="Select Semester" />
+                </SelectTrigger>
+                <SelectContent className="dark:bg-[#1A222C]">
+                  <SelectItem value="all-semesters">All Semesters</SelectItem>
+                  {combinedSemesters.map((sem) => (
+                    <SelectItem key={sem.id} value={sem.id}>
+                      {sem.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="mb-5 md:mb-0">
               <ResetFilter table={table} className={"h-[3.3em]"} />

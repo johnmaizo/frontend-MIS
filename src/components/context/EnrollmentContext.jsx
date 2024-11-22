@@ -125,23 +125,25 @@ export const EnrollmentProvider = ({ children }) => {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [loadingPendingStudents, setLoadingPendingStudents] = useState(false);
 
-  const fetchPendingStudents = async (view) => {
+  const fetchPendingStudents = async (view, semesterId) => {
     setError("");
     setLoadingPendingStudents(true);
     try {
       let params = {};
 
       if (view === "existing-students") {
-        // Fetch existing students not enrolled in the new semester
+        // Fetch existing students not enrolled in the selected semester
         params = {
           campus_id: user.campus_id,
           existing_students: true,
+          semester_id: semesterId,
         };
       } else if (view === "new-students") {
         // Fetch new unenrolled students
         params = {
           campus_id: user.campus_id,
           new_unenrolled_students: true,
+          semester_id: semesterId,
         };
       }
 

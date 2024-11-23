@@ -82,6 +82,10 @@ const DropdownUser = () => {
                 <Badge className="!bg-emerald-700 !text-white hover:!bg-emerald-800">
                   MIS {user.campusName && `(${user.campusName})`}
                 </Badge>
+              ) : HasRole(user.role, "Accounting") ? (
+                <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
+                  Accounting {user.campusName && `(${user.campusName})`}
+                </Badge>
               ) : HasRole(user.role, "Registrar") ? (
                 <Badge className="!bg-violet-800 !text-white hover:!bg-violet-900">
                   Registrar {user.campusName && `(${user.campusName})`}
@@ -93,10 +97,6 @@ const DropdownUser = () => {
               ) : HasRole(user.role, "Dean") ? (
                 <Badge className="!bg-cyan-700 !text-white hover:!bg-cyan-800">
                   Dean {user.campusName && `(${user.campusName})`}
-                </Badge>
-              ) : HasRole(user.role, "Accounting") ? (
-                <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
-                  Accounting {user.campusName && `(${user.campusName})`}
                 </Badge>
               ) : (
                 <span className="ml-1 font-semibold">
@@ -170,6 +170,10 @@ const DropdownUser = () => {
                     <Badge className="!bg-emerald-700 !text-white hover:!bg-emerald-800">
                       MIS {user.campusName && `(${user.campusName})`}
                     </Badge>
+                  ) : HasRole(user.role, "Accounting") ? (
+                    <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
+                      Accounting {user.campusName && `(${user.campusName})`}
+                    </Badge>
                   ) : HasRole(user.role, "Registrar") ? (
                     <Badge className="!bg-violet-800 !text-white hover:!bg-violet-900">
                       Registrar {user.campusName && `(${user.campusName})`}
@@ -181,10 +185,6 @@ const DropdownUser = () => {
                   ) : HasRole(user.role, "Dean") ? (
                     <Badge className="!bg-cyan-700 !text-white hover:!bg-cyan-800">
                       Dean {user.campusName && `(${user.campusName})`}
-                    </Badge>
-                  ) : HasRole(user.role, "Accounting") ? (
-                    <Badge className="!bg-green-500 !text-white hover:!bg-green-600">
-                      Accounting {user.campusName && `(${user.campusName})`}
                     </Badge>
                   ) : (
                     <span className="ml-1 font-semibold">

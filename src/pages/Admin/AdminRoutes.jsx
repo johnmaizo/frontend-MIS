@@ -42,6 +42,7 @@ import ViewStudentDetailsPage from "./SubPages/ViewStudentDetailsPage";
 import UpdateStudentInfoPage from "./SubPages/UpdateStudentInfoPage";
 import OnlinePendingApplicantPage from "./SubPages/OnlinePendingApplicantPage";
 import ViewAccountDetailsPage from "./SubPages/ViewAccountDetailsPage";
+import ViewCLassDetailsPage from "./SubPages/ViewClassDetailsPage";
 
 const AdminRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -280,6 +281,16 @@ const AdminRoutes = () => {
           <>
             <PageTitle title="Class List - MIS Benedicto College" />
             <ClassPage />
+          </>
+        }
+      />
+      
+      <Route
+        path="/class-list/class/:classID"
+        element={
+          <>
+            <PageTitle title="View Class Details - MIS Benedicto College" />
+            <ViewCLassDetailsPage />
           </>
         }
       />

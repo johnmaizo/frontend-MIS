@@ -2824,6 +2824,7 @@ const useColumns = () => {
         const students = row.original.students;
 
         return (
+          /*
           <Dialog>
             <DialogTrigger asChild>
               <button className="text-blue-500 hover:text-blue-700">
@@ -2864,6 +2865,13 @@ const useColumns = () => {
               </DialogDescription>
             </DialogContent>
           </Dialog>
+          */
+          <Link
+              to={`/class-list/class/${row.original.id}`}
+              className="px-3 hover:underline hover:underline-offset-4 hover:!text-blue-700"
+            >
+              <EyeIcon className="h-5 w-5" title="View Class" />
+            </Link>
         );
       },
     },

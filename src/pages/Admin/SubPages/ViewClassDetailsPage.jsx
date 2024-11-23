@@ -40,6 +40,17 @@ const ViewCLassDetailsPage = () => {
     },
   ];
 
+  // Function to convert year level words to ordinal numbers
+  const convertYearLevel = (yearLevel) => {
+    const mapping = {
+      "First Year": "1st Year",
+      "Second Year": "2nd Year",
+      "Third Year": "3rd Year",
+      "Fourth Year": "4th Year",
+    };
+    return mapping[yearLevel] || yearLevel;
+  };
+
   // Function to handle printing the PDF
   const handlePrint = () => {
     if (!classData) return;
@@ -48,6 +59,7 @@ const ViewCLassDetailsPage = () => {
 
     // Define some constants for positioning
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 14;
     let currentY = 20;
 
@@ -96,7 +108,7 @@ const ViewCLassDetailsPage = () => {
 
     // Right Side Information
     let rightY = currentY;
-    const rightX = pageWidth - margin - 50; // Adjust 50 based on content width
+    const rightX = pageWidth - margin - 60; // Adjust based on content width
     doc.text(`Room: ${classData.room}`, rightX, rightY);
     rightY += 8;
     doc.text(`Total Students: ${classData.totalStudents}`, rightX, rightY);
@@ -114,20 +126,25 @@ const ViewCLassDetailsPage = () => {
       "Year Level",
     ];
 
-    // Draw table header
+    // Draw table header with borders
     let startX = margin;
     let startY = currentY;
 
     doc.setFontSize(10);
     doc.setFont("bold");
+
+    // Draw header background
+    doc.setFillColor(200, 200, 200);
+    doc.rect(margin, startY, pageWidth - 2 * margin, 10, "F");
+
+    // Draw header text and borders
     tableHeaders.forEach((header, index) => {
-      doc.text(header, startX + 2, startY + 5);
-      startX += tableColumnWidths[index];
+      const cellWidth = tableColumnWidths[index];
+      doc.rect(startX, startY, cellWidth, 10); // Cell border
+      doc.text(header, startX + 2, startY + 6);
+      startX += cellWidth;
     });
     doc.setFont("normal");
-
-    // Draw header border
-    doc.rect(margin, startY, pageWidth - 2 * margin, 10);
 
     currentY += 10; // Move to next line after header
 
@@ -135,6 +152,9 @@ const ViewCLassDetailsPage = () => {
     classData.students.forEach((student, studentIndex) => {
       startX = margin;
       const rowHeight = 8;
+      let rowY = currentY;
+
+      const yearLevelConverted = convertYearLevel(student.yearLevel);
 
       const rowData = [
         (studentIndex + 1).toString(),
@@ -142,32 +162,34 @@ const ViewCLassDetailsPage = () => {
         student.name,
         student.gender,
         student.program,
-        student.yearLevel ? student.yearLevel.toString() : "",
+        yearLevelConverted,
       ];
 
-      // Draw cell data
+      // Draw cell borders and data
       rowData.forEach((data, index) => {
         const cellWidth = tableColumnWidths[index];
+        doc.rect(startX, rowY, cellWidth, rowHeight); // Cell border
         const cellText = doc.splitTextToSize(data, cellWidth - 4);
-        doc.text(cellText, startX + 2, currentY + 5);
+        doc.text(cellText, startX + 2, rowY + 5);
         startX += cellWidth;
       });
-
-      // Draw cell borders
-      doc.rect(margin, currentY, pageWidth - 2 * margin, rowHeight);
 
       currentY += rowHeight;
 
       // Check if we need to add a new page
-      if (currentY > doc.internal.pageSize.getHeight() - margin) {
+      if (currentY > pageHeight - margin) {
         doc.addPage();
         currentY = margin;
       }
     });
 
-    // Open the PDF in a new window
+    // Open the PDF in a new minimized window
     const pdfDataUri = doc.output("bloburl");
-    window.open(pdfDataUri);
+    window.open(
+      pdfDataUri,
+      "_blank",
+      "toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600",
+    );
   };
 
   return (
@@ -252,22 +274,22 @@ const ViewCLassDetailsPage = () => {
               <table className="divide-gray-200 min-w-full divide-y">
                 <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       No.
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Student ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Gender
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Course
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Year Level
                     </th>
                   </tr>
@@ -275,23 +297,23 @@ const ViewCLassDetailsPage = () => {
                 <tbody className="divide-gray-200 divide-y">
                   {classData.students.map((student, index) => (
                     <tr key={index}>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      <td className="whitespace-nowrap border px-6 py-4">
                         {index + 1}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      <td className="whitespace-nowrap border px-6 py-4">
                         {student.student_id}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      <td className="whitespace-nowrap border px-6 py-4">
                         {student.name}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      <td className="whitespace-nowrap border px-6 py-4">
                         {student.gender}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4">
+                      <td className="whitespace-nowrap border px-6 py-4">
                         {student.program}
                       </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {student.yearLevel}
+                      <td className="whitespace-nowrap border px-6 py-4">
+                        {convertYearLevel(student.yearLevel)}
                       </td>
                     </tr>
                   ))}

@@ -135,7 +135,7 @@ const ViewCLassDetailsPage = () => {
 
     // Draw header background
     // doc.setFillColor(200, 200, 200);
-    doc.rect(margin, startY, pageWidth - 2 * margin, 10, "F");
+    // doc.rect(margin, startY, pageWidth - 2 * margin, 10, "F");
 
     // Draw header text and borders
     tableHeaders.forEach((header, index) => {

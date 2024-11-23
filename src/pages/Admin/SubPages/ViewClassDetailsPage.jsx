@@ -134,7 +134,7 @@ const ViewCLassDetailsPage = () => {
     doc.setFont("bold");
 
     // Draw header background
-    doc.setFillColor(200, 200, 200);
+    // doc.setFillColor(200, 200, 200);
     doc.rect(margin, startY, pageWidth - 2 * margin, 10, "F");
 
     // Draw header text and borders
@@ -188,7 +188,7 @@ const ViewCLassDetailsPage = () => {
     window.open(
       pdfDataUri,
       "_blank",
-      `toolbar=no,scrollbars=yes,resizable=yes,top=0,left=0,width=${screen.width},height=${screen.height}`,
+      "toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600",
     );
   };
 

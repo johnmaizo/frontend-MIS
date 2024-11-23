@@ -188,7 +188,7 @@ const ViewCLassDetailsPage = () => {
     window.open(
       pdfDataUri,
       "_blank",
-      "toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600",
+      `toolbar=no,scrollbars=yes,resizable=yes,top=0,left=0,width=${screen.width},height=${screen.height}`,
     );
   };
 

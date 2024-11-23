@@ -6,6 +6,7 @@ import DefaultLayout from "../../layout/DefaultLayout";
 import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs";
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
+import { jsPDF } from "jspdf";
 
 const ViewCLassDetailsPage = () => {
   const { classID } = useParams();
@@ -38,6 +39,136 @@ const ViewCLassDetailsPage = () => {
       label: "Class Details",
     },
   ];
+
+  // Function to handle printing the PDF
+  const handlePrint = () => {
+    if (!classData) return;
+
+    const doc = new jsPDF();
+
+    // Define some constants for positioning
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 14;
+    let currentY = 20;
+
+    // Centered text
+    doc.setFontSize(16);
+    doc.text("BENEDICTO COLLEGE", pageWidth / 2, currentY, {
+      align: "center",
+    });
+    currentY += 8;
+    doc.setFontSize(12);
+    doc.text(
+      "A.S. Fortuna Street, Mandaue City, 6014, Metro Cebu, Philippines",
+      pageWidth / 2,
+      currentY,
+      { align: "center" },
+    );
+    currentY += 12;
+
+    doc.setFontSize(20);
+    doc.text(classData.subject_code, pageWidth / 2, currentY, {
+      align: "center",
+    });
+    currentY += 10;
+
+    doc.setFontSize(16);
+    doc.text("CLASS LIST", pageWidth / 2, currentY, {
+      align: "center",
+    });
+    currentY += 8;
+    doc.text(
+      `${classData.school_year} - ${classData.semester}`,
+      pageWidth / 2,
+      currentY,
+      { align: "center" },
+    );
+    currentY += 12;
+
+    // Left Side Information
+    doc.setFontSize(12);
+    let leftY = currentY;
+    doc.text(`Subject Description: ${classData.subject}`, margin, leftY);
+    leftY += 8;
+    doc.text(`Schedule: ${classData.schedule}`, margin, leftY);
+    leftY += 8;
+    doc.text(`Teacher: ${classData.teacher}`, margin, leftY);
+
+    // Right Side Information
+    let rightY = currentY;
+    const rightX = pageWidth - margin - 50; // Adjust 50 based on content width
+    doc.text(`Room: ${classData.room}`, rightX, rightY);
+    rightY += 8;
+    doc.text(`Total Students: ${classData.totalStudents}`, rightX, rightY);
+
+    currentY = Math.max(leftY, rightY) + 12; // Move currentY below the left and right sections
+
+    // Table Headers
+    const tableColumnWidths = [10, 30, 50, 20, 40, 20];
+    const tableHeaders = [
+      "No.",
+      "Student ID",
+      "Name",
+      "Gender",
+      "Course",
+      "Year Level",
+    ];
+
+    // Draw table header
+    let startX = margin;
+    let startY = currentY;
+
+    doc.setFontSize(10);
+    doc.setFont("bold");
+    tableHeaders.forEach((header, index) => {
+      doc.text(header, startX + 2, startY + 5);
+      startX += tableColumnWidths[index];
+    });
+    doc.setFont("normal");
+
+    // Draw header border
+    doc.rect(margin, startY, pageWidth - 2 * margin, 10);
+
+    currentY += 10; // Move to next line after header
+
+    // Table Body
+    classData.students.forEach((student, studentIndex) => {
+      startX = margin;
+      const rowHeight = 8;
+
+      const rowData = [
+        (studentIndex + 1).toString(),
+        student.student_id,
+        student.name,
+        student.gender,
+        student.program,
+        student.yearLevel ? student.yearLevel.toString() : "",
+      ];
+
+      // Draw cell data
+      rowData.forEach((data, index) => {
+        const cellWidth = tableColumnWidths[index];
+        const cellText = doc.splitTextToSize(data, cellWidth - 4);
+        doc.text(cellText, startX + 2, currentY + 5);
+        startX += cellWidth;
+      });
+
+      // Draw cell borders
+      doc.rect(margin, currentY, pageWidth - 2 * margin, rowHeight);
+
+      currentY += rowHeight;
+
+      // Check if we need to add a new page
+      if (currentY > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        currentY = margin;
+      }
+    });
+
+    // Open the PDF in a new window
+    const pdfDataUri = doc.output("bloburl");
+    window.open(pdfDataUri);
+  };
 
   return (
     <DefaultLayout>
@@ -78,8 +209,17 @@ const ViewCLassDetailsPage = () => {
           <>
             {/* Class Information */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-              <h3 className="mb-4 text-2xl font-semibold">Class Details</h3>
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-semibold">Class Details</h3>
+                {/* Print Button */}
+                <button
+                  onClick={handlePrint}
+                  className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                >
+                  Print
+                </button>
+              </div>
+              <div className="mt-4 flex justify-between">
                 {/* Left Side */}
                 <div>
                   <p>
@@ -91,17 +231,17 @@ const ViewCLassDetailsPage = () => {
                   <p>
                     <strong>Schedule:</strong> {classData.schedule}
                   </p>
+                  <p>
+                    <strong>Teacher:</strong> {classData.teacher}
+                  </p>
                 </div>
                 {/* Right Side */}
                 <div>
                   <p>
-                    <strong>Teacher:</strong> {classData.teacher}
+                    <strong>Room:</strong> {classData.room}
                   </p>
                   <p>
                     <strong>Total Students:</strong> {classData.totalStudents}
-                  </p>
-                  <p>
-                    <strong>Room:</strong> {classData.room}
                   </p>
                 </div>
               </div>
@@ -113,6 +253,9 @@ const ViewCLassDetailsPage = () => {
                 <thead>
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      No.
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Student ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
@@ -122,7 +265,7 @@ const ViewCLassDetailsPage = () => {
                       Gender
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Program
+                      Course
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Year Level
@@ -132,6 +275,9 @@ const ViewCLassDetailsPage = () => {
                 <tbody className="divide-gray-200 divide-y">
                   {classData.students.map((student, index) => (
                     <tr key={index}>
+                      <td className="whitespace-nowrap px-6 py-4">
+                        {index + 1}
+                      </td>
                       <td className="whitespace-nowrap px-6 py-4">
                         {student.student_id}
                       </td>

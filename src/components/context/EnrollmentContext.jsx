@@ -142,14 +142,14 @@ export const EnrollmentProvider = ({ children }) => {
           params = {
             campus_id: user.campus_id,
             enlistment: true,
-            // Do not include semester_id here
+            semester_id: semesterId,
           };
         } else {
-          // Fetch existing students not enrolled in any semester
+          // Fetch existing students not enrolled in the selected semester
           params = {
             campus_id: user.campus_id,
             existing_students: true,
-            // Do not include semester_id here
+            semester_id: semesterId,
           };
         }
       } else if (view === "new-students") {
@@ -157,7 +157,7 @@ export const EnrollmentProvider = ({ children }) => {
         params = {
           campus_id: user.campus_id,
           new_unenrolled_students: true,
-          semester_id: semesterId, // Use semester_id here
+          semester_id: semesterId,
         };
       }
 

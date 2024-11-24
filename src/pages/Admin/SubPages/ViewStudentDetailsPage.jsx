@@ -9,6 +9,7 @@ import { ProfileLoadingIcon } from "../../../components/Icons";
 import loadingProfile from "../../../assets/images/profile-user.jpg";
 
 import EnrolledSubjects from "../../../components/EnrolledSubjects";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 const ViewStudentDetailsPage = () => {
   const { view_student_id, view_campus_id } = useParams();
@@ -73,7 +74,7 @@ const ViewStudentDetailsPage = () => {
     }
   }, [studentData]);
 
-  console.log(groupedEnrollments)
+  console.log(groupedEnrollments);
 
   // Destructure studentData for easier access
   const { student_id, campus, student_personal_datum } = studentData || {};
@@ -151,22 +152,36 @@ const ViewStudentDetailsPage = () => {
       <div className="mx-auto max-w-6xl">
         {/* Loading State */}
         {loading && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl">Loading...</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-2/3" />
+              <Skeleton className="h-6 w-1/3" />
+              <div className="flex gap-3">
+                <Skeleton className="h-[50vh] w-full" />
+                <div>
+                  <Skeleton className="h-[20em] w-full" />
+                  <Skeleton className="h-[30em] mt-3 w-full" />
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl text-red-500">{error}</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-xl text-red-500">{error}</div>
+            </div>
           </div>
         )}
 
         {/* No Data State */}
         {!loading && !error && !studentData && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-gray-500 text-xl">No data found.</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-gray-500 text-xl">No data found.</div>
+            </div>
           </div>
         )}
 

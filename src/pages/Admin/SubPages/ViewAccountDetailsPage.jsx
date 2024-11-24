@@ -104,24 +104,30 @@ const ViewAccountDetailsPage = () => {
       <div className="mx-auto max-w-6xl p-4">
         {/* Loading State */}
         {loading && (
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-2/3" />
-            <Skeleton className="h-6 w-1/3" />
-            <Skeleton className="h-24 w-full" />
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-2/3" />
+              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-24 w-full" />
+            </div>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl text-red-500">{error}</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-xl text-red-500">{error}</div>
+            </div>
           </div>
         )}
 
         {/* No Data State */}
         {!loading && !error && !accountData && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-gray-500 text-xl">No data found.</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-gray-500 text-xl">No data found.</div>
+            </div>
           </div>
         )}
 
@@ -130,7 +136,6 @@ const ViewAccountDetailsPage = () => {
           <>
             {/* Combined Account & Employee Information */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-              
               <h3 className="mb-4 text-2xl font-semibold">
                 Account Information
               </h3>
@@ -148,9 +153,19 @@ const ViewAccountDetailsPage = () => {
                   </p>
                   <p className="text-lg font-medium">
                     {accountData.isVerified ? (
-                      <Badge variant="success" className={"!bg-green-500 !text-white"}>Verified</Badge>
+                      <Badge
+                        variant="success"
+                        className={"!bg-green-500 !text-white"}
+                      >
+                        Verified
+                      </Badge>
                     ) : (
-                      <Badge variant="danger" className={"!bg-red-500 !text-white"}>Not Verified</Badge>
+                      <Badge
+                        variant="danger"
+                        className={"!bg-red-500 !text-white"}
+                      >
+                        Not Verified
+                      </Badge>
                     )}
                   </p>
                 </div>
@@ -210,7 +225,6 @@ const ViewAccountDetailsPage = () => {
 
             {/* History Logging Tracker */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-              
               <h3 className="mb-4 text-2xl font-semibold">
                 History Logging Tracker
               </h3>

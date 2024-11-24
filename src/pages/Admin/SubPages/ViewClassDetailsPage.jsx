@@ -207,24 +207,30 @@ const ViewCLassDetailsPage = () => {
       <div className="mx-auto max-w-6xl p-4">
         {/* Loading State */}
         {loading && (
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-2/3" />
-            <Skeleton className="h-6 w-1/3" />
-            <Skeleton className="h-24 w-full" />
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-2/3" />
+              <Skeleton className="h-6 w-1/3" />
+              <Skeleton className="h-24 w-full" />
+            </div>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl text-red-500">{error}</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-xl text-red-500">{error}</div>
+            </div>
           </div>
         )}
 
         {/* No Data State */}
         {!loading && !error && !classData && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-gray-500 text-xl">No data found.</div>
+          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+            <div className="flex h-screen items-center justify-center">
+              <div className="text-gray-500 text-xl">No data found.</div>
+            </div>
           </div>
         )}
 

@@ -3,12 +3,14 @@ import { useEffect, useState, useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { Skeleton } from "../../ui/skeleton";
 
 const PieChartEnrollmentStatus = ({ filters }) => {
   const { user } = useContext(AuthContext);
   const [series, setSeries] = useState([]);
   const [options, setOptions] = useState({ labels: [] });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEnrollmentStatusBreakdown = async () => {
@@ -31,6 +33,7 @@ const PieChartEnrollmentStatus = ({ filters }) => {
         setSeries(counts);
       } catch (error) {
         console.error("Error fetching enrollment status breakdown:", error);
+        setError("Failed to load enrollment status breakdown.");
       } finally {
         setLoading(false);
       }
@@ -45,14 +48,25 @@ const PieChartEnrollmentStatus = ({ filters }) => {
         Enrollment Status Breakdown
       </h5>
       {loading ? (
-        <p>Loading...</p>
-      ) : (
+        <div className="space-y-3 p-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-80 w-full" />
+        </div>
+      ) : error ? (
+        <div className="flex h-80 items-center justify-center">
+          <p className="text-red-500">{error}</p>
+        </div>
+      ) : series.length > 0 ? (
         <ReactApexChart
           options={options}
           series={series}
           type="pie"
           height={350}
         />
+      ) : (
+        <p className="text-gray-500 text-center">
+          No enrollment data available for the selected filters.
+        </p>
       )}
     </div>
   );

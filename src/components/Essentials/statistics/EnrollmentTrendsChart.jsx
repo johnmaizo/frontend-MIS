@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { Skeleton } from "../../ui/skeleton";
 
 const EnrollmentTrendsChart = ({ filters }) => {
   const { user } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
       type: "area",
       height: 350,
       toolbar: {
-        show: false, // Hide toolbar to remove unwanted icons
+        show: false,
       },
       zoom: {
         enabled: true,
@@ -40,13 +41,12 @@ const EnrollmentTrendsChart = ({ filters }) => {
     },
     markers: {
       size: 4,
-      colors: ["#fff"], // White fill for markers
-      strokeColors: ["#3056D3"], // Border color matches the series color
+      colors: ["#fff"],
+      strokeColors: ["#3056D3"],
       strokeWidth: 3,
       strokeOpacity: 0.9,
       strokeDashArray: 0,
       fillOpacity: 1,
-      discrete: [],
       hover: {
         size: 7,
       },
@@ -60,7 +60,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
         stops: [0, 90, 100],
       },
     },
-    colors: ["#3C50E0"], // Primary color
+    colors: ["#3C50E0"],
     title: {
       text: "Enrollment Trends by Semester",
       align: "center",
@@ -98,7 +98,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
     },
     yaxis: {
       title: {
-        text: "Total Students", // Updated y-axis title
+        text: "Total Students",
         style: {
           fontSize: "14px",
           fontWeight: 600,
@@ -117,7 +117,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
     tooltip: {
       y: {
         formatter: function (val) {
-          return `${val} Student${val !== 1 ? "s" : ""}`; // Updated tooltip
+          return `${val} Student${val !== 1 ? "s" : ""}`;
         },
         title: {
           formatter: (seriesName) => seriesName,
@@ -157,43 +157,37 @@ const EnrollmentTrendsChart = ({ filters }) => {
       },
     ],
     legend: {
-      show: false, // Hide legend if not necessary
+      show: false,
     },
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // New state for error handling
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEnrollmentTrends = async () => {
       try {
         const params = {
           campus_id: user.campus_id,
-          // Include other filters if necessary
         };
         const response = await axios.get(
           "/statistics/enrollment-trends-by-semester",
-          {
-            params,
-          },
+          { params },
         );
         const data = response.data;
-
-        console.log("Fetched Enrollment Trends:", data);
 
         if (!Array.isArray(data)) {
           throw new Error("Data fetched is not an array");
         }
 
         const semesters = data.map((item) => item.semester);
-        const totalStudents = data.map((item) => item.totalStudents); // Updated property name
+        const totalStudents = data.map((item) => item.totalStudents);
 
         setOptions((prev) => ({
           ...prev,
           xaxis: { categories: semesters },
         }));
-        setSeries([{ name: "Total Students", data: totalStudents }]); // Updated series name
+        setSeries([{ name: "Total Students", data: totalStudents }]);
       } catch (err) {
-        console.error("Error fetching enrollment trends:", err);
         setError("Failed to load enrollment trends.");
       } finally {
         setLoading(false);
@@ -206,8 +200,9 @@ const EnrollmentTrendsChart = ({ filters }) => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       {loading ? (
-        <div className="flex h-80 items-center justify-center">
-          <p className="text-gray-500">Loading...</p>
+        <div className="flex flex-col space-y-4 p-4">
+          <Skeleton className="h-6 w-1/2" />
+          <Skeleton className="h-60 w-full" />
         </div>
       ) : error ? (
         <div className="flex h-80 items-center justify-center">

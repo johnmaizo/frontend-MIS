@@ -3,12 +3,14 @@ import { useEffect, useState, useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { Skeleton } from "../../ui/skeleton";
 
 const PieChartGenderDistribution = ({ filters }) => {
   const { user } = useContext(AuthContext);
   const [series, setSeries] = useState([]);
   const [options, setOptions] = useState({ labels: [] });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchGenderDistribution = async () => {
@@ -23,13 +25,10 @@ const PieChartGenderDistribution = ({ filters }) => {
         });
         const data = response.data;
 
-        console.log("Enrollments Data:", data);
-
         if (!Array.isArray(data)) {
           throw new Error("Invalid data format: Expected an array");
         }
 
-        // Validate each item has 'gender' and 'count'
         const validData = data.filter(
           (item) =>
             item.gender !== undefined &&
@@ -48,9 +47,7 @@ const PieChartGenderDistribution = ({ filters }) => {
         setSeries(counts);
       } catch (error) {
         console.error("Error fetching gender distribution:", error);
-        // Optionally, set default error state or show user-friendly message
-        setOptions({ labels: [] });
-        setSeries([]);
+        setError("Failed to load gender distribution.");
       } finally {
         setLoading(false);
       }
@@ -65,31 +62,13 @@ const PieChartGenderDistribution = ({ filters }) => {
         Gender Distribution
       </h5>
       {loading ? (
+        <div className="space-y-3 p-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-80 w-full" />
+        </div>
+      ) : error ? (
         <div className="flex h-80 items-center justify-center">
-          {/* Loading Spinner */}
-          <svg
-            className="-ml-1 mr-3 h-10 w-10 animate-spin text-blue-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            role="img"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            ></path>
-          </svg>
-          <p className="text-lg">Loading...</p>
+          <p className="text-red-500">{error}</p>
         </div>
       ) : series.length > 0 ? (
         <ReactApexChart
@@ -115,7 +94,7 @@ const PieChartGenderDistribution = ({ filters }) => {
             tooltip: {
               y: {
                 formatter: function (val) {
-                  return `${val} Student${ val === 1 ? "" : "s"}`;
+                  return `${val} Student${val === 1 ? "" : "s"}`;
                 },
               },
             },

@@ -3,13 +3,13 @@ import ReactApexChart from "react-apexcharts";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { HasRole } from "../reuseable/HasRole";
-import SmallLoader from "../styles/SmallLoader";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Skeleton } from "../ui/skeleton";
 
 let options = {
   chart: {
@@ -91,38 +91,40 @@ const PieChartDepartment = () => {
         setData(data);
         setSeries(data?.series);
       } catch (err) {
-        if (err.response && err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
-        } else {
-          setError("Failed to fetch Chart Data");
-        }
+        setError(err.response?.data?.message || "Failed to fetch Chart Data");
       }
 
-      setTimeout(() => {
-        setLoading(false);
-      }, 450); // Adjust the timeout value (in milliseconds) as needed
+      setLoading(false);
     };
 
     fetchData();
   }, [user.campusName, user.role]);
 
-  return loading ? (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
-      <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
-        <SmallLoader width={10} height={10} /> <span>Loading...</span>
+  if (loading) {
+    return (
+      <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+        <div className="space-y-3 p-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-80 w-full" />
+        </div>
       </div>
-    </div>
-  ) : error ? (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
-      <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
-        <p className="text-2xl font-medium text-red-500">Error: {error}</p>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
+        <div className="flex items-center gap-3 text-2xl font-semibold text-black dark:text-white">
+          <p className="text-2xl font-medium text-red-500">Error: {error}</p>
+        </div>
       </div>
-    </div>
-  ) : (
+    );
+  }
+
+  return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
-          {/* Tooltip explanation added here */}
           <TooltipProvider delayDuration={250}>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -156,12 +158,11 @@ const PieChartDepartment = () => {
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
         {Array.isArray(data?.labels) &&
           data?.labels.map((label, index) => (
-            //             <div key={index} className="w-full px-8 sm:w-1/2">
             <div key={index} className="gap-3 px-3">
               <div className="flex w-full items-center">
                 <span
                   className="mr-2 block aspect-square h-3 w-full max-w-3 rounded-full"
-                  style={{ backgroundColor: data?.colors[index] }} // Applying dynamic background color
+                  style={{ backgroundColor: data?.colors[index] }}
                 ></span>
 
                 <TooltipProvider delayDuration={75}>
@@ -179,7 +180,7 @@ const PieChartDepartment = () => {
                     </TooltipTrigger>
                     <TooltipContent
                       className="text-white !shadow-default"
-                      style={{ backgroundColor: data?.colors[index] }} // Applying dynamic background color
+                      style={{ backgroundColor: data?.colors[index] }}
                     >
                       <p className="text-[1rem]">
                         {HasRole(user.role, "SuperAdmin")

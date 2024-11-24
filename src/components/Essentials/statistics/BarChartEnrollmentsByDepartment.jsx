@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { Skeleton } from "../../ui/skeleton";
 
 const BarChartEnrollmentsByDepartment = ({ filters }) => {
   const { user } = useContext(AuthContext);
@@ -53,7 +54,10 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         Subjects Enrolled by Department
       </h5>
       {loading ? (
-        <p>Loading...</p>
+        <div className="space-y-3 p-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-80 w-full" />
+        </div>
       ) : (
         <ReactApexChart
           options={options}

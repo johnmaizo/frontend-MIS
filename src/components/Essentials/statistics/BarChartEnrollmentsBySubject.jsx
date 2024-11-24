@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import { Skeleton } from "../../ui/skeleton";
 
 const BarChartEnrollmentsBySubject = ({ filters }) => {
   const { user } = useContext(AuthContext);
@@ -34,7 +35,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
     yaxis: {
       title: {
-        text: "Number of Unique Students", // Updated y-axis title
+        text: "Number of Unique Students",
       },
       min: 0,
       forceNiceScale: true,
@@ -44,7 +45,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // New state for error handling
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEnrollmentsByCourse = async () => {
@@ -69,22 +70,14 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           throw new Error("Invalid data format: Expected structured data");
         }
 
-        console.log("Fetched Enrollment Trends by Subject:", {
-          categories,
-          data,
-          othersDescriptions,
-        });
-
-        // Update the chart options with categories and customized tooltip
         setOptions((prev) => ({
           ...prev,
           xaxis: { categories: categories },
           tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-              const category = w.globals.labels[dataPointIndex]; // Corrected access
+              const category = w.globals.labels[dataPointIndex];
 
               if (category === "Others") {
-                // If "Others" is hovered, display the list of other subjects with enrollments
                 return `<div style="padding:10px;">
                           <strong>Others</strong><br/>
                           ${
@@ -94,7 +87,6 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
                           }
                         </div>`;
               } else {
-                // For other categories, display the default tooltip
                 return `<div style="padding:10px;">
                           <strong>${category}</strong><br/>
                           Unique Students: ${data[dataPointIndex]}
@@ -104,12 +96,10 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
           },
         }));
 
-        // Update the series data
         setSeries([{ name: "Unique Students", data: data }]);
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);
         setError("Failed to load enrollments by subject.");
-        // Optionally, update the chart to indicate an error
         setOptions((prev) => ({
           ...prev,
           title: {
@@ -132,31 +122,9 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         Enrollments by Subject
       </h5>
       {loading ? (
-        <div className="flex h-80 items-center justify-center">
-          {/* Loading Spinner */}
-          <svg
-            className="-ml-1 mr-3 h-10 w-10 animate-spin text-blue-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-            role="img"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            ></path>
-          </svg>
-          <p className="text-lg">Loading...</p>
+        <div className="space-y-3 p-4">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-80 w-full" />
         </div>
       ) : error ? (
         <div className="flex h-80 items-center justify-center">

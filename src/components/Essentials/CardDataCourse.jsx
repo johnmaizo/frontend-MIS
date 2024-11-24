@@ -2,13 +2,13 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { CourseIcon } from "../Icons";
 import { AuthContext } from "../context/AuthContext";
+import { Skeleton } from "../ui/skeleton";
 
 /* eslint-disable react/prop-types */
 const CardDataCourse = () => {
   const { user } = useContext(AuthContext);
 
   const [totalCourse, setTotalCourse] = useState(null);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,8 +34,21 @@ const CardDataCourse = () => {
       setLoading(false);
     };
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user.campus_id]);
+
+  if (loading) {
+    return (
+      <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
+          <Skeleton className="h-6 w-6 rounded-full" />
+        </div>
+        <div className="mt-4 space-y-2">
+          <Skeleton className="h-6 w-[150px]" />
+          <Skeleton className="h-4 w-[120px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-7.5 py-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -46,9 +59,11 @@ const CardDataCourse = () => {
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h4
-            className={`text-title-md font-bold text-black dark:text-white ${error ? "text-red-500" : ""}`}
+            className={`text-title-md font-bold text-black dark:text-white ${
+              error ? "text-red-500" : ""
+            }`}
           >
-            {loading ? "Loading..." : error ? "Error" : totalCourse}
+            {error ? "Error" : totalCourse}
           </h4>
           <span className="text-sm font-medium">
             {title}

@@ -111,6 +111,7 @@ const EditProfile = ({ accountID }) => {
         setSuccess(true);
         fetchAccounts();
         setIsOpen(false); // Close the Sheet
+        console.log(response.data)
       }
       setLoading(false);
     } catch (err) {

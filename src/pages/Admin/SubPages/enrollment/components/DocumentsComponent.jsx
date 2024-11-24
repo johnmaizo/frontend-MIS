@@ -1,129 +1,56 @@
-import { useFormContext } from "react-hook-form";
-// import { Input } from "../../../../../components/ui/input";
+import { Controller, useFormContext } from "react-hook-form";
+import { Checkbox } from "../../../../../components/ui/checkbox";
 
 const DocumentsComponent = () => {
   const {
-    register,
+    control,
     formState: { errors },
   } = useFormContext();
 
+  const renderCheckboxField = (name, label) => (
+    <div className="w-full space-y-2">
+      <div className="flex items-center space-x-2">
+        <Controller
+          name={name}
+          control={control}
+          defaultValue={false} // Ensure default value is boolean
+          render={({ field }) => (
+            <Checkbox
+              id={name}
+              checked={field.value} // Pass boolean value
+              onCheckedChange={field.onChange} // Handle boolean change
+            />
+          )}
+        />
+        <label
+          htmlFor={name}
+          className="cursor-pointer px-2 py-4 text-sm font-medium leading-none text-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          {label}
+        </label>
+      </div>
+      {errors[name] && (
+        <span className="text-sm font-medium text-red-600">
+          {errors[name].message}
+        </span>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-4 text-start">
-      {/* form_167 */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="form_167"
-          className="block text-sm font-medium text-primary"
-        >
-          Form 167
-        </label>
-        <input type="checkbox" id="form_167" {...register("form_167")} />
-        {errors.form_167 && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.form_167.message}
-          </span>
-        )}
-      </div>
-
-      {/* certificate_of_good_moral */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="certificate_of_good_moral"
-          className="block text-sm font-medium text-primary"
-        >
-          Certificate of Good Moral
-        </label>
-        <input
-          type="checkbox"
-          id="certificate_of_good_moral"
-          {...register("certificate_of_good_moral")}
-        />
-        {errors.certificate_of_good_moral && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.certificate_of_good_moral.message}
-          </span>
-        )}
-      </div>
-
-      {/* transcript_of_records */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="transcript_of_records"
-          className="block text-sm font-medium text-primary"
-        >
-          Transcript of Records
-        </label>
-        <input
-          type="checkbox"
-          id="transcript_of_records"
-          {...register("transcript_of_records")}
-        />
-        {errors.transcript_of_records && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.transcript_of_records.message}
-          </span>
-        )}
-      </div>
-
-      {/* nso_birth_certificate */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="nso_birth_certificate"
-          className="block text-sm font-medium text-primary"
-        >
-          NSO Birth Certificate
-        </label>
-        <input
-          type="checkbox"
-          id="nso_birth_certificate"
-          {...register("nso_birth_certificate")}
-        />
-        {errors.nso_birth_certificate && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.nso_birth_certificate.message}
-          </span>
-        )}
-      </div>
-
-      {/* two_by_two_id_photo */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="two_by_two_id_photo"
-          className="block text-sm font-medium text-primary"
-        >
-          2x2 ID Photo
-        </label>
-        <input
-          type="checkbox"
-          id="two_by_two_id_photo"
-          {...register("two_by_two_id_photo")}
-        />
-        {errors.two_by_two_id_photo && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.two_by_two_id_photo.message}
-          </span>
-        )}
-      </div>
-
-      {/* certificate_of_transfer_credential */}
-      <div className="w-full space-y-2">
-        <label
-          htmlFor="certificate_of_transfer_credential"
-          className="block text-sm font-medium text-primary"
-        >
-          Certificate of Transfer Credential
-        </label>
-        <input
-          type="checkbox"
-          id="certificate_of_transfer_credential"
-          {...register("certificate_of_transfer_credential")}
-        />
-        {errors.certificate_of_transfer_credential && (
-          <span className="text-sm font-medium text-red-600">
-            {errors.certificate_of_transfer_credential.message}
-          </span>
-        )}
-      </div>
+      {renderCheckboxField("form_167", "Form 167")}
+      {renderCheckboxField(
+        "certificate_of_good_moral",
+        "Certificate of Good Moral",
+      )}
+      {renderCheckboxField("transcript_of_records", "Transcript of Records")}
+      {renderCheckboxField("nso_birth_certificate", "NSO Birth Certificate")}
+      {renderCheckboxField("two_by_two_id_photo", "2x2 ID Photo")}
+      {renderCheckboxField(
+        "certificate_of_transfer_credential",
+        "Certificate of Transfer Credential",
+      )}
     </div>
   );
 };

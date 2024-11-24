@@ -1,5 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { Input } from "../../../../../components/ui/input";
+import { boolean } from "zod";
 
 const AcademicHistoryComponent = () => {
   const {

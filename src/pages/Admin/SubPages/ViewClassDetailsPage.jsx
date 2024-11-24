@@ -7,6 +7,7 @@ import { BreadcrumbResponsive } from "../../../components/reuseable/Breadcrumbs"
 import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { jsPDF } from "jspdf";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 const ViewCLassDetailsPage = () => {
   const { classID } = useParams();
@@ -206,8 +207,10 @@ const ViewCLassDetailsPage = () => {
       <div className="mx-auto max-w-6xl p-4">
         {/* Loading State */}
         {loading && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl">Loading...</div>
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-2/3" />
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-24 w-full" />
           </div>
         )}
 

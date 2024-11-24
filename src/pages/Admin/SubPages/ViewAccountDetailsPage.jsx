@@ -21,6 +21,9 @@ import {
 // Importing TimelineItem component
 import TimelineItem from "../../../components/ui/TimelineItem";
 
+// Importing Skeleton for loading state
+import { Skeleton } from "../../../components/ui/skeleton";
+
 const ViewAccountDetailsPage = () => {
   const { accountID, accountCampusName } = useParams();
   const [accountData, setAccountData] = useState(null);
@@ -101,8 +104,10 @@ const ViewAccountDetailsPage = () => {
       <div className="mx-auto max-w-6xl p-4">
         {/* Loading State */}
         {loading && (
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-xl">Loading...</div>
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-2/3" />
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-24 w-full" />
           </div>
         )}
 
@@ -165,8 +170,6 @@ const ViewAccountDetailsPage = () => {
                     {new Date(accountData.updated).toLocaleString()}
                   </p>
                 </div>
-
-                {/* Employee Information */}
                 <div>
                   <p className="text-gray-500 dark:text-gray-400 text-sm">
                     Name:
@@ -232,7 +235,7 @@ const ViewAccountDetailsPage = () => {
                             className="w-full"
                           >
                             {Object.entries(entities)
-                              .sort((a, b) => a[0].localeCompare(b[0])) // Sort entities alphabetically
+                              .sort((a, b) => a[0].localeCompare(b[0]))
                               .map(([entity, histories]) => (
                                 <AccordionItem key={entity} value={entity}>
                                   <AccordionTrigger className="text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 focus-visible:ring-gray-500 flex w-full items-center justify-between rounded-lg px-4 py-2 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-opacity-75">
@@ -245,7 +248,7 @@ const ViewAccountDetailsPage = () => {
                                           (a, b) =>
                                             new Date(a.timestamp) -
                                             new Date(b.timestamp),
-                                        ) // Sort actions chronologically within the entity
+                                        )
                                         .map((history) => (
                                           <TimelineItem
                                             key={history.id}

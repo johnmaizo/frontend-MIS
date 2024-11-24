@@ -55,11 +55,11 @@ const AdminHome = () => {
       <div className="mt-8">
         {/* <UserTables /> */}{" "}
         {/* <FilterComponent filters={filters} setFilters={setFilters} /> */}
-        <DataExportButton
+        {/* <DataExportButton
           endpoint="/statistics/export-enrollments"
           filename="enrollments.csv"
           filters={filters}
-        />
+        /> */}
       </div>
 
       {(HasRole(user.role, "SuperAdmin") || HasRole(user.role, "Admin")) && (

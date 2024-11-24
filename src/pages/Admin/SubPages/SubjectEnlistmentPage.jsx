@@ -41,6 +41,8 @@ const SubjectEnlistmentPage = () => {
   const [allowOverloadUnits, setAllowOverloadUnits] = useState(false);
   const [allowOverCapacityEnrollment, setAllowOverCapacityEnrollment] =
     useState(false);
+  // New state for semester subjects
+  const [semesterUnitsSubjects, setSemesterUnitsSubjects] = useState([]);
 
   const navigate = useNavigate();
 
@@ -276,14 +278,16 @@ const SubjectEnlistmentPage = () => {
         // Calculate unit limit based on the current semester and year level in the prospectus
         const currentSemester = studentData.semesterName.trim().toLowerCase();
         const currentYearLevel = yearLevel.trim().toLowerCase();
-        const semesterUnitsSubjects = prospectusSubjects.filter(
+        const semesterSubjects = prospectusSubjects.filter(
           (subject) =>
             subject.semesterName.trim().toLowerCase() === currentSemester &&
             subject.yearLevel.trim().toLowerCase() === currentYearLevel,
         );
 
+        setSemesterUnitsSubjects(semesterSubjects);
+
         // For reference only
-        const semesterUnits = semesterUnitsSubjects.reduce(
+        const semesterUnits = semesterSubjects.reduce(
           (total, subject) => total + (subject.unit || 0),
           0,
         );
@@ -668,6 +672,37 @@ const SubjectEnlistmentPage = () => {
     studentCompletedSubjects.add(cls.subjectCode.toUpperCase()),
   );
 
+  // Collect subject codes from semesterUnitsSubjects
+  const semesterSubjectCodes = new Set(
+    semesterUnitsSubjects.map((subj) => subj.courseCode.toUpperCase())
+  );
+
+  // Collect subject codes from enrolledSubjects
+  const enrolledSubjectCodes = new Set(
+    enrolledSubjects.map((subj) => subj.classDetails.subjectCode.toUpperCase())
+  );
+
+  // Collect subject codes from selectedClasses
+  const selectedSubjectCodes = new Set(
+    selectedClasses.map((cls) => cls.subjectCode.toUpperCase())
+  );
+
+  // Combine enrolled and selected subject codes
+  const combinedSubjectCodes = new Set([
+    ...enrolledSubjectCodes,
+    ...selectedSubjectCodes,
+  ]);
+
+  // Check if semesterSubjectCodes is a subset of combinedSubjectCodes
+  const hasTakenAllSemesterSubjects = [...semesterSubjectCodes].every((code) =>
+    combinedSubjectCodes.has(code)
+  );
+
+  // Find missing subject codes
+  const missingSubjectCodes = [...semesterSubjectCodes].filter(
+    (code) => !combinedSubjectCodes.has(code)
+  );
+
   return (
     <DefaultLayout>
       <BreadcrumbResponsive
@@ -959,6 +994,20 @@ const SubjectEnlistmentPage = () => {
                   </span>
                 </p>
               </div>
+
+              {/* Display Success or Warning Message */}
+              {hasTakenAllSemesterSubjects ? (
+                <div className="mt-4 text-green-600">
+                  You have correctly added all the subjects for this semester.
+                </div>
+              ) : (
+                <div className="mt-4 text-red-600">
+                  You have not taken all the subjects on the prospectus for this semester.
+                  {missingSubjectCodes.length > 0 && (
+                    <p>Missing subjects: {missingSubjectCodes.join(", ")}</p>
+                  )}
+                </div>
+              )}
 
               {/* Submit Enlistment Button */}
               <Button

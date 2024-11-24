@@ -18,7 +18,7 @@ import {
   TabsContent,
 } from "../../../components/ui/tabs";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { DataTablePagination } from "../../../components/reuseable/DataTablePagination";
 
@@ -109,6 +109,9 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
 
   const { fetchSemesters, semesters } = useSchool();
 
+  // Create a ref to store the AbortController
+  const abortControllerRef = useRef();
+
   useEffect(() => {
     fetchSemesters();
   }, []);
@@ -127,7 +130,20 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
   }, [semesters]);
 
   useEffect(() => {
-    fetchPendingStudents(view, selectedSemesterId, subView);
+    // Abort previous request if any
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    // Create a new AbortController
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    fetchPendingStudents(view, selectedSemesterId, subView, controller.signal);
+
+    // Cleanup function to abort the request if component unmounts or dependencies change
+    return () => {
+      controller.abort();
+    };
   }, [view, selectedSemesterId, subView]);
 
   const {

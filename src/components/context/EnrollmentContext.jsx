@@ -125,7 +125,12 @@ export const EnrollmentProvider = ({ children }) => {
   const [pendingStudents, setPendingStudents] = useState([]);
   const [loadingPendingStudents, setLoadingPendingStudents] = useState(false);
 
-  const fetchPendingStudents = async (view, semesterId, subView = null) => {
+  const fetchPendingStudents = async (
+    view,
+    semesterId,
+    subView = null,
+    signal,
+  ) => {
     setError("");
     setLoadingPendingStudents(true);
     try {
@@ -158,9 +163,14 @@ export const EnrollmentProvider = ({ children }) => {
 
       const response = await axios.get("/students/get-unenrolled-students", {
         params,
+        signal, // Pass the signal here
       });
       setPendingStudents(response.data);
     } catch (err) {
+      if (err.name === "CanceledError") {
+        // Request was canceled, do not update error state
+        return;
+      }
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {

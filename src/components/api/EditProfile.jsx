@@ -150,7 +150,7 @@ const EditProfile = ({ accountID }) => {
             Click Save when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
-        <div className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
+        <div className=" overflow-y-auto overscroll-none text-xl lg:h-auto">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="p-6.5">
               <div className="mb-4.5 w-full">

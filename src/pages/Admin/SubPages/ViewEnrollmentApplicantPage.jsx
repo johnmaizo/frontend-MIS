@@ -12,6 +12,7 @@ import { ProfileLoadingIcon } from "../../../components/Icons";
 import axios from "axios";
 import AcceptEnrollment from "../../../components/api/AcceptEnrollment";
 import RejectEnrollment from "../../../components/api/RejectEnrollment";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 const ViewEnrollmentApplicantPage = () => {
   // Initialize state to hold the fetched data
@@ -74,7 +75,7 @@ const ViewEnrollmentApplicantPage = () => {
       label: "Pending Enrollment Applicants",
     },
     {
-      label: `${loading ? "Loading..." : error ? "Error" : "View Enrollment Application"}`,
+      label: "View Enrollment Application",
     },
   ];
 
@@ -103,12 +104,20 @@ const ViewEnrollmentApplicantPage = () => {
       />
 
       <div className="mb-6 flex w-full justify-end">
-        <div className="rounded flex gap-5 bg-white p-4 shadow-default dark:bg-boxdark">
+        <div className="flex gap-5 rounded bg-white p-4 shadow-default dark:bg-boxdark">
           {/* Pass student data as a prop if needed */}
-          
-            <AcceptEnrollment applicantId={applicantId} loading={loading} />
-            <RejectEnrollment applicantId={applicantId} loading={loading} />
-          
+
+          {loading ? (
+            <>
+              <Skeleton className="h-10 w-40" />
+              <Skeleton className="h-10 w-40" />
+            </>
+          ) : (
+            <>
+              <AcceptEnrollment applicantId={applicantId} loading={loading} />
+              <RejectEnrollment applicantId={applicantId} loading={loading} />
+            </>
+          )}
         </div>
       </div>
 
@@ -116,6 +125,12 @@ const ViewEnrollmentApplicantPage = () => {
       {error && (
         <div className="mb-6 rounded border border-red-500 bg-red-100 p-4 shadow">
           <p className="text-xl font-semibold text-red-700">{error}</p>
+        </div>
+      )}
+
+      {loading && (
+        <div className="mb-6 rounded-sm bg-white p-2 shadow">
+          <Skeleton className="h-12 w-full" />
         </div>
       )}
 
@@ -157,7 +172,8 @@ const ViewEnrollmentApplicantPage = () => {
           <div className="flex-shrink-0">
             <div className="bg-gray-100 flex h-40 w-40 items-center justify-center rounded-full border">
               {loading ? (
-                <ProfileLoadingIcon className="text-gray-300 h-20 w-20 animate-pulse" />
+                // <Skeleton className="h-40 w-40 rounded-full" />
+                <ProfileLoadingIcon />
               ) : (
                 <img
                   src={loadingProfile}
@@ -171,7 +187,21 @@ const ViewEnrollmentApplicantPage = () => {
           {/* Applicant Information */}
           <div className="w-full space-y-6">
             {/* Personal Information Section */}
-            {!loading &&
+            {loading ? (
+              <section>
+                <h2 className="text-gray-800 mb-4 text-2xl font-semibold dark:text-white">
+                  <Skeleton className="h-8 w-48" />
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="mb-2 h-4 w-24" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
               !error &&
               student &&
               student.personal_data.length > 0 && (
@@ -304,10 +334,25 @@ const ViewEnrollmentApplicantPage = () => {
                     </div>
                   </div>
                 </section>
-              )}
+              )
+            )}
 
             {/* Contact Details Section */}
-            {!loading &&
+            {loading ? (
+              <section>
+                <h2 className="text-gray-800 mb-4 text-2xl font-semibold dark:text-white">
+                  <Skeleton className="h-8 w-48" />
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="mb-2 h-4 w-36" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
               !error &&
               student &&
               student.add_personal_data.length > 0 && (
@@ -384,10 +429,25 @@ const ViewEnrollmentApplicantPage = () => {
                     </div>
                   </div>
                 </section>
-              )}
+              )
+            )}
 
             {/* Family Background Section */}
-            {!loading &&
+            {loading ? (
+              <section>
+                <h2 className="text-gray-800 mb-4 text-2xl font-semibold dark:text-white">
+                  <Skeleton className="h-8 w-48" />
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="mb-2 h-4 w-36" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
               !error &&
               student &&
               student.family_background.length > 0 && (
@@ -408,7 +468,10 @@ const ViewEnrollmentApplicantPage = () => {
                       </label>
                       <InputText
                         value={
-                          `${getData("family_background", "father_fname")} ${getData("family_background", "father_mname") || ""} ${getData("family_background", "father_lname") || ""}`.trim() ||
+                          `${getData(
+                            "family_background",
+                            "father_fname",
+                          )} ${getData("family_background", "father_mname") || ""} ${getData("family_background", "father_lname") || ""}`.trim() ||
                           "N/A"
                         }
                         disabled={true}
@@ -451,7 +514,10 @@ const ViewEnrollmentApplicantPage = () => {
                       </label>
                       <InputText
                         value={
-                          `${getData("family_background", "mother_fname")} ${getData("family_background", "mother_mname") || ""} ${getData("family_background", "mother_lname") || ""}`.trim() ||
+                          `${getData(
+                            "family_background",
+                            "mother_fname",
+                          )} ${getData("family_background", "mother_mname") || ""} ${getData("family_background", "mother_lname") || ""}`.trim() ||
                           "N/A"
                         }
                         disabled={true}
@@ -497,8 +563,20 @@ const ViewEnrollmentApplicantPage = () => {
                           </label>
                           <InputText
                             value={
-                              `${getData("family_background", "guardian_fname")} ${getData("family_background", "guardian_mname") || ""} ${getData("family_background", "guardian_lname") || ""}`.trim() ||
-                              "N/A"
+                              `${getData(
+                                "family_background",
+                                "guardian_fname",
+                              )} ${
+                                getData(
+                                  "family_background",
+                                  "guardian_mname",
+                                ) || ""
+                              } ${
+                                getData(
+                                  "family_background",
+                                  "guardian_lname",
+                                ) || ""
+                              }`.trim() || "N/A"
                             }
                             disabled={true}
                             className={"transition-none"}
@@ -547,10 +625,25 @@ const ViewEnrollmentApplicantPage = () => {
                     )}
                   </div>
                 </section>
-              )}
+              )
+            )}
 
             {/* Academic Background Section */}
-            {!loading &&
+            {loading ? (
+              <section>
+                <h2 className="text-gray-800 mb-4 text-2xl font-semibold dark:text-white">
+                  <Skeleton className="h-8 w-48" />
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="mb-2 h-4 w-36" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
               !error &&
               student &&
               student.academic_background.length > 0 && (
@@ -645,10 +738,25 @@ const ViewEnrollmentApplicantPage = () => {
                     </div>
                   </div>
                 </section>
-              )}
+              )
+            )}
 
             {/* Academic History Section */}
-            {!loading &&
+            {loading ? (
+              <section>
+                <h2 className="text-gray-800 mb-4 text-2xl font-semibold dark:text-white">
+                  <Skeleton className="h-8 w-48" />
+                </h2>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {[...Array(20)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="mb-2 h-4 w-36" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
               !error &&
               student &&
               student.academic_history.length > 0 && (
@@ -866,7 +974,6 @@ const ViewEnrollmentApplicantPage = () => {
                       <label className="text-gray-600 dark:text-gray-300 block">
                         Program
                       </label>
-                      {/* Access Program from academic_history if necessary */}
                       <InputText
                         value={getData("academic_history", "program")}
                         disabled={true}
@@ -875,7 +982,8 @@ const ViewEnrollmentApplicantPage = () => {
                     </div>
                   </div>
                 </section>
-              )}
+              )
+            )}
           </div>
         </div>
       </div>

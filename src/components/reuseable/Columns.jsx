@@ -1414,7 +1414,7 @@ const useColumns = () => {
       },
     },
     ...(user &&
-    (HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin"))
+    (HasRole(user.allRoles, "Admin") || HasRole(user.allRoles, "SuperAdmin") || HasRole(user.allRoles, "DataCenter"))
       ? [
           {
             accessorFn: (row) => `${row.id} ${row.role} ${row.campusName}`,

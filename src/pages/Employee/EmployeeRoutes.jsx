@@ -34,6 +34,7 @@ import PaymentApprovalPage from "../Admin/SubPages/PaymentApprovalPage";
 import OnlinePendingApplicantPage from "../Admin/SubPages/OnlinePendingApplicantPage";
 import ViewEnrollmentApplicantPage from "../Admin/SubPages/ViewEnrollmentApplicantPage";
 import ViewCLassDetailsPage from "../Admin/SubPages/ViewClassDetailsPage";
+import ViewAccountDetailsPage from "../Admin/SubPages/ViewAccountDetailsPage";
 
 const EmployeeRoutes = () => {
   const { user } = useContext(AuthContext);
@@ -110,15 +111,27 @@ const EmployeeRoutes = () => {
       )}
 
       {HasRole(user.allRoles, "DataCenter") && (
-        <Route
-          path="/employees/accounts"
-          element={
-            <>
-              <PageTitle title="Accounts - MIS Benedicto College" />
-              <AccountPage />
-            </>
-          }
-        />
+        <>
+          <Route
+            path="/employees/accounts"
+            element={
+              <>
+                <PageTitle title="Accounts - MIS Benedicto College" />
+                <AccountPage />
+              </>
+            }
+          />
+
+          <Route
+            path="/employees/accounts/campus/:accountCampusName/account/:accountID"
+            element={
+              <>
+                <PageTitle title="View Account Details - MIS Benedicto College" />
+                <ViewAccountDetailsPage />
+              </>
+            }
+          />
+        </>
       )}
 
       {HasRole(user.allRoles, "MIS") && (

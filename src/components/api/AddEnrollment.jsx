@@ -44,7 +44,7 @@ const AddEnrollment = ({ student }) => {
     setLoading(true);
     try {
       await axios.post("/students/add-enrollment", {
-        student_personal_id: student.student_personal_id,
+        student_personal_id: student.existingStudent_personal_id,
         semester_id: activeSemester.semester_id,
       });
 
@@ -74,10 +74,10 @@ const AddEnrollment = ({ student }) => {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Enrollment Created</h2>
             <p>
-              Enrollment has been successfully created for {student.fullName}.
+              Enrollment has been successfully created for {student.existingFullName}.
             </p>
             <Link
-              to={`/enrollments/subject-enlistment/${student.student_personal_id}`}
+              to={`/enrollments/subject-enlistment/${student.existingStudent_personal_id}`}
               className="text-blue-500 hover:text-blue-700"
             >
               Click here to proceed to enlistment
@@ -92,7 +92,7 @@ const AddEnrollment = ({ student }) => {
           <div>
             <h2 className="mb-4 text-xl font-semibold">Enroll Student</h2>
             <p>
-              Are you sure you want to enroll {student.fullName} into the new
+              Are you sure you want to enroll {student.existingFullName} into the new
               semester?
             </p>
             <div className="mt-4 flex justify-end">

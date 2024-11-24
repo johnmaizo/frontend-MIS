@@ -218,7 +218,7 @@ const ViewCLassDetailsPage = () => {
 
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="space-y-4">
-                <Skeleton className="h-8 w-[8em]" />
+                <Skeleton className="h-8 w-[16em]" />
                 <Skeleton className="h-[75vh] mt-2 w-full" />
               </div>
             </div>

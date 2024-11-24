@@ -485,14 +485,14 @@ const useColumnsSecond = () => {
 
   const columnExistingStudents = [
     {
-      accessorKey: "student_id",
+      accessorKey: "existingStudent_id",
       header: "Student ID",
       cell: ({ cell }) => (
         <span className="text-base font-medium">{cell.getValue()}</span>
       ),
     },
     {
-      accessorKey: "fullName",
+      accessorKey: "existingFullName",
       header: "Full Name",
       cell: ({ cell }) => (
         <span className="text-lg font-semibold">{cell.getValue()}</span>

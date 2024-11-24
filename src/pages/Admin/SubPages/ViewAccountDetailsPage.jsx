@@ -104,13 +104,23 @@ const ViewAccountDetailsPage = () => {
       <div className="mx-auto max-w-6xl p-4">
         {/* Loading State */}
         {loading && (
-          <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-            <div className="space-y-4">
-              <Skeleton className="h-8 w-2/3" />
-              <Skeleton className="h-6 w-1/3" />
-              <Skeleton className="h-24 w-full" />
+          <>
+            <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-2/3" />
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-24 w-full" />
+              </div>
             </div>
-          </div>
+
+            <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
+              <div className="space-y-4">
+                <Skeleton className="h-8 w-2/3" />
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-24 w-full" />
+              </div>
+            </div>
+          </>
         )}
 
         {/* Error State */}

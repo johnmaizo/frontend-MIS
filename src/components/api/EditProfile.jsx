@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { EditDepartmentIcon, SettingsIcon } from "../Icons";
+import { SettingsIcon } from "../Icons";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -111,7 +110,6 @@ const EditProfile = ({ accountID }) => {
         setSuccess(true);
         fetchAccounts();
         setIsOpen(false); // Close the Sheet
-        console.log(response.data)
       }
       setLoading(false);
     } catch (err) {

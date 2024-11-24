@@ -25,6 +25,7 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import CurriculumTracker from "../../../components/reuseable/CurriculumTracker";
 // Import the Switch component from shadcn
 import { Switch } from "../../../components/ui/switch";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
@@ -62,8 +63,13 @@ const SubjectEnlistmentPage = () => {
         console.log("academicBackground:", academicBackground);
 
         // Extract prospectus_id and student_class_enrollments
-        const { prospectus_id, student_class_enrollments, yearLevel, semester_id, campus_id } =
-          academicBackground;
+        const {
+          prospectus_id,
+          student_class_enrollments,
+          yearLevel,
+          semester_id,
+          campus_id,
+        } = academicBackground;
 
         // Fetch prospectus subjects
         const prospectusResponse = await axios.get(
@@ -106,9 +112,9 @@ const SubjectEnlistmentPage = () => {
         // Fetch all active classes without filtering by semester_id
         const classesResponse = await axios.get(`/class/active`, {
           params: {
-            semester_id: semester_id, 
+            semester_id: semester_id,
             campus_id: campus_id,
-          }
+          },
         });
         let classesData = classesResponse.data;
 
@@ -674,17 +680,17 @@ const SubjectEnlistmentPage = () => {
 
   // Collect subject codes from semesterUnitsSubjects
   const semesterSubjectCodes = new Set(
-    semesterUnitsSubjects.map((subj) => subj.courseCode.toUpperCase())
+    semesterUnitsSubjects.map((subj) => subj.courseCode.toUpperCase()),
   );
 
   // Collect subject codes from enrolledSubjects
   const enrolledSubjectCodes = new Set(
-    enrolledSubjects.map((subj) => subj.classDetails.subjectCode.toUpperCase())
+    enrolledSubjects.map((subj) => subj.classDetails.subjectCode.toUpperCase()),
   );
 
   // Collect subject codes from selectedClasses
   const selectedSubjectCodes = new Set(
-    selectedClasses.map((cls) => cls.subjectCode.toUpperCase())
+    selectedClasses.map((cls) => cls.subjectCode.toUpperCase()),
   );
 
   // Combine enrolled and selected subject codes
@@ -695,12 +701,12 @@ const SubjectEnlistmentPage = () => {
 
   // Check if semesterSubjectCodes is a subset of combinedSubjectCodes
   const hasTakenAllSemesterSubjects = [...semesterSubjectCodes].every((code) =>
-    combinedSubjectCodes.has(code)
+    combinedSubjectCodes.has(code),
   );
 
   // Find missing subject codes
   const missingSubjectCodes = [...semesterSubjectCodes].filter(
-    (code) => !combinedSubjectCodes.has(code)
+    (code) => !combinedSubjectCodes.has(code),
   );
 
   return (
@@ -831,9 +837,13 @@ const SubjectEnlistmentPage = () => {
                   </svg>
                 </div>
               ) : filteredSubjects.length === 0 ? (
-                <p className="mt-4">No classes found. Please add new Class.</p>
+                <p className="mt-4">No classes found.</p>
               ) : (
-                <Accordion type="single" collapsible className="mt-4 h-[95em] overflow-y-auto">
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="mt-4 h-[95em] overflow-y-auto"
+                >
                   {filteredSubjects.map((subject) => {
                     const prerequisites = subject.prerequisites || [];
                     // Check if prerequisites are met
@@ -994,19 +1004,30 @@ const SubjectEnlistmentPage = () => {
                   </span>
                 </p>
               </div>
-
-              {/* Display Success or Warning Message */}
-              {hasTakenAllSemesterSubjects ? (
-                <div className="mt-4 text-green-600">
-                  You have correctly added all the subjects for this semester.
-                </div>
+              {loading ? (
+                <>
+                  <Skeleton className="mt-4 h-10 w-full" />
+                </>
               ) : (
-                <div className="mt-4 text-red-600">
-                  You have not taken all the subjects on the prospectus for this semester.
-                  {missingSubjectCodes.length > 0 && (
-                    <p>Missing subjects: {missingSubjectCodes.join(", ")}</p>
+                <>
+                  {/* Display Success or Warning Message */}
+                  {hasTakenAllSemesterSubjects ? (
+                    <div className="mt-4 text-green-600">
+                      You have correctly added all the subjects for this
+                      semester.
+                    </div>
+                  ) : (
+                    <div className="mt-4 text-red-600">
+                      You have not taken all the subjects on the prospectus for
+                      this semester.
+                      {missingSubjectCodes.length > 0 && (
+                        <p>
+                          Missing subjects: {missingSubjectCodes.join(", ")}
+                        </p>
+                      )}
+                    </div>
                   )}
-                </div>
+                </>
               )}
 
               {/* Submit Enlistment Button */}

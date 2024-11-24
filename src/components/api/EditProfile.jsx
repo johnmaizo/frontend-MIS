@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { SettingsIcon } from "../Icons";
+import { EditDepartmentIcon, SettingsIcon } from "../Icons";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -26,10 +26,9 @@ import FormInput from "../reuseable/FormInput";
 const EditProfile = ({ accountID }) => {
   const { fetchAccounts } = useSchool();
 
+  const [isOpen, setIsOpen] = useState(false); // Track Sheet open state
   const [loading, setLoading] = useState(false);
   const [changePassword, setChangePassword] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   const {
     register,
@@ -40,9 +39,12 @@ const EditProfile = ({ accountID }) => {
     getValues,
   } = useForm();
 
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  // Fetch data when the Sheet is opened
   useEffect(() => {
-    if (accountID) {
-      // Fetch the account data when the Sheet is opened
+    if (isOpen && accountID) {
       setLoading(true);
       axios
         .get(`/accounts/${accountID}`)
@@ -50,14 +52,25 @@ const EditProfile = ({ accountID }) => {
           const account = response.data;
 
           setValue("email", account.email);
+          // If there are other fields, set them here as well
           setLoading(false);
         })
         .catch((err) => {
-          setError(`Failed to fetch account data: (${err})`);
+          setError(`Failed to fetch account data: (${err.message})`);
           setLoading(false);
         });
     }
-  }, [accountID, setValue]);
+  }, [isOpen, accountID, setValue]);
+
+  // Reset form when the Sheet is closed
+  useEffect(() => {
+    if (!isOpen) {
+      reset(); // Reset form fields when the sheet is closed
+      setChangePassword(false); // Reset changePassword state
+      setError(""); // Clear any existing errors
+      setSuccess(false); // Reset success state
+    }
+  }, [isOpen, reset]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -97,8 +110,7 @@ const EditProfile = ({ accountID }) => {
       if (response.data) {
         setSuccess(true);
         fetchAccounts();
-        reset(); // Reset form fields after successful update
-        setChangePassword(false); // Reset changePassword state
+        setIsOpen(false); // Close the Sheet
       }
       setLoading(false);
     } catch (err) {
@@ -127,7 +139,7 @@ const EditProfile = ({ accountID }) => {
   }, [success, error]);
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button
           className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
@@ -150,7 +162,7 @@ const EditProfile = ({ accountID }) => {
             Click Save when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
-        <div className=" overflow-y-auto overscroll-none text-xl lg:h-auto">
+        <div className="overflow-y-auto overscroll-none text-xl lg:h-auto">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="p-6.5">
               <div className="mb-4.5 w-full">
@@ -296,26 +308,24 @@ const EditProfile = ({ accountID }) => {
               )}
 
               <SheetFooter>
-                <SheetClose asChild>
-                  <button
-                    type="submit"
-                    className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
-                      loading || success
-                        ? "bg-[#505456] hover:!bg-opacity-100"
-                        : ""
-                    }`}
-                    disabled={loading || success}
-                  >
-                    {loading && (
-                      <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
-                    )}
-                    {loading
-                      ? "Updating Account..."
-                      : success
-                        ? "Account Updated!"
-                        : "Save Changes"}
-                  </button>
-                </SheetClose>
+                <button
+                  type="submit"
+                  className={`inline-flex w-full justify-center gap-2 rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                    loading || success
+                      ? "bg-[#505456] hover:!bg-opacity-100"
+                      : ""
+                  }`}
+                  disabled={loading || success}
+                >
+                  {loading && (
+                    <span className="block h-6 w-6 animate-spin rounded-full border-4 border-solid border-secondary border-t-transparent"></span>
+                  )}
+                  {loading
+                    ? "Updating Account..."
+                    : success
+                      ? "Account Updated!"
+                      : "Save Changes"}
+                </button>
               </SheetFooter>
             </div>
           </form>

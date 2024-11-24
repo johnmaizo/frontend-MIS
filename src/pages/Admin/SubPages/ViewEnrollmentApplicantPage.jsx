@@ -11,6 +11,7 @@ import { ProfileLoadingIcon } from "../../../components/Icons";
 
 import axios from "axios";
 import AcceptEnrollment from "../../../components/api/AcceptEnrollment";
+import RejectEnrollment from "../../../components/api/RejectEnrollment";
 
 const ViewEnrollmentApplicantPage = () => {
   // Initialize state to hold the fetched data
@@ -102,9 +103,12 @@ const ViewEnrollmentApplicantPage = () => {
       />
 
       <div className="mb-6 flex w-full justify-end">
-        <div className="rounded bg-white p-4 shadow-default dark:bg-boxdark">
+        <div className="rounded flex gap-5 bg-white p-4 shadow-default dark:bg-boxdark">
           {/* Pass student data as a prop if needed */}
-          <AcceptEnrollment applicantId={applicantId} loading={loading} />
+          
+            <AcceptEnrollment applicantId={applicantId} loading={loading} />
+            <RejectEnrollment applicantId={applicantId} loading={loading} />
+          
         </div>
       </div>
 

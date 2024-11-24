@@ -13,9 +13,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 
-import { AddDepartmentIcon } from "../Icons";
+import { XIcon } from "lucide-react";
 
-const AcceptEnrollment = ({ applicantId, loading }) => {
+const RejectEnrollment = ({ applicantId, loading }) => {
   const [open, setOpen] = useState(false);
   const [error, setGeneralError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -28,13 +28,13 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
     setLocalLoading(true);
     try {
       const response = await toast.promise(
-        axios.post("/enrollment/enroll-online-applicant-student", {
+        axios.post("/enrollment/reject-online-applicant-student", {
           fulldata_applicant_id: applicantId,
         }),
         {
           loading: "Processing enrollment...",
-          success: "Enrollment accepted successfully!",
-          error: "Failed to accept enrollment.",
+          success: "Enrollment rejected successfully!",
+          error: "Failed to reject enrollment.",
         },
         {
           position: "bottom-right",
@@ -89,15 +89,15 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
           modal
         >
           <DialogTrigger
-            className="flex w-full justify-center gap-1 rounded bg-green-600 p-3 text-white hover:bg-green-700 md:w-auto md:justify-normal"
+            className="flex w-full justify-center gap-1 rounded bg-red-600 p-3 text-white hover:bg-red-700 md:w-auto md:justify-normal"
             disabled={loading || localLoading}
           >
             {loading ? (
               "Loading..."
             ) : (
               <>
-                <AddDepartmentIcon />
-                <span className="w-[8.5em]">Accept Enrollment</span>
+                <XIcon />
+                <span className="max-w-[9em]">Reject Enrollment</span>
               </>
             )}
           </DialogTrigger>
@@ -110,12 +110,12 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
           >
             <DialogHeader>
               <DialogTitle className="text-2xl font-medium text-black dark:text-white">
-                Accept Enrollment
+                Reject Enrollment
               </DialogTitle>
               <DialogDescription className="h-[20em] overflow-y-auto overscroll-none text-xl lg:h-auto">
                 <div className="p-6.5">
                   <p className="pb-10">
-                    Are you sure you want to accept this enrollment?
+                    Are you sure you want to reject this enrollment?
                   </p>
 
                   {error && (
@@ -126,14 +126,14 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
 
                   <button
                     type="submit"
-                    className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-primary p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
+                    className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded bg-red-600 p-3.5 font-medium text-gray hover:bg-opacity-90 lg:text-base xl:text-lg"
                     onClick={handleClick}
                     disabled={loading || localLoading || success}
                   >
                     {(localLoading || loading) && (
                       <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
                     )}
-                    {localLoading || loading ? "Processing..." : "Accept"}
+                    {localLoading || loading ? "Processing..." : "Reject"}
                   </button>
                 </div>
               </DialogDescription>
@@ -145,4 +145,4 @@ const AcceptEnrollment = ({ applicantId, loading }) => {
   );
 };
 
-export default AcceptEnrollment;
+export default RejectEnrollment;

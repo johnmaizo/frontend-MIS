@@ -117,8 +117,8 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
   }, []);
 
   useEffect(() => {
-    // Set default selected semester based on the active semester
-    if (semesters.length > 0) {
+    // For non-existing-students view, set default selected semester
+    if (view !== "existing-students" && semesters.length > 0) {
       const activeSemester = semesters.find((sem) => sem.isActive);
       if (activeSemester) {
         setSelectedSemesterId(activeSemester.semester_id.toString());
@@ -127,7 +127,7 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
         setSelectedSemesterId(semesters[0].semester_id.toString());
       }
     }
-  }, [semesters]);
+  }, [semesters, view]);
 
   useEffect(() => {
     // Abort previous request if any
@@ -138,7 +138,10 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    fetchPendingStudents(view, selectedSemesterId, subView, controller.signal);
+    // Pass null for selectedSemesterId if view is "existing-students"
+    const semesterId = view === "existing-students" ? null : selectedSemesterId;
+
+    fetchPendingStudents(view, semesterId, subView, controller.signal);
 
     // Cleanup function to abort the request if component unmounts or dependencies change
     return () => {
@@ -173,6 +176,7 @@ const UnenrolledStudentsTable = ({ view, subView }) => {
       semesters={semesters}
       selectedSemesterId={selectedSemesterId}
       setSelectedSemesterId={setSelectedSemesterId}
+      view={view} // Pass the view prop
     />
   );
 };
@@ -185,6 +189,7 @@ const DataTable = ({
   semesters,
   selectedSemesterId,
   setSelectedSemesterId,
+  view, // Receive the view prop
 }) => {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -231,27 +236,29 @@ const DataTable = ({
                 className="transition-none md:max-w-[12em]"
               />
 
-              {/* Semester Selector */}
-              <Select
-                value={selectedSemesterId || "all-semesters"}
-                onValueChange={(value) =>
-                  setSelectedSemesterId(
-                    value === "all-semesters" ? null : value,
-                  )
-                }
-              >
-                <SelectTrigger className="mb-5 h-[3.3em] w-[18em] md:mb-0">
-                  <SelectValue placeholder="Select Semester" />
-                </SelectTrigger>
-                <SelectContent className="dark:bg-[#1A222C]">
-                  <SelectItem value="all-semesters">All Semesters</SelectItem>
-                  {combinedSemesters.map((sem) => (
-                    <SelectItem key={sem.id} value={sem.id}>
-                      {sem.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {/* Conditionally render Semester Selector */}
+              {view !== "existing-students" && (
+                <Select
+                  value={selectedSemesterId || "all-semesters"}
+                  onValueChange={(value) =>
+                    setSelectedSemesterId(
+                      value === "all-semesters" ? null : value,
+                    )
+                  }
+                >
+                  <SelectTrigger className="mb-5 h-[3.3em] w-[18em] md:mb-0">
+                    <SelectValue placeholder="Select Semester" />
+                  </SelectTrigger>
+                  <SelectContent className="dark:bg-[#1A222C]">
+                    <SelectItem value="all-semesters">All Semesters</SelectItem>
+                    {combinedSemesters.map((sem) => (
+                      <SelectItem key={sem.id} value={sem.id}>
+                        {sem.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             <div className="mb-5 md:mb-0">
               <ResetFilter table={table} className={"h-[3.3em]"} />

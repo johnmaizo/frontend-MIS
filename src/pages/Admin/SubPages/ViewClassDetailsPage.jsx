@@ -70,20 +70,21 @@ const ViewCLassDetailsPage = () => {
     });
     currentY += 8;
     doc.setFontSize(12);
-    doc.text(
-      "A.S. Fortuna Street, Mandaue City, 6014, Metro Cebu, Philippines",
-      pageWidth / 2,
-      currentY,
-      { align: "center" },
-    );
+    // doc.text(
+    //   "A.S. Fortuna Street, Mandaue City, 6014, Metro Cebu, Philippines",
+    //   pageWidth / 2,
+    //   currentY,
+    //   { align: "center" },
+    // );
+    // currentY += 12;
+
+    // doc.setFontSize(20);
+    // doc.text(classData.subject_code, pageWidth / 2, currentY, {
+    //   align: "center",
+    // });
+    // currentY += 10;
+
     currentY += 12;
-
-    doc.setFontSize(20);
-    doc.text(classData.subject_code, pageWidth / 2, currentY, {
-      align: "center",
-    });
-    currentY += 10;
-
     doc.setFontSize(16);
     doc.text("CLASS LIST", pageWidth / 2, currentY, {
       align: "center",
@@ -100,6 +101,8 @@ const ViewCLassDetailsPage = () => {
     // Left Side Information
     doc.setFontSize(12);
     let leftY = currentY;
+    doc.text(`Subject Code: ${classData.subject_code}`, margin, leftY);
+    leftY += 8;
     doc.text(`Subject Description: ${classData.subject}`, margin, leftY);
     leftY += 8;
     doc.text(`Schedule: ${classData.schedule}`, margin, leftY);
@@ -108,7 +111,7 @@ const ViewCLassDetailsPage = () => {
 
     // Right Side Information
     let rightY = currentY;
-    const rightX = pageWidth - margin - 60; // Adjust based on content width
+    const rightX = pageWidth - margin - 45; // Adjust based on content width
     doc.text(`Room: ${classData.room}`, rightX, rightY);
     rightY += 8;
     doc.text(`Total Students: ${classData.totalStudents}`, rightX, rightY);
@@ -132,10 +135,6 @@ const ViewCLassDetailsPage = () => {
 
     doc.setFontSize(10);
     doc.setFont("bold");
-
-    // Draw header background
-    // doc.setFillColor(200, 200, 200);
-    // doc.rect(margin, startY, pageWidth - 2 * margin, 10, "F");
 
     // Draw header text and borders
     tableHeaders.forEach((header, index) => {

@@ -24,12 +24,13 @@ const AcceptPaymentDialog = ({
   const [loadingSubjects, setLoadingSubjects] = useState(false);
   const [error, setError] = useState("");
   const [officialStudentId, setOfficialStudentId] = useState("");
+  const [yearLevel, setYearLevel] = useState("");
+
   const [semesterInfo, setSemesterInfo] = useState({
     schoolYear: "",
     semesterName: "",
   });
 
-  
   const [semesterID, setSemesterID] = useState("");
 
   useEffect(() => {
@@ -48,14 +49,15 @@ const AcceptPaymentDialog = ({
         `/enrollment/student-academic-background/${studentPersonalId}`,
       );
       const semesterId = academicBackgroundResponse.data.semester_id;
-      setSemesterID(semesterId)
+      setSemesterID(semesterId);
+      setYearLevel(academicBackgroundResponse.data.yearLevel);
 
       // Fetch enlisted classes for the student and semester
       const response = await axios.get(
         `/enrollment/student-enrolled-classes/${studentPersonalId}/${semesterId}?status=enlisted`,
       );
 
-      console.log(response.data)
+      console.log(response.data);
 
       setEnlistedSubjects(response.data);
 
@@ -110,6 +112,11 @@ const AcceptPaymentDialog = ({
                   Official Student ID: <strong>{officialStudentId}</strong>
                 </p>
               )}
+              {yearLevel && (
+                <p className="mb-2">
+                  Year Level: <strong>{yearLevel}</strong>
+                </p>
+              )}
               {semesterInfo.schoolYear && semesterInfo.semesterName && (
                 <p className="mb-4">
                   Semester: <strong>{semesterInfo.semesterName}</strong>, School
@@ -118,14 +125,18 @@ const AcceptPaymentDialog = ({
               )}
 
               <div className="overflow-x-auto overflow-y-auto md:h-[20em]">
-                <table className="min-w-full border-collapse border border-gray-200">
+                <table className="border-gray-200 min-w-full border-collapse border">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-2 border border-gray-200 text-left">Subject Code</th>
-                      <th className="px-4 py-2 border border-gray-200 text-left">
+                      <th className="border-gray-200 border px-4 py-2 text-left">
+                        Subject Code
+                      </th>
+                      <th className="border-gray-200 border px-4 py-2 text-left">
                         Subject Description
                       </th>
-                      <th className="px-4 py-2 border border-gray-200 text-left">Units</th>
+                      <th className="border-gray-200 border px-4 py-2 text-left">
+                        Units
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-boxdark">
@@ -147,19 +158,31 @@ const AcceptPaymentDialog = ({
                     ) : enlistedSubjects.length > 0 ? (
                       <>
                         {enlistedSubjects.map((subject, index) => (
-                          <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
-                            <td className="px-4 py-2 border border-gray-200">{subject.subjectCode}</td>
-                            <td className="px-4 py-2 border border-gray-200">
+                          <tr
+                            key={index}
+                            className={
+                              index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                            }
+                          >
+                            <td className="border-gray-200 border px-4 py-2">
+                              {subject.subjectCode}
+                            </td>
+                            <td className="border-gray-200 border px-4 py-2">
                               {subject.subjectDescription}
                             </td>
-                            <td className="px-4 py-2 border border-gray-200">{subject.unit}</td>
+                            <td className="border-gray-200 border px-4 py-2">
+                              {subject.unit}
+                            </td>
                           </tr>
                         ))}
                         <tr>
-                          <td colSpan="2" className="px-4 py-2 border border-gray-200 font-bold">
+                          <td
+                            colSpan="2"
+                            className="border-gray-200 border px-4 py-2 font-bold"
+                          >
                             Total Units
                           </td>
-                          <td className="px-4 py-2 border border-gray-200 font-bold">
+                          <td className="border-gray-200 border px-4 py-2 font-bold">
                             {enlistedSubjects.reduce(
                               (total, subject) => total + subject.unit,
                               0,

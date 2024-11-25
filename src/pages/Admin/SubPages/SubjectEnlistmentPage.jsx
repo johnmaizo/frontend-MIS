@@ -29,6 +29,7 @@ import { Skeleton } from "../../../components/ui/skeleton";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
+  const [academicBackground, setAcademicBackground] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,6 +60,8 @@ const SubjectEnlistmentPage = () => {
           `/enrollment/student-academic-background/${student_personal_id}`,
         );
         const academicBackground = academicResponse.data;
+
+        setAcademicBackground(academicBackground)
 
         console.log("academicBackground:", academicBackground);
 
@@ -734,6 +737,9 @@ const SubjectEnlistmentPage = () => {
                 Official Student ID: {studentInfo.officialStudentId || "N/A"}
               </p>
               <p>
+                Year Level: <strong>{academicBackground.yearLevel}</strong>
+              </p>
+              <p>
                 School Year: <strong>{studentInfo.schoolYear}</strong>
               </p>
               <p>
@@ -1004,7 +1010,7 @@ const SubjectEnlistmentPage = () => {
                   </span>
                 </p>
               </div>
-              
+
               {loading ? (
                 <>
                   <Skeleton className="mt-4 h-10 w-full" />

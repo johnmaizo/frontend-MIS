@@ -194,6 +194,13 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     return grouped;
   };
 
+  // Prepare enrolled subject codes set
+  const enrolledSubjectCodes = new Set(
+    enrolledSubjects.map((enrolled) =>
+      enrolled.classDetails?.subjectCode.toLowerCase(),
+    ),
+  );
+
   // Determine if a prospectus subject has been taken
   const determineStatus = (subject) => {
     const baseCourseCodeLower = subject.courseCode.toLowerCase();
@@ -207,31 +214,16 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
 
     // If lecture units exist, check if lecture component is taken
     if (hasLecture) {
-      lectureTaken = enrolledSubjects.some(
-        (enrolled) =>
-          enrolled.classDetails?.subjectCode.toLowerCase() ===
-            baseCourseCodeLower &&
-          !enrolled.classDetails?.subjectCode.toLowerCase().endsWith("l") &&
-          !enrolled.classDetails?.subjectDescription
-            .toLowerCase()
-            .includes("lab"),
-      );
+      lectureTaken = enrolledSubjectCodes.has(baseCourseCodeLower);
     } else {
       lectureTaken = true; // If no lecture units, consider lecture as taken
     }
 
     // If lab units exist, check if lab component is taken
     if (hasLab) {
-      labTaken = enrolledSubjects.some(
-        (enrolled) =>
-          enrolled.classDetails?.subjectCode.toLowerCase() ===
-            `${baseCourseCodeLower}l` ||
-          enrolled.classDetails?.subjectCode.toLowerCase() ===
-            `${baseCourseCodeLower} l` ||
-          enrolled.classDetails?.subjectDescription
-            .toLowerCase()
-            .includes("lab"),
-      );
+      labTaken =
+        enrolledSubjectCodes.has(`${baseCourseCodeLower}l`) ||
+        enrolledSubjectCodes.has(`${baseCourseCodeLower} l`);
     } else {
       labTaken = true; // If no lab units, consider lab as taken
     }

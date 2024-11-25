@@ -102,106 +102,105 @@ const AcceptPaymentDialog = ({
           <DialogTitle className="text-2xl font-bold">
             Accept Payment
           </DialogTitle>
-          <DialogDescription asChild className="mt-2">
-            <>
+          <DialogDescription className="mt-2">
+            <p className="mb-2">
+              Below are the enlisted subjects for <strong>{fullName}</strong>:
+            </p>
+            {officialStudentId && (
               <p className="mb-2">
-                Below are the enlisted subjects for <strong>{fullName}</strong>:
+                Official Student ID: <strong>{officialStudentId}</strong>
               </p>
-              {officialStudentId && (
-                <p className="mb-2">
-                  Official Student ID: <strong>{officialStudentId}</strong>
-                </p>
-              )}
-              {yearLevel && (
-                <p className="mb-2">
-                  Year Level: <strong>{yearLevel}</strong>
-                </p>
-              )}
-              {semesterInfo.schoolYear && semesterInfo.semesterName && (
-                <p className="mb-4">
-                  Semester: <strong>{semesterInfo.semesterName}</strong>, School
-                  Year: <strong>{semesterInfo.schoolYear}</strong>
-                </p>
-              )}
-
-              <div className="overflow-x-auto overflow-y-auto md:h-[20em]">
-                <table className="border-gray-200 min-w-full border-collapse border">
-                  <thead className="bg-gray-50">
+            )}
+            {yearLevel && (
+              <p className="mb-2">
+                Year Level: <strong>{yearLevel}</strong>
+              </p>
+            )}
+            {semesterInfo.schoolYear && semesterInfo.semesterName && (
+              <p className="mb-4">
+                Semester: <strong>{semesterInfo.semesterName}</strong>, School
+                Year: <strong>{semesterInfo.schoolYear}</strong>
+              </p>
+            )}
+          </DialogDescription>
+          <>
+            <div className="overflow-x-auto overflow-y-auto md:h-[20em]">
+              <table className="border-gray-200 min-w-full border-collapse border">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="border-gray-200 border px-4 py-2 text-left">
+                      Subject Code
+                    </th>
+                    <th className="border-gray-200 border px-4 py-2 text-left">
+                      Subject Description
+                    </th>
+                    <th className="border-gray-200 border px-4 py-2 text-left">
+                      Units
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-boxdark">
+                  {loadingSubjects ? (
                     <tr>
-                      <th className="border-gray-200 border px-4 py-2 text-left">
-                        Subject Code
-                      </th>
-                      <th className="border-gray-200 border px-4 py-2 text-left">
-                        Subject Description
-                      </th>
-                      <th className="border-gray-200 border px-4 py-2 text-left">
-                        Units
-                      </th>
+                      <td colSpan="3" className="px-4 py-4 text-center">
+                        Loading subjects...
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white dark:bg-boxdark">
-                    {loadingSubjects ? (
-                      <tr>
-                        <td colSpan="3" className="px-4 py-4 text-center">
-                          Loading subjects...
-                        </td>
-                      </tr>
-                    ) : error ? (
-                      <tr>
-                        <td
-                          colSpan="3"
-                          className="px-4 py-4 text-center text-red-500"
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="px-4 py-4 text-center text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : enlistedSubjects.length > 0 ? (
+                    <>
+                      {enlistedSubjects.map((subject, index) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                          }
                         >
-                          {error}
-                        </td>
-                      </tr>
-                    ) : enlistedSubjects.length > 0 ? (
-                      <>
-                        {enlistedSubjects.map((subject, index) => (
-                          <tr
-                            key={index}
-                            className={
-                              index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                            }
-                          >
-                            <td className="border-gray-200 border px-4 py-2">
-                              {subject.subjectCode}
-                            </td>
-                            <td className="border-gray-200 border px-4 py-2">
-                              {subject.subjectDescription}
-                            </td>
-                            <td className="border-gray-200 border px-4 py-2">
-                              {subject.unit}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr>
-                          <td
-                            colSpan="2"
-                            className="border-gray-200 border px-4 py-2 font-bold"
-                          >
-                            Total Units
+                          <td className="border-gray-200 border px-4 py-2">
+                            {subject.subjectCode}
                           </td>
-                          <td className="border-gray-200 border px-4 py-2 font-bold">
-                            {enlistedSubjects.reduce(
-                              (total, subject) => total + subject.unit,
-                              0,
-                            )}
+                          <td className="border-gray-200 border px-4 py-2">
+                            {subject.subjectDescription}
+                          </td>
+                          <td className="border-gray-200 border px-4 py-2">
+                            {subject.unit}
                           </td>
                         </tr>
-                      </>
-                    ) : (
+                      ))}
                       <tr>
-                        <td colSpan="3" className="px-4 py-4 text-center">
-                          No enlisted subjects found.
+                        <td
+                          colSpan="2"
+                          className="border-gray-200 border px-4 py-2 font-bold"
+                        >
+                          Total Units
+                        </td>
+                        <td className="border-gray-200 border px-4 py-2 font-bold">
+                          {enlistedSubjects.reduce(
+                            (total, subject) => total + subject.unit,
+                            0,
+                          )}
                         </td>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          </DialogDescription>
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="px-4 py-4 text-center">
+                        No enlisted subjects found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         </DialogHeader>
         <DialogFooter>
           <div className="mx-[2em] flex w-full justify-center gap-[6em]">

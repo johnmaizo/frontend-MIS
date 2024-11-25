@@ -103,17 +103,38 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     }
   }, [isOpen, prospectus_id]);
 
-  // Consolidate subjects without modifying courseCode
+  // Consolidate subjects with careful handling of courseCode
   const consolidateSubjects = (subjects) => {
+    const courseCodeSet = new Set(
+      subjects.map((subject) => subject.courseCode),
+    );
+
     const consolidated = {};
 
     subjects.forEach((subject) => {
-      const key = `${subject.courseCode}-${subject.yearLevel}-${subject.semesterName}`;
+      let baseCourseCode = subject.courseCode;
+      let isLab = false;
+
+      // Identify if the subject is lab based on courseCode and existing course codes
+      if (subject.courseCode && subject.courseCode.endsWith("L")) {
+        const potentialBaseCode = subject.courseCode.slice(0, -1);
+        if (courseCodeSet.has(potentialBaseCode)) {
+          baseCourseCode = potentialBaseCode;
+          isLab = true;
+        } else {
+          baseCourseCode = subject.courseCode;
+        }
+      } else {
+        baseCourseCode = subject.courseCode;
+      }
+
+      // Ensure unique consolidation per baseCourseCode, yearLevel, and semesterName
+      const key = `${baseCourseCode}-${subject.yearLevel}-${subject.semesterName}`;
 
       if (!consolidated[key]) {
         consolidated[key] = {
           prospectus_subject_id: subject.prospectus_subject_id,
-          courseCode: subject.courseCode,
+          courseCode: baseCourseCode,
           courseDescription: subject.courseDescription
             ? subject.courseDescription
                 .replace(" (Lec)", "")
@@ -131,22 +152,20 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
         };
       }
 
-      // Determine if the subject is lab or lecture based on courseDescription
-      let isLab = false;
+      // Determine if the subject is lab or lecture
       if (
-        subject.courseDescription &&
-        subject.courseDescription.includes(" (Lab)")
+        isLab ||
+        (subject.courseDescription &&
+          subject.courseDescription.includes(" (Lab)"))
       ) {
-        isLab = true;
-      }
-
-      // Update lecUnits, labUnits, totalUnits accordingly
-      if (isLab) {
         consolidated[key].labUnits += subject.unit || 0;
       } else {
         consolidated[key].lecUnits += subject.unit || 0;
       }
-      consolidated[key].totalUnits += subject.unit || 0;
+
+      // Update totalUnits
+      consolidated[key].totalUnits =
+        consolidated[key].lecUnits + consolidated[key].labUnits;
     });
 
     return Object.values(consolidated);
@@ -177,15 +196,48 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
 
   // Determine if a prospectus subject has been taken
   const determineStatus = (subject) => {
-    const courseCodeLower = subject.courseCode.toLowerCase();
+    const baseCourseCodeLower = subject.courseCode.toLowerCase();
 
-    // Check if the subject is in enrolledSubjects
-    const subjectTaken = enrolledSubjects.some(
-      (enrolled) =>
-        enrolled.classDetails?.subjectCode.toLowerCase() === courseCodeLower,
-    );
+    // Check if the subject has lecture and/or lab units
+    const hasLecture = subject.lecUnits > 0;
+    const hasLab = subject.labUnits > 0;
 
-    return subjectTaken ? "Taken" : "Not Taken";
+    let lectureTaken = false;
+    let labTaken = false;
+
+    // If lecture units exist, check if lecture component is taken
+    if (hasLecture) {
+      lectureTaken = enrolledSubjects.some(
+        (enrolled) =>
+          enrolled.classDetails?.subjectCode.toLowerCase() ===
+            baseCourseCodeLower &&
+          !enrolled.classDetails?.subjectCode.toLowerCase().endsWith("l") &&
+          !enrolled.classDetails?.subjectDescription
+            .toLowerCase()
+            .includes("lab"),
+      );
+    } else {
+      lectureTaken = true; // If no lecture units, consider lecture as taken
+    }
+
+    // If lab units exist, check if lab component is taken
+    if (hasLab) {
+      labTaken = enrolledSubjects.some(
+        (enrolled) =>
+          enrolled.classDetails?.subjectCode.toLowerCase() ===
+            `${baseCourseCodeLower}l` ||
+          enrolled.classDetails?.subjectCode.toLowerCase() ===
+            `${baseCourseCodeLower} l` ||
+          enrolled.classDetails?.subjectDescription
+            .toLowerCase()
+            .includes("lab"),
+      );
+    } else {
+      labTaken = true; // If no lab units, consider lab as taken
+    }
+
+    // Determine status based on both lecture and lab components
+    return lectureTaken && labTaken ? "Taken" : "Not Taken";
   };
 
   // Group subjects by year level and semester name within a program with dynamic ordering
@@ -233,6 +285,16 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   // Calculate total units for a semester
   const calculateTotalUnits = (subjects) => {
     return subjects.reduce((total, subject) => total + subject.totalUnits, 0);
+  };
+
+  // Calculate total lec units for a semester
+  const calculateTotalLecUnits = (subjects) => {
+    return subjects.reduce((total, subject) => total + subject.lecUnits, 0);
+  };
+
+  // Calculate total lab units for a semester
+  const calculateTotalLabUnits = (subjects) => {
+    return subjects.reduce((total, subject) => total + subject.labUnits, 0);
   };
 
   // Consolidate and group the subjects
@@ -313,6 +375,10 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                           const subjects =
                             programData.groupedSubjects[yearSemesterKey];
                           const totalUnits = calculateTotalUnits(subjects);
+                          const totalLecUnits =
+                            calculateTotalLecUnits(subjects);
+                          const totalLabUnits =
+                            calculateTotalLabUnits(subjects);
 
                           return (
                             <div
@@ -324,22 +390,33 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                 <thead>
                                   <tr>
                                     <th
-                                      colSpan="5"
+                                      colSpan="7"
                                       className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
                                     >
                                       {yearSemesterKey}
                                     </th>
                                   </tr>
                                   <tr>
-                                    <th className="border p-2">Subject Code</th>
-                                    <th className="border p-2">
+                                    <th className="border p-2" rowSpan="2">
+                                      Subject Code
+                                    </th>
+                                    <th className="border p-2" rowSpan="2">
                                       Description Title
                                     </th>
-                                    <th className="border p-2">Units</th>
-                                    <th className="border p-2">
+                                    <th className="border p-2" colSpan="3">
+                                      Units
+                                    </th>
+                                    <th className="border p-2" rowSpan="2">
                                       Pre-requisites
                                     </th>
-                                    <th className="border p-2">Status</th>
+                                    <th className="border p-2" rowSpan="2">
+                                      Status
+                                    </th>
+                                  </tr>
+                                  <tr>
+                                    <th className="border p-2">Lec</th>
+                                    <th className="border p-2">Lab</th>
+                                    <th className="border p-2">Total</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -350,6 +427,12 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                       </TableCell>
                                       <TableCell className="border p-2">
                                         {subject.courseDescription}
+                                      </TableCell>
+                                      <TableCell className="border p-2 text-center">
+                                        {subject.lecUnits}
+                                      </TableCell>
+                                      <TableCell className="border p-2 text-center">
+                                        {subject.labUnits}
                                       </TableCell>
                                       <TableCell className="border p-2 text-center">
                                         {subject.totalUnits}
@@ -383,6 +466,12 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                     <td className="border p-2"></td>
                                     <td className="border p-2 text-center font-bold">
                                       Total Units
+                                    </td>
+                                    <td className="border p-2 text-center font-bold">
+                                      {totalLecUnits}
+                                    </td>
+                                    <td className="border p-2 text-center font-bold">
+                                      {totalLabUnits}
                                     </td>
                                     <td className="border p-2 text-center font-bold">
                                       {totalUnits}

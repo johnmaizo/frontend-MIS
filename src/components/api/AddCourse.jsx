@@ -135,7 +135,7 @@ const AddCourse = () => {
       const response = await toast.promise(
         axios.post("/course/add-course", transformedData),
         {
-          localLoading: "Adding Subject...",
+          loading: "Adding Subject...",
           success: "Subject Added successfully!",
           error: "Failed to add Subject.",
         },

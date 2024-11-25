@@ -1004,6 +1004,7 @@ const SubjectEnlistmentPage = () => {
                   </span>
                 </p>
               </div>
+              
               {loading ? (
                 <>
                   <Skeleton className="mt-4 h-10 w-full" />

@@ -103,37 +103,17 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     }
   }, [isOpen, prospectus_id]);
 
-  console.log(prospectusSubjects);
-
-  // Consolidate lecture and lab subjects per courseCode, yearLevel, and semesterName
+  // Consolidate subjects without modifying courseCode
   const consolidateSubjects = (subjects) => {
     const consolidated = {};
 
     subjects.forEach((subject) => {
-      let baseCourseCode = subject.courseCode;
-      let isLab = false;
-
-      // Identify if the subject is lab based on courseCode or description
-      if (subject.courseCode && subject.courseCode.endsWith("L")) {
-        baseCourseCode = subject.courseCode.slice(0, -1);
-        isLab = true;
-      } else if (
-        subject.courseDescription &&
-        subject.courseDescription.toLowerCase().includes("lab")
-      ) {
-        baseCourseCode = subject.courseCode
-          ? subject.courseCode.replace("L", "")
-          : "N/A";
-        isLab = true;
-      }
-
-      // Ensure unique consolidation per courseCode, yearLevel, and semesterName
-      const key = `${baseCourseCode}-${subject.yearLevel}-${subject.semesterName}`;
+      const key = `${subject.courseCode}-${subject.yearLevel}-${subject.semesterName}`;
 
       if (!consolidated[key]) {
         consolidated[key] = {
           prospectus_subject_id: subject.prospectus_subject_id,
-          courseCode: baseCourseCode,
+          courseCode: subject.courseCode,
           courseDescription: subject.courseDescription
             ? subject.courseDescription
                 .replace(" (Lec)", "")
@@ -151,15 +131,22 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
         };
       }
 
-      if (isLab) {
-        consolidated[key].labUnits += subject.unit;
-      } else {
-        consolidated[key].lecUnits += subject.unit;
+      // Determine if the subject is lab or lecture based on courseDescription
+      let isLab = false;
+      if (
+        subject.courseDescription &&
+        subject.courseDescription.includes(" (Lab)")
+      ) {
+        isLab = true;
       }
 
-      // Update totalUnits
-      consolidated[key].totalUnits =
-        consolidated[key].lecUnits + consolidated[key].labUnits;
+      // Update lecUnits, labUnits, totalUnits accordingly
+      if (isLab) {
+        consolidated[key].labUnits += subject.unit || 0;
+      } else {
+        consolidated[key].lecUnits += subject.unit || 0;
+      }
+      consolidated[key].totalUnits += subject.unit || 0;
     });
 
     return Object.values(consolidated);
@@ -192,40 +179,13 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   const determineStatus = (subject) => {
     const courseCodeLower = subject.courseCode.toLowerCase();
 
-    // Check if lecture and lab units exist
-    const hasLecture = subject.lecUnits > 0;
-    const hasLab = subject.labUnits > 0;
-
-    // Check if lecture is taken
-    const lectureTaken = enrolledSubjects.some(
+    // Check if the subject is in enrolledSubjects
+    const subjectTaken = enrolledSubjects.some(
       (enrolled) =>
-        enrolled.classDetails?.subjectCode.toLowerCase() === courseCodeLower &&
-        !enrolled.classDetails?.subjectDescription
-          .toLowerCase()
-          .includes("lab"),
+        enrolled.classDetails?.subjectCode.toLowerCase() === courseCodeLower,
     );
 
-    // Check if lab is taken
-    const labTaken = enrolledSubjects.some(
-      (enrolled) =>
-        enrolled.classDetails?.subjectCode.toLowerCase() ===
-          `${courseCodeLower}l` ||
-        enrolled.classDetails?.subjectDescription.toLowerCase().includes("lab"),
-    );
-
-    if (hasLecture && hasLab) {
-      // Subject has both lecture and lab; both must be taken
-      return lectureTaken && labTaken ? "Taken" : "Not Taken";
-    } else if (hasLecture) {
-      // Subject has only lecture
-      return lectureTaken ? "Taken" : "Not Taken";
-    } else if (hasLab) {
-      // Subject has only lab
-      return labTaken ? "Taken" : "Not Taken";
-    } else {
-      // Default case
-      return "Not Taken";
-    }
+    return subjectTaken ? "Taken" : "Not Taken";
   };
 
   // Group subjects by year level and semester name within a program with dynamic ordering
@@ -275,18 +235,6 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     return subjects.reduce((total, subject) => total + subject.totalUnits, 0);
   };
 
-  // Extract departmentName and program description dynamically
-  const getDepartmentAndProgram = (subjects) => {
-    if (subjects.length === 0) return { departmentName: "", program: "" };
-
-    const { departmentName, programDescription, programCode } = subjects[0];
-
-    // Format the program as "programDescription (programCode)"
-    const program = `${programDescription} (${programCode})`;
-
-    return { departmentName, program };
-  };
-
   // Consolidate and group the subjects
   const consolidatedSubjects = consolidateSubjects(prospectusSubjects);
   const groupedByDeptAndProgram =
@@ -316,15 +264,6 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     };
   });
 
-  // Debugging: Log the processed data
-  useEffect(() => {
-    if (isOpen) {
-      console.log("Processed Data:", processedData);
-      console.log("Year Order:", yearOrder);
-      console.log("Semester Order:", semesterOrder);
-    }
-  }, [isOpen, processedData, yearOrder, semesterOrder]);
-
   return (
     <div>
       {/* Button to open Curriculum Tracker Dialog */}
@@ -335,21 +274,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
           </button>
         </DialogTrigger>
         <DialogContent className="h-[40em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white">
-          <DialogTitle className="mb-4 text-center text-2xl sr-only font-semibold uppercase">
-            {/* Display Department and Program */}
-            {/* {prospectusSubjects.length > 0 ? (
-              <>
-                <span className="mb-2 block">
-                  {prospectusSubjects[0].departmentName.toUpperCase()}
-                </span>
-                <span>
-                  {prospectusSubjects[0].programDescription} (
-                  {prospectusSubjects[0].programCode})
-                </span>
-              </>
-            ) : (
-              "Curriculum Tracker"
-            )} */}
+          <DialogTitle className="sr-only mb-4 text-center text-2xl font-semibold uppercase">
             Curriculum Tracker
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -357,7 +282,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
           </DialogDescription>
           <div>
             {loading ? (
-              <div className="flex flex-col h-[37.5em] items-center justify-center">
+              <div className="flex h-[37.5em] flex-col items-center justify-center">
                 <DotSpinner size="3.8rem" />
                 <span className="mt-4 text-lg font-bold">
                   Loading Prospectus...
@@ -399,33 +324,22 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                 <thead>
                                   <tr>
                                     <th
-                                      colSpan="7"
+                                      colSpan="5"
                                       className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
                                     >
                                       {yearSemesterKey}
                                     </th>
                                   </tr>
                                   <tr>
-                                    <th className="border p-2" rowSpan="2">
-                                      Subject Code
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
+                                    <th className="border p-2">Subject Code</th>
+                                    <th className="border p-2">
                                       Description Title
                                     </th>
-                                    <th className="border p-2" colSpan="3">
-                                      Units
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
+                                    <th className="border p-2">Units</th>
+                                    <th className="border p-2">
                                       Pre-requisites
                                     </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Status
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <th className="border p-2">Lec</th>
-                                    <th className="border p-2">Lab</th>
-                                    <th className="border p-2">Total</th>
+                                    <th className="border p-2">Status</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -438,12 +352,6 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                         {subject.courseDescription}
                                       </TableCell>
                                       <TableCell className="border p-2 text-center">
-                                        {subject.lecUnits}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
-                                        {subject.labUnits}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
                                         {subject.totalUnits}
                                       </TableCell>
                                       <TableCell className="border p-2">
@@ -451,15 +359,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                           ? Array.from(
                                               new Set(
                                                 subject.prerequisites.map(
-                                                  (prereq) =>
-                                                    prereq.courseCode.endsWith(
-                                                      "L",
-                                                    )
-                                                      ? prereq.courseCode.slice(
-                                                          0,
-                                                          -1,
-                                                        )
-                                                      : prereq.courseCode,
+                                                  (prereq) => prereq.courseCode,
                                                 ),
                                               ),
                                             ).join(", ")
@@ -483,22 +383,6 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                     <td className="border p-2"></td>
                                     <td className="border p-2 text-center font-bold">
                                       Total Units
-                                    </td>
-                                    <td className="border p-2 text-center font-bold">
-                                      {/* Sum of Lec Units */}
-                                      {/* {subjects.reduce(
-                                        (sum, subj) =>
-                                          sum + (subj.lecUnits || 0),
-                                        0,
-                                      )} */}
-                                    </td>
-                                    <td className="border p-2 text-center font-bold">
-                                      {/* Sum of Lab Units */}
-                                      {/* {subjects.reduce(
-                                        (sum, subj) =>
-                                          sum + (subj.labUnits || 0),
-                                        0,
-                                      )} */}
                                     </td>
                                     <td className="border p-2 text-center font-bold">
                                       {totalUnits}

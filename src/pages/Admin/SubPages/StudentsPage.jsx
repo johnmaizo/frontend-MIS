@@ -344,7 +344,7 @@ const DataTable = ({
             <div className="mb-5 flex gap-2 md:w-full md:justify-between md:mb-0">
               <ResetFilter table={table} className={"h-[3.3em]"} />
               {/* Print Button */}
-              <Button onClick={handlePrint} className="h-[3.3em] bg-blue-500 hover:bg-blue-600 inline-flex gap-2">
+              <Button onClick={handlePrint} className="h-[3.3em] !bg-blue-500 !text-white hover:!bg-blue-600 inline-flex gap-1">
                 <PrinterIcon className="h-5 w-5" />
                 Print
               </Button>

@@ -32,6 +32,9 @@ import {
   SelectItem,
 } from "../../../components/ui/select";
 
+import { jsPDF } from "jspdf";
+import { Button } from "../../../components/ui/button";
+
 const StudentsPage = () => {
   const { user } = useContext(AuthContext);
 
@@ -96,16 +99,16 @@ const EnrollmentTables = () => {
   useEffect(() => {
     // Create a new AbortController
     const controller = new AbortController();
-  
+
     fetchOfficialEnrolled(selectedSemesterId, controller.signal);
-  
+
     // Cleanup function to abort the request if component unmounts or dependencies change
     return () => {
       controller.abort();
     };
   }, [selectedSemesterId]);
 
-  const { columnOfficiallyEnrolled } = useColumns();
+  const { columnOfficiallyEnrolled } = useColumns(officalEnrolled);
 
   return (
     <>
@@ -161,7 +164,135 @@ const DataTable = ({
   const combinedSemesters = semesters.map((sem) => ({
     id: sem.semester_id.toString(),
     label: `${sem.schoolYear} - ${sem.semesterName}`,
+    schoolYear: sem.schoolYear,
+    semesterName: sem.semesterName,
   }));
+
+  // Get the selected semester details
+  const selectedSemester = combinedSemesters.find(
+    (sem) => sem.id === selectedSemesterId,
+  );
+
+  // Function to handle printing the PDF
+  const handlePrint = () => {
+    // Get the filtered data
+    const filteredRows = table.getFilteredRowModel().rows;
+
+    if (filteredRows.length === 0) {
+      alert("No data available to print.");
+      return;
+    }
+
+    const doc = new jsPDF();
+
+    // Define some constants for positioning
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 14;
+    let currentY = 20;
+
+    // Centered text
+    doc.setFontSize(16);
+    doc.text("BENEDICTO COLLEGE", pageWidth / 2, currentY, {
+      align: "center",
+    });
+    currentY += 8;
+    doc.setFontSize(12);
+
+    currentY += 12;
+    doc.setFontSize(16);
+    doc.text("STUDENTS", pageWidth / 2, currentY, {
+      align: "center",
+    });
+    currentY += 8;
+    doc.text(
+      selectedSemester
+        ? `${selectedSemester.schoolYear} - ${selectedSemester.semesterName}`
+        : "All Semesters",
+      pageWidth / 2,
+      currentY,
+      { align: "center" },
+    );
+    currentY += 12;
+
+    // Left Side Information
+    doc.setFontSize(12);
+    let leftY = currentY;
+    doc.text(`Campus: ${user.campusName || "All Campuses"}`, margin, leftY);
+    leftY += 8;
+
+    currentY = leftY + 12; // Move currentY below the left section
+
+    // Table Headers
+    const tableColumnWidths = [10, 30, 50, 20, 30, 30, 30];
+    const tableHeaders = [
+      "No.",
+      "Student ID",
+      "Name",
+      "Gender",
+      "Program",
+      "Year Level",
+      "Date Enrolled",
+    ];
+
+    // Draw table header with borders
+    let startX = margin;
+    let startY = currentY;
+
+    doc.setFontSize(10);
+    doc.setFont("bold");
+
+    // Draw header text and borders
+    tableHeaders.forEach((header, index) => {
+      const cellWidth = tableColumnWidths[index];
+      doc.rect(startX, startY, cellWidth, 10); // Cell border
+      doc.text(header, startX + 2, startY + 6);
+      startX += cellWidth;
+    });
+    doc.setFont("normal");
+
+    currentY += 10; // Move to next line after header
+
+    // Table Body
+    filteredRows.forEach((row, rowIndex) => {
+      startX = margin;
+      const rowHeight = 8;
+      let rowY = currentY;
+
+      const rowData = [
+        (rowIndex + 1).toString(),
+        row.original.student_id,
+        `${row.original.lastName}, ${row.original.firstName} ${row.original.middleName}`,
+        row.original.gender,
+        row.original.programCode,
+        row.original.yearLevel,
+        new Date(row.original.createdAt).toLocaleDateString(),
+      ];
+
+      // Draw cell borders and data
+      rowData.forEach((data, index) => {
+        const cellWidth = tableColumnWidths[index];
+        doc.rect(startX, rowY, cellWidth, rowHeight); // Cell border
+        const cellText = doc.splitTextToSize(data, cellWidth - 4);
+        doc.text(cellText, startX + 2, rowY + 5);
+        startX += cellWidth;
+      });
+
+      currentY += rowHeight;
+
+      if (currentY > pageHeight - margin) {
+        doc.addPage();
+        currentY = margin;
+      }
+    });
+
+    const pdfDataUri = doc.output("bloburl");
+    window.open(
+      pdfDataUri,
+      "_blank",
+      "toolbar=no,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600",
+    );
+  };
 
   return (
     <>
@@ -209,8 +340,12 @@ const DataTable = ({
                 </SelectContent>
               </Select>
             </div>
-            <div className="mb-5 md:mb-0">
+            <div className="mb-5 flex gap-2 md:mb-0">
               <ResetFilter table={table} className={"h-[3.3em]"} />
+              {/* Print Button */}
+              <Button onClick={handlePrint} className="h-[3.3em]">
+                Print
+              </Button>
             </div>
           </div>
         </div>

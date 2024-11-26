@@ -49,21 +49,23 @@ export const EnrollmentProvider = ({ children }) => {
 
   const [officalEnrolled, setOfficialEnrolled] = useState([]);
 
-  const fetchOfficialEnrolled = async () => {
+  const fetchOfficialEnrolled = async (semesterId, signal) => {
     setError("");
     setLoadingOfficalEnrolled(true);
     try {
-      // Define params conditionally
-      const params = user.campusName ? { campusName: user.campusName } : {}; // If campusName doesn't exist, send empty params or other fallback
+      const params = {
+        ...(user.campusName ? { campusName: user.campusName } : {}),
+        ...(semesterId ? { semester_id: semesterId } : {}),
+      };
 
-      const response = await axios.get("/enrollment", { params });
+      const response = await axios.get("/enrollment", { params, signal });
 
       setOfficialEnrolled(response.data);
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
-        setError(`Failed to fetch offical enrolled: ${err}`);
+        setError(`Failed to fetch official enrolled: ${err}`);
       }
     }
     setLoadingOfficalEnrolled(false);

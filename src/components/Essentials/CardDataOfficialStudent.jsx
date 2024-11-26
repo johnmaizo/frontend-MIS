@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { Skeleton } from "../ui/skeleton";
 
 /* eslint-disable react/prop-types */
-const CardDataOfficialStudent = () => {
+const CardDataOfficialStudent = ({ filters }) => {
   const { user } = useContext(AuthContext);
 
   const [totalStudents, setTotalStudents] = useState(null);
@@ -16,8 +16,15 @@ const CardDataOfficialStudent = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null); // Reset error before fetching new data
       try {
-        const params = user.campusName ? { campusName: user.campusName } : {}; // If campusName doesn't exist, send empty
+        const params = {
+          campusName: user.campusName || null,
+          schoolYear: filters.schoolYear || null,
+          semester_id: filters.semester_id || null,
+        };
+
         const currentResponse = await axios.get("/enrollment/count", {
           params,
         });
@@ -27,14 +34,14 @@ const CardDataOfficialStudent = () => {
         if (err.response && err.response.data && err.response.data.message) {
           setError(err.response.data.message);
         } else {
-          setError("Failed to fetch department");
+          setError("Failed to fetch student count");
         }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user.campusName, filters]);
 
   if (loading) {
     return (

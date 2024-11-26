@@ -30,7 +30,7 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         const data = response.data;
 
         const departments = data.map(
-          (item) => item.departmentName || "Unassigned Department",
+          (item) => item.departmentName || "General Subject",
         );
         const enrollments = data.map((item) => item.totalEnrollments);
 

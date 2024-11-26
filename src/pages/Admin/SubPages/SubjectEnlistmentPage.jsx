@@ -61,7 +61,7 @@ const SubjectEnlistmentPage = () => {
         );
         const academicBackground = academicResponse.data;
 
-        setAcademicBackground(academicBackground)
+        setAcademicBackground(academicBackground);
 
         console.log("academicBackground:", academicBackground);
 
@@ -103,6 +103,8 @@ const SubjectEnlistmentPage = () => {
           prospectusSubjects.map((ps) => ps.courseCode.toUpperCase()),
         );
 
+        console.log("student_class_enrollments: ", student_class_enrollments);
+
         // Extract class_ids from student_class_enrollments with status "enrolled" or "passed"
         const enrolledClassIds = student_class_enrollments
           .filter(
@@ -112,7 +114,6 @@ const SubjectEnlistmentPage = () => {
           )
           .map((enrollment) => enrollment.class_id);
 
-        // Fetch all active classes without filtering by semester_id
         const classesResponse = await axios.get(`/class/active`, {
           params: {
             semester_id: semester_id,
@@ -126,10 +127,14 @@ const SubjectEnlistmentPage = () => {
           enrolledClassIds.includes(cls.id),
         );
 
+        console.log("enrolledClassesData: ", enrolledClassesData);
+
         // Extract subject codes of enrolled classes
         const enrolledSubjectCodesSet = new Set(
           enrolledClassesData.map((cls) => cls.subject_code.toUpperCase()),
         );
+
+        console.log("enrolledSubjectCodesSet: ", enrolledSubjectCodesSet)
 
         // Map enrolledClassesData to the expected format for CurriculumTracker
         const enrolledSubjectsData = enrolledClassesData.map((cls) => {
@@ -140,6 +145,8 @@ const SubjectEnlistmentPage = () => {
             },
           };
         });
+
+        console.log("enrolledSubjectsData: ", enrolledSubjectsData)
 
         // Set enrolledSubjects state for CurriculumTracker
         setEnrolledSubjects(enrolledSubjectsData);

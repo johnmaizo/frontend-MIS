@@ -7,9 +7,9 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "../ui/select";
+} from "../../ui/select";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const FilterComponent = ({ filters, setFilters }) => {
   const { user } = useContext(AuthContext);

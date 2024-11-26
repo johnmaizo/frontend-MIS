@@ -66,13 +66,13 @@ const AdminHome = () => {
         // <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
           {/* <ChartOne /> */}
-          <EnrollmentTrendsChart filters={filters} />
-          <PieChartDepartment filters={filters} />
-
           <BarChartEnrollmentsByDepartment filters={filters} />
           <BarChartEnrollmentsBySubject filters={filters} />
-          <PieChartEnrollmentStatus filters={filters} />
+          <PieChartDepartment filters={filters} />
+
+          <EnrollmentTrendsChart filters={filters} />
           <PieChartGenderDistribution filters={filters} />
+          <PieChartEnrollmentStatus filters={filters} />
           {/* <ChartTwo /> */}
 
           {/* <div className="col-span-12 xl:col-span-8">

@@ -9,6 +9,8 @@ import { Skeleton } from "../../ui/skeleton";
 const EnrollmentTrendsChart = ({ filters }) => {
   const { user } = useContext(AuthContext);
   const [series, setSeries] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   const [options, setOptions] = useState({
     legend: {
       show: false,
@@ -75,7 +77,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
       style: {
         fontSize: "16px",
         fontWeight: "bold",
-        color: "#fff",
+        color: "#333", // Default color for light mode
       },
     },
     xaxis: {
@@ -86,7 +88,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
         style: {
           fontSize: "14px",
           fontWeight: 600,
-          color: "#fff",
+          color: "#333", // Default color for light mode
         },
       },
       labels: {
@@ -94,7 +96,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
         rotateAlways: true,
         style: {
           fontSize: "12px",
-          colors: "#fff",
+          colors: "#333", // Default color for light mode
         },
       },
       axisBorder: {
@@ -112,7 +114,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
         style: {
           fontSize: "14px",
           fontWeight: 600,
-          color: "#fff",
+          color: "#333", // Default color for light mode
         },
       },
       labels: {
@@ -121,13 +123,13 @@ const EnrollmentTrendsChart = ({ filters }) => {
         },
         style: {
           fontSize: "12px",
-          colors: "#fff",
+          colors: "#333", // Default color for light mode
         },
       },
       min: 0,
     },
     tooltip: {
-      theme: "dark",
+      theme: "light", // Default theme for light mode
       y: {
         formatter: function (val) {
           return `${val} Student${val !== 1 ? "s" : ""}`;
@@ -138,7 +140,7 @@ const EnrollmentTrendsChart = ({ filters }) => {
       },
     },
     grid: {
-      borderColor: "#444",
+      borderColor: "#e7e7e7",
       strokeDashArray: 4,
     },
     responsive: [
@@ -151,9 +153,6 @@ const EnrollmentTrendsChart = ({ filters }) => {
           xaxis: {
             labels: {
               rotate: -30,
-              style: {
-                colors: "#fff",
-              },
             },
           },
         },
@@ -167,17 +166,42 @@ const EnrollmentTrendsChart = ({ filters }) => {
           xaxis: {
             labels: {
               rotate: 0,
-              style: {
-                colors: "#fff",
-              },
             },
           },
         },
       },
     ],
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Function to detect dark mode
+  const detectDarkMode = () => {
+    if (typeof window !== "undefined") {
+      return document.documentElement.classList.contains("dark");
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    setIsDarkMode(detectDarkMode());
+
+    const handleThemeChange = () => {
+      setIsDarkMode(detectDarkMode());
+    };
+
+    // Listen for changes to the class on the root element
+    const observer = new MutationObserver(handleThemeChange);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchEnrollmentTrends = async () => {
@@ -205,29 +229,8 @@ const EnrollmentTrendsChart = ({ filters }) => {
             ...prev.xaxis,
             categories: semesters,
           },
-          title: {
-            ...prev.title,
-            style: {
-              ...prev.title.style,
-              color: "#fff",
-            },
-          },
-          yaxis: {
-            ...prev.yaxis,
-            labels: {
-              ...prev.yaxis.labels,
-              colors: "#fff",
-            },
-            title: {
-              ...prev.yaxis.title,
-              color: "#fff",
-            },
-          },
-          grid: {
-            ...prev.grid,
-            borderColor: "#444",
-          },
         }));
+
         setSeries([{ name: "Total Students", data: totalStudents }]);
       } catch (err) {
         setError("Failed to load enrollment trends.");
@@ -238,6 +241,50 @@ const EnrollmentTrendsChart = ({ filters }) => {
 
     fetchEnrollmentTrends();
   }, [user.campus_id, filters]);
+
+  useEffect(() => {
+    // Update chart options based on theme
+    setOptions((prev) => ({
+      ...prev,
+      title: {
+        ...prev.title,
+        style: {
+          ...prev.title.style,
+          color: isDarkMode ? "#fff" : "#333",
+        },
+      },
+      xaxis: {
+        ...prev.xaxis,
+        labels: {
+          ...prev.xaxis.labels,
+          colors: isDarkMode ? "#fff" : "#333",
+        },
+        title: {
+          ...prev.xaxis.title,
+          color: isDarkMode ? "#fff" : "#333",
+        },
+      },
+      yaxis: {
+        ...prev.yaxis,
+        labels: {
+          ...prev.yaxis.labels,
+          colors: isDarkMode ? "#fff" : "#333",
+        },
+        title: {
+          ...prev.yaxis.title,
+          color: isDarkMode ? "#fff" : "#333",
+        },
+      },
+      tooltip: {
+        ...prev.tooltip,
+        theme: isDarkMode ? "dark" : "light",
+      },
+      grid: {
+        ...prev.grid,
+        borderColor: isDarkMode ? "#444" : "#e7e7e7",
+      },
+    }));
+  }, [isDarkMode]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">

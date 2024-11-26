@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import React, { useContext, useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
@@ -11,59 +12,7 @@ import {
 } from "../ui/tooltip";
 import { Skeleton } from "../ui/skeleton";
 
-let options = {
-  chart: {
-    fontFamily: "Satoshi, sans-serif",
-    type: "pie",
-  },
-  legend: {
-    show: false,
-    position: "bottom",
-    labels: {
-      colors: "#FFFFFF",
-    },
-  },
-  plotOptions: {
-    pie: {
-      donut: {
-        size: "65%",
-        background: "transparent",
-      },
-    },
-  },
-  dataLabels: {
-    enabled: true,
-    style: {
-      fontSize: "13px",
-      fontFamily: "Helvetica, Arial, sans-serif",
-      fontWeight: "medium",
-      colors: ["#FFFFFF"],
-    },
-  },
-  tooltip: {
-    theme: "dark",
-  },
-  responsive: [
-    {
-      breakpoint: 2600,
-      options: {
-        chart: {
-          width: 400,
-        },
-      },
-    },
-    {
-      breakpoint: 640,
-      options: {
-        chart: {
-          width: 200,
-        },
-      },
-    },
-  ],
-};
-
-const PieChartDepartment = () => {
+const PieChartDepartment = ({ filters }) => {
   const { user } = useContext(AuthContext);
 
   const [data, setData] = useState({});
@@ -71,34 +20,93 @@ const PieChartDepartment = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Initialize options inside the component to avoid stale references
+  const [options, setOptions] = useState({
+    chart: {
+      fontFamily: "Satoshi, sans-serif",
+      type: "pie",
+    },
+    legend: {
+      show: false,
+      position: "bottom",
+      labels: {
+        colors: "#FFFFFF",
+      },
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "65%",
+          background: "transparent",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontSize: "13px",
+        fontFamily: "Helvetica, Arial, sans-serif",
+        fontWeight: "medium",
+        colors: ["#FFFFFF"],
+      },
+    },
+    tooltip: {
+      theme: "dark",
+    },
+    responsive: [
+      {
+        breakpoint: 2600,
+        options: {
+          chart: {
+            width: 400,
+          },
+        },
+      },
+      {
+        breakpoint: 640,
+        options: {
+          chart: {
+            width: 200,
+          },
+        },
+      },
+    ],
+  });
+
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null); // Reset error before fetching new data
       try {
-        const params = user.campusName ? { campusName: user.campusName } : {}; // If campusName doesn't exist, send empty
+        const params = {
+          campusName: user.campusName,
+          schoolYear: filters.schoolYear,
+          semester_id: filters.semester_id,
+        };
         const currentResponse = await axios.get("/enrollment/get-chart-data", {
           params,
         });
         const data = currentResponse.data;
 
-        options = {
-          ...options,
+        setOptions((prevOptions) => ({
+          ...prevOptions,
           labels: HasRole(user.role, "SuperAdmin")
             ? data?.labels.map((label) => label.departmentNameWithCampusName)
             : data?.labels.map((label) => label.departmentName),
           colors: data?.colors,
-        };
+        }));
 
         setData(data);
         setSeries(data?.series);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch Chart Data");
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     fetchData();
-  }, [user.campusName, user.role]);
+  }, [user.campusName, user.role, filters]);
 
   if (loading) {
     return (
@@ -141,7 +149,8 @@ const PieChartDepartment = () => {
                   This pie chart provides a visual breakdown of student <br />
                   enrollment by department in the selected campus. <br /> <br />{" "}
                   Each slice represents the percentage of total enrollment{" "}
-                  <br /> attributed to a specific department.
+                  <br />
+                  attributed to a specific department.
                 </p>
               </TooltipContent>
             </Tooltip>

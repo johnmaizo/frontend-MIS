@@ -49,6 +49,8 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
 
   useEffect(() => {
     const fetchEnrollmentsByCourse = async () => {
+      setLoading(true);
+      setError(null); // Reset error before fetching new data
       try {
         const params = {
           campus_id: user.campus_id,
@@ -60,54 +62,59 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         });
         const { categories, data, othersDescriptions } = response.data;
 
+        // Validate the data
         if (
-          !categories ||
           !Array.isArray(categories) ||
           !Array.isArray(data) ||
-          !othersDescriptions ||
           typeof othersDescriptions !== "object"
         ) {
           throw new Error("Invalid data format: Expected structured data");
         }
 
-        setOptions((prev) => ({
-          ...prev,
-          xaxis: { categories: categories },
-          tooltip: {
-            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-              const category = w.globals.labels[dataPointIndex];
+        // Check if data is empty
+        if (categories.length === 0 || data.length === 0) {
+          setSeries([]);
+          setOptions((prev) => ({
+            ...prev,
+            xaxis: { categories: [] },
+          }));
+        } else {
+          setOptions((prev) => ({
+            ...prev,
+            xaxis: { categories: categories },
+            tooltip: {
+              custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                const category = w.globals.labels[dataPointIndex];
 
-              if (category === "Others") {
-                return `<div style="padding:10px;">
-                          <strong>Others</strong><br/>
-                          ${
-                            othersDescriptions.length > 0
-                              ? othersDescriptions.join("<br/>")
-                              : "No additional subjects."
-                          }
-                        </div>`;
-              } else {
-                return `<div style="padding:10px;">
-                          <strong>${category}</strong><br/>
-                          Unique Students: ${data[dataPointIndex]}
-                        </div>`;
-              }
+                if (category === "Others") {
+                  return `<div style="padding:10px;">
+                            <strong>Others</strong><br/>
+                            ${
+                              othersDescriptions.length > 0
+                                ? othersDescriptions.join("<br/>")
+                                : "No additional subjects."
+                            }
+                          </div>`;
+                } else {
+                  return `<div style="padding:10px;">
+                            <strong>${category}</strong><br/>
+                            Unique Students: ${data[dataPointIndex]}
+                          </div>`;
+                }
+              },
             },
-          },
-        }));
+          }));
 
-        setSeries([{ name: "Unique Students", data: data }]);
+          setSeries([{ name: "Unique Students", data: data }]);
+        }
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);
         setError("Failed to load enrollments by subject.");
+        setSeries([]);
         setOptions((prev) => ({
           ...prev,
-          title: {
-            ...prev.title,
-            text: "Enrollments by Subject (Error Fetching Data)",
-          },
+          xaxis: { categories: [] },
         }));
-        setSeries([]);
       } finally {
         setLoading(false);
       }

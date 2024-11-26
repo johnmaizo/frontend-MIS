@@ -34,6 +34,7 @@ import {
 
 import { jsPDF } from "jspdf";
 import { Button } from "../../../components/ui/button";
+import { PrinterIcon } from "lucide-react";
 
 const StudentsPage = () => {
   const { user } = useContext(AuthContext);
@@ -340,10 +341,11 @@ const DataTable = ({
                 </SelectContent>
               </Select>
             </div>
-            <div className="mb-5 flex gap-2 md:mb-0">
+            <div className="mb-5 flex gap-2 md:w-full md:justify-between md:mb-0">
               <ResetFilter table={table} className={"h-[3.3em]"} />
               {/* Print Button */}
-              <Button onClick={handlePrint} className="h-[3.3em]">
+              <Button onClick={handlePrint} className="h-[3.3em] bg-blue-500 hover:bg-blue-600 inline-flex gap-2">
+                <PrinterIcon className="h-5 w-5" />
                 Print
               </Button>
             </div>

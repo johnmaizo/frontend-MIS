@@ -36,10 +36,10 @@ const CardTotalEnrollments = () => {
         <PersonIcon />
       </div>
       <div className="mt-4">
-        <h4 className="text-title-md font-bold text-black">
+        <h4 className="text-title-md font-bold text-black dark:text-white">
           {loading ? "Loading..." : error ? "Error" : totalEnrollments}
         </h4>
-        <span className="text-sm font-medium">Total Enrollments</span>
+        <span className="text-sm font-medium ">Total Enrollments</span>
       </div>
     </div>
   );

@@ -158,12 +158,7 @@ const AcceptPaymentDialog = ({
                   ) : enlistedSubjects.length > 0 ? (
                     <>
                       {enlistedSubjects.map((subject, index) => (
-                        <tr
-                          key={index}
-                          className={
-                            index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                          }
-                        >
+                        <tr key={index} className={"bg-white text-black dark:bg-boxdark dark:text-white"}>
                           <td className="border-gray-200 border px-4 py-2">
                             {subject.subjectCode}
                           </td>

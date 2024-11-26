@@ -198,14 +198,14 @@ const EnrollmentTrendsChart = ({ filters }) => {
   }, [user.campus_id, filters]);
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8 ">
       {loading ? (
-        <div className="flex flex-col space-y-4 p-4">
+        <div className="flex flex-col space-y-4 p-4 ">
           <Skeleton className="h-6 w-1/2" />
           <Skeleton className="h-60 w-full" />
         </div>
       ) : error ? (
-        <div className="flex h-80 items-center justify-center">
+        <div className="flex h-80 items-center justify-center ">
           <p className="text-red-500">{error}</p>
         </div>
       ) : (

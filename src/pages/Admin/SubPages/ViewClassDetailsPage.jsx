@@ -176,14 +176,12 @@ const ViewCLassDetailsPage = () => {
 
       currentY += rowHeight;
 
-      // Check if we need to add a new page
       if (currentY > pageHeight - margin) {
         doc.addPage();
         currentY = margin;
       }
     });
 
-    // Open the PDF in a new minimized window
     const pdfDataUri = doc.output("bloburl");
     window.open(
       pdfDataUri,
@@ -219,7 +217,7 @@ const ViewCLassDetailsPage = () => {
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="space-y-4">
                 <Skeleton className="h-8 w-[16em]" />
-                <Skeleton className="h-[75vh] mt-2 w-full" />
+                <Skeleton className="mt-2 h-[75vh] w-full" />
               </div>
             </div>
           </>
@@ -248,19 +246,17 @@ const ViewCLassDetailsPage = () => {
           <>
             {/* Class Information */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-center justify-between md:flex-row">
                 <h3 className="text-2xl font-semibold">Class Details</h3>
-                {/* Print Button */}
                 <button
                   onClick={handlePrint}
-                  className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                  className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 md:mt-0"
                 >
                   Print
                 </button>
               </div>
-              <div className="mt-4 flex justify-between">
-                {/* Left Side */}
-                <div>
+              <div className="mt-4 flex flex-col justify-between md:flex-row">
+                <div className="mb-4 md:mb-0">
                   <p>
                     <strong>Subject Code:</strong> {classData.subject_code}
                   </p>
@@ -274,7 +270,6 @@ const ViewCLassDetailsPage = () => {
                     <strong>Teacher:</strong> {classData.teacher}
                   </p>
                 </div>
-                {/* Right Side */}
                 <div>
                   <p>
                     <strong>Room:</strong> {classData.room}
@@ -285,57 +280,58 @@ const ViewCLassDetailsPage = () => {
                 </div>
               </div>
             </div>
-            {/* Students Table */}
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <h3 className="mb-4 text-2xl font-semibold">Enrolled Students</h3>
-              <table className="divide-gray-200 min-w-full divide-y">
-                <thead>
-                  <tr>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      No.
-                    </th>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Student ID
-                    </th>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Gender
-                    </th>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Course
-                    </th>
-                    <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      Year Level
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-gray-200 divide-y">
-                  {classData.students.map((student, index) => (
-                    <tr key={index}>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {index + 1}
-                      </td>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {student.student_id}
-                      </td>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {student.name}
-                      </td>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {student.gender}
-                      </td>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {student.program}
-                      </td>
-                      <td className="whitespace-nowrap border px-6 py-4">
-                        {convertYearLevel(student.yearLevel)}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="divide-gray-200 min-w-full divide-y">
+                  <thead>
+                    <tr>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        No.
+                      </th>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Student ID
+                      </th>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Gender
+                      </th>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Course
+                      </th>
+                      <th className="border px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                        Year Level
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-gray-200 divide-y">
+                    {classData.students.map((student, index) => (
+                      <tr key={index}>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {index + 1}
+                        </td>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {student.student_id}
+                        </td>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {student.name}
+                        </td>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {student.gender}
+                        </td>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {student.program}
+                        </td>
+                        <td className="whitespace-nowrap border px-6 py-4 text-sm">
+                          {convertYearLevel(student.yearLevel)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </>
         )}

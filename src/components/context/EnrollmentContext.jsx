@@ -62,13 +62,21 @@ export const EnrollmentProvider = ({ children }) => {
 
       setOfficialEnrolled(response.data);
     } catch (err) {
-      if (err.response && err.response.data && err.response.data.message) {
+      if (axios.isCancel(err) || err.code === "ERR_CANCELED") {
+        // Request was canceled, do not set error
+        console.log("Request canceled:", err.message);
+      } else if (
+        err.response &&
+        err.response.data &&
+        err.response.data.message
+      ) {
         setError(err.response.data.message);
       } else {
         setError(`Failed to fetch official enrolled: ${err}`);
       }
+    } finally {
+      setLoadingOfficalEnrolled(false);
     }
-    setLoadingOfficalEnrolled(false);
   };
   // ! Offically Enrolled END
 

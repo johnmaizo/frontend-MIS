@@ -94,16 +94,11 @@ const EnrollmentTables = () => {
   }, [semesters]);
 
   useEffect(() => {
-    // Abort previous request if any
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
     // Create a new AbortController
     const controller = new AbortController();
-    abortControllerRef.current = controller;
-
+  
     fetchOfficialEnrolled(selectedSemesterId, controller.signal);
-
+  
     // Cleanup function to abort the request if component unmounts or dependencies change
     return () => {
       controller.abort();

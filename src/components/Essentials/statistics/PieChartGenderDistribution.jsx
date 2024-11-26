@@ -8,12 +8,40 @@ import { Skeleton } from "../../ui/skeleton";
 const PieChartGenderDistribution = ({ filters }) => {
   const { user } = useContext(AuthContext);
   const [series, setSeries] = useState([]);
-  const [options, setOptions] = useState({ labels: [] });
+  const [options, setOptions] = useState({
+    labels: [],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: "bottom",
+          },
+        },
+      },
+    ],
+    title: {
+      text: "Gender Distribution",
+      align: "left",
+    },
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return `${val} Student${val === 1 ? "" : "s"}`;
+        },
+      },
+    },
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchGenderDistribution = async () => {
+      setLoading(true);
+      setError(null); // Reset error before fetching new data
       try {
         const params = {
           campus_id: user.campus_id,
@@ -36,18 +64,31 @@ const PieChartGenderDistribution = ({ filters }) => {
             !isNaN(item.count),
         );
 
+        // Handle empty data without throwing an error
         if (validData.length === 0) {
-          throw new Error("No valid data available for the chart");
+          setSeries([]);
+          setOptions((prevOptions) => ({
+            ...prevOptions,
+            labels: [],
+          }));
+        } else {
+          const genders = validData.map((item) => item.gender);
+          const counts = validData.map((item) => item.count);
+
+          setOptions((prevOptions) => ({
+            ...prevOptions,
+            labels: genders,
+          }));
+          setSeries(counts);
         }
-
-        const genders = validData.map((item) => item.gender);
-        const counts = validData.map((item) => item.count);
-
-        setOptions({ labels: genders });
-        setSeries(counts);
       } catch (error) {
         console.error("Error fetching gender distribution:", error);
         setError("Failed to load gender distribution.");
+        setSeries([]);
+        setOptions((prevOptions) => ({
+          ...prevOptions,
+          labels: [],
+        }));
       } finally {
         setLoading(false);
       }
@@ -72,33 +113,7 @@ const PieChartGenderDistribution = ({ filters }) => {
         </div>
       ) : series.length > 0 ? (
         <ReactApexChart
-          options={{
-            labels: options.labels,
-            responsive: [
-              {
-                breakpoint: 480,
-                options: {
-                  chart: {
-                    width: 200,
-                  },
-                  legend: {
-                    position: "bottom",
-                  },
-                },
-              },
-            ],
-            title: {
-              text: "Gender Distribution",
-              align: "left",
-            },
-            tooltip: {
-              y: {
-                formatter: function (val) {
-                  return `${val} Student${val === 1 ? "" : "s"}`;
-                },
-              },
-            },
-          }}
+          options={options}
           series={series}
           type="pie"
           height={350}

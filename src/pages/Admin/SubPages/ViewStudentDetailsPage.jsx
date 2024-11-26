@@ -131,7 +131,7 @@ const ViewStudentDetailsPage = () => {
 
   const NavItems = [
     { to: "/", label: "Dashboard" },
-    { to: "/enrollments/all-students", label: "All Students" },
+    { to: "/all-students", label: "All Students" },
     {
       label: "Student Details",
     },

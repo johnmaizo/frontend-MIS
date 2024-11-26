@@ -109,7 +109,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         }
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);
-        setError("Failed to load enrollments by subject.");
+        setError("No enrollment data available for the selected filters.");
         setSeries([]);
         setOptions((prev) => ({
           ...prev,
@@ -135,7 +135,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         </div>
       ) : error ? (
         <div className="flex h-80 items-center justify-center">
-          <p className="text-red-500">{error}</p>
+               <p className="text-gray-500 text-center">{error}</p>
         </div>
       ) : series.length > 0 ? (
         <div className="mt-5 overflow-hidden">

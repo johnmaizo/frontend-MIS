@@ -16,6 +16,7 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
 
   useEffect(() => {
     const fetchEnrollmentsByDepartment = async () => {
+      setLoading(true);
       try {
         const params = {
           campus_id: user.campus_id,

@@ -2346,6 +2346,24 @@ const useColumns = () => {
         return <span className="font-semibold">{cell.getValue()}</span>;
       },
     },
+    {
+      accessorKey: "gender",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Gender"
+            options={getUniqueCodes(officalEnrolled, "gender")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="font-semibold">{cell.getValue()}</span>;
+      },
+    },
     ...(user && HasRole(user.role, "SuperAdmin")
       ? [
           {
@@ -2368,10 +2386,6 @@ const useColumns = () => {
           },
         ]
       : []),
-    {
-      accessorKey: "email",
-      header: "Email",
-    },
     {
       accessorKey: "createdAt",
       header: "Date Enrolled",

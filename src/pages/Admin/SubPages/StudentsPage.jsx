@@ -71,10 +71,14 @@ const EnrollmentTables = () => {
     loadingOfficalEnrolled,
   } = useEnrollment();
 
-  const { semesters } = useSchool();
+  const { fetchSemesters, semesters } = useSchool();
 
   // Create a ref to store the AbortController
   const abortControllerRef = useRef();
+
+  useEffect(() => {
+    fetchSemesters();
+  }, []);
 
   useEffect(() => {
     // Set default selected semester based on the active semester
@@ -87,7 +91,7 @@ const EnrollmentTables = () => {
         setSelectedSemesterId(semesters[0].semester_id.toString());
       }
     }
-  }, []);
+  }, [semesters]);
 
   useEffect(() => {
     // Abort previous request if any

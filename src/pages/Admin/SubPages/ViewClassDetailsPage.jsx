@@ -8,6 +8,7 @@ import { HasRole } from "../../../components/reuseable/HasRole";
 import { AuthContext } from "../../../components/context/AuthContext";
 import { jsPDF } from "jspdf";
 import { Skeleton } from "../../../components/ui/skeleton";
+import { PrinterIcon } from "lucide-react";
 
 const ViewCLassDetailsPage = () => {
   const { classID } = useParams();
@@ -250,8 +251,9 @@ const ViewCLassDetailsPage = () => {
                 <h3 className="text-2xl font-semibold">Class Details</h3>
                 <button
                   onClick={handlePrint}
-                  className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 md:mt-0"
+                  className="inline-flex h-[3.3em] gap-1 !bg-blue-500 !text-white hover:!bg-blue-600"
                 >
+                  <PrinterIcon className="h-5 w-5" />
                   Print
                 </button>
               </div>

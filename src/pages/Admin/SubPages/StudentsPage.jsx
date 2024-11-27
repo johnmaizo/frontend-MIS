@@ -263,7 +263,7 @@ const DataTable = ({
       const rowData = [
         (rowIndex + 1).toString(),
         row.original.student_id,
-        `${row.original.lastName}, ${row.original.firstName} ${row.original.middleName}`,
+        `${row.original.lastName}, ${row.original.firstName} ${row.original.middleName ? `${row.original.middleName[0].toUpperCase()}.` : ""}.`,
         row.original.gender,
         row.original.programCode,
         row.original.yearLevel,
@@ -341,10 +341,13 @@ const DataTable = ({
                 </SelectContent>
               </Select>
             </div>
-            <div className="mb-5 flex gap-2 md:w-full md:justify-between md:mb-0">
+            <div className="mb-5 flex gap-2 md:mb-0 md:w-full md:justify-between">
               <ResetFilter table={table} className={"h-[3.3em]"} />
               {/* Print Button */}
-              <Button onClick={handlePrint} className="h-[3.3em] !bg-blue-500 !text-white hover:!bg-blue-600 inline-flex gap-1">
+              <Button
+                onClick={handlePrint}
+                className="inline-flex h-[3.3em] gap-1 !bg-blue-500 !text-white hover:!bg-blue-600"
+              >
                 <PrinterIcon className="h-5 w-5" />
                 Print
               </Button>

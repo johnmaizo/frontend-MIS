@@ -35,7 +35,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
     },
     yaxis: {
       title: {
-        text: "Number of Unique Students",
+        text: "Number of Students",
       },
       min: 0,
       forceNiceScale: true,
@@ -98,14 +98,14 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
                 } else {
                   return `<div style="padding:10px;">
                             <strong>${category}</strong><br/>
-                            Unique Students: ${data[dataPointIndex]}
+                            Students: ${data[dataPointIndex]}
                           </div>`;
                 }
               },
             },
           }));
 
-          setSeries([{ name: "Unique Students", data: data }]);
+          setSeries([{ name: "Students", data: data }]);
         }
       } catch (error) {
         console.error("Error fetching enrollments by subject:", error);
@@ -135,7 +135,7 @@ const BarChartEnrollmentsBySubject = ({ filters }) => {
         </div>
       ) : error ? (
         <div className="flex h-80 items-center justify-center">
-               <p className="text-gray-500 text-center">{error}</p>
+          <p className="text-gray-500 text-center">{error}</p>
         </div>
       ) : series.length > 0 ? (
         <div className="mt-5 overflow-hidden">

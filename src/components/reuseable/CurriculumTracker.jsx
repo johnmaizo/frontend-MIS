@@ -13,6 +13,17 @@ import { TableCell } from "../ui/table";
 import axios from "axios";
 import DotSpinner from "../styles/DotSpinner"; // Adjust the import based on your project structure
 
+// Import Tooltip components from shadCN
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+
+// Import icons from react-icons
+import { FaCheckCircle, FaExclamationTriangle, FaTimesCircle, FaInfoCircle } from "react-icons/fa";
+
 const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [prospectusSubjects, setProspectusSubjects] = useState([]);
@@ -106,7 +117,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   // Consolidate subjects with careful handling of courseCode
   const consolidateSubjects = (subjects) => {
     const courseCodeSet = new Set(
-      subjects.map((subject) => subject.courseCode),
+      subjects.map((subject) => subject.courseCode)
     );
 
     const consolidated = {};
@@ -197,11 +208,11 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   // Prepare enrolled subject codes set
   const enrolledSubjectCodes = new Set(
     enrolledSubjects.map((enrolled) =>
-      enrolled.classDetails?.subjectCode.toLowerCase(),
-    ),
+      enrolled.classDetails?.subjectCode.toLowerCase()
+    )
   );
 
-  // Determine if a prospectus subject has been taken
+  // Determine the detailed status of a subject
   const determineStatus = (subject) => {
     const baseCourseCodeLower = subject.courseCode.toLowerCase();
 
@@ -229,14 +240,30 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
     }
 
     // Determine status based on both lecture and lab components
-    return lectureTaken && labTaken ? "Taken" : "Not Taken";
+    if (hasLecture && hasLab) {
+      if (lectureTaken && labTaken) {
+        return "Taken";
+      } else if (lectureTaken && !labTaken) {
+        return "Only Lecture";
+      } else if (!lectureTaken && labTaken) {
+        return "Only Laboratory";
+      } else {
+        return "Not Taken";
+      }
+    } else if (hasLecture) {
+      return lectureTaken ? "Taken" : "Not Taken";
+    } else if (hasLab) {
+      return labTaken ? "Taken" : "Not Taken";
+    } else {
+      return "N/A";
+    }
   };
 
   // Group subjects by year level and semester name within a program with dynamic ordering
   const groupSubjectsByYearAndSemester = (
     subjects,
     yearOrder,
-    semesterOrder,
+    semesterOrder
   ) => {
     const grouped = subjects.reduce((acc, subject) => {
       const yearLevel = subject.yearLevel;
@@ -305,7 +332,7 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
       const groupedSubjects = groupSubjectsByYearAndSemester(
         subjects,
         yearOrder,
-        semesterOrder,
+        semesterOrder
       );
       return {
         program,
@@ -319,177 +346,234 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
   });
 
   return (
-    <div>
-      {/* Button to open Curriculum Tracker Dialog */}
-      <Dialog isOpen={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger asChild>
-          <button className="rounded bg-green-500 px-4 py-2 text-white transition hover:bg-green-600">
-            View Prospectus
-          </button>
-        </DialogTrigger>
-        <DialogContent className="h-[40em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white">
-          <DialogTitle className="sr-only mb-4 text-center text-2xl font-semibold uppercase">
-            Curriculum Tracker
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            This is the curriculum tracker showing subjects taken and pending.
-          </DialogDescription>
-          <div>
-            {loading ? (
-              <div className="flex h-[37.5em] flex-col items-center justify-center">
-                <DotSpinner size="3.8rem" />
-                <span className="mt-4 text-lg font-bold">
-                  Loading Prospectus...
-                </span>
-              </div>
-            ) : error ? (
-              <div className="text-center text-red-500">{error}</div>
-            ) : prospectusSubjects.length > 0 ? (
-              // Iterate over the departments
-              processedData.map((deptData, deptIndex) => (
-                <div key={deptIndex} className="mb-10 lg:px-[2em]">
-                  {/* Department Name */}
-                  <h2 className="mb-2 text-center text-2xl font-bold uppercase">
-                    {deptData.department}
-                  </h2>
-
-                  {/* Iterate over the programs within the department */}
-                  {deptData.programs.map((programData, programIndex) => (
-                    <div key={programIndex} className="mb-8">
-                      {/* Program Description and Code */}
-                      <h3 className="mb-4 text-center text-xl font-semibold uppercase">
-                        {programData.program}
-                      </h3>
-
-                      {/* Iterate over the grouped subjects by year and semester */}
-                      {Object.keys(programData.groupedSubjects).map(
-                        (yearSemesterKey, yearSemIndex) => {
-                          const subjects =
-                            programData.groupedSubjects[yearSemesterKey];
-                          const totalUnits = calculateTotalUnits(subjects);
-                          const totalLecUnits =
-                            calculateTotalLecUnits(subjects);
-                          const totalLabUnits =
-                            calculateTotalLabUnits(subjects);
-
-                          return (
-                            <div
-                              key={yearSemIndex}
-                              className="mb-10 overflow-x-auto"
-                            >
-                              <table className="mb-4 min-w-full border-collapse border">
-                                {/* Header for Year - Semester */}
-                                <thead>
-                                  <tr>
-                                    <th
-                                      colSpan="7"
-                                      className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
-                                    >
-                                      {yearSemesterKey}
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <th className="border p-2" rowSpan="2">
-                                      Subject Code
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Description Title
-                                    </th>
-                                    <th className="border p-2" colSpan="3">
-                                      Units
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Pre-requisites
-                                    </th>
-                                    <th className="border p-2" rowSpan="2">
-                                      Status
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <th className="border p-2">Lec</th>
-                                    <th className="border p-2">Lab</th>
-                                    <th className="border p-2">Total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {subjects.map((subject) => (
-                                    <tr key={subject.prospectus_subject_id}>
-                                      <TableCell className="border p-2">
-                                        {subject.courseCode}
-                                      </TableCell>
-                                      <TableCell className="border p-2">
-                                        {subject.courseDescription}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
-                                        {subject.lecUnits}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
-                                        {subject.labUnits}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
-                                        {subject.totalUnits}
-                                      </TableCell>
-                                      <TableCell className="border p-2">
-                                        {subject.prerequisites.length > 0
-                                          ? Array.from(
-                                              new Set(
-                                                subject.prerequisites.map(
-                                                  (prereq) => prereq.courseCode,
-                                                ),
-                                              ),
-                                            ).join(", ")
-                                          : ""}
-                                      </TableCell>
-                                      <TableCell className="border p-2 text-center">
-                                        <span
-                                          className={`rounded px-2 py-1 ${
-                                            determineStatus(subject) === "Taken"
-                                              ? "bg-green-500 text-white"
-                                              : "bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-200"
-                                          }`}
-                                        >
-                                          {determineStatus(subject)}
-                                        </span>
-                                      </TableCell>
-                                    </tr>
-                                  ))}
-                                  {/* Add Total Units row */}
-                                  <tr>
-                                    <td className="border p-2"></td>
-                                    <td className="border p-2 text-center font-bold">
-                                      Total Units
-                                    </td>
-                                    <td className="border p-2 text-center font-bold">
-                                      {totalLecUnits}
-                                    </td>
-                                    <td className="border p-2 text-center font-bold">
-                                      {totalLabUnits}
-                                    </td>
-                                    <td className="border p-2 text-center font-bold">
-                                      {totalUnits}
-                                    </td>
-                                    <td className="border p-2"></td>
-                                    <td className="border p-2"></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          );
-                        },
-                      )}
-                    </div>
-                  ))}
+    <TooltipProvider>
+      <div>
+        {/* Button to open Curriculum Tracker Dialog */}
+        <Dialog isOpen={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <button className="rounded bg-green-500 px-4 py-2 text-white transition hover:bg-green-600">
+              View Prospectus
+            </button>
+          </DialogTrigger>
+          <DialogContent className="h-[40em] w-full max-w-[70em] overflow-y-auto bg-white p-4 !text-black dark:bg-boxdark dark:!text-white">
+            <DialogTitle className="sr-only mb-4 text-center text-2xl font-semibold uppercase">
+              Curriculum Tracker
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              This is the curriculum tracker showing subjects taken and pending.
+            </DialogDescription>
+            <div>
+              {loading ? (
+                <div className="flex h-[37.5em] flex-col items-center justify-center">
+                  <DotSpinner size="3.8rem" />
+                  <span className="mt-4 text-lg font-bold">
+                    Loading Prospectus...
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="text-gray-500 text-center">
-                No prospectus subjects available.
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+              ) : error ? (
+                <div className="text-center text-red-500">{error}</div>
+              ) : prospectusSubjects.length > 0 ? (
+                // Iterate over the departments
+                processedData.map((deptData, deptIndex) => (
+                  <div key={deptIndex} className="mb-10 lg:px-[2em]">
+                    {/* Department Name */}
+                    <h2 className="mb-2 text-center text-2xl font-bold uppercase">
+                      {deptData.department}
+                    </h2>
+
+                    {/* Iterate over the programs within the department */}
+                    {deptData.programs.map((programData, programIndex) => (
+                      <div key={programIndex} className="mb-8">
+                        {/* Program Description and Code */}
+                        <h3 className="mb-4 text-center text-xl font-semibold uppercase">
+                          {programData.program}
+                        </h3>
+
+                        {/* Iterate over the grouped subjects by year and semester */}
+                        {Object.keys(programData.groupedSubjects).map(
+                          (yearSemesterKey, yearSemIndex) => {
+                            const subjects =
+                              programData.groupedSubjects[yearSemesterKey];
+                            const totalUnits = calculateTotalUnits(subjects);
+                            const totalLecUnits =
+                              calculateTotalLecUnits(subjects);
+                            const totalLabUnits =
+                              calculateTotalLabUnits(subjects);
+
+                            return (
+                              <div
+                                key={yearSemIndex}
+                                className="mb-10 overflow-x-auto"
+                              >
+                                <table className="mb-4 min-w-full border-collapse border">
+                                  {/* Header for Year - Semester */}
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        colSpan="7"
+                                        className="bg-gray-200 dark:bg-gray-700 border p-2 text-center text-lg font-bold"
+                                      >
+                                        {yearSemesterKey}
+                                      </th>
+                                    </tr>
+                                    <tr>
+                                      <th className="border p-2" rowSpan="2">
+                                        Subject Code
+                                      </th>
+                                      <th className="border p-2" rowSpan="2">
+                                        Description Title
+                                      </th>
+                                      <th className="border p-2" colSpan="3">
+                                        Units
+                                      </th>
+                                      <th className="border p-2" rowSpan="2">
+                                        Pre-requisites
+                                      </th>
+                                      <th className="border p-2" rowSpan="2">
+                                        Status
+                                      </th>
+                                    </tr>
+                                    <tr>
+                                      <th className="border p-2">Lec</th>
+                                      <th className="border p-2">Lab</th>
+                                      <th className="border p-2">Total</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {subjects.map((subject) => (
+                                      <tr key={subject.prospectus_subject_id}>
+                                        <TableCell className="border p-2">
+                                          {subject.courseCode}
+                                        </TableCell>
+                                        <TableCell className="border p-2">
+                                          {subject.courseDescription}
+                                        </TableCell>
+                                        <TableCell className="border p-2 text-center">
+                                          {subject.lecUnits}
+                                        </TableCell>
+                                        <TableCell className="border p-2 text-center">
+                                          {subject.labUnits}
+                                        </TableCell>
+                                        <TableCell className="border p-2 text-center">
+                                          {subject.totalUnits}
+                                        </TableCell>
+                                        <TableCell className="border p-2">
+                                          {subject.prerequisites.length > 0
+                                            ? Array.from(
+                                                new Set(
+                                                  subject.prerequisites.map(
+                                                    (prereq) => prereq.courseCode
+                                                  )
+                                                )
+                                              ).join(", ")
+                                            : ""}
+                                        </TableCell>
+                                        <TableCell className="border p-2 text-center">
+                                          {/* Determine the status and display corresponding badge with tooltip */}
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <span className="cursor-pointer">
+                                                {(() => {
+                                                  const status = determineStatus(subject);
+                                                  switch (status) {
+                                                    case "Taken":
+                                                      return (
+                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-green-500 text-white`}>
+                                                          <FaCheckCircle className="mr-1" />
+                                                          {status}
+                                                        </span>
+                                                      );
+                                                    case "Only Lecture":
+                                                      return (
+                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-yellow-500 text-white`}>
+                                                          <FaExclamationTriangle className="mr-1" />
+                                                          {status}
+                                                        </span>
+                                                      );
+                                                    case "Only Laboratory":
+                                                      return (
+                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-yellow-500 text-white`}>
+                                                          <FaInfoCircle className="mr-1" />
+                                                          {status}
+                                                        </span>
+                                                      );
+                                                    case "Not Taken":
+                                                      return (
+                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-red-500 text-white`}>
+                                                          <FaTimesCircle className="mr-1" />
+                                                          {status}
+                                                        </span>
+                                                      );
+                                                    default:
+                                                      return (
+                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-gray-400 text-white`}>
+                                                          <FaInfoCircle className="mr-1" />
+                                                          {status}
+                                                        </span>
+                                                      );
+                                                  }
+                                                })()}
+                                              </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                              {(() => {
+                                                const status = determineStatus(subject);
+                                                switch (status) {
+                                                  case "Taken":
+                                                    return "You have completed both Lecture and Laboratory components.";
+                                                  case "Only Lecture":
+                                                    return "You have only completed the Lecture component. Laboratory is pending.";
+                                                  case "Only Laboratory":
+                                                    return "You have only completed the Laboratory component. Lecture is pending.";
+                                                  case "Not Taken":
+                                                    return "You have not completed this subject.";
+                                                  default:
+                                                    return "Status unavailable.";
+                                                }
+                                              })()}
+                                            </TooltipContent>
+                                          </Tooltip>
+                                        </TableCell>
+                                      </tr>
+                                    ))}
+                                    {/* Add Total Units row */}
+                                    <tr>
+                                      <td className="border p-2"></td>
+                                      <td className="border p-2 text-center font-bold">
+                                        Total Units
+                                      </td>
+                                      <td className="border p-2 text-center font-bold">
+                                        {totalLecUnits}
+                                      </td>
+                                      <td className="border p-2 text-center font-bold">
+                                        {totalLabUnits}
+                                      </td>
+                                      <td className="border p-2 text-center font-bold">
+                                        {totalUnits}
+                                      </td>
+                                      <td className="border p-2"></td>
+                                      <td className="border p-2"></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))
+              ) : (
+                <div className="text-gray-500 text-center">
+                  No prospectus subjects available.
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </TooltipProvider>
   );
 };
 

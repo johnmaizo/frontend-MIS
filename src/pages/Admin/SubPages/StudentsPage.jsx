@@ -263,7 +263,7 @@ const DataTable = ({
       const rowData = [
         (rowIndex + 1).toString(),
         row.original.student_id,
-        `${row.original.lastName}, ${row.original.firstName} ${row.original.middleName ? `${row.original.middleName[0].toUpperCase()}.` : ""}.`,
+        `${row.original.lastName}, ${row.original.firstName} ${row.original.middleName ? `${row.original.middleName[0].toUpperCase()}.` : ""}`,
         row.original.gender,
         row.original.programCode,
         row.original.yearLevel,

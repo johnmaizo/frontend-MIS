@@ -329,7 +329,7 @@ const SubjectEnlistmentPage = () => {
 
         // For reference only
         const semesterUnits = semesterSubjects.reduce(
-          (total, subject) => total + (subject.units || 0),
+          (total, subject) => total + (subject.unit || 0),
           0,
         );
         setUnitLimit(semesterUnits);

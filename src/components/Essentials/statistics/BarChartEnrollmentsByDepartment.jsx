@@ -12,8 +12,19 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
     chart: { type: "bar" },
     xaxis: { categories: [] },
     tooltip: {
-      y: {
-        formatter: (val) => `Enrollments: ${val}`,
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        // Access the department codes and names from refs
+        const code = departmentCodesRef.current[dataPointIndex];
+        const name = departmentNamesRef.current[dataPointIndex];
+        const enrollment = series[seriesIndex][dataPointIndex];
+
+        // Return custom HTML for the tooltip
+        return `
+          <div class="custom-tooltip" style="background: white; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <strong>${code} - ${name}</strong><br/>
+            Enrollments: ${enrollment}
+          </div>
+        `;
       },
     },
   });
@@ -45,6 +56,13 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         );
         const enrollments = data.map((item) => item.totalEnrollments);
 
+        // Define x-axis categories: "CCS" and "General Subject"
+        const categories = data.map((item) =>
+          item.departmentCode === "GS"
+            ? "General Subject"
+            : item.departmentCode,
+        );
+
         // Store codes and names in refs
         departmentCodesRef.current = codes;
         departmentNamesRef.current = names;
@@ -52,23 +70,7 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         // Update chart options
         setOptions((prev) => ({
           ...prev,
-          xaxis: { categories: codes },
-          tooltip: {
-            ...prev.tooltip,
-            title: {
-              formatter: function (seriesName, opts) {
-                const index = opts.dataPointIndex;
-                const code = departmentCodesRef.current[index];
-                const name = departmentNamesRef.current[index];
-                return `${code} - ${name}`;
-              },
-            },
-            y: {
-              formatter: function (val) {
-                return `Enrollments: ${val}`;
-              },
-            },
-          },
+          xaxis: { categories: categories },
         }));
 
         // Update series data

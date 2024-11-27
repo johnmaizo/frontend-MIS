@@ -75,7 +75,7 @@ const SubjectEnlistmentPage = () => {
           prospectus_id,
           student_class_enrollments,
           yearLevel,
-          semester_id,
+          semester_id, // Current semester ID (e.g., 5 for 2nd Semester)
           campus_id,
         } = academicData;
 
@@ -108,7 +108,7 @@ const SubjectEnlistmentPage = () => {
 
         console.log("student_class_enrollments: ", student_class_enrollments);
 
-        // 5. Extract class_ids as numbers
+        // 5. Extract class_ids as numbers for enrolled or passed statuses
         const enrolledClassIds = student_class_enrollments
           .filter(
             (enrollment) =>
@@ -142,22 +142,19 @@ const SubjectEnlistmentPage = () => {
         // 7. Perform both GET requests concurrently
         const [activeClassesCurrentSem, activeClassesAllSem] =
           await Promise.all([
-            fetchActiveClasses(semester_id), // Current Semester
-            fetchActiveClasses(), // All Semesters (no semester_id)
+            fetchActiveClasses(semester_id), // Current Semester for Display (e.g., semester_id: 5)
+            fetchActiveClasses(), // All Semesters for Validation (no semester_id)
           ]);
 
-        // 8. Merge the results, ensuring no duplicates
-        const activeClassesData = [
-          ...activeClassesCurrentSem,
-          ...activeClassesAllSem.filter(
-            (cls) => !activeClassesCurrentSem.some((c) => c.id === cls.id),
-          ),
-        ];
+        // 8. Assign activeClassesCurrentSem to activeClassesData for display
+        const activeClassesData = activeClassesCurrentSem;
+        console.log(
+          "Active Classes Data (Current Semester):",
+          activeClassesData,
+        );
 
-        console.log("Combined Active Classes Data:", activeClassesData);
-
-        // 9. Filter enrolledClassesData by class_id
-        const enrolledClassesData = activeClassesData.filter((cls) =>
+        // 9. Use activeClassesAllSem for validation without storing it in state
+        const enrolledClassesData = activeClassesAllSem.filter((cls) =>
           enrolledClassIds.includes(Number(cls.id)),
         );
         console.log("Enrolled Classes Data:", enrolledClassesData);
@@ -181,7 +178,7 @@ const SubjectEnlistmentPage = () => {
         setEnrolledSubjects(enrolledSubjectsData);
         setProspectusId(prospectus_id);
 
-        // 13. Now, filter availableClassesData to include only classes with subject_code in prospectusSubjectCodesSet and not in enrolledSubjectCodesSet
+        // 13. Filter availableClassesData using activeClassesData (current semester)
         const availableClassesData = activeClassesData.filter(
           (cls) =>
             prospectusSubjectCodesSet.has(cls.subject_code.toUpperCase()) &&
@@ -259,15 +256,14 @@ const SubjectEnlistmentPage = () => {
         const enlistedClassesData = student_class_enrollments
           .filter((enrollment) => enrollment.status === "enlisted")
           .map((enrollment) => {
-            // Find the matching class in availableClassesData
+            // Find the matching class in availableClassesData (activeClassesData)
             const matchingClass = mappedClassesData.find(
               (cls) => cls.class_id === enrollment.class_id,
             );
             if (matchingClass) {
               return matchingClass;
             } else {
-              // If the class is not in availableClassesData, perhaps it is inactive now
-              // Try to find it in the enrolledClassesData
+              // If the class is not in availableClassesData, try to find it in enrolledClassesData (activeClassesAllSem)
               const enrolledClass = enrolledClassesData.find(
                 (cls) => cls.id === enrollment.class_id,
               );
@@ -700,7 +696,7 @@ const SubjectEnlistmentPage = () => {
               {/* **Modified Search Input with Clear ('X') Button End** */}
 
               {loading ? (
-                <div className="mt-4 flex justify-center">
+                <div className="mt-15 flex justify-center">
                   {/* Spinner */}
                   <svg
                     className="h-8 w-8 animate-spin text-blue-500"

@@ -19,8 +19,7 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
       },
       custom: function ({ series, seriesIndex, dataPointIndex, w }) {
         const departmentCode = w.globals.categoryLabels[dataPointIndex];
-        const departmentName =
-          w.globals.customData[dataPointIndex].departmentName;
+        const departmentName = w.globals.customData[dataPointIndex].departmentName;
         return `
           <div style="padding:10px;">
             <strong>${departmentCode}</strong> - ${departmentName}<br/>
@@ -97,7 +96,9 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         // Example: { departmentCode: "CSS", departmentName: "College of Computer Studies", totalEnrollments: 120 }
 
         // Extract department codes and names
-        const departments = data.map((item) => item.departmentCode || "UN");
+        const departments = data.map(
+          (item) => item.departmentCode || "UN",
+        );
         const enrollments = data.map((item) => item.totalEnrollments || 0);
 
         // Prepare custom data for tooltips
@@ -107,16 +108,12 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
 
         setOptions((prev) => ({
           ...prev,
-          xaxis: {
-            categories: departments,
-            title: { text: "Department Code" },
-          },
+          xaxis: { categories: departments, title: { text: "Department Code" } },
           tooltip: {
             ...prev.tooltip,
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
               const departmentCode = w.globals.categoryLabels[dataPointIndex];
-              const departmentName =
-                w.globals.customData[dataPointIndex].departmentName;
+              const departmentName = w.globals.customData[dataPointIndex].departmentName;
               return `
                 <div style="padding:10px;">
                   <strong>${departmentCode}</strong> - ${departmentName}<br/>
@@ -141,9 +138,6 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-4">
-      <h5 className="mb-4 text-xl font-semibold text-black dark:text-white">
-        Subjects Enrolled by Department
-      </h5>
       {loading ? (
         <div className="space-y-3 p-4">
           <Skeleton className="h-6 w-3/4" />

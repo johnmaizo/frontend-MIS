@@ -124,7 +124,7 @@ const SubjectEnlistmentPage = () => {
 
         const classesResponse = await axios.get(`/class/active`, {
           params: {
-            semester_id: semester_id,
+            // semester_id: semester_id,
             campus_id: campus_id,
           },
         });

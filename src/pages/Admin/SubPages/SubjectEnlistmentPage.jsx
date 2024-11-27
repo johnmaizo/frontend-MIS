@@ -26,6 +26,14 @@ import CurriculumTracker from "../../../components/reuseable/CurriculumTracker";
 // Import the Switch component from shadcn
 import { Switch } from "../../../components/ui/switch";
 import { Skeleton } from "../../../components/ui/skeleton";
+import {
+  convertTo24Hour,
+  formatDays,
+  formatSchedule,
+  formatTime,
+  parseDays,
+  parseSchedule,
+} from "../../../components/reuseable/GetUniqueValues";
 
 const SubjectEnlistmentPage = () => {
   const { student_personal_id } = useParams();
@@ -112,7 +120,7 @@ const SubjectEnlistmentPage = () => {
               enrollment.status === "enrolled" ||
               enrollment.status === "passed",
           )
-          .map((enrollment) => enrollment.class_id);
+          .map((enrollment) => Number(enrollment.class_id));
 
         const classesResponse = await axios.get(`/class/active`, {
           params: {
@@ -124,7 +132,7 @@ const SubjectEnlistmentPage = () => {
 
         // Map class IDs to subject codes for enrolled classes
         const enrolledClassesData = classesData.filter((cls) =>
-          enrolledClassIds.includes(cls.id),
+          enrolledClassIds.includes(Number(cls.id)),
         );
 
         console.log("enrolledClassesData: ", enrolledClassesData);
@@ -134,7 +142,7 @@ const SubjectEnlistmentPage = () => {
           enrolledClassesData.map((cls) => cls.subject_code.toUpperCase()),
         );
 
-        console.log("enrolledSubjectCodesSet: ", enrolledSubjectCodesSet)
+        console.log("enrolledSubjectCodesSet: ", enrolledSubjectCodesSet);
 
         // Map enrolledClassesData to the expected format for CurriculumTracker
         const enrolledSubjectsData = enrolledClassesData.map((cls) => {
@@ -146,7 +154,11 @@ const SubjectEnlistmentPage = () => {
           };
         });
 
-        console.log("enrolledSubjectsData: ", enrolledSubjectsData)
+        console.log("enrolledSubjectsData: ", enrolledSubjectsData);
+
+        console.log("Active Classes Data:", classesData);
+        console.log("Enrolled Class IDs:", enrolledClassIds);
+        console.log("Enrolled Classes Data:", enrolledClassesData);
 
         // Set enrolledSubjects state for CurriculumTracker
         setEnrolledSubjects(enrolledSubjectsData);
@@ -322,139 +334,6 @@ const SubjectEnlistmentPage = () => {
   }, [student_personal_id]);
 
   /**
-   * Parses the schedule string to extract days, start time, and end time.
-   * Expected format: "DAYS START_TIME - END_TIME"
-   * Example: "TTH 3:00 AM - 4:30 AM"
-   *
-   * @param {string} scheduleStr - The schedule string to parse.
-   * @returns {object|null} - An object with daysString, startTime, and endTime or null if parsing fails.
-   */
-  const parseSchedule = (scheduleStr) => {
-    if (typeof scheduleStr !== "string") return null;
-
-    // Regular expression to match the schedule format
-    const scheduleRegex =
-      /^([A-Za-z,]+)\s+(\d{1,2}:\d{2}\s?(AM|PM))\s*-\s*(\d{1,2}:\d{2}\s?(AM|PM))$/i;
-    const match = scheduleStr.match(scheduleRegex);
-
-    if (!match) return null;
-
-    const daysString = match[1].toUpperCase();
-    const startTime = match[2].toUpperCase();
-    const endTime = match[4].toUpperCase();
-
-    return { daysString, startTime, endTime };
-  };
-
-  /**
-   * Formats the schedule components into a readable string.
-   *
-   * @param {string} daysString - The days string (e.g., "TTH").
-   * @param {string} startTime - The start time (e.g., "3:00 AM").
-   * @param {string} endTime - The end time (e.g., "4:30 AM").
-   * @returns {string} - The formatted schedule string.
-   */
-  const formatSchedule = (daysString, startTime, endTime) => {
-    const daysFormatted = daysString
-      .split(",")
-      .map((day) => day.trim())
-      .join(", ");
-    return `${daysFormatted} ${startTime} - ${endTime}`;
-  };
-
-  /**
-   * Parses the days string into an array of standardized day codes.
-   *
-   * @param {string} daysString - The days string (e.g., "TTH").
-   * @returns {Array<string>} - An array of day codes (e.g., ["TU", "TH"]).
-   */
-  const parseDays = (daysString) => {
-    if (typeof daysString !== "string") return [];
-
-    // Handle multiple days separated by commas
-    if (daysString.includes(",")) {
-      return daysString.split(",").map((day) => day.trim());
-    }
-
-    // Handle abbreviations like "TTH"
-    const dayMapping = {
-      M: "MO",
-      MT: "MO",
-      MO: "MO",
-      TU: "TU",
-      T: "TU",
-      TTH: "TH",
-      TH: "TH",
-      W: "WE",
-      WE: "WE",
-      F: "FR",
-      FR: "FR",
-      S: "SA",
-      SA: "SA",
-      SU: "SU",
-    };
-
-    const days = [];
-
-    // Split the string into possible day codes
-    let temp = daysString;
-    while (temp.length > 0) {
-      if (temp.startsWith("TTH")) {
-        days.push(dayMapping["TTH"]);
-        temp = temp.slice(3);
-      } else if (temp.startsWith("TH")) {
-        days.push(dayMapping["TH"]);
-        temp = temp.slice(2);
-      } else {
-        const dayCode = temp.slice(0, 1);
-        if (dayMapping[dayCode]) {
-          days.push(dayMapping[dayCode]);
-          temp = temp.slice(1);
-        } else {
-          // If unknown, skip one character to prevent infinite loop
-          console.warn(`Unknown day code in daysString: "${daysString}"`);
-          temp = temp.slice(1);
-        }
-      }
-    }
-
-    return days;
-  };
-
-  /**
-   * Formats the days array into a readable string.
-   *
-   * @param {object} cls - The class object.
-   * @returns {string} - Formatted days string.
-   */
-  const formatDays = (cls) => {
-    if (cls.days && Array.isArray(cls.days)) {
-      return cls.days.join(", ");
-    } else if (typeof cls.days === "string") {
-      return cls.days;
-    } else if (cls.schedule && typeof cls.schedule === "string") {
-      const parsed = parseSchedule(cls.schedule);
-      if (parsed) {
-        const { daysString } = parsed;
-        return parseDays(daysString).join(", ");
-      }
-    }
-    return "N/A"; // Default if days can't be determined
-  };
-
-  /**
-   * Formats the time string for display.
-   *
-   * @param {string} timeString - The time string (e.g., "3:00 AM").
-   * @returns {string} - Formatted time string.
-   */
-  const formatTime = (timeString) => {
-    if (!timeString) return "N/A";
-    // Optionally, you can format the time string if needed
-    return timeString; // Already in "3:00 AM" format
-  };
-
-  /**
    * Handles adding a class to the selectedClasses state.
    *
    * @param {object} cls - The class object to add.
@@ -582,28 +461,6 @@ const SubjectEnlistmentPage = () => {
         );
       }
     }
-  };
-
-  /**
-   * Converts a 12-hour time string to a 24-hour format.
-   *
-   * @param {string} timeStr - Time string in "h:mm AM/PM" format.
-   * @returns {string} - Time string in "HH:MM" 24-hour format.
-   */
-  const convertTo24Hour = (timeStr) => {
-    const [time, modifier] = timeStr.split(" ");
-    let [hours, minutes] = time.split(":");
-    hours = parseInt(hours, 10);
-
-    if (modifier.toUpperCase() === "PM" && hours !== 12) {
-      hours += 12;
-    }
-    if (modifier.toUpperCase() === "AM" && hours === 12) {
-      hours = 0;
-    }
-
-    const formattedHours = hours.toString().padStart(2, "0");
-    return `${formattedHours}:${minutes}`;
   };
 
   /**

@@ -37,10 +37,10 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
     // Optional: Enhance chart appearance
     title: {
       text: "Subjects Enrolled by Department",
-      align: "center",
+      align: 'center',
       style: {
-        fontSize: "20px",
-        fontWeight: "bold",
+        fontSize: '20px',
+        fontWeight: 'bold',
       },
     },
   });
@@ -63,10 +63,10 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
 
         // Extract departmentCodes and departmentNames
         const departmentCodes = data.map(
-          (item) => item.departmentCode || "N/A",
+          (item) => item.departmentCode || "N/A"
         );
         const departmentNamesArray = data.map(
-          (item) => item.departmentName || "General Subject",
+          (item) => item.departmentName || "General Subject"
         );
         const enrollments = data.map((item) => item.totalEnrollments);
 

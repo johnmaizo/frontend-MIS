@@ -9,6 +9,7 @@ import { AuthContext } from "../../../components/context/AuthContext";
 import { jsPDF } from "jspdf";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { PrinterIcon } from "lucide-react";
+import { Button } from "../../../components/ui/button";
 
 const ViewCLassDetailsPage = () => {
   const { classID } = useParams();
@@ -249,13 +250,13 @@ const ViewCLassDetailsPage = () => {
             <div className="my-5 rounded-lg border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
               <div className="flex flex-col items-center justify-between md:flex-row">
                 <h3 className="text-2xl font-semibold">Class Details</h3>
-                <button
+                <Button
                   onClick={handlePrint}
                   className="inline-flex h-[3.3em] gap-1 !bg-blue-500 !text-white hover:!bg-blue-600"
                 >
                   <PrinterIcon className="h-5 w-5" />
                   Print
-                </button>
+                </Button>
               </div>
               <div className="mt-4 flex flex-col justify-between md:flex-row">
                 <div className="mb-4 md:mb-0">

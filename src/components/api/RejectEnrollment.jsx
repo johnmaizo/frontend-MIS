@@ -45,7 +45,7 @@ const RejectEnrollment = ({ applicantId, loading }) => {
       if (response.data) {
         setSuccess(true);
         setOpen(false);
-        navigate("/enrollments/unenrolled-registrations");
+        navigate("/enrollments/online-applicants");
       }
     } catch (err) {
       toast.error(

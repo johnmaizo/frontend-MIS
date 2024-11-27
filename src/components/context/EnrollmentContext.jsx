@@ -142,6 +142,7 @@ export const EnrollmentProvider = ({ children }) => {
     signal,
   ) => {
     setError("");
+    setPendingStudents([])
     setLoadingPendingStudents(true);
     try {
       let params = {};

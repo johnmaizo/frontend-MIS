@@ -11,6 +11,11 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
   const [options, setOptions] = useState({
     chart: { type: "bar" },
     xaxis: { categories: [] },
+    tooltip: {
+      y: {
+        formatter: (val) => `Enrollments: ${val}`,
+      },
+    },
   });
   const [loading, setLoading] = useState(true);
 
@@ -32,11 +37,26 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         const departments = data.map(
           (item) => item.departmentName || "General Subject",
         );
+        const codes = data.map((item) => item.departmentCode || "");
         const enrollments = data.map((item) => item.totalEnrollments);
 
         setOptions((prev) => ({
           ...prev,
           xaxis: { categories: departments },
+          tooltip: {
+            ...prev.tooltip,
+            title: {
+              formatter: function (seriesName, opts) {
+                const index = opts.dataPointIndex;
+                return `${codes[index]} - ${departments[index]}`;
+              },
+            },
+            y: {
+              formatter: function (val) {
+                return `Enrollments: ${val}`;
+              },
+            },
+          },
         }));
         setSeries([{ name: "Enrollments", data: enrollments }]);
       } catch (error) {

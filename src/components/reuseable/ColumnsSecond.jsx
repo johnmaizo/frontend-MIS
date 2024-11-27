@@ -264,6 +264,7 @@ const useColumnsSecond = () => {
             />
 
             {/* Reject Payment Dialog */}
+            {/* 
             <Dialog>
               <DialogTrigger className="rounded-md !bg-red-600 p-2 !text-white">
                 Reject Payment
@@ -304,6 +305,7 @@ const useColumnsSecond = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+             */}
           </div>
         );
       },

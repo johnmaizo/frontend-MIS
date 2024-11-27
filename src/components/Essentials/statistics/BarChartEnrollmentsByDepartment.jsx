@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
@@ -19,6 +19,10 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
   });
   const [loading, setLoading] = useState(true);
 
+  // Refs to store department codes and names
+  const departmentCodesRef = useRef([]);
+  const departmentNamesRef = useRef([]);
+
   useEffect(() => {
     const fetchEnrollmentsByDepartment = async () => {
       setLoading(true);
@@ -34,21 +38,29 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
         );
         const data = response.data;
 
-        const departments = data.map(
+        // Extract department codes, names, and enrollments
+        const codes = data.map((item) => item.departmentCode || "");
+        const names = data.map(
           (item) => item.departmentName || "General Subject",
         );
-        const codes = data.map((item) => item.departmentCode || "");
         const enrollments = data.map((item) => item.totalEnrollments);
 
+        // Store codes and names in refs
+        departmentCodesRef.current = codes;
+        departmentNamesRef.current = names;
+
+        // Update chart options
         setOptions((prev) => ({
           ...prev,
-          xaxis: { categories: departments },
+          xaxis: { categories: codes },
           tooltip: {
             ...prev.tooltip,
             title: {
               formatter: function (seriesName, opts) {
                 const index = opts.dataPointIndex;
-                return `${codes[index]} - ${departments[index]}`;
+                const code = departmentCodesRef.current[index];
+                const name = departmentNamesRef.current[index];
+                return `${code} - ${name}`;
               },
             },
             y: {
@@ -58,6 +70,8 @@ const BarChartEnrollmentsByDepartment = ({ filters }) => {
             },
           },
         }));
+
+        // Update series data
         setSeries([{ name: "Enrollments", data: enrollments }]);
       } catch (error) {
         console.error("Error fetching enrollments by department:", error);

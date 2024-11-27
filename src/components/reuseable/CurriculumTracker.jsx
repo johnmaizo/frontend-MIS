@@ -478,35 +478,35 @@ const CurriculumTracker = ({ prospectus_id, enrolledSubjects }) => {
                                                   switch (status) {
                                                     case "Taken":
                                                       return (
-                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-green-500 text-white`}>
+                                                        <span className={`flex items-center justify-center rounded px-1 py-1 bg-green-500 text-white`}>
                                                           <FaCheckCircle className="mr-1" />
                                                           {status}
                                                         </span>
                                                       );
                                                     case "Only Lecture":
                                                       return (
-                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-yellow-500 text-white`}>
+                                                        <span className={`flex items-center justify-center rounded px-1 py-1 bg-yellow-500 text-white`}>
                                                           <FaExclamationTriangle className="mr-1" />
                                                           {status}
                                                         </span>
                                                       );
                                                     case "Only Laboratory":
                                                       return (
-                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-yellow-500 text-white`}>
+                                                        <span className={`flex items-center justify-center rounded px-1 py-1 bg-yellow-500 text-white`}>
                                                           <FaInfoCircle className="mr-1" />
                                                           {status}
                                                         </span>
                                                       );
                                                     case "Not Taken":
                                                       return (
-                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-red-500 text-white`}>
+                                                        <span className={`flex items-center justify-center rounded px-1 py-1 bg-red-500 text-white`}>
                                                           <FaTimesCircle className="mr-1" />
                                                           {status}
                                                         </span>
                                                       );
                                                     default:
                                                       return (
-                                                        <span className={`flex items-center justify-center rounded px-2 py-1 bg-gray-400 text-white`}>
+                                                        <span className={`flex items-center justify-center rounded px-1 py-1 bg-gray-400 text-white`}>
                                                           <FaInfoCircle className="mr-1" />
                                                           {status}
                                                         </span>

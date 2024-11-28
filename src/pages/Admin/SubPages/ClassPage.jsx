@@ -147,7 +147,7 @@ const DataTable = ({
     },
     initialState: {
       pagination: {
-        pageSize: 20,
+        pageSize: 50,
       },
     },
   });
@@ -163,14 +163,14 @@ const DataTable = ({
       <div className="my-5 rounded-sm border border-stroke bg-white p-4 px-6 dark:border-strokedark dark:bg-boxdark">
         <div className="mb-5 mt-2 justify-between gap-5 md:flex">
           <div className="gap-5 md:flex md:items-center">
-            <Input
+            {/* <Input
               placeholder="Search by Subject Code..."
               value={table.getColumn("subject_code")?.getFilterValue() ?? ""}
               onChange={(event) =>
                 table.getColumn("subject_code")?.setFilterValue(event.target.value)
               }
               className="mb-5 h-[3.3em] w-full !rounded !border-[1.5px] !border-stroke bg-white !px-5 !py-3 text-[1rem] font-medium text-black !outline-none focus:!border-primary active:!border-primary disabled:cursor-default disabled:!bg-whiter dark:!border-form-strokedark dark:!bg-form-input dark:!text-white dark:focus:!border-primary md:mb-0 md:w-[14em]"
-            />
+            /> */}
 
             {/* Combined Semester Selector */}
             <Select
@@ -209,7 +209,7 @@ const DataTable = ({
 
         <div className="flex w-full justify-start py-4 md:items-center md:justify-end">
           <DataTablePagination
-            rowsPerPage={20}
+            rowsPerPage={50}
             totalName={"Class"}
             table={table}
             totalDepartments={table.getFilteredRowModel().rows.length}

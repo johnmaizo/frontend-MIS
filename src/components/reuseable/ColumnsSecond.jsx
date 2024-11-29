@@ -28,7 +28,7 @@ import AddEnrollment from "../api/AddEnrollment";
 const useColumnsSecond = () => {
   const { user } = useContext(AuthContext);
   const { prospectusSubjects } = useSchool();
-  const { fetchEnrollmentStatus, pendingStudents, onlineApplicants } =
+  const { fetchEnrollmentStatus, pendingStudents, onlineApplicants, enrollmentStatuses } =
     useEnrollment();
 
   // ! Column View Subject Prospectus START
@@ -194,14 +194,63 @@ const useColumnsSecond = () => {
         return <span className="text-lg font-semibold">{cell.getValue()}</span>;
       },
     },
-
     {
-      // accessorKey: "campusAddress",
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(enrollmentStatuses, "programCode")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="text-lg font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(enrollmentStatuses, "yearLevel")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
+      accessorKey: "gender",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Gender"
+            options={getUniqueCodes(enrollmentStatuses, "gender")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => {
+        return <span className="font-semibold">{cell.getValue()}</span>;
+      },
+    },
+    {
       id: "amountDue",
       header: "Amount Due",
-      // cell: ({ cell }) => {
-      //   return cell.getValue();
-      // },
       cell: "₱500",
     },
     {
@@ -499,6 +548,40 @@ const useColumnsSecond = () => {
       cell: ({ cell }) => (
         <span className="text-lg font-semibold">{cell.getValue()}</span>
       ),
+    },
+    {
+      accessorKey: "programCode",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Program"
+            options={getUniqueCodes(pendingStudents, "programCode")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => (
+        <span className="text-lg font-semibold">{cell.getValue()}</span>
+      ),
+    },
+    {
+      accessorKey: "yearLevel",
+      header: ({ column }) => {
+        return (
+          <FacetedFilterEnrollment
+            column={column}
+            title="Year Level"
+            options={getUniqueCodes(pendingStudents, "yearLevel")}
+          />
+        );
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ cell }) => <span className="text-lg">{cell.getValue()}</span>,
     },
     {
       header: "Actions",

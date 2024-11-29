@@ -118,7 +118,6 @@ const ViewStudentDetailsPage = () => {
     yearLevel,
     yearGraduate,
     semester_id,
-    prospectus_id: prospectusIdFromBackground,
     semester,
   } = student_current_academicbackground || {};
 

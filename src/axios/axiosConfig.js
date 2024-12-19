@@ -35,7 +35,9 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await axios.post("/accounts/refresh-token");
+        const refreshResponse = await axios.post("/accounts/refresh-token", {}, {
+          withCredentials: true
+        });
         localStorage.setItem("jwtToken", refreshResponse.data.jwtToken);
 
         // Update the Authorization header and retry the request
